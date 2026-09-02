@@ -1,145 +1,66 @@
-# MTA Subway Hourly Ridership: 2020-2024
+# MTA Subway Hourly Ridership: 2020–2024
 
-**Curso:** Data Visualization 2026-2  
-**Entregable:** Seleccion y presentacion del dataset  
-**Fecha de acceso:** 2026-09-02
+Primera entrega de Data Visualization 2026-2: selección y documentación del dataset.
 
 ## Integrantes
 
 - Acervo Correa, Renzo Alfonso
 - Maquera Bobadilla, Diva Stewart
-- Condori Palomino, Jose Eduardo
+- Condori Palomino, José Eduardo
 
-## Dataset seleccionado
+## Dataset y relevancia
 
-Esta entrega utiliza **MTA Subway Hourly Ridership: 2020-2024**, identificador `wujg-7c2s`, publicado por la Metropolitan Transportation Authority en el portal oficial Open NY.
+Utilizamos [MTA Subway Hourly Ridership: 2020–2024](https://data.ny.gov/Transportation/MTA-Subway-Hourly-Ridership-2020-2024/wujg-7c2s/about_data), publicado por la Metropolitan Transportation Authority (MTA) en Open NY. Fecha de acceso: **2 de septiembre de 2026**.
 
-- **Universo publicado:** 120,855,568 registros (aproximadamente 121 millones).
-- **Cobertura:** ciudad de Nueva York, 2020-2024.
-- **Granularidad:** hora, modo, complejo de estacion, metodo y clase de pago.
-- **Unidad de observacion:** cantidad estimada de entradas para una combinacion horaria, geografica y tarifaria.
-- **Campos analiticos:** 12; la plataforma puede agregar 3 campos regionales calculados.
-- **Frecuencia declarada:** estatica, sin nuevas actualizaciones para este periodo historico.
+El universo publicado comprende 120,855,568 registros sobre entradas estimadas por hora, modo de transporte, complejo de estación, método de pago y clase tarifaria en Nueva York. Combina variables temporales, geográficas y numéricas que permiten plantear, para etapas posteriores:
 
-Fuente oficial: <https://data.ny.gov/Transportation/MTA-Subway-Hourly-Ridership-2020-2024/wujg-7c2s/about_data>
+1. ¿Cómo cambiaron las entradas entre 2020 y 2024?
+2. ¿Cómo varía la demanda según la hora y el día de la semana?
+3. ¿Cómo evolucionó el uso de OMNY frente a MetroCard?
+4. ¿Qué diferencias existen entre estaciones y boroughs?
 
-## Relevancia y riqueza
+## Datos entregados y alcance
 
-El dataset integra tiempo, ubicacion, modo de transporte, medio de pago, clase tarifaria, pasajeros, transferencias y coordenadas. Su volumen y variedad permiten estudiar demanda, recuperacion pospandemia, adopcion de OMNY, diferencias territoriales y patrones horarios.
+Se entrega una **muestra de 10,000 filas con 12 campos originales**, sin enriquecimientos: 2,000 filas por año y 500 por combinación de año y trimestre. Incluye subway, Staten Island Railway y tram, con una asignación controlada por modo.
 
-Preguntas posibles:
+La muestra permite inspeccionar los datos y reproducir la evaluación inicial. **No es proporcional al universo y no debe usarse para estimar totales o participaciones poblacionales.** Las preguntas anteriores requerirán datos adecuados al análisis posterior.
 
-1. ¿Como cambio el ridership entre 2020 y 2024?
-2. ¿Que complejos concentran mas entradas por hora?
-3. ¿Como varia la demanda entre dias laborables y fines de semana?
-4. ¿Como evoluciono la participacion de OMNY frente a MetroCard?
-5. ¿Que diferencias existen entre subway, Staten Island Railway y tram?
-6. ¿Que boroughs y franjas horarias concentran mas transferencias?
-7. ¿Que clases tarifarias predominan por periodo y ubicacion?
-8. ¿Donde aparecen valores extremos o problemas de calidad?
+El dataset completo no se almacena en GitHub por su tamaño; se proporcionan el enlace oficial y un script de descarga. Esta entrega no incluye un dashboard.
 
-## Estructura
+## Archivos
 
 ```text
 data-visualization-2026-2/
 ├── README.md
-├── requirements.txt
-├── data/
-│   ├── raw/
-│   │   ├── README.md
-│   │   └── source_manifest.json
-│   ├── processed/
-│   │   ├── mta_subway_hourly_2020_2024_processed_sample.csv
-│   │   └── ridership_summary.csv
-│   └── sample/
-│       └── mta_subway_hourly_2020_2024_sample.csv
+├── .gitignore
+├── data/sample/
+│   └── mta_subway_hourly_2020_2024_sample.csv
 ├── docs/
-│   ├── data_dictionary.csv
-│   ├── data_dictionary.xlsx
 │   ├── acquisition.md
+│   ├── data_dictionary.csv
 │   ├── data_quality.md
 │   ├── data_quality_metrics.csv
 │   └── references.md
-├── scripts/
-│   ├── acquisition/download_mta.py
-│   └── preprocessing/
-│       ├── preprocess.py
-│       └── quality_check.py
-├── src/
-├── public/
-└── .gitignore
+└── scripts/
+    ├── acquisition/download_mta.py
+    └── preprocessing/quality_check.py
 ```
 
-## Reproduccion
+El diccionario explica los 12 campos originales y los 3 campos regionales adicionales que puede generar Open NY. La procedencia, metodología y condiciones de uso están en [adquisición](docs/acquisition.md) y [referencias](docs/references.md). El [informe de calidad](docs/data_quality.md) interpreta las métricas de la muestra y sus limitaciones.
 
-Requiere Python 3.10 o superior. No utiliza paquetes externos.
+## Cómo reproducir la entrega
 
-### Modo muestra
-
-Genera 10,000 filas mediante 20 estratos de ano-trimestre con representacion controlada de los tres modos:
+Desde la raíz del proyecto, con **Python 3.10 o superior** y conexión a Internet. No se necesitan paquetes externos.
 
 ```bash
-python scripts/acquisition/download_mta.py --mode sample
-python scripts/preprocessing/preprocess.py
-python scripts/preprocessing/quality_check.py
+python3 scripts/acquisition/download_mta.py --mode sample
+python3 scripts/preprocessing/quality_check.py
 ```
 
-La muestra asigna 2,000 registros a cada ano, 500 a cada combinacion ano-trimestre y contiene subway, Staten Island Railway y tram. Su objetivo es probar el flujo; sus proporciones no deben interpretarse como estimaciones poblacionales.
-
-La reproduccion se ejecuto dos veces de forma independiente y produjo archivos identicos:
-
-| Archivo | SHA-256 |
-|---|---|
-| Muestra raw | `3c19393d16f049988f6e8d3c8ec2915305f92ac6f0b02e9828afd3ebbf0a0029` |
-| Muestra procesada | `ddddd875d29355dbeedc764949aab526f06c6cb75d42d85af2f6c8bf829c1641` |
-| Resumen | `cf77a52ebbda553077ed319580c93672cc0203734c4d64acb59c278615013ac3` |
-
-### Modo completo
+Para obtener el dataset completo, que puede ocupar varios gigabytes:
 
 ```bash
-python scripts/acquisition/download_mta.py --mode full
+python3 scripts/acquisition/download_mta.py --mode full
 ```
 
-La descarga completa se realiza por streaming desde la API y puede ocupar varios gigabytes. No se incluye en GitHub.
-
-Para validar el endpoint con solo 1 MiB:
-
-```bash
-python scripts/acquisition/download_mta.py \
-  --mode full \
-  --max-bytes 1048576 \
-  --output work/full_test.csv
-```
-
-Si se dispone de un token Socrata:
-
-```bash
-export SOCRATA_APP_TOKEN="TU_TOKEN"
-```
-
-El token es opcional y nunca debe guardarse en el repositorio.
-
-El modo completo fue validado descargando de forma controlada el primer MiB del endpoint oficial y comprobando su encabezado CSV. La descarga masiva no se conserva en el proyecto.
-
-## Archivos procesados
-
-- La muestra procesada conserva las 12 variables originales y agrega ano, trimestre, mes, fecha, hora, dia de semana, fin de semana, tasa de transferencias y banderas de calidad.
-- `ridership_summary.csv` agrega registros, estaciones, ridership y transfers por tiempo, modo, borough y metodo de pago.
-- No se eliminan silenciosamente valores sospechosos; se marcan mediante campos `quality_*`.
-
-## Calidad y limitaciones
-
-La muestra verificada contiene 10,000 filas, los cinco anos y los tres modos. No se detectaron nulos, claves compuestas duplicadas, tipos invalidos, valores negativos, transferencias mayores que ridership, timestamps fuera del periodo ni coordenadas fuera del rango definido. Estos resultados describen la muestra, no prueban que los 120.9 millones de registros carezcan de problemas.
-
-MTA indica que los datos se limpian y deduplican antes de publicarse, que pueden recibir ajustes por transacciones tardias y que las metricas se encuentran dentro de 1% de las cifras presentadas en reuniones publicas de la entidad.
-
-## Correspondencia con la rubrica
-
-| Criterio | Evidencia |
-|---|---|
-| Relevancia y riqueza | 120.9 millones de registros, 12 atributos centrales y ocho preguntas analiticas |
-| Fuente y condiciones | `docs/acquisition.md` y `docs/references.md` |
-| Organizacion | carpetas raw, sample y processed; CSV y manifiesto |
-| Diccionario | CSV y XLSX con tipos, unidades, dominios, nulos y fuentes |
-| Reproducibilidad | modos `sample` y `full` mediante la API oficial |
-| Calidad inicial | reporte y metricas ejecutadas sobre 10,000 registros |
+La descarga completa se guarda en `data/raw/`, creada automáticamente y excluida de Git. Las instrucciones adicionales y las validaciones realizadas se describen en [adquisición](docs/acquisition.md).

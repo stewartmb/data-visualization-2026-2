@@ -141,7 +141,7 @@ def sample_mode(args: argparse.Namespace) -> None:
         "sha256": digest,
         "output": str(output),
     }
-    write_manifest(args.manifest, manifest)
+    write_manifest(args.manifest or output.with_suffix(".manifest.json"), manifest)
     print(f"Muestra creada: {output} ({len(all_rows):,} filas)")
     print(f"SHA-256: {digest}")
 
@@ -193,7 +193,7 @@ def full_mode(args: argparse.Namespace) -> None:
         "output": str(final_path),
         "complete": complete,
     }
-    write_manifest(args.manifest, manifest)
+    write_manifest(args.manifest or output.with_suffix(".manifest.json"), manifest)
     print(f"Archivo: {final_path}")
     print(f"SHA-256: {digest.hexdigest()}")
 
@@ -203,7 +203,7 @@ def main() -> None:
     parser.add_argument("--mode", choices=("sample", "full"), default="sample")
     parser.add_argument("--sample-rows", type=int, default=10_000)
     parser.add_argument("--output", type=Path)
-    parser.add_argument("--manifest", type=Path, default=Path("data/raw/source_manifest.json"))
+    parser.add_argument("--manifest", type=Path, help="Ruta opcional; por defecto se genera junto al CSV como .manifest.json.")
     parser.add_argument("--timeout", type=int, default=180)
     parser.add_argument(
         "--max-bytes",

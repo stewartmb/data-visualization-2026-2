@@ -11,12 +11,7 @@ __pycache__/
 *.token
 secrets.*
 
-# Dataset completo y fragmentos masivos
-data/raw/*_full.csv
-data/raw/chunk_*.csv
-data/raw/*.parquet
-
-# Conservar documentacion y manifiestos livianos
-!data/raw/README.md
-!data/raw/source_manifest.json
-
+# Descargas locales y registros tecnicos generados
+data/raw/
+*.manifest.json
+work/

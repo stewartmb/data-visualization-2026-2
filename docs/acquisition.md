@@ -44,7 +44,7 @@ El endpoint Socrata devuelve 12 campos seleccionados explicitamente:
 El script construye 20 estratos de ano-trimestre. Dentro de cada estrato asigna 88% a subway, 6% a Staten Island Railway y 6% a tram, usando ventanas semanales y orden estable. Esto produce 10,000 filas y garantiza cobertura temporal y modal; no pretende conservar las proporciones poblacionales.
 
 ```bash
-python scripts/acquisition/download_mta.py --mode sample
+python3 scripts/acquisition/download_mta.py --mode sample
 ```
 
 ### Archivo completo
@@ -54,10 +54,32 @@ El modo completo utiliza el endpoint de exportacion oficial y escribe por stream
 <https://data.ny.gov/api/views/wujg-7c2s/rows.csv?accessType=DOWNLOAD>
 
 ```bash
-python scripts/acquisition/download_mta.py --mode full
+python3 scripts/acquisition/download_mta.py --mode full
 ```
 
 El script usa un archivo `.partial`, valida el encabezado, calcula SHA-256 y solo renombra el archivo cuando la descarga termina. El dataset completo se excluye de Git por su volumen.
+
+El archivo completo se guarda en `data/raw/mta_subway_hourly_2020_2024_full.csv`; la carpeta se crea al ejecutar la descarga y no se publica. Cada modo genera, junto a su CSV, un archivo local `.manifest.json` con la fuente, fecha, alcance y huella SHA-256. Estos registros técnicos se excluyen de Git; la procedencia de la entrega se documenta aquí.
+
+### Registro de adquisición y validaciones
+
+La muestra entregada se obtuvo el **2026-09-02 a las 05:46:14 UTC**, desde `https://data.ny.gov/resource/wujg-7c2s.csv`. Contiene 10,000 filas, distribuidas en 20 estratos de 500 filas. El universo oficial de referencia es de 120,855,568 registros; no corresponde al tamaño de la muestra.
+
+Se ejecutó la adquisición de la muestra dos veces y se verificó que produjo archivos idénticos. El modo completo se probó mediante una descarga controlada del primer MiB y la comprobación del encabezado, no mediante la descarga de todo el universo.
+
+Para repetir esa prueba limitada:
+
+```bash
+python3 scripts/acquisition/download_mta.py --mode full --max-bytes 1048576 --output work/full_test.csv
+```
+
+Para recalcular la evaluación inicial sobre la muestra:
+
+```bash
+python3 scripts/preprocessing/quality_check.py
+```
+
+Los resultados numéricos se guardan en `docs/data_quality_metrics.csv`; su interpretación y limitaciones se presentan en `docs/data_quality.md`.
 
 ## Dependencias
 
@@ -65,6 +87,8 @@ El script usa un archivo `.partial`, valida el encabezado, calcula SHA-256 y sol
 - Conexion HTTPS.
 - Token Socrata opcional mediante `SOCRATA_APP_TOKEN`.
 - No se requieren bibliotecas externas.
+
+Si se dispone de un token Socrata, puede establecerse en la variable de entorno `SOCRATA_APP_TOKEN`. No es obligatorio y no debe escribirse en archivos del repositorio.
 
 ## Condiciones de uso
 
@@ -80,4 +104,3 @@ Por prudencia:
 Terminos oficiales:
 
 <https://data.ny.gov/api/views/77gx-ii52/files/ef0c1840-ad54-4240-92fd-6397c49fde46?filename=OPEN-NY_20Terms_20of_20Use.pdf>
-
