@@ -1,0 +1,22 @@
+.DS_Store
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.tmp
+*.partial
+*.duckdb
+*.duckdb.wal
+.env
+*.token
+secrets.*
+
+# Dataset completo y fragmentos masivos
+data/raw/*_full.csv
+data/raw/chunk_*.csv
+data/raw/*.parquet
+
+# Conservar documentacion y manifiestos livianos
+!data/raw/README.md
+!data/raw/source_manifest.json
+

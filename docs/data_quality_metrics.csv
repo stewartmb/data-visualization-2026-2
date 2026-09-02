@@ -1,0 +1,34 @@
+metric,value,percentage_of_sample,scope
+total_rows,10000,1.0,sample
+duplicate_composite_key_rows,0,0.0,sample
+timestamps_outside_2020_2024,0,0.0,sample
+timestamps_not_rounded_to_hour,0,0.0,sample
+invalid_timestamp_type,0,0.0,sample
+invalid_numeric_type,0,0.0,sample
+negative_ridership,0,0.0,sample
+negative_transfers,0,0.0,sample
+transfers_gt_ridership,0,0.0,sample
+zero_ridership,0,0.0,sample
+invalid_coordinates,0,0.0,sample
+missing_transit_timestamp,0,0.0,sample
+missing_transit_mode,0,0.0,sample
+missing_station_complex_id,0,0.0,sample
+missing_station_complex,0,0.0,sample
+missing_borough,0,0.0,sample
+missing_payment_method,0,0.0,sample
+missing_fare_class_category,0,0.0,sample
+missing_ridership,0,0.0,sample
+missing_transfers,0,0.0,sample
+missing_latitude,0,0.0,sample
+missing_longitude,0,0.0,sample
+missing_georeference,0,0.0,sample
+min_timestamp,2020-02-15T08:00:00,,sample
+max_timestamp,2024-11-16T00:00:00,,sample
+min_ridership,1.0,,sample
+max_ridership,2725.0,,sample
+min_transfers,0.0,,sample
+max_transfers,213.0,,sample
+domain_transit_mode,staten_island_railway=600; subway=8800; tram=600,,sample
+domain_borough,Brooklyn=3483; Manhattan=5045; Queens=872; Staten Island=600,,sample
+domain_payment_method,metrocard=8539; omny=1461,,sample
+domain_fare_class_category,Metrocard - Fair Fare=1253; Metrocard - Full Fare=1446; Metrocard - Other=1369; Metrocard - Seniors & Disability=1180; Metrocard - Students=572; Metrocard - Unlimited 30-Day=1354; Metrocard - Unlimited 7-Day=1365; OMNY - Full Fare=1164; OMNY - Other=42; OMNY - Seniors & Disability=201; OMNY - Students=54,,sample

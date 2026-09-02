@@ -1,0 +1,2 @@
+# Los scripts usan exclusivamente la biblioteca estandar de Python 3.10+.
+

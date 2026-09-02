@@ -1,0 +1,14 @@
+{
+  "dataset_id": "wujg-7c2s",
+  "dataset_name": "MTA Subway Hourly Ridership: 2020-2024",
+  "official_record_count": 120855568,
+  "mode": "sample",
+  "source_page": "https://data.ny.gov/Transportation/MTA-Subway-Hourly-Ridership-2020-2024/wujg-7c2s/about_data",
+  "api_endpoint": "https://data.ny.gov/resource/wujg-7c2s.csv",
+  "retrieved_at_utc": "2026-09-02T05:46:14.235438+00:00",
+  "sampling_method": "20 deterministic year-quarter strata, allocated across all 3 transit modes",
+  "rows": 10000,
+  "rows_per_stratum": 500,
+  "sha256": "3c19393d16f049988f6e8d3c8ec2915305f92ac6f0b02e9828afd3ebbf0a0029",
+  "output": "data/sample/mta_subway_hourly_2020_2024_sample.csv"
+}
