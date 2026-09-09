@@ -3,31 +3,13 @@
 **DS5343 Data Visualization · UTEC · Semestre 2026-2**
 Entrega: miércoles 9 de septiembre de 2026
 
-## Equipo
-
-| Integrante | Responsabilidad principal |
-|---|---|
-| Acervo Correa, Renzo Alfonso | Pipeline de datos y agregaciones |
-| Maquera Bobadilla, Diva Stewart | Implementación en D3 y vistas enlazadas |
-| Condori Palomino, José Eduardo | Narrativa, diseño visual y paper |
-
-Las tres personas participan en la formulación de preguntas, la crítica de diseño y la presentación final.
-
-## Título de trabajo
-
-**La forma del día — cómo cambió el ritmo horario del metro de Nueva York, 2020–2024**
-
-La unidad de análisis es el perfil horario semanal de cada complejo de estación: un vector de 168 valores (24 horas × 7 días) que describe su ritmo. Comparar esos perfiles entre sí y a lo largo del tiempo permite responder preguntas que un total agregado no puede.
-
-**Repositorio:** https://github.com/stewartmb/data-visualization-2026-2
-
 ## Contenido de esta entrega
 
 | Archivo | Descripción |
 |---|---|
 | `ProjectProposal.pdf` | Propuesta de 2 páginas: problema, audiencia, dataset, preguntas de dominio y factibilidad |
 | `ProjectProposal.md` | Fuente editable de la propuesta |
-| `PresentationWeek05.pptx` | Presentación de 10 diapositivas con notas del orador |
+| `PresentationWeek05.pptx` | Presentación de 7 diapositivas con notas del orador |
 | `README.md` | Este archivo |
 
 ## Preguntas de dominio
