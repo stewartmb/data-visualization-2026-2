@@ -39,3 +39,9 @@ El mapa conserva la escala continua Viridis original para la distancia TV. El do
 «Filtrar distancia TV» permite definir mínimo y máximo inclusivos en una sola barra con dos extremos ajustables. También se pueden ajustar con las flechas del teclado o pulsar la pista para mover el extremo más cercano. Al soltar un extremo se aplica el rango al grupo compartido, las otras vistas y la exportación. Los puntos fuera del rango no se dibujan como contexto. El rango se guarda en la URL (`tvMin`, `tvMax`) y se restaura al recargar; «Quitar filtro TV» elimina solo este filtro y el restablecimiento general elimina todos. Los límites son puntos porcentuales, no porcentajes de variación de volumen.
 
 `scripts/redesign/check-map-emphasis.cjs` verifica colores continuos, rango inclusivo, contador, restauración desde URL, grupo compartido, colores estables y ancho móvil. `check-map-zoom.cjs` comprueba el tamaño de puntos y bordes durante el zoom.
+
+### Rangos para todas las medidas
+
+El selector de dos extremos también filtra cambio del peso AM, cambio del peso de fin de semana e índice de volumen. Los cambios usan puntos porcentuales y admiten valores negativos; el volumen usa porcentajes. Cada medida conserva su rango por separado y los filtros se combinan por intersección. Las etiquetas «Filtros activos» permiten quitar cada rango, «Quitar este filtro» borra el de la medida visible y el restablecimiento general los elimina todos. Los rangos se guardan en la URL y se aplican al grupo compartido y a la exportación. El color mantiene su dominio completo para el año elegido.
+
+`check-metric-ranges.cjs` verifica los tres rangos nuevos, valores negativos, unidades, combinaciones, restauración desde URL, limpieza individual/general, teclado y vista móvil.

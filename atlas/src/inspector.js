@@ -1,4 +1,4 @@
-import {state,esc,fmt,signed,profile,measures,hellinger,deltaColor,shareColor,cellValue,showTooltip,hideTooltip,dayShort,relevantEvents} from './model.js?v=20261014-7';
+import {state,esc,fmt,signed,profile,measures,hellinger,deltaColor,shareColor,cellValue,showTooltip,hideTooltip,dayShort,relevantEvents} from './model.js?v=20261014-9';
 
 export function renderInspector(app){
   const host=document.querySelector('#inspector'),s=app.station(state.selected);

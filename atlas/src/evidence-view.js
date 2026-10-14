@@ -1,4 +1,4 @@
-import {state,esc,fmt,signed,profile,metricValue,cohortProfile,heading} from './model.js?v=20261014-7';
+import {state,esc,fmt,signed,profile,metricValue,cohortProfile,heading} from './model.js?v=20261014-9';
 export function renderEvidence(host,app,items){
   const lower=items.filter(s=>metricValue(s,'deltaAM')<0).length,higher=items.filter(s=>metricValue(s,'deltaWeekend')>0).length;
   const a=cohortProfile(items,2020),b=cohortProfile(items,state.year),saved=app.saved();

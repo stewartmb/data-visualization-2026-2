@@ -1,13 +1,18 @@
-import {state,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats} from './model.js?v=20261014-7';
+import {state,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats,passesMetricRanges} from './model.js?v=20261014-9';
 let transform=d3.zoomIdentity;
 const names={change:'Cambio de forma · distancia TV (pp)',deltaAM:'Cambio del peso AM · puntos porcentuales',deltaWeekend:'Cambio del peso de fin de semana · puntos porcentuales',recovery:'Índice de volumen · 2020 = 100 %'};
 
 export function renderMap(host,app,items){
-  const rangeLimit=Math.max(Math.ceil(d3.max(app.data.stations.filter(s=>profile(s)),s=>metricValue(s,'change'))||1),state.tvMin,state.tvMax<100?state.tvMax:0),upper=Math.min(state.tvMax,rangeLimit);
+  const metric=state.mapMetric,unit=metric==='recovery'?'%':'pp',title={change:'distancia TV',deltaAM:'cambio del peso AM',deltaWeekend:'cambio del peso de fin de semana',recovery:'índice de volumen'}[metric];
+  const values=app.data.stations.filter(s=>profile(s)).map(s=>metricValue(s,metric));
+  const activeRange=metric==='change'?(state.tvMin>0||state.tvMax<100?[state.tvMin,state.tvMax<100?state.tvMax:Math.max(state.tvMin,Math.ceil(d3.max(values)))]:null):state.ranges[metric];
+  const rangeStart=Math.min(0,Math.floor(d3.min(values)),activeRange?.[0]??0),rangeLimit=Math.max(1,Math.ceil(d3.max(values)),activeRange?.[1]??0);
+  const lowerValue=activeRange?.[0]??rangeStart,upper=activeRange?.[1]??rangeLimit;
+  const filters=[...(state.tvMin>0||state.tvMax<100?[['change',`TV: ${fmt(state.tvMin)}–${state.tvMax===100?'sin límite':fmt(state.tvMax)} pp`]]:[]),...Object.entries(state.ranges).filter(([,r])=>r).map(([k,r])=>[k,`${{deltaAM:'AM',deltaWeekend:'Fin de semana',recovery:'Volumen'}[k]}: ${fmt(r[0])}–${fmt(r[1])} ${k==='recovery'?'%':'pp'}`])];
 
   host.innerHTML=heading('02 / SITUAR EL CAMBIO','El ritmo también tiene geografía.','Localiza los patrones del atlas. Una estación puede recuperar volumen y, aun así, distribuir sus entradas en horarios distintos.','T2 · T3 · T4')+`
   <div class="toolbar"><label>Color<select id="map-metric">${Object.entries(names).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label><span class="spacer" style="font-size:10px;color:var(--muted)">Clic: investigar · rueda: acercar · arrastrar: mover</span></div>
-  ${state.mapMetric==='change'?`<div class="map-emphasis"><b>Filtrar distancia TV</b><div class="tv-range-control"><div class="tv-range-values"><span>Mínimo: <output id="map-min-output">${fmt(state.tvMin)} pp</output></span><span>Máximo: <output id="map-max-output">${fmt(upper)} pp</output></span></div><div class="dual-range" role="group" aria-label="Rango de distancia TV"><div class="dual-range-track"></div><div class="dual-range-selected"></div><input id="map-min-tv" type="range" min="0" max="${rangeLimit}" step="0.5" value="${Math.min(state.tvMin,rangeLimit)}" aria-label="Distancia TV mínima"><input id="map-max-tv" type="range" min="0" max="${rangeLimit}" step="0.5" value="${upper}" aria-label="Distancia TV máxima"></div></div><button id="map-range-reset" class="text-button">Quitar filtro TV</button><span>${items.length} estaciones en el grupo</span><small>Se aplica al soltar la barra. Solo se muestran estaciones dentro del rango; el filtro se conserva en las otras vistas.</small></div>`:''}
+  <div class="map-emphasis"><b>Filtrar ${title}</b><div class="tv-range-control"><div class="tv-range-values"><span>Mínimo: <output id="map-min-output">${fmt(lowerValue)} ${unit}</output></span><span>Máximo: <output id="map-max-output">${fmt(upper)} ${unit}</output></span></div><div class="dual-range" role="group" aria-label="Rango de ${title}"><div class="dual-range-track"></div><div class="dual-range-selected"></div><input id="map-min-tv" type="range" min="${rangeStart}" max="${rangeLimit}" step="0.5" value="${lowerValue}" aria-label="Mínimo de ${title}"><input id="map-max-tv" type="range" min="${rangeStart}" max="${rangeLimit}" step="0.5" value="${upper}" aria-label="Máximo de ${title}"></div></div><button id="map-range-reset" class="text-button">Quitar este filtro</button><span>${items.length} estaciones en el grupo</span><small>Se aplica al soltar la barra. Solo se muestran estaciones dentro del rango; el filtro se conserva en las otras vistas.</small>${filters.length?`<div class="metric-filter-chips">Filtros activos: ${filters.map(([key,label])=>`<button data-clear-metric="${key}" title="Quitar este filtro">${esc(label)} ×</button>`).join('')}</div>`:''}</div>
   <div class="viz-card"><div class="map-control"><button id="map-select">Seleccionar área</button><button id="map-center">Centrar ↺</button></div><svg class="map-svg" role="img" aria-label="Mapa de complejos de estación en los boroughs de Nueva York"></svg><div class="map-credit">Contornos: NYC Department of City Planning · catálogo MTA actual</div><div class="chart-note"><span id="map-key"></span><span>Todos los puntos tienen igual tamaño; solo el color codifica el cambio.</span></div></div>${stats(items)}
   <div class="narrative"><b>Una selección, cuatro lentes</b><span>El grupo definido aquí se conserva en el atlas, las trayectorias y la tabla de evidencia. Los filtros identifican asociaciones espaciales; no explican sus causas.</span></div>`;
   const select=host.querySelector('#map-metric');select.value=state.mapMetric;select.onchange=()=>app.set({mapMetric:select.value});
@@ -20,32 +25,34 @@ export function renderMap(host,app,items){
   const labels=[['MANHATTAN',-74.003,40.789],['BROOKLYN',-73.987,40.635],['QUEENS',-73.817,40.740],['BRONX',-73.854,40.870],['STATEN ISLAND',-74.151,40.586]];
   g.selectAll('.borough-name').data(labels).join('text').attr('class','borough-name').attr('x',d=>projection(d.slice(1))[0]).attr('y',d=>projection(d.slice(1))[1]).attr('text-anchor','middle').text(d=>d[0]);
   const ids=new Set(items.map(s=>s.id)),color=metricColor(state.mapMetric,app.data.stations.filter(s=>profile(s)));
-  g.selectAll('.context-point').data(app.data.stations.filter(s=>!ids.has(s.id)&&profile(s)&&metricValue(s,'change')>=state.tvMin&&metricValue(s,'change')<=state.tvMax)).join('circle').attr('class','context-point').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',1.6).attr('fill','#b8c7c1').attr('opacity',.45);
+  g.selectAll('.context-point').data(app.data.stations.filter(s=>!ids.has(s.id)&&profile(s)&&passesMetricRanges(s))).join('circle').attr('class','context-point').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',1.6).attr('fill','#b8c7c1').attr('opacity',.45);
   const points=g.selectAll('.map-dot').data(items).join('circle').attr('class','map-dot').attr('vector-effect','non-scaling-stroke').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',4.1).attr('fill',s=>color(metricValue(s,state.mapMetric)))
     .on('pointerenter',(e,s)=>showTooltip(`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${names[state.mapMetric]}: ${fmt(metricValue(s,state.mapMetric))}<br><small>Clic para abrir huella y evidencia</small>`,e)).on('pointermove',(e,s)=>showTooltip(`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${names[state.mapMetric]}: ${fmt(metricValue(s,state.mapMetric))}`,e)).on('pointerleave',hideTooltip).on('click',(e,s)=>{e.stopPropagation();e.shiftKey?app.pin(s.id):app.select(s.id);});
   // Draw larger changes last so low values cannot cover them in dense areas.
   points.sort((a,b)=>Math.abs(metricValue(a,state.mapMetric))-Math.abs(metricValue(b,state.mapMetric)));
-  if(state.mapMetric==='change'){
+  {
     const lower=host.querySelector('#map-min-tv'),higher=host.querySelector('#map-max-tv');
     lower.oninput=()=>{if(+lower.value>+higher.value)lower.value=higher.value;preview();};
     higher.oninput=()=>{if(+higher.value<+lower.value)higher.value=lower.value;preview();};
     function preview(){
-      host.querySelector('#map-min-output').textContent=`${fmt(+lower.value)} pp`;host.querySelector('#map-max-output').textContent=`${fmt(+higher.value)} pp`;
-      const track=host.querySelector('.dual-range-selected');track.style.left=`${100*lower.value/rangeLimit}%`;track.style.width=`${100*(higher.value-lower.value)/rangeLimit}%`;
+      host.querySelector('#map-min-output').textContent=`${fmt(+lower.value)} ${unit}`;host.querySelector('#map-max-output').textContent=`${fmt(+higher.value)} ${unit}`;
+      const track=host.querySelector('.dual-range-selected');track.style.left=`${100*(lower.value-rangeStart)/(rangeLimit-rangeStart)}%`;track.style.width=`${100*(higher.value-lower.value)/(rangeLimit-rangeStart)}%`;
       lower.setAttribute('aria-valuemax',higher.value);higher.setAttribute('aria-valuemin',lower.value);
-      lower.setAttribute('aria-valuetext',`${fmt(+lower.value)} puntos porcentuales`);higher.setAttribute('aria-valuetext',`${fmt(+higher.value)} puntos porcentuales`);
+      lower.setAttribute('aria-valuetext',`${fmt(+lower.value)} ${unit}`);higher.setAttribute('aria-valuetext',`${fmt(+higher.value)} ${unit}`);
       lower.style.zIndex=+lower.value===rangeLimit?'4':'2';
     }
     preview();
     host.querySelector('.dual-range').addEventListener('pointerdown',e=>{
       if(e.target.tagName==='INPUT')return;
-      const rect=e.currentTarget.getBoundingClientRect(),value=Math.max(0,Math.min(rangeLimit,Math.round((e.clientX-rect.left)/rect.width*rangeLimit*2)/2));
+      const rect=e.currentTarget.getBoundingClientRect(),value=Math.max(rangeStart,Math.min(rangeLimit,Math.round((rangeStart+(e.clientX-rect.left)/rect.width*(rangeLimit-rangeStart))*2)/2));
       const handle=Math.abs(value-lower.value)<Math.abs(value-higher.value)?lower:higher;
       handle.value=value;handle.dispatchEvent(new Event('input'));handle.focus();handle.dispatchEvent(new Event('change'));
     });
-    const apply=()=>app.set({tvMin:+lower.value,tvMax:+higher.value===rangeLimit?100:+higher.value});
-    lower.onchange=apply;higher.onchange=apply;host.querySelector('#map-range-reset').onclick=()=>app.set({tvMin:0,tvMax:100});
+    const apply=()=>metric==='change'?app.set({tvMin:+lower.value,tvMax:+higher.value===rangeLimit?100:+higher.value}):app.set({ranges:{...state.ranges,[metric]:+lower.value===rangeStart&&+higher.value===rangeLimit?null:[+lower.value,+higher.value]}});
+    lower.onchange=apply;higher.onchange=apply;host.querySelector('#map-range-reset').onclick=()=>clear(metric);
   }
+  function clear(key){if(key==='change')app.set({tvMin:0,tvMax:100});else app.set({ranges:{...state.ranges,[key]:null}});}
+  host.querySelectorAll('[data-clear-metric]').forEach(b=>b.onclick=()=>clear(b.dataset.clearMetric));
   const active=app.data.stations.filter(s=>s.id===state.selected||state.pins.includes(s.id));
   const rings=g.selectAll('.selected-ring').data(active).join('circle').attr('class','selected-ring').attr('vector-effect','non-scaling-stroke').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',7).attr('fill','none').attr('stroke',s=>s.id===state.selected?'#102937':'#c96035').attr('stroke-width',2).style('pointer-events','none');
   const selected=app.station(state.selected);

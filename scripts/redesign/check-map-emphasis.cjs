@@ -8,5 +8,5 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
  const stable=await p.evaluate(()=>[...document.querySelectorAll('.map-dot')].every(c=>c.getAttribute('fill')===d3.interpolateViridis(c.__data__.change/26.40415)));assert.ok(stable);
  await p.locator('[data-view="atlas"]').click();assert.equal(await p.locator('#station-picker option').count(),7);
  await p.locator('[data-view="map"]').click();await p.locator('#map-range-reset').click();assert.equal(await p.locator('.map-dot').count(),424);
- await p.selectOption('#map-metric','deltaAM');assert.equal(await p.locator('#map-min-tv').count(),0);assert.equal(await p.locator('.map-dot').count(),424);
+ await p.selectOption('#map-metric','deltaAM');assert.equal(await p.locator('#map-min-tv').count(),1);assert.equal(await p.locator('.map-dot').count(),424);
  await p.selectOption('#map-metric','change');await p.setViewportSize({width:390,height:844});await p.waitForTimeout(350);assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.deepEqual(errors,[]);console.log(JSON.stringify({status:'PASS',continuousColors:initial.colors.length,range15to20:6,errors}));await b.close();})().catch(e=>{console.error(e);process.exit(1)});

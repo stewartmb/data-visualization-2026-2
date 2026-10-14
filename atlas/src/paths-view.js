@@ -1,4 +1,4 @@
-import {state,esc,fmt,profile,cohortProfile,showTooltip,hideTooltip,heading,stats} from './model.js?v=20261014-7';
+import {state,esc,fmt,profile,cohortProfile,showTooltip,hideTooltip,heading,stats} from './model.js?v=20261014-9';
 
 export function renderPaths(host,app,items){
   host.innerHTML=heading('03 / SEGUIR TRAYECTORIAS','La recuperación no sigue una sola dirección.','Sigue dos cambios del ritmo a la vez: el peso de la mañana laborable y el del fin de semana. Cada punto fechado representa enero–febrero de ese año.','T1 · T4 · T5')+`

@@ -1,4 +1,4 @@
-export const state = {view:'atlas',year:2024,borough:'all',query:'',preset:null,cohort:null,selected:null,pins:[],mode:'delta',sort:'change',day:'all',detail:false,mapMetric:'change',tvMin:0,tvMax:100,inspectorTab:'fingerprint',clock:true,pathsFocus:true};
+export const state = {view:'atlas',year:2024,borough:'all',query:'',preset:null,cohort:null,selected:null,pins:[],mode:'delta',sort:'change',day:'all',detail:false,mapMetric:'change',tvMin:0,tvMax:100,ranges:{deltaAM:null,deltaWeekend:null,recovery:null},inspectorTab:'fingerprint',clock:true,pathsFocus:true};
 export const dayShort=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 export const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const number = new Intl.NumberFormat('es-PE',{maximumFractionDigits:1});
@@ -50,4 +50,9 @@ export function stats(stations){
   const am=d3.median(stations,s=>metricValue(s,'deltaAM'));
   const rec=d3.median(stations,s=>metricValue(s,'recovery'));
   return `<div class="stats-strip"><div class="stat"><strong>${stations.length}</strong><span>complejos en el grupo</span></div><div class="stat"><strong>${fmt(change)} pp</strong><span>mediana del cambio de forma</span></div><div class="stat"><strong>${signed(am)} pp</strong><span>mediana del cambio AM</span></div><div class="stat"><strong>${fmt(rec)} %</strong><span>mediana del índice de volumen</span></div></div>`;
+}
+
+export function passesMetricRanges(s){
+  const m=measures(s);if(!m||m.change<state.tvMin||m.change>state.tvMax)return false;
+  return Object.entries(state.ranges).every(([key,range])=>!range||(m[key]>=range[0]&&m[key]<=range[1]));
 }
