@@ -63,7 +63,7 @@ El archivo completo se guarda en `data/raw/mta_subway_hourly_2020_2024_full.csv`
 
 ### Registro de adquisición y validaciones
 
-La muestra entregada se obtuvo el **2026-09-02 a las 05:46:14 UTC**, desde `https://data.ny.gov/resource/wujg-7c2s.csv`. Contiene 10,000 filas, distribuidas en 20 estratos de 500 filas. El universo oficial de referencia es de 120,855,568 registros; no corresponde al tamaño de la muestra.
+La muestra entregada se obtuvo el **2026-09-02 a las 05:46:14 UTC**, desde `https://data.ny.gov/resource/wujg-7c2s.csv`. Contiene 10,000 filas, distribuidas en 20 estratos de 500 filas. La muestra no corresponde al tamaño del universo completo.
 
 Se ejecutó la adquisición de la muestra dos veces y se verificó que produjo archivos idénticos. El modo completo se probó mediante una descarga controlada del primer MiB y la comprobación del encabezado, no mediante la descarga de todo el universo.
 

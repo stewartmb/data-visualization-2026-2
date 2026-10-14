@@ -28,7 +28,7 @@ Un uso concreto: filtrar las estaciones cuyo pico matutino cayó más que el de 
 
 ### 1.3 Dataset
 
-MTA Subway Hourly Ridership: 2020–2024 (`wujg-7c2s`, portal Open NY del Estado de Nueva York). 120 855 568 registros, granularidad horaria, cinco boroughs y tres modos.
+MTA Subway Hourly Ridership: 2020–2024 (`wujg-7c2s`, portal Open NY del Estado de Nueva York). Granularidad horaria, cinco boroughs y tres modos.
 
 Los datos provienen de torniquetes: *swipes* de MetroCard y *taps* de OMNY, estos últimos provistos por Cubic. La MTA limpia, deduplica y retira transacciones de agencias asociadas antes de publicar; declara que sus cifras quedan dentro del 1 % de las que reporta públicamente.
 

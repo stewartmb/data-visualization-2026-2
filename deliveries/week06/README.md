@@ -7,7 +7,7 @@
 Semana 6 · Análisis de datos y bocetos
 DS5343 Data Visualization · UTEC · 2026-2
 
-`428 estaciones` · `1 827 días` · `120 855 568 registros` · `6 tablas agregadas`
+`428 estaciones` · `1 827 días` · `6 tablas agregadas`
 
 Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino
 

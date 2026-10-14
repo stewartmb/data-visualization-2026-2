@@ -109,7 +109,7 @@ python3 scripts/redesign/acquire_context.py
 python3 scripts/redesign/build_atlas.py
 ```
 
-Se usan 45 ventanas de hasta siete días, tres solicitudes simultáneas, reintentos y caché en `work/redesign-cache/`. No requiere token y no descarga el universo de 120 millones de filas. Si se quiere forzar una adquisición nueva, retirar la caché y los snapshots de contexto después de conservar la versión que se desea comparar. Una consulta futura puede producir otra versión del histórico; revisar hashes y auditoría antes de sustituir resultados.
+Se usan 45 ventanas de hasta siete días, tres solicitudes simultáneas, reintentos y caché en `work/redesign-cache/`. No requiere token y no descarga el dataset completo. Si se quiere forzar una adquisición nueva, retirar la caché y los snapshots de contexto después de conservar la versión que se desea comparar. Una consulta futura puede producir otra versión del histórico; revisar hashes y auditoría antes de sustituir resultados.
 
 ## Límites que deben acompañar los hallazgos
 

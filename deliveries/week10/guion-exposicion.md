@@ -18,7 +18,7 @@
 >
 > La audiencia son los planificadores de servicio de la MTA, y la decisión que queremos apoyar es dónde reasignar frecuencia.
 >
-> Son 428 estaciones, 60 meses, 120 millones de registros. Todo se agregó del lado del servidor con la API de Socrata; el navegador carga 1.4 MB.
+> Son 428 estaciones, 60 meses, 168 horas por estación. Todo se agregó del lado del servidor con la API de Socrata; el navegador carga 1.4 MB.
 
 ---
 

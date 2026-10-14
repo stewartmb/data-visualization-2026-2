@@ -36,7 +36,7 @@ Como audiencia secundaria vemos a periodistas de transporte y gobiernos locales.
 
 ## 4. Dataset
 
-**Fuente.** MTA Subway Hourly Ridership: 2020–2024, publicado por la Metropolitan Transportation Authority en el portal Open NY del Estado de Nueva York. Identificador Socrata `wujg-7c2s`. Son 120,855,568 registros con granularidad horaria, de 2020 a 2024, para los cinco boroughs y tres modos: metro, Staten Island Railway y el tranvía de Roosevelt Island.
+**Fuente.** MTA Subway Hourly Ridership: 2020–2024, publicado por la Metropolitan Transportation Authority en el portal Open NY del Estado de Nueva York. Identificador Socrata `wujg-7c2s`. Son registros con granularidad horaria, de 2020 a 2024, para los cinco boroughs y tres modos: metro, Staten Island Railway y el tranvía de Roosevelt Island.
 
 **Colector y método de recolección.** La MTA registra las entradas al sistema en los torniquetes: swipes de MetroCard y taps de OMNY, estos últimos provistos por Cubic. Antes de publicar limpia y deduplica las transacciones y saca las de agencias asociadas. Son estimaciones, no un conteo exacto; la MTA declara que quedan dentro del 1% de las cifras que reporta públicamente.
 

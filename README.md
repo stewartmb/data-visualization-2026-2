@@ -58,7 +58,7 @@ La [metodología](redesign/03-datos-y-metodos.md) explica las fuentes públicas,
 
 ## Datos y reproducción
 
-La fuente principal es [MTA Subway Hourly Ridership: 2020–2024](https://data.ny.gov/d/wujg-7c2s), vía Open NY / Socrata. Los 120 855 568 registros del dataset original abarcan varios modos; el atlas restringe la consulta a subway y temporadas comparables.
+La fuente principal es [MTA Subway Hourly Ridership: 2020–2024](https://data.ny.gov/d/wujg-7c2s), vía Open NY / Socrata. El dataset original abarca varios modos; el atlas restringe la consulta a subway y temporadas comparables.
 
 Se incorporan el [catálogo oficial de complejos MTA](https://data.ny.gov/d/5f5g-n3cz) —unión exacta en 424/424— y los [contornos de boroughs de NYC DCP](https://data.cityofnewyork.us/d/gthc-hcne). Los catálogos actuales dan contexto y no reconstruyen oferta histórica.
 
