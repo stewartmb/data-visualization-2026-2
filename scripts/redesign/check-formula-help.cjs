@@ -1,0 +1,10 @@
+const {chromium}=require('playwright');const assert=require('node:assert/strict');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1440,height:1000}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto('http://127.0.0.1:8765/atlas/?view=map');await p.waitForSelector('#metric-formula-trigger');
+ for(const [metric,formula,example] of [['change','TV = ½','26,4 pp'],['deltaAM','ΔAM =','−8 pp'],['deltaWeekend','ΔFS =','+5 pp'],['recovery','Índice =','70 %']]){
+  await p.selectOption('#map-metric',metric);await p.locator('#metric-formula-trigger').hover();assert.equal(await p.locator('#metric-formula-panel').isVisible(),true);assert.ok((await p.locator('#metric-formula-panel').innerText()).includes(formula));assert.ok((await p.locator('#metric-formula-panel').innerText()).includes(example));assert.match(await p.locator('#metric-formula-panel').innerText(),/enero–febrero/);
+  await p.locator('#metric-formula-trigger').focus();await p.keyboard.press('Escape');assert.equal(await p.locator('#metric-formula-panel').isVisible(),false);
+  await p.locator('#map-min-tv').focus();await p.locator('#metric-formula-trigger').focus();assert.equal(await p.locator('#metric-formula-panel').isVisible(),true);
+  await p.locator('#metric-formula-trigger').click();await p.locator('.context-bar').hover();assert.equal(await p.locator('#metric-formula-panel').isVisible(),true);await p.locator('#map-min-tv').focus();await p.keyboard.press('ArrowRight');
+ }
+ await p.selectOption('#map-metric','deltaAM');await p.locator('#metric-formula-trigger').hover();await p.locator('.metric-formula-panel').screenshot({path:'work/formula-help.png'});
+ await p.setViewportSize({width:390,height:844});await p.waitForTimeout(350);await p.locator('#metric-formula-trigger').click();await p.locator('#metric-formula-trigger').click();assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.deepEqual(errors,[]);console.log(JSON.stringify({status:'PASS',formulas:4,hover:true,keyboard:true,click:true,errors}));await b.close();})().catch(e=>{console.error(e);process.exit(1)});

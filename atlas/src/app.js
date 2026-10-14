@@ -1,6 +1,6 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges} from './model.js?v=20261014-9';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=20261014-9';
+import {renderMap} from './map-view.js?v=20261014-10';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=20261014-9';
 import {renderInspector} from './inspector.js?v=20261014-9';

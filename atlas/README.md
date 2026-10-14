@@ -45,3 +45,7 @@ El mapa conserva la escala continua Viridis original para la distancia TV. El do
 El selector de dos extremos también filtra cambio del peso AM, cambio del peso de fin de semana e índice de volumen. Los cambios usan puntos porcentuales y admiten valores negativos; el volumen usa porcentajes. Cada medida conserva su rango por separado y los filtros se combinan por intersección. Las etiquetas «Filtros activos» permiten quitar cada rango, «Quitar este filtro» borra el de la medida visible y el restablecimiento general los elimina todos. Los rangos se guardan en la URL y se aplican al grupo compartido y a la exportación. El color mantiene su dominio completo para el año elegido.
 
 `check-metric-ranges.cjs` verifica los tres rangos nuevos, valores negativos, unidades, combinaciones, restauración desde URL, limpieza individual/general, teclado y vista móvil.
+
+### Fórmulas junto a los filtros
+
+El nombre del filtro abre una ayuda al pasar el cursor o recibir foco con el teclado. Un clic la mantiene abierta; otro clic o Escape la cierra. Cada medida incluye fórmula, variables, unidad, interpretación y ejemplo, con la normalización por calendario y el período de comparación. La ayuda es específica de TV, peso AM, peso del fin de semana o volumen. `check-formula-help.cjs` comprueba las cuatro fórmulas, cursor, teclado, clic y ancho móvil.
