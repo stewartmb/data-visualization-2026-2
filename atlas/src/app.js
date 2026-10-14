@@ -17,7 +17,7 @@ function hydrate(){
   if(['morning','weekend','change','decoupled'].includes(p.get('preset')))state.preset=p.get('preset');
   if(p.has('cohort'))state.cohort=new Set(p.get('cohort')?p.get('cohort').split(','):[]);
   if(p.get('pins'))state.pins=p.get('pins').split(',').slice(0,3);
-  for(const [key,allowed] of Object.entries({mode:['delta','current','base'],sort:['change','similar','borough','morning','volume'],day:['all','0','1','2','3','4','5','6'],mapMetric:['change','deltaAM','deltaWeekend','recovery'],inspectorTab:['fingerprint','compare','evolution','source']}))if(allowed.includes(p.get(key)))state[key]=p.get(key);
+  for(const [key,allowed] of Object.entries({mode:['delta','current','base'],sort:['change','similar','borough','morning','morningUp','afternoon','night','weekend','volume','volumeDown'],day:['all','0','1','2','3','4','5','6'],mapMetric:['change','deltaAM','deltaWeekend','recovery'],inspectorTab:['fingerprint','compare','evolution','source']}))if(allowed.includes(p.get(key)))state[key]=p.get(key);
   for(const key of ['detail','clock','pathsFocus'])if(p.has(key))state[key]=p.get(key)==='true';
 }
 function updateURL(){
@@ -48,7 +48,7 @@ const app={
       return true;
     });
   },
-  set(patch){Object.assign(state,patch);render();},
+  set(patch){if(['mode','sort','day','year'].some(k=>k in patch&&patch[k]!==state[k])){const scroller=document.querySelector('.matrix-scroll');if(scroller)scroller.scrollTop=0;}Object.assign(state,patch);render();},
   select(id){state.selected=id;render();},
   pin(id){
     if(state.pins.includes(id))state.pins=state.pins.filter(x=>x!==id);

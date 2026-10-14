@@ -15,3 +15,13 @@ Leer [la propuesta completa](../redesign/README.md), [las tareas](../redesign/01
 La aplicación se puede servir en cualquier hosting estático con `/atlas/` como entrada, manteniendo las rutas relativas del repositorio para los documentos. Esta rama no activa ni cambia despliegues de `main`.
 
 Código de visualización propio con D3 v7.9.0 (Mike Bostock; [licencia ISC](lib/LICENSE.d3)). Datos externos atribuidos en la interfaz y metodología. Desarrollo asistido por IA; evaluación con personas pendiente.
+
+### Ordenamiento del atlas
+
+El orden corresponde al modo y al período visible. En un año aislado se ordena por peso horario (mañana 06–10, tarde 16–20, noche 20–24), peso del fin de semana, volumen diario o semejanza de perfiles. Mañana, tarde y noche usan como denominador todas las entradas de lunes a viernes cuando se muestra la semana, o todas las entradas del día elegido. El fin de semana solo está disponible con semana completa.
+
+En Cambio se ordena por redistribución horaria, caída/aumento del peso de la mañana, índice de volumen (2020=100) o semejanza entre vectores de diferencias. Al elegir un día, los cálculos se restringen a ese día. La redistribución conserva el denominador semanal para ser coherente con el color de las celdas; la similitud de perfiles de un año se normaliza dentro del período visible. Distrito y nombre está disponible en ambos modos. La similitud exige una estación seleccionada.
+
+La explicación sobre la matriz indica dirección, período, unidad y denominador. En Leer estaciones, cada fila muestra posición y valor del criterio; también están disponibles al pasar el cursor sobre el nombre. Cambiar año, modo, día o criterio vuelve al principio de la lista.
+
+Validación específica: `scripts/redesign/check-ordering.cjs` (Playwright). Se comprobaron 68 combinaciones numéricas y la interacción real de los controles, restauración de URL, desplazamiento y ancho móvil de 390 px, sin errores de JavaScript.
