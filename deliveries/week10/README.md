@@ -2,13 +2,15 @@
 
 **DS5343 Data Visualization · UTEC · 2026-2** · entrega del 14 de octubre de 2026
 
-Prototipo en D3.js de *La forma del día*. Cuatro vistas enlazadas sobre 428 complejos de estación del metro de Nueva York, 2020–2024.
+Prototipo en D3.js de *La forma del día*: una aplicación de tres vistas — Matriz, Recorrido y Mapa — sobre los 428 complejos de estación del metro de Nueva York, 2020–2024.
 
-![El prototipo](capturas/prototipo.png)
+![Matriz](capturas/01-matriz-forma.png)
 
-Un brush sobre la dispersión filtra el mapa y los perfiles. Acá quedan seleccionadas 161 de las 428 estaciones, el 55 % de las entradas del sistema:
+![Qué cambió](capturas/02-matriz-cambio.png)
 
-![Estado filtrado](capturas/filtrado.png)
+![Recorrido](capturas/09-bronx.png)
+
+![Mapa](capturas/12-mapa.png)
 
 ---
 
@@ -19,107 +21,89 @@ Un brush sobre la dispersión filtra el mapa y los perfiles. Acá quedan selecci
 | [`PrototypeReport.md`](PrototypeReport.md) | funcionalidades, decisiones de diseño, limitaciones y preguntas para los revisores |
 | `PresentationWeek10.pptx` | presentación del design review |
 | [`prototype/`](prototype/) | código fuente completo del prototipo |
-| [`prototype/data/app.json`](prototype/data/app.json) | datos procesados que consume la aplicación (1.4 MB) |
-| [`code/build_app_json.py`](code/build_app_json.py) | script que reconstruye `app.json` desde los CSV de la Semana 6 |
+| [`prototype/data/model.json`](prototype/data/model.json) · [`geo.json`](prototype/data/geo.json) | datos procesados que consume la aplicación (1.6 MB + 77 KB) |
+| [`code/build_model.py`](code/build_model.py) | construye `model.json` desde las tablas de la Semana 6: 3 s, sin dependencias |
+| [`code/build_geo.py`](code/build_geo.py) | construye `geo.json` desde GeoJSON de NYC y el GTFS de la MTA |
+| [`code/datos_nuevos.ipynb`](code/datos_nuevos.ipynb) | notebook de Colab con las tres pasadas pendientes (ventana comparable del perfil, perfiles por mes, capa del Census) |
 | [`guion-exposicion.md`](guion-exposicion.md) | guion del design review, cronometrado a 5 minutos |
 | [`capturas/`](capturas/) | capturas del prototipo corriendo |
 
 ```
 prototype/
-├── index.html
+├── index.html                 la aplicación: tres vistas + panel de evidencia + clave visual
 ├── src/
-│   ├── styles.css
-│   ├── main.js              punto de entrada, tooltip y barra de estado
-│   ├── estado.js            estado compartido entre las cuatro vistas
-│   ├── vista-mapa.js        A · mapa de estaciones
-│   ├── vista-perfiles.js    B · perfiles semanales
-│   ├── vista-serie.js       C · serie temporal
-│   └── vista-dispersion.js  D · dispersión pico/valle
-├── lib/d3.min.js            D3 v7.9.0
-└── data/app.json
+│   ├── tokens.css             sistema de diseño: colores por rol, tipografía; modo oscuro
+│   ├── estilos.css
+│   ├── main.js                carga datos, monta las tres vistas y el panel
+│   ├── capitulos.js           los siete capítulos: pregunta, hallazgo, marcas, gráfico, notas, preset
+│   ├── estado.js              estado compartido de las vistas
+│   ├── panel-estacion.js      panel de evidencia de una estación
+│   ├── util.js
+│   └── graficos/              matriz · cinta · reloj · semana · tiras · pendiente · cortes · perfil · serie · mapa · dispersion · multiples · tarifas
+├── data/model.json · geo.json
+└── lib/d3.min.js              D3 v7.9.0
 ```
 
 ---
 
 ## Ejecución
 
-No hay que instalar nada ni compilar nada. Sí hace falta un servidor HTTP: el prototipo usa módulos ES y `fetch`, y ninguno de los dos funciona abriendo el archivo con doble clic (`file://`).
+No hay que instalar ni compilar nada. Hace falta un servidor HTTP porque usa módulos ES y `fetch`:
 
 ```bash
 cd deliveries/week10/prototype
 python3 -m http.server 8000
 ```
 
-Abrir <http://localhost:8000>.
+Abrir <http://localhost:8000>. Cualquier servidor estático sirve (`npx serve .`, `php -S localhost:8000`).
 
-Cualquier servidor estático sirve igual:
+Pensado para 1 280 px o más de ancho; funciona en modo oscuro.
 
-```bash
-npx serve .          # Node
-php -S localhost:8000
-```
-
-Probado en Chrome, Firefox y Safari recientes. Pensado para una ventana de 1400 px o más de ancho; por debajo de 980 px las vistas se apilan en una columna.
+**Teclado:** `←` `→` entre capítulos (en Recorrido) · `Esc` cierra el panel y la clave visual.
 
 ---
 
 ## Cómo se lee
 
-| | |
-|---|---|
-| **A · Mapa** | color = recuperación 2024 frente a enero–febrero 2020 · tamaño = entradas/día |
-| **B · Perfiles** | 168 valores (24 h × 7 días) por estación, divididos por su total semanal · área gris = ene–feb 2020 · línea azul = 2024 |
-| **C · Serie** | entradas mensuales del sistema, con línea de referencia en el nivel de enero 2020 |
-| **D · Dispersión** | razón pico/valle antes (x) contra después (y) · bajo la diagonal = el pico se aplanó |
+**Matriz** (vista base): las 428 estaciones como filas, agrupadas por borough, contra las 168 horas de la semana o los 60 meses. Tres lentes: forma del día 2024, qué cambió 2020 → 2024, mes a mes. Debajo, sincronizadas, la forma del sistema y dónde se movió el día (o las entradas y la composición tarifaria). Pasar el mouse muestra la estación y el valor; clic abre su evidencia; clic en un borough lo aísla. Los ocho hallazgos van abajo como chips; clic abre su capítulo.
 
-Interacciones: clic en cualquier estación para resaltarla en las tres vistas · arrastrar en **D** para filtrar · arrastrar en **C** para cambiar el período del canal de tamaño del mapa · doble clic para limpiar · rueda y arrastre para zoom en el mapa.
+**Recorrido**: siete capítulos como botones, con Play. A la izquierda, un panel angosto con la pregunta, el hallazgo y qué significa cada marca; el resto es el gráfico. Las notas (*cómo se mide*, *qué no demuestra*) se abren con un botón; otro abre el mapa ya configurado.
+
+**Mapa**: las 428 estaciones a pantalla completa con cinco lentes; *forma del día* dibuja cada estación como un reloj de 24 h. Filtros por borough, tipo y confiabilidad. Clic en una estación → su panel de evidencia. La selección sobrevive al cambiar de vista.
+
+El botón **"Qué significa cada marca"** de la barra abre la clave visual.
 
 ---
 
 ## Regenerar los datos
 
-`app.json` ya está en el repositorio, así que esto solo hace falta si cambian las tablas agregadas.
-
 ```bash
-python3 deliveries/week10/code/build_app_json.py \
-        deliveries/week06/data/processed \
-        deliveries/week10/prototype/data/app.json
+python3 deliveries/week10/code/build_model.py deliveries/week06/data/processed deliveries/week10/prototype/data/model.json
 ```
 
-Toma unos 3 segundos y no requiere red ni dependencias externas. Las tablas de entrada se producen con los notebooks de la Semana 6; el procedimiento está en el README raíz del repositorio.
+`build_model.py` acepta dos entradas opcionales que produce `datos_nuevos.ipynb` (`hourofweek_2024_enefeb.csv`, `acs_por_estacion.csv`); si están en la carpeta de entrada las usa y lo registra en `meta`. Las tablas de entrada se producen con los notebooks de la Semana 6 (ver el README raíz).
 
 ---
 
 ## Despliegue
 
-El prototipo es estático y con rutas relativas, así que funciona en GitHub Pages sin cambios.
+Estático y con rutas relativas: funciona en GitHub Pages sin cambios.
 
-1. En el repositorio: **Settings → Pages**
-2. *Source*: **Deploy from a branch** · *Branch*: `main` · *Folder*: `/ (root)` · **Save**
-3. Esperar uno o dos minutos.
-
-URL resultante:
+1. **Settings → Pages** → *Deploy from a branch* → `main` → `/ (root)` → **Save**
+2. Esperar uno o dos minutos.
 
 ```
 https://stewartmb.github.io/data-visualization-2026-2/deliveries/week10/prototype/
 ```
 
-> **Estado:** pendiente de activar GitHub Pages en el repositorio. Una vez activado, la URL de arriba queda operativa sin tocar el código.
-
-También se puede publicar cualquier otro hosting estático (Netlify, Vercel, Surge) apuntando a `deliveries/week10/prototype/`.
+La misma aplicación vive también en [`/app`](../../app/) (raíz del repositorio), que es la copia que sigue evolucionando hacia la Semana 12.
 
 ---
 
 ## Limitaciones
 
-Están documentadas en [`PrototypeReport.md`](PrototypeReport.md), sección 3. Las tres que más afectan el uso:
-
-- El brush de la serie temporal no reconstruye los perfiles horarios: solo cambia el canal de tamaño del mapa.
-- Se dibujan 120 múltiplos a la vez de los 428; el contador del panel indica cuántos.
-- El mapa no tiene contexto geográfico de fondo.
+Documentadas en [`PrototypeReport.md`](PrototypeReport.md), sección 3. Las tres que más afectan la lectura: el perfil de 168 h de 2024 es todavía el año completo (la recuperación ya usa la misma ventana calendario); el brush temporal solo cambia el tamaño de las estaciones; la explicación del Bronx es una hipótesis consistente con los datos, no una medición.
 
 ---
 
-Datos: Metropolitan Transportation Authority (MTA) vía Open NY · API SODA de Socrata.
-D3.js v7.9.0 (BSD-3-Clause), Mike Bostock.
-Parte del código y la documentación se elaboró con asistencia de IA, revisada y validada por el equipo.
+Datos: Metropolitan Transportation Authority (MTA) vía Open NY · API SODA de Socrata. Geografía: NYC DCP y GTFS de la MTA. D3.js v7.9.0 (BSD-3-Clause). Parte del código se elaboró con asistencia de IA, revisada y validada por el equipo.

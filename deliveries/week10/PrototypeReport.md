@@ -3,85 +3,99 @@
 **DS5343 Data Visualization · UTEC · 2026-2 · Semana 10**
 Acervo Correa, Renzo Alfonso · Maquera Bobadilla, Diva Stewart · Condori Palomino, José Eduardo
 
-Prototipo funcional en D3.js del proyecto *La forma del día: cómo cambió el ritmo horario del metro de Nueva York, 2020–2024*.
+Prototipo funcional en D3.js de *La forma del día: cómo cambió el ritmo horario del metro de Nueva York, 2020–2024*.
+En línea: <https://stewartmb.github.io/data-visualization-2026-2/deliveries/week10/prototype/>
 
 ---
 
 ## 1 · Qué está implementado
 
-Cuatro vistas enlazadas sobre los datos reales del proyecto: 428 complejos de estación, 60 meses, perfiles de 168 horas. Todo corre en el navegador desde un solo archivo JSON de 1.4 MB.
+Una aplicación a pantalla completa con tres vistas que comparten una sola selección. Todo corre en el navegador sobre los datos reales del proyecto: 428 complejos de estación, 60 meses, perfiles de 168 horas, desde un modelo de 1.6 MB y una geografía de 77 KB.
 
-| | Vista | Qué muestra | Estado |
+| Vista | Qué es |
+|---|---|
+| **Matriz** | la vista base: las 428 estaciones como filas, agrupadas por borough, contra las 168 horas de la semana o los 60 meses, con tres lentes (forma del día 2024 · qué cambió 2020 → 2024 · mes a mes), bandas de fase, dos tiras sincronizadas debajo (forma del sistema y dónde se movió el día; entradas y composición tarifaria) y los ocho hallazgos como chips. Un submodo muestra la rejilla de perfiles de 168 h |
+| **Recorrido** | siete capítulos como botones con Play, a lo FINO: un panel angosto a la izquierda con la pregunta, el hallazgo como frase y qué significa cada marca; el resto de la pantalla es el gráfico. Las notas (cómo se mide, qué no demuestra) están plegadas detrás de un botón |
+| **Mapa** | las 428 estaciones a pantalla completa con cinco lentes (forma del día como reloj de 24 h por estación, tipo, recuperación, cambio del pico, confiabilidad), filtros, y el panel de evidencia por estación |
+
+### El recorrido
+
+Cada capítulo tiene la misma anatomía: una **pregunta** como título, el **hallazgo** como una frase etiquetada (hallazgo · lo que no se sostiene · límite), el **gráfico** a pantalla completa, dos notas plegadas — **cómo se mide** y **qué no demuestra** — y un botón que abre el mapa ya configurado en lo que se acaba de ver. Un clic en cualquier chip de hallazgo de la vista Matriz abre su capítulo.
+
+| | Pregunta | Hallazgo | Gráfico |
 |---|---|---|---|
-| **A** | Mapa de estaciones | 428 puntos · posición = lat/lon · color = recuperación 2024 vs prepandemia · tamaño = entradas/día | completa |
-| **B** | Perfiles semanales | small multiples de 168 valores · área gris = ene–feb 2020 · línea azul = 2024 | completa |
-| **C** | Serie temporal | entradas mensuales del sistema, ene 2020 – dic 2024, con línea de referencia en el nivel de enero 2020 | completa |
-| **D** | Dispersión pico/valle | 414 estaciones · x = razón prepandemia · y = razón 2024 · diagonal y = x | completa |
+| | La forma del día | el perfil del sistema, 2020 frente a 2024, con el pico de la mañana desdibujándose al cargar | perfil de 24 h |
+| 1 | ¿Cuánta gente volvió? | la recuperación se estancó cerca del 70 % | cinta de recuperación: sistema y boroughs sobre la banda p10–p90 de las 428 estaciones, con fases y eventos |
+| 2 | ¿Sigue existiendo el doble pico? | el pico de la mañana se aplanó en 80 % de las estaciones | cuatro relojes de 24 h (uno por borough) + tiras de puntos del cambio del pico, una estación por punto |
+| 3 | ¿Qué días de la semana cambiaron? | la semana se inclinó: el viernes perdió 2.4 puntos del total semanal y el fin de semana ganó 3.1 | barras divergentes de las 168 horas, por borough y por tipo |
+| 4 | ¿Para qué se usa cada estación? | el cambio fue en una sola dirección: la mañana perdió peso | mapa de las 428 estaciones como relojes + gráfico de pendientes de la asimetría 2020 → 2024 |
+| 5 | ¿Por qué el Bronx? | perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma (y, dentro de un borough, cuánto volvió no dice cuánto se aplanó) | dispersión con el Bronx en negro + mapa del Bronx con un reloj por estación |
+| 6 | ¿Quién dejó de comprar el abono? | el pase de 30 días se desplomó: la evidencia del uso intermitente | áreas apiladas al 100 % por clase de pago |
+| 7 | ¿Qué no podemos afirmar? | 37 estaciones tienen una comparación poco confiable, y están marcadas | mapa de confiabilidad + matriz de las 37 estaciones mes a mes, con las caídas anómalas marcadas |
 
-De las cinco vistas propuestas en la Semana 6 faltan la **E** (composición tarifaria) y la capa de anotaciones.
+Los hallazgos no se escriben a mano: los genera `code/build_model.py` desde los datos, con sus cifras. Dos son negativos — lo que los datos *no* sostienen — y uno es un límite.
 
-### Interacciones funcionales
+### El mapa
 
-| Interacción | Dónde | Efecto |
-|---|---|---|
-| Clic en una estación | mapa, perfil o dispersión | la resalta en las tres vistas y la sube al primer lugar de la rejilla de perfiles |
-| Brush rectangular | dispersión | filtra el mapa y los perfiles; la barra superior reporta cuántas estaciones y qué share de entradas quedan |
-| Brush horizontal | serie temporal | el tamaño de los puntos del mapa pasa a ser el promedio diario de ese período; la barra reporta el nivel respecto de enero 2020 |
-| Ordenar | perfiles | recuperación · volumen · magnitud del cambio · nombre |
-| Modo | perfiles | ambos · solo 2024 · solo prepandemia · diferencia |
-| Zoom y paneo | mapa | con compensación de radio para que los puntos no engorden al acercar |
-| Hover | las cuatro vistas | tooltip con nombre, borough y los valores de la vista |
-| Doble clic | dispersión y serie | limpia el filtro o el período |
+| Lente | Qué codifica |
+|---|---|
+| forma del día | cada estación es un reloj de 24 h: medianoche arriba, el radio es el share de la hora; gris 2020, color del tipo 2024 |
+| tipo | residencial · mixta · laboral |
+| recuperación | azul claro → oscuro, recortado en p10–p90 |
+| cambio del pico | azul (se aplanó) ↔ gris ↔ rojo (se afiló) |
+| confiabilidad | sólida · estacional · ventana anómala · línea base pequeña |
 
-El estado vive en un solo módulo (`src/estado.js`). Cualquier vista que lo modifique dispara un redibujado de las cuatro: eso es el *brushing & linking* del proyecto y es lo que hace que las vistas sean una sola herramienta y no cuatro gráficos juntos.
+Zoom y paneo; filtros por borough, tipo y confiabilidad; clic en una estación abre su panel de evidencia (cifras, perfil antes/después, serie mensual, la tabla con los números detrás). Los capítulos del recorrido mandan al mapa ya configurado.
 
 ### Implementación
 
-- **D3.js v7.9.0**, servido desde `lib/` y no desde un CDN: el prototipo funciona sin conexión y la versión queda fijada.
-- **Módulos ES nativos**, sin bundler ni framework. 952 líneas propias entre HTML, CSS, JS y el script de datos.
-- `code/build_app_json.py` reconstruye `data/app.json` desde los CSV de la Semana 6 en unos 3 segundos.
-- Probado en Chromium headless con Playwright: las cuatro vistas renderizan, las interacciones responden y la consola queda limpia.
+D3.js v7.9.0 servido desde `lib/`, módulos ES nativos, sin bundler. Unas 2 000 líneas propias entre HTML, CSS y JS, más 350 de Python. Probado en Chromium headless con Playwright: los ocho bloques renderizan, las interacciones responden en las cuatro vistas y los presets de los capítulos, y la consola queda limpia.
 
 ---
 
 ## 2 · Decisiones de diseño
 
-### 2.1 La unidad de análisis es la forma, no el tamaño
+### 2.1 Es un argumento, no un dashboard
 
-El perfil de cada estación son 168 valores (24 h × 7 días) **divididos por el total semanal de esa estación**. Así Times Square y Burke Av se comparan por su ritmo y no por su volumen, que es lo que pregunta el proyecto. El volumen no desaparece: se va al canal de tamaño del mapa, que es el canal menos preciso, porque aquí es contexto.
+La Semana 7 proponía cuatro paneles en una pantalla. Funcionaban y no contaban nada. La estructura de este prototipo toma de FINO (VAST Challenge 2026, UTEC) la forma de aplicación — vistas en pestañas, una selección compartida, capítulos con Play dentro de una vista — y cuatro principios: las vistas se titulan con **preguntas**; los hallazgos se escriben como **afirmaciones** e incluyen lo que no se demuestra; la **confiabilidad** de cada dato es una capa visible; y cada afirmación está a un clic de su **evidencia**. El lector puede empezar por la vista base, por el recorrido o por el mapa; la selección lo sigue.
 
-### 2.2 Small multiples en lugar de 428 líneas superpuestas
+### 2.2 La pregunta cambió
 
-**Alternativa descartada 1:** un solo gráfico con las 428 series. Ilegible: el *overplotting* convierte la comparación de formas en una mancha.
-**Alternativa descartada 2:** animar la transición entre la línea base y 2024. Lee et al. (2020) muestran que la animación es justamente donde peor rinde la comparación entre dos momentos distantes, que es nuestra tarea; los small multiples con ambos estados a la vista rinden mejor y de forma consistente.
-**Alternativa descartada 3:** agrupar las estaciones en 4 tipos de perfil y mostrar un representante de cada uno. El agrupamiento promedia, y la variación entre estaciones del mismo grupo es justamente lo que el mapa muestra que existe. Hsu, Wu et al. (2021) toman la misma decisión con datos del metro de Taipéi.
+"¿Se aplanó el pico?" es el hecho más reportado del transporte desde 2020. La pregunta pasó a ser "¿quién resistió y dónde?", y la respuesta — el Bronx — no estaba en ningún lado. Para hacerla legible hacía falta una tipología de estaciones, que resultó derivable del propio torniquete.
 
-La escala vertical es **común a todos los múltiplos**. Con una escala por múltiplo cada gráfico ocuparía toda su caja y las formas dejarían de ser comparables, que es el único motivo por el que están juntos.
+### 2.3 Una tipología sin datos externos
 
-### 2.3 El perfil prepandemia va como área gris, no como segunda línea
+Las entradas de la mañana son gente saliendo de casa; las de la tarde, gente saliendo del trabajo. La asimetría (AM − PM) / (AM + PM) sobre el día laborable de la línea base clasifica cada estación en residencial, mixta o laboral. **Alternativa descartada:** clustering de los 168 valores. La asimetría tiene significado físico, es un número por estación y se explica en una frase.
 
-La primera versión dibujaba dos líneas superpuestas. A 124 × 42 píxeles la línea gris quedaba tapada casi por completo por la azul y la comparación antes/después —el punto entero de la vista— no se leía. El área gris de fondo con la línea azul encima resuelve eso sin agregar un segundo gráfico.
+### 2.4 La línea base y la confiabilidad
 
-### 2.4 La línea base es enero–febrero de 2020, no el año 2020 completo
+Este dataset no tiene 2019; la única línea base previa a la pandemia son enero y febrero de 2020. La Semana 7 los comparaba contra todo 2024: 155 estaciones cambiaban más de cinco puntos según la ventana, y Mets-Willets Point marcaba 287 %. La recuperación se calcula ahora sobre la **misma ventana calendario** (enero–febrero de 2024), siguiendo a Hsu et al. (2021). Y en vez de esconder las estaciones donde ni eso basta, se las marca: una capa de confiabilidad con tres motivos (estacional, ventana anómala, línea base pequeña), dibujada con anillo punteado en todas las lentes y excluida de las medianas por grupo. **Alternativa descartada:** excluirlas. Excluir esconde; marcar informa.
 
-Es la decisión más consecuente del proyecto y **invierte la conclusión**. Contra el año 2020 completo la razón pico/valle del sistema pasa de 2.34 a 2.35: no habría pasado nada. Contra la línea base prepandemia cae de 2.90 a 2.35. El año 2020 completo ya venía aplanado por el confinamiento; usarlo como referencia esconde el fenómeno que el proyecto quiere mostrar.
+### 2.5 El índice y el titular
 
-### 2.5 Color divergente y recortado en el mapa
+Las ventanas del índice pico/valle dejaron de solaparse (pico 6–10 h, valle 11–15 h; las de la Semana 6 compartían las 10 y 11 h). Y el titular pasó de "372 de 414 aplanaron" — que contaba cualquier reducción, incluida una de 0.08 % — a "80 % aplanó más de 5 %, caída mediana del 17 %". El número robusto resiste una pregunta incómoda.
 
-La recuperación es un valor **respecto de una referencia**, así que la escala es divergente (RdYlBu) centrada en la mediana (71 %), no secuencial. Está recortada en p10 (56 %) y p90 (89 %) porque unos pocos valores extremos —Mets-Willets Point llega a 287 %— comprimían todo el resto a un solo tono.
+### 2.6 Codificación
 
-### 2.6 Escala logarítmica en la dispersión
+El único color de la página es el dato; el cromo es negro y gris.
 
-Pico/valle es una razón y su distribución está sesgada a la derecha (1.06 a 11.4). En log, la distancia a la diagonal es la razón entre ambos índices, que es la medida correcta de "cuánto cambió", y la masa de estaciones entre 2 y 5 deja de amontonarse.
+| canal | lleva | por qué |
+|---|---|---|
+| posición | lugar | el canal más preciso para la variable espacial; ahora sobre boroughs y metro reales |
+| color categórico | tipo de estación | identidad: sigue a la estación en todas las vistas; tres tonalidades validadas en todos los pares (peor par ΔE 9.2 bajo deuteranopia) |
+| color secuencial | recuperación | una magnitud, una tonalidad; recortada en p10–p90 y dicho en la leyenda |
+| color divergente | cambio del pico | polaridad real: aplanó ↔ igual ↔ afiló; punto medio gris |
+| tamaño | entradas por día | contexto, en el canal menos preciso; no cambia con la lente |
+| anillo punteado | confiabilidad | el estado se ve sin robar el canal de color |
+| área gris + línea | antes / ahora | con dos líneas superpuestas el "antes" quedaba tapado |
+| matriz (canvas) | 428 × 168 celdas | la vista base muestra todas las estaciones y todas las horas a la vez; el patrón (pico de la mañana, jueves–viernes, el Bronx) aparece antes de leer una sola cifra |
+| reloj de 24 h | forma del día de una estación | en coordenadas polares la forma se lee como glifo y cabe en un mapa; la hora es cíclica |
 
-**Alternativa descartada:** un gráfico de barras de la diferencia 2024 − prepandemia. Pierde el nivel de partida, y una estación que va de 6 a 5 no cambió lo mismo que una que va de 2 a 1.
+**Alternativas descartadas:** 428 líneas superpuestas (el *overplotting* borra la forma); animar la transición entre años (rinde peor para comparar dos momentos distantes, Lee et al. 2020); cuatro mapas en vez de cuatro lentes (el lector compararía con la memoria y no con el ojo); una dispersión pico/valle antes × después (los dos ejes del cambio son la pregunta; el antes/después ya lo cuenta el perfil).
 
-### 2.7 Detalles de implementación que afectan la lectura
+### 2.7 Un pipeline del que sale todo
 
-- El rectángulo de captura del brush va **debajo** de los puntos de la dispersión: encima bloqueaba el hover y el clic sobre cada estación.
-- Los círculos de la leyenda de tamaño están **alineados por la base**, no por el centro, que es como se comparan círculos sin engañar al ojo.
-- Seleccionar una estación **no recorta** la rejilla de perfiles: la sube al primer lugar y la resalta. Recortarla a una sola tarjeta destruía el contexto que hace útil la comparación.
-- Un brush que no encierra ningún punto deja el conjunto vacío a propósito. Es información ("ahí no hay estaciones"), no un error que haya que deshacer solo.
+`build_model.py` reconstruye el modelo en tres segundos, sin dependencias, desde las tablas de la Semana 6. Generar los hallazgos desde el modelo evitó un error: una versión escrita a mano decía "ninguna estación cambió de tipo" y era falsa — 54 cruzaron el umbral. El hallazgo verdadero (53 de las 54 en la misma dirección) es mejor. El detector de caídas anómalas, sin usar avisos de servicio, recuperó cierres conocidos: la línea G en julio–agosto de 2024 y 21 St-Queensbridge entre septiembre de 2023 y marzo de 2024.
 
 ---
 
@@ -89,38 +103,38 @@ Pico/valle es una razón y su distribución está sesgada a la derecha (1.06 a 1
 
 ### Del prototipo
 
-1. **El brush temporal no reconstruye los perfiles.** Los 168 valores están fijos a dos ventanas (ene–feb 2020 y 2024). Cambiarlos con el período exigiría agregar estación × hora-de-la-semana × mes, que no está en las tablas de la Semana 6. Hoy el brush solo cambia el canal de tamaño del mapa y el reporte de la barra superior.
-2. **Solo se dibujan 120 múltiplos a la vez** de los 428. El contador del panel lo dice. Falta scroll virtual.
-3. **El mapa no tiene contexto geográfico.** Son puntos sobre latitud y longitud con una corrección de aspecto por latitud; no hay contorno de boroughs, ni costa, ni líneas del metro. Se reconoce la forma del sistema, no la de la ciudad.
-4. **Falta la vista E** (composición tarifaria) y la capa de anotaciones de los bocetos.
-5. **No hay accesibilidad por teclado** y la paleta no se verificó todavía con un simulador de daltonismo.
-6. **Responsive mínimo:** por debajo de 980 px las vistas se apilan en una columna, sin rediseño.
+1. **El perfil de 168 h de 2024 es el año completo**, no enero–febrero. La recuperación ya usa la misma ventana calendario; la forma del día todavía no. Lo corrige una pasada adicional de la API (`code/datos_nuevos.ipynb`, pasada D), pendiente.
+2. **No hay brush temporal todavía.** Reconstruir la forma del día de un período elegido necesita perfiles por mes (pasada E del mismo notebook); la lente "mes a mes" de la matriz es el sustituto por ahora.
+3. **La explicación del Bronx es una hipótesis.** Los datos del torniquete muestran el patrón, no la causa. La capa del Census (share de trabajo desde casa por área de influencia de cada estación, pasada F) es lo que podría sostenerla.
+4. **La rejilla de perfiles dibuja 120 múltiplos a la vez** de los 428; el contador lo dice. La matriz sí dibuja las 428.
+6. **El hallazgo de la semana (jueves–viernes) compara 2024 completo con enero–febrero de 2020**: incluye feriados y verano. Se afina con la ventana comparable (pasada D).
+5. **Sin navegación por teclado dentro del mapa** ni descripción textual de los gráficos más allá del `aria-label`.
 
 ### De los datos
 
-7. **Mets-Willets Point aparece con 287 % de recuperación.** Es un artefacto de la línea base: enero–febrero es temporada baja de béisbol y el denominador queda muy chico. Lo mismo, en menor grado, con el RI Tramway (158 %). El prototipo todavía no marca estos casos en la interfaz.
-8. **Se excluyen 14 estaciones de la dispersión** porque su máximo cae en el borde de la ventana de búsqueda (5–11 h) y ahí la razón no es confiable. El conteo "372 de 414" lo refleja.
-9. **Son entradas, no viajes.** No hay pares origen–destino en esta fuente, así que ningún análisis de flujo es posible.
-10. **Es el complejo de estación, no la estación individual.** Times Sq-42 St agrupa varias líneas.
-11. **La migración MetroCard → OMNY es adopción tecnológica**, no cambio de demanda. Importa para la vista E, que todavía no existe.
+6. **Son entradas, no viajes.** No hay origen–destino. "Laboral" y "residencial" describen a qué hora entra la gente, no a dónde va.
+7. **Los cambios de servicio no están controlados.** Se detectan en los datos las caídas grandes; no se cruzan con avisos de la MTA.
+8. **La línea base son dos meses de invierno.** La ventana comparable corrige la estacionalidad, pero enero–febrero de 2024 tuvo obras en la línea F. Las estaciones afectadas están marcadas; el problema de fondo no desaparece.
+9. **Es el complejo de estación, no la estación individual.** Times Sq-42 St agrupa varias líneas.
+10. **Son estimaciones de la MTA**, dentro del 1 % de sus cifras oficiales.
 
 ---
 
 ## 4 · Preguntas para los revisores
 
-Son las decisiones en las que estamos realmente divididos. Agradecemos feedback concreto sobre estas:
+Las seis preguntas de la propuesta original (contexto geográfico, legibilidad de pico/valle, orden de los perfiles, el brush temporal, Mets-Willets Point, recorte del color) ya tienen respuesta en este prototipo. Estas son las que quedan abiertas:
 
-1. **¿El mapa necesita contexto geográfico?** Hoy son puntos sueltos. Agregar contorno de boroughs cuesta un GeoJSON y cambiar a una proyección de D3, es asumible. La duda es si el fondo ayuda a ubicar o si compite con el color, que es lo que hay que leer.
+1. **¿La tipología convence?** "Residencial / laboral" sale solo de a qué hora entra la gente. ¿Se lee como una clasificación creíble, o como un nombre que promete más de lo que mide? ¿Preferirían "AM / PM"?
 
-2. **¿"Pico/valle" se entiende?** Es un índice que inventamos nosotros y la vista D depende de que el lector lo compre. ¿Se lee, o conviene reemplazar D por un gráfico de pendientes (dos ejes verticales y una línea por estación), que no exige entender una razón?
+2. **¿El capítulo del Bronx está bien contado o estamos forzando la lectura?** Presentamos el teletrabajo como hipótesis consistente, no como causa. ¿Se percibe así, o el lector sale creyendo que lo demostramos? ¿Qué evidencia pedirían antes de creerlo?
 
-3. **¿El orden por defecto de los perfiles es el correcto?** Hoy entran ordenados por recuperación ascendente, así que lo primero que se ve son las estaciones que menos volvieron. La alternativa es ordenar por magnitud del cambio, que es la pregunta real del proyecto pero da una primera pantalla menos intuitiva.
+3. **¿Tres vistas es la estructura correcta?** Matriz como vista base, Recorrido con los capítulos, Mapa. ¿Sobra alguna? ¿La matriz es la entrada correcta?
 
-4. **¿Vale la pena el brush temporal como está?** Solo cambia el tamaño de los puntos del mapa. ¿Es una interacción útil o una promesa falsa que sugiere que filtra más de lo que filtra? Si es lo segundo, la quitamos hasta la Semana 12.
+4. **¿Los hallazgos negativos aportan o confunden?** Dos de los ocho dicen lo que los datos no sostienen. ¿Dan confianza, o parecen un relleno?
 
-5. **¿Qué hacemos con los artefactos de línea base?** Mets-Willets Point con 287 % es el punto rojo más llamativo del mapa y es ruido estacional. ¿Excluirlo, anotarlo en la vista, o dejar que el lector lo descubra con el tooltip?
+5. **¿La capa de confiabilidad se lee?** El anillo punteado y el capítulo 7 marcan 37 estaciones. ¿Es la cantidad correcta de aviso, o es ruido? ¿Deberíamos excluirlas de las vistas por defecto?
 
-6. **¿El recorte de color en p10/p90 esconde algo útil?** Gana contraste en el 80 % central y a cambio vuelve indistinguibles los dos extremos.
+6. **¿Qué le falta para que lo use un periodista o un investigador?** Es la audiencia que declaramos. ¿Qué pregunta harían que la herramienta no responde?
 
 ---
 
@@ -128,23 +142,22 @@ Son las decisiones en las que estamos realmente divididos. Agradecemos feedback 
 
 | | Para la Semana 12 |
 |---|---|
-| 1 | Vista E (composición tarifaria) y la capa de anotaciones |
-| 2 | Lo que salga de las respuestas a la sección 4 |
-| 3 | Scroll virtual en los perfiles para las 428 estaciones |
-| 4 | Narrativa integrada: un recorrido guiado que conecte las cuatro vistas en un orden de lectura |
-| 5 | Marcado de los casos con línea base poco confiable |
+| 1 | Integrar las tres pasadas de `datos_nuevos.ipynb`: ventana comparable del perfil, perfiles por mes, capa del Census |
+| 2 | Contrastar la hipótesis del Bronx con el share de trabajo desde casa por estación |
+| 3 | Brush temporal en la matriz que reconstruya la forma del día del período |
+| 4 | Responder cada sugerencia del design review (`deliveries/week12/PeerCritiqueResponse.md`) |
+| 5 | Paper en dos columnas; borrador en `deliveries/week12/paper/` |
 
 ---
 
 ## Referencias
 
-Las cuatro revisadas en la Semana 6 (`deliveries/week06/referencias.md`). Las dos que sostienen decisiones de este prototipo:
-
-- Lee, Archambault y Nacenta (2020). *The Effectiveness of Interactive Visualization Techniques for Time Navigation of Dynamic Graphs on Large Displays*. arXiv:2008.12747 — sostiene §2.2.
-- Hsu, Wu et al. (2021). *Investigating spatio-temporal mobility patterns and changes in metro usage under the impact of COVID-19 using Taipei Metro smart card data*. *Public Transport*, Springer — sostiene §2.2 y §2.4.
+- Lee, Archambault y Nacenta (2020). *The Effectiveness of Interactive Visualization Techniques for Time Navigation of Dynamic Graphs on Large Displays*. arXiv:2008.12747 — sostiene §2.6.
+- Hsu, Wu et al. (2021). *Investigating spatio-temporal mobility patterns and changes in metro usage under the impact of COVID-19 using Taipei Metro smart card data*. Public Transport — sostiene §2.4.
+- Yap y Cats (2022). *Identifying Human Mobility Patterns using Smart Card Data*. arXiv:2208.05352 — sostiene §2.3.
+- Sasaki, Nakamura et al. (2022). *An Empirical Study on the Relationship Between the Number of Coordinated Views and Visual Analysis*. arXiv:2204.09524 — sostiene el límite de cuatro vistas enlazadas.
+- Aquino, Arbulú, Acuña y Pajuelo (2026). *FINO — Forensic Intelligence and Network Oversight*, VAST Challenge 2026 MC1, UTEC — sostiene §2.1.
 
 ## Créditos
 
-Datos: Metropolitan Transportation Authority (MTA) vía Open NY, acceso por la API SODA de Socrata.
-Librería: D3.js v7.9.0 (BSD-3-Clause), Mike Bostock.
-Parte del código y de la documentación se elaboró con asistencia de IA, revisada y validada por el equipo.
+Datos: Metropolitan Transportation Authority (MTA) vía Open NY, acceso por la API SODA de Socrata. Geografía: NYC Department of City Planning (boroughs, vía dwillis/nyc-maps) y GTFS estático de la MTA (vía kjhealy/nycroutes). Librería: D3.js v7.9.0 (BSD-3-Clause). Parte del código y de la documentación se elaboró con asistencia de IA, revisada y validada por el equipo.

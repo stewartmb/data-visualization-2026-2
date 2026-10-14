@@ -1,0 +1,184 @@
+% La forma del día — paper en formato de conferencia (dos columnas)
+%
+% Compila con IEEEtran si está instalado (Overleaf, TeX Live completo) y, si no,
+% con article a dos columnas con márgenes equivalentes. El contenido es el mismo.
+%
+%   latexmk -pdf paper.tex
+
+\IfFileExists{IEEEtran.cls}{\documentclass[conference]{IEEEtran}}{\documentclass[10pt,twocolumn]{article}}
+\makeatletter
+\@ifclassloaded{IEEEtran}{}{%
+  \usepackage[letterpaper,top=0.75in,bottom=1in,left=0.625in,right=0.625in,columnsep=0.2in]{geometry}
+  \usepackage{titlesec}
+  \titleformat{\section}{\normalfont\large\scshape\centering}{\thesection.}{0.6em}{}
+  \titleformat{\subsection}{\normalfont\itshape}{\thesubsection.}{0.6em}{}
+  \titlespacing{\section}{0pt}{10pt}{6pt}
+  \titlespacing{\subsection}{0pt}{6pt}{3pt}
+  \usepackage{times}
+}
+\makeatother
+\providecommand{\IEEEauthorblockN}[1]{#1\\}
+\providecommand{\IEEEauthorblockA}[1]{\small #1}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noindentfirst]{babel}}{}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\graphicspath{{figuras/}}
+
+\title{La forma del día: cómo cambió el ritmo horario del metro de Nueva York, 2020--2024}
+
+\author{
+  \IEEEauthorblockN{Renzo Alfonso Acervo Correa, Diva Stewart Maquera Bobadilla, José Eduardo Condori Palomino}
+  \IEEEauthorblockA{Universidad de Ingeniería y Tecnología (UTEC), Lima, Perú\\
+  DS5343 Data Visualization, 2026-2 \\
+  \texttt{github.com/stewartmb/data-visualization-2026-2}}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+La recuperación del metro de Nueva York tras la pandemia se reporta casi siempre con un solo número que dice cuánta demanda volvió, no a qué hora ni en qué barrios. Tomamos como unidad de análisis el perfil horario semanal de cada uno de los 428 complejos de estación ---168 valores normalizados por el total de la estación--- y lo comparamos entre enero--febrero de 2020 y 2024, a partir de agregados horarios calculados del lado del servidor. Tres resultados. El pico de la mañana se aplanó en el 80\,\% de las estaciones, con una caída mediana del 17\,\% en la razón pico/valle. Una tipología derivada de la asimetría mañana/tarde de las entradas ---residencial, mixta, laboral--- separa la ciudad sin datos externos, y el cambio fue en una sola dirección: 53 de las 54 estaciones que cruzaron un umbral de tipo lo hicieron hacia la tarde. Y el Bronx es la excepción: perdió más pasajeros que ningún otro borough (recuperación mediana del 56\,\% frente al 69\,\%) y es el único donde la forma del día no cambió (cambio del pico de $-5$\,\% frente a $-16$ a $-19$\,\%). Presentamos una visualización en D3.js que organiza estos hallazgos en siete capítulos guiados y un explorador de cuatro vistas enlazadas, con una capa explícita de confiabilidad de la comparación y los hallazgos ---incluidos los negativos--- generados desde el modelo de datos.
+\end{abstract}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{fig0_abstract}
+  \caption{Resumen gráfico: del dataset crudo a la aplicación. El dataset nunca se descarga; se agrega del lado del servidor, se deriva un modelo por estación con un script de tres segundos, y los hallazgos ---incluidos los negativos--- se generan desde ese modelo.}
+  \label{fig:abstract}
+\end{figure*}
+
+\section{Introducción}
+
+El metro de Nueva York programa su servicio alrededor del doble pico del día laborable: la salida de casa por la mañana y la salida del trabajo por la tarde. Entre 2020 y 2024 esa forma cambió. Que cambió es conocido; el aplanamiento del pico del \emph{commute} es probablemente el hecho más reportado del transporte público desde la pandemia. Lo que no se reporta es \emph{dónde} cambió y dónde no, porque la recuperación se mide en volumen agregado y el volumen no tiene hora.
+
+Este trabajo cambia la unidad de análisis. En lugar del total de entradas, usamos el \emph{perfil} de cada estación: 24 horas $\times$ 7 días, normalizado por su propio total, de modo que Times Square y una estación de barrio se comparen por su ritmo y no por su tamaño. Sobre esa unidad formulamos una pregunta que no está respondida: ¿quién resistió el cambio de forma, y dónde?
+
+La audiencia son investigadores de transporte urbano, periodismo de datos y gobierno local: lectores que necesitan entender cómo cambió el uso del metro por barrio y no solo cuánto.
+
+\textbf{Contribuciones.} (1) Una tipología de estaciones derivada de la asimetría mañana/tarde de las entradas, con significado físico y sin datos externos. (2) El hallazgo de que el Bronx perdió más pasajeros que ningún otro borough y es el único donde la forma del día no cambió, robusto a tres pruebas. (3) Una visualización narrativa en D3.js en la que cada afirmación está a un clic de su evidencia, los hallazgos se generan desde el modelo e incluyen lo que los datos no sostienen, y la confiabilidad de cada comparación es una capa visible. (4) Un pipeline reproducible que agrega los registros horarios del lado del servidor sin descargar el dataset.
+
+\section{Trabajo relacionado}
+
+Yap y Cats \cite{yap2022} revisan los métodos que caracterizan estaciones de transporte público por su perfil temporal y confirman que normalizar el perfil antes de comparar es práctica estándar cuando interesa la forma y no el volumen. Hsu et al.\ \cite{hsu2021} analizan el metro de Taipéi por franjas horarias antes y durante la pandemia comparando el \emph{mismo período calendario} entre dos años; adoptamos ese criterio para la línea base, y resultó decisivo (§\ref{sec:datos}). Lee et al.\ \cite{lee2020} muestran experimentalmente que para comparar dos momentos distantes los \emph{small multiples} con ambos estados a la vista rinden mejor que la animación; sostiene nuestra vista de perfiles. Sasaki et al.\ \cite{sasaki2022} estudian el costo cognitivo de las vistas coordinadas y justifican el límite de cuatro vistas enlazadas en el explorador.
+
+En estructura narrativa, la referencia es FINO \cite{fino2026}, una herramienta forense para el VAST Challenge 2026: vistas tituladas con preguntas, hallazgos escritos como afirmaciones que incluyen lo que no se demuestra, una jerarquía epistémica visible (verificado / plausible / contexto) y cada afirmación a un clic de su fuente. Trasladamos esos cuatro principios a un dominio sin crimen que resolver.
+
+\section{Datos y método}
+\label{sec:datos}
+
+\subsection{Fuente y adquisición}
+
+\emph{MTA Subway Hourly Ridership 2020--2024} (Open NY, identificador \texttt{wujg-7c2s}): registros horarios por complejo de estación, método de pago y clase tarifaria. El dataset crudo supera los 4\,GB y nunca se descarga: se agrega con SoQL del lado del servidor en ventanas de siete días. La ventana importa: con \texttt{date\_trunc\_ymd} en el agrupamiento, una consulta de un día tarda 0.9\,s, una de siete días 2\,s y una de un mes expira a los 600\,s. El proceso es resumible y produce tres tablas: estación $\times$ día, estación $\times$ día-de-la-semana $\times$ hora (por año y para enero--febrero de 2020) y mes $\times$ borough $\times$ pago $\times$ tarifa.
+
+\subsection{Línea base}
+
+El dataset empieza en 2020: no hay 2019. La única línea base previa a la pandemia son enero y febrero de 2020. Compararla contra el año 2024 completo mezcla estaciones del año: 155 de 428 estaciones cambian más de cinco puntos de recuperación según se use enero--febrero de 2024 o todo 2024, y 49 cambian más de diez (Mets-Willets Point, junto al estadio de los Mets, pasa del 287\,\% al 86\,\%). La recuperación se calcula por tanto sobre la misma ventana calendario, enero--febrero de 2024 frente a enero--febrero de 2020, siguiendo a \cite{hsu2021}.
+
+\subsection{Derivaciones}
+
+\textbf{Perfil.} 168 valores normalizados por el total de la estación.
+\textbf{Razón pico/valle.} Sobre el perfil del día laborable, el máximo entre las 6 y las 10\,h dividido por el mínimo entre las 11 y las 15\,h; ventanas sin solape. \textbf{Aplanamiento:} cambio relativo de la razón; cuenta si supera el 5\,\%.
+\textbf{Asimetría.} $(E_{6\text{--}10} - E_{16\text{--}20}) / (E_{6\text{--}10} + E_{16\text{--}20})$ sobre las entradas del día laborable de la línea base. Las entradas de la mañana son gente saliendo de casa; las de la tarde, gente saliendo del trabajo. Por encima de $+0.15$ la estación es \emph{residencial}; por debajo de $-0.15$, \emph{laboral}; entre ambos, \emph{mixta}.
+\textbf{Confiabilidad.} Cada comparación recibe un nivel: \emph{sólida}; \emph{estacional}, si la recuperación con todo 2024 se desvía más de diez puntos de la de enero--febrero respecto del sistema; \emph{interrumpida}, si un mes de la ventana de comparación cae por debajo de la mitad de la mediana de sus seis meses vecinos a cada lado; \emph{pequeña}, con menos de 300 entradas por día en la línea base. Las tres últimas (37 estaciones) se muestran con anillo punteado y no entran en las medianas por grupo. El detector de caídas anómalas, sin usar avisos de servicio, recuperó cierres conocidos: la línea G en julio--agosto de 2024 y 21 St-Queensbridge entre septiembre de 2023 y marzo de 2024.
+
+Todo lo que afirma la aplicación sale de un script (\texttt{build\_model.py}, $\sim$3\,s) sobre las tablas agregadas; los hallazgos, con sus cifras, se generan desde el modelo y no se escriben a mano.
+
+\section{Diseño de la visualización}
+
+\subsection{Estructura}
+
+Dos registros en una página. Arriba, siete capítulos, cada uno con la misma anatomía: una \emph{pregunta} como título, el \emph{hallazgo} como una frase etiquetada (hallazgo / lo que no se sostiene / límite), el gráfico, y dos notas: \emph{cómo se mide} y \emph{qué no demuestra}. Abajo, un explorador con cuatro vistas enlazadas por una sola selección: mapa, rejilla de perfiles de 168\,h, dispersión y serie mensual. Cada capítulo termina con un botón que abre el explorador ya configurado en lo que se acaba de leer. Un clic en cualquier estación abre su panel de evidencia: cifras, perfil antes/después, serie mensual y la tabla con los números detrás de cada afirmación.
+
+\subsection{Codificación}
+
+El único color de la página es el dato; el cromo es negro y gris. La \emph{posición} en el mapa lleva el lugar (\texttt{d3.geoMercator} con contornos de boroughs y trazado del metro, en gris recesivo). El \emph{color categórico} lleva el tipo de estación: tres tonalidades validadas para daltonismo en todos los pares (peor par $\Delta E$ 9.2 bajo deuteranopia), que siguen a la estación en todas las vistas. El \emph{color secuencial} (una tonalidad, claro a oscuro, recortado en p10--p90 y dicho en la leyenda) lleva la recuperación; el \emph{divergente} (azul--gris--rojo) el cambio del pico, que es una polaridad real. El \emph{tamaño} lleva las entradas por día, contexto en el canal menos preciso, y nunca cambia con la lente. Un \emph{anillo punteado} marca la confiabilidad sin robar el canal de color. El perfil de la línea base va como área gris y el actual como línea: con dos líneas superpuestas el ``antes'' quedaba tapado.
+
+\subsection{Alternativas descartadas}
+
+Un gráfico con las 428 series superpuestas (el \emph{overplotting} borra la forma); animar la transición entre los dos años (rinde peor para comparar momentos distantes \cite{lee2020}); agrupar las estaciones por \emph{clustering} de los 168 valores (la asimetría tiene significado físico, es un número por estación y se explica en una frase); una dispersión pico/valle antes $\times$ después (los dos ejes del cambio son la pregunta; el antes/después ya lo cuenta el perfil); excluir las estaciones de comparación dudosa (excluir esconde; marcar informa).
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig1_sistema}
+  \caption{El perfil del día laborable de todo el sistema: enero--febrero de 2020 en gris, 2024 en negro. El pico de la mañana pasa del 10.4\,\% al 9.1\,\% del día; la razón pico/valle, de 2.90 a 2.35.}
+  \label{fig:sistema}
+\end{figure}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{fig2_boroughs}
+  \caption{El mismo perfil por borough. Manhattan, Brooklyn y Queens pierden entre dos y cuatro puntos del pico de la mañana; el Bronx conserva su forma (13.8\,\% $\to$ 13.2\,\% a las 7\,h).}
+  \label{fig:boroughs}
+\end{figure*}
+
+\section{Resultados}
+
+\textbf{La recuperación se estancó cerca del 70\,\%.} Desde 2023 el sistema oscila entre el 65 y el 76\,\% de las entradas de enero de 2020.
+
+\textbf{El pico de la mañana se aplanó en el 80\,\% de las estaciones} (Fig.~\ref{fig:sistema}). La razón pico/valle cayó un 17\,\% en la estación mediana; con el umbral del 5\,\%, 341 de 428 estaciones.
+
+\textbf{La tipología separa la ciudad.} 295 estaciones residenciales, 53 mixtas y 80 laborales, 67 de ellas en Manhattan. El cambio fue en una sola dirección: la asimetría bajó 0.04 en la mediana y 53 de las 54 estaciones que cruzaron un umbral lo hicieron hacia ``laboral''. Ninguna zona se volvió más residencial; el 87\,\% conservó su tipo. La ciudad no se reorganizó: se atenuó.
+
+\textbf{Dentro de un borough, cuánto volvió una estación no dice casi nada de cuánto se aplanó.} La correlación de rango de Spearman entre recuperación y aplanamiento va de $-0.07$ (Bronx, Queens) a $-0.18$ (Brooklyn). Son dos ejes distintos; la aplicación los codifica en canales distintos. La relación que sí existe ($-0.24$ global) es entre boroughs.
+
+\begin{table}[t]
+  \caption{Por borough, mediana de las estaciones con comparación sólida.}
+  \label{tab:boroughs}
+  \centering\footnotesize\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}lrrrr@{}}
+    \toprule
+    borough & $n$ & recuperación & cambio del pico & aplanaron $>$5\,\% \\
+    \midrule
+    Bronx     & 68  & 56\,\% & $-5$\,\%  & 51\,\% \\
+    Brooklyn  & 156 & 69\,\% & $-19$\,\% & 92\,\% \\
+    Queens    & 79  & 69\,\% & $-18$\,\% & 85\,\% \\
+    Manhattan & 123 & 69\,\% & $-16$\,\% & 79\,\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{El Bronx perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma} (Tabla~\ref{tab:boroughs}, Fig.~\ref{fig:boroughs}). El resultado aguanta tres pruebas: con el umbral del 5\,\% (51\,\% de sus estaciones aplanaron, frente a 79--92\,\%), con todo 2024 en vez de enero--febrero (58\,\%), y restringido a estaciones de más de 2\,000 entradas por día ($-5$\,\%). La lectura que proponemos: aplanar el pico es lo que hace el trabajo híbrido; donde la gente no puede quedarse en casa, el pico se queda y solo baja el volumen. Es una hipótesis consistente con los datos, no una medición (§\ref{sec:discusion}).
+
+\textbf{El abono de 30 días se desplomó.} Del 25\,\% al 6\,\% de las entradas. Un pase mensual solo conviene con uso diario; su caída es la evidencia indirecta del uso intermitente. La migración de MetroCard a OMNY, que cruza el 50\,\% en enero de 2024, es adopción tecnológica y no cambio de demanda.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig4_bronx}
+  \caption{Capítulo 5. Izquierda: recuperación (x) frente a cambio del pico (y), las estaciones del Bronx en negro. Derecha: el cambio del pico estación por estación sobre el Bronx; azul se aplanó, rojo se afiló.}
+  \label{fig:bronx}
+\end{figure}
+
+\section{Discusión}
+\label{sec:discusion}
+
+\textbf{Lo que se aprendió.} La decisión más consecuente no fue visual sino de ventana: la línea base disponible son dos meses de invierno, y compararlos contra un año completo sesgaba a un tercio del mapa. Convertir ese problema en una capa visible ---en lugar de una nota al pie--- resultó más fuerte que esconderlo: el lector ve por qué Mets-Willets Point o Yankee Stadium no sostienen conclusiones, y el panel de evidencia muestra el pico nocturno de los partidos en el perfil de 2024.
+
+Generar los hallazgos desde el modelo evitó un error: una versión escrita a mano decía ``ninguna estación cambió de tipo'' y era falsa (54 cruzaron el umbral). El hallazgo verdadero ---53 de 54 en la misma dirección--- es mejor.
+
+\textbf{Limitaciones.} Son entradas, no viajes; no hay origen--destino. Es el complejo de estación, no la estación individual. Los cambios de servicio se detectan en los datos pero no se cruzan con avisos de la MTA. El perfil de 168\,h de 2024 es todavía el año completo; la ventana comparable del perfil se integra con una pasada adicional de la API. Y la explicación del Bronx es una hipótesis: los datos de torniquete no dicen por qué.
+
+\textbf{Evaluación informal.} El design review de la Semana 10 llevó seis preguntas abiertas al aula; las decisiones tomadas en respuesta están documentadas sugerencia por sugerencia en el repositorio.
+
+\section{Trabajo futuro y conclusión}
+
+Tres extensiones concretas. Primera, contrastar la hipótesis del teletrabajo con el share de trabajo desde casa del Census (ACS 2018--2022) por área de influencia de 800\,m de cada estación; el pipeline ya está escrito. Segunda, reconstruir la forma del día de cualquier período con perfiles por mes, de modo que el brush temporal muestre el pico desdibujándose mes a mes. Tercera, cruzar las caídas anómalas con los avisos de servicio de la MTA para separar oferta de demanda.
+
+La conclusión es una frase: el pico de la mañana se aplanó en toda la ciudad menos donde la gente no podía quedarse en casa. Ahí el día conservó su forma y solo perdió pasajeros.
+
+\begin{thebibliography}{9}
+\bibitem{yap2022} M. Yap y O. Cats, ``Identifying human mobility patterns using smart card data,'' arXiv:2208.05352, 2022.
+\bibitem{hsu2021} Y.-T. Hsu, Z.-Y. Wu et al., ``Investigating spatio-temporal mobility patterns and changes in metro usage under the impact of COVID-19 using Taipei Metro smart card data,'' \emph{Public Transport}, 2021.
+\bibitem{lee2020} A. Lee, D. Archambault y M. Nacenta, ``The effectiveness of interactive visualization techniques for time navigation of dynamic graphs on large displays,'' arXiv:2008.12747, 2020.
+\bibitem{sasaki2022} S. Sasaki, K. Nakamura et al., ``An empirical study on the relationship between the number of coordinated views and visual analysis,'' arXiv:2204.09524, 2022.
+\bibitem{fino2026} J. Aquino, J. Arbulú, R. Acuña y C. Pajuelo, ``FINO: Forensic Intelligence and Network Oversight,'' VAST Challenge 2026 MC1, UTEC, 2026. \url{https://github.com/Josroyal/VAST_2026_RJJJ}
+\bibitem{mta} Metropolitan Transportation Authority, ``MTA Subway Hourly Ridership: 2020--2024,'' Open NY, \texttt{wujg-7c2s}.
+\end{thebibliography}
+
+\end{document}

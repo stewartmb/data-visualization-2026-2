@@ -1,0 +1,124 @@
+/* ============================================================================
+   La forma del día — tokens de diseño
+
+   Principio: el único color de la página es el dato. El cromo (texto, bordes,
+   fondos, controles) es negro y gris. Cada color de dato tiene un trabajo:
+
+     tipología   identidad de la estación (categórico, orden fijo, validado para
+                 daltonismo con validate_palette.js: peor par ΔE 9.2)
+     medida      magnitud (azul secuencial) o polaridad (rojo ↔ gris ↔ azul)
+     estado      confiabilidad de la comparación (siempre con icono + texto)
+     antes       el perfil prepandemia, gris, detrás del dato actual
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* ---- superficie y tinta --------------------------------------------- */
+  --pagina:        #f6f6f3;
+  --superficie:    #fcfcfb;
+  --superficie-2:  #f1f1ed;
+  --tinta:         #000000;
+  --tinta-2:       #3a3a38;
+  --tinta-3:       #6e6d68;
+  --tinta-4:       #a09f98;
+  --regla:         #e1e0d9;        /* líneas de rejilla, hairline */
+  --borde:         rgba(0, 0, 0, 0.10);
+  --borde-2:       rgba(0, 0, 0, 0.22);
+  --foco:          #000000;
+
+  /* ---- tipología: identidad de cada estación --------------------------- */
+  --residencial:   #eb6834;
+  --mixta:         #1baf7a;
+  --laboral:       #6250d6;
+  --residencial-suave: rgba(235, 104, 52, 0.16);
+  --mixta-suave:       rgba(27, 175, 122, 0.16);
+  --laboral-suave:     rgba(98, 80, 214, 0.16);
+
+  /* ---- medida: una sola magnitud, azul claro → oscuro ------------------ */
+  --azul-100: #cde2fb; --azul-200: #9ec5f4; --azul-300: #6da7ec;
+  --azul-400: #3987e5; --azul-500: #256abf; --azul-600: #184f95; --azul-700: #0d366b;
+
+  /* ---- polaridad: aplanó ↔ sin cambio ↔ afiló -------------------------- */
+  --neg:           #2a78d6;        /* se aplanó (el cambio común) */
+  --cero:          #e4e3dd;        /* sin cambio */
+  --pos:           #e34948;        /* se afiló (contra la corriente) */
+
+  /* ---- estado de la comparación (nunca solo por color) ----------------- */
+  --estacional:    #fab219;
+  --interrumpida:  #ec835a;
+  --pequena:       #898781;
+
+  /* ---- "antes": el perfil prepandemia ---------------------------------- */
+  --antes:         #d9d8d2;
+  --antes-borde:   #b5b4ae;
+
+  /* ---- tipografía ----------------------------------------------------- */
+  --sans:  "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --serif: "Newsreader", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+
+  --t-xxl: clamp(34px, 4.6vw, 58px);   /* preguntas de capítulo */
+  --t-xl:  clamp(22px, 2.4vw, 30px);   /* hallazgos */
+  --t-l:   18px;
+  --t-m:   15px;
+  --t-s:   13px;
+  --t-xs:  11.5px;
+
+  /* ---- ritmo ---------------------------------------------------------- */
+  --ancho-texto: 68ch;
+  --ancho-max:   1320px;
+  --margen:      clamp(18px, 4vw, 56px);
+  --radio:       4px;
+  --dur:         180ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --pagina:        #0f0f0e;
+    --superficie:    #1a1a19;
+    --superficie-2:  #222221;
+    --tinta:         #f0efec;
+    --tinta-2:       #d6d5cf;
+    --tinta-3:       #a9a8a1;
+    --tinta-4:       #6f6e68;
+    --regla:         #2c2c2a;
+    --borde:         rgba(255, 255, 255, 0.12);
+    --borde-2:       rgba(255, 255, 255, 0.26);
+    --foco:          #ffffff;
+    --residencial:   #d95926;
+    --mixta:         #199e70;
+    --laboral:       #9085e9;
+    --azul-100: #0d366b; --azul-200: #184f95; --azul-300: #256abf;
+    --azul-400: #3987e5; --azul-500: #5598e7; --azul-600: #86b6ef; --azul-700: #cde2fb;
+    --neg:           #3987e5;
+    --cero:          #383835;
+    --pos:           #e66767;
+    --antes:         #353532;
+    --antes-borde:   #4c4b47;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --pagina:        #0f0f0e;
+  --superficie:    #1a1a19;
+  --superficie-2:  #222221;
+  --tinta:         #f0efec;
+  --tinta-2:       #d6d5cf;
+  --tinta-3:       #a9a8a1;
+  --tinta-4:       #6f6e68;
+  --regla:         #2c2c2a;
+  --borde:         rgba(255, 255, 255, 0.12);
+  --borde-2:       rgba(255, 255, 255, 0.26);
+  --foco:          #ffffff;
+  --residencial:   #d95926;
+  --mixta:         #199e70;
+  --laboral:       #9085e9;
+  --azul-100: #0d366b; --azul-200: #184f95; --azul-300: #256abf;
+  --azul-400: #3987e5; --azul-500: #5598e7; --azul-600: #86b6ef; --azul-700: #cde2fb;
+  --neg:           #3987e5;
+  --cero:          #383835;
+  --pos:           #e66767;
+  --antes:         #353532;
+  --antes-borde:   #4c4b47;
+}

@@ -106,7 +106,10 @@ deliveries/                entregas históricas de semanas 4–10
 | [5](deliveries/week05/) | Propuesta inicial y presentación |
 | [6](deliveries/week06/) | Análisis, figuras, bocetos y papers |
 | [7](deliveries/week07/) | Consolidación de la primera fase |
-| [10](deliveries/week10/) | Prototipo anterior de cuatro vistas |
+| [10](deliveries/week10/) | Prototipo funcional y design review: aplicación de tres vistas (Matriz · Recorrido · Mapa), reporte, guion y presentación |
+| [12](deliveries/week12/) | Borrador refinado, respuesta a la crítica y paper |
+
+La aplicación de la Semana 10 también vive en [`app/`](app/), con `python3 -m http.server 8000` desde esa carpeta.
 
 Los objetivos de esas entregas reflejan el estado de cada fase. El rediseño actual está explicado en [`redesign/README.md`](redesign/README.md). Paper, póster, videos y evaluación con personas siguen pendientes como entregables finales del curso.
 
