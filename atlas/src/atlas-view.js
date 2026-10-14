@@ -1,4 +1,4 @@
-import {atlasOrder} from './atlas-order.js';
+import {atlasOrder} from './atlas-order.js?v=20261014-2';
 import {state,esc,fmt,signed,profile,metricValue,hellinger,deltaColor,shareColor,cellValue,showTooltip,hideTooltip,heading,stats,dayShort} from './model.js';
 
 export function renderAtlas(host,app,items){

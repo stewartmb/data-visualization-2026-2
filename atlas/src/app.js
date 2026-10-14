@@ -1,5 +1,5 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip} from './model.js';
-import {renderAtlas} from './atlas-view.js';
+import {renderAtlas} from './atlas-view.js?v=20261014-2';
 import {renderMap} from './map-view.js';
 import {renderPaths} from './paths-view.js';
 import {renderEvidence} from './evidence-view.js';
