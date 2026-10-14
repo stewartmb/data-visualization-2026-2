@@ -2,13 +2,15 @@
 
 **DS5343 Data Visualization · UTEC · 2026-2** · entrega del 14 de octubre de 2026
 
-Prototipo en D3.js de *La forma del día*: una aplicación de tres vistas — Matriz, Recorrido y Explorador — sobre los 428 complejos de estación del metro de Nueva York, 2020–2024.
+Prototipo en D3.js de *La forma del día*: una aplicación de tres vistas — Matriz, Recorrido y Mapa — sobre los 428 complejos de estación del metro de Nueva York, 2020–2024.
 
 ![Matriz](capturas/01-matriz-forma.png)
 
 ![Qué cambió](capturas/02-matriz-cambio.png)
 
-![Recorrido](capturas/10-bronx.png)
+![Recorrido](capturas/09-bronx.png)
+
+![Mapa](capturas/12-mapa.png)
 
 ---
 
@@ -32,12 +34,12 @@ prototype/
 ├── src/
 │   ├── tokens.css             sistema de diseño: colores por rol, tipografía; modo oscuro
 │   ├── estilos.css
-│   ├── main.js                carga datos, construye los capítulos, monta el explorador
-│   ├── capitulos.js           los ocho capítulos: pregunta, hallazgo, gráfico, notas, preset
-│   ├── estado.js              estado compartido del explorador
+│   ├── main.js                carga datos, monta las tres vistas y el panel
+│   ├── capitulos.js           los siete capítulos: pregunta, hallazgo, marcas, gráfico, notas, preset
+│   ├── estado.js              estado compartido de las vistas
 │   ├── panel-estacion.js      panel de evidencia de una estación
 │   ├── util.js
-│   └── graficos/              matriz · perfil · reloj · semana · tiras · pendiente · serie · mapa · dispersion · multiples · tarifas
+│   └── graficos/              matriz · cinta · reloj · semana · tiras · pendiente · cortes · perfil · serie · mapa · dispersion · multiples · tarifas
 ├── data/model.json · geo.json
 └── lib/d3.min.js              D3 v7.9.0
 ```
@@ -55,7 +57,7 @@ python3 -m http.server 8000
 
 Abrir <http://localhost:8000>. Cualquier servidor estático sirve (`npx serve .`, `php -S localhost:8000`).
 
-Pensado para 1 200 px o más de ancho; funciona en móvil (las vistas se apilan) y en modo oscuro.
+Pensado para 1 280 px o más de ancho; funciona en modo oscuro.
 
 **Teclado:** `←` `→` entre capítulos (en Recorrido) · `Esc` cierra el panel y la clave visual.
 
@@ -65,9 +67,9 @@ Pensado para 1 200 px o más de ancho; funciona en móvil (las vistas se apilan)
 
 **Matriz** (vista base): las 428 estaciones como filas, agrupadas por borough, contra las 168 horas de la semana o los 60 meses. Tres lentes: forma del día 2024, qué cambió 2020 → 2024, mes a mes. Debajo, sincronizadas, la forma del sistema y dónde se movió el día (o las entradas y la composición tarifaria). Pasar el mouse muestra la estación y el valor; clic abre su evidencia; clic en un borough lo aísla. Los ocho hallazgos van abajo como chips; clic abre su capítulo.
 
-**Recorrido**: los capítulos como botones, con Play. Cada uno: la pregunta, el hallazgo, el gráfico, *cómo se mide* y *qué no demuestra* plegados, y un botón que abre el explorador ya configurado.
+**Recorrido**: siete capítulos como botones, con Play. A la izquierda, un panel angosto con la pregunta, el hallazgo y qué significa cada marca; el resto es el gráfico. Las notas (*cómo se mide*, *qué no demuestra*) se abren con un botón; otro abre el mapa ya configurado.
 
-**Explorador**: mapa (cinco lentes; *forma del día* dibuja cada estación como un reloj de 24 h), dispersión y serie mensual, enlazados por una sola selección que también sobrevive al cambiar de vista. Clic en una estación → su panel de evidencia. Rectángulo en la dispersión → filtra. Período en la serie → cambia el tamaño en el mapa. Doble clic limpia un brush; "Quitar todo" limpia todo.
+**Mapa**: las 428 estaciones a pantalla completa con cinco lentes; *forma del día* dibuja cada estación como un reloj de 24 h. Filtros por borough, tipo y confiabilidad. Clic en una estación → su panel de evidencia. La selección sobrevive al cambiar de vista.
 
 El botón **"Qué significa cada marca"** de la barra abre la clave visual.
 

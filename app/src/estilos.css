@@ -487,3 +487,78 @@ svg.tiras .punto { fill-opacity: 0.8; cursor: pointer; }
 svg.tiras .punto.dudosa { stroke: var(--tinta); stroke-width: 0.8; stroke-dasharray: 1.5 1; fill-opacity: 0.5; }
 svg.tiras .punto.apagada { fill-opacity: 0.08; }
 svg.tiras .punto.sel { stroke: var(--tinta); stroke-width: 2.5; fill-opacity: 1; }
+
+/* =========================================================================
+   RECORRIDO como aplicación: panel de claves + lienzo · vista MAPA
+   ========================================================================= */
+.recorrido-cuerpo { grid-template-columns: 250px 1fr; }
+.recorrido-clave { border: 1px solid var(--borde); border-radius: var(--radio); background: var(--superficie); padding: 14px 16px; overflow: auto; }
+.recorrido-clave .numero { font-size: var(--t-xs); color: var(--tinta-3); }
+.recorrido-clave .pregunta { font-family: var(--serif); font-weight: 500; font-size: 24px; line-height: 1.08; letter-spacing: -0.01em; margin-top: 4px; color: var(--tinta); }
+.recorrido-clave .hallazgo { margin-top: 10px; font-size: 13.5px; font-weight: 600; line-height: 1.3; color: var(--tinta); }
+.recorrido-clave .hallazgo .tipo { display: inline-block; font-size: 10px; font-weight: 600; color: var(--tinta-3); border: 1px solid var(--borde-2); border-radius: 3px; padding: 0 5px; margin-right: 6px; vertical-align: middle; }
+.recorrido-clave .hallazgo .tipo.negativo { color: var(--tinta); border-color: var(--tinta); }
+.recorrido-clave .claves { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 14px; }
+.recorrido-clave .clave b { display: block; font-size: 22px; font-weight: 600; color: var(--tinta); line-height: 1; }
+.recorrido-clave .clave span { font-size: var(--t-xs); color: var(--tinta-3); }
+.recorrido-clave .marcas-titulo { margin-top: 16px; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tinta-3); }
+.recorrido-clave .marcas { list-style: none; margin: 6px 0 0; padding: 0; font-size: 11.5px; line-height: 1.35; color: var(--tinta-2); }
+.recorrido-clave .marcas li { margin-top: 5px; display: flex; gap: 6px; align-items: flex-start; }
+.recorrido-clave .marcas .muestra { flex: none; margin-top: 3px; }
+.recorrido-clave .muestra.ventana { width: 10px; height: 10px; border-radius: 2px; opacity: 0.12; }
+.recorrido-clave .acciones { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+.recorrido-clave .acciones .boton.activo { background: var(--tinta); color: var(--pagina); }
+.recorrido-clave .notas { margin-top: 10px; font-size: 11.5px; line-height: 1.45; color: var(--tinta-3); }
+.recorrido-clave .notas.oculta { display: none; }
+.recorrido-clave .notas b { display: block; margin-top: 8px; color: var(--tinta); font-size: 11.5px; }
+.recorrido-clave .notas p { margin: 2px 0 0; }
+.tarjeta-cap { display: flex; flex-direction: column; min-height: 0; }
+.tarjeta-cap .cuerpo-grafico { flex: 1; min-height: 0; position: relative; }
+.tarjeta-cap .cuerpo-grafico.centrado { display: flex; align-items: center; justify-content: center; }
+.hero-dos { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px; height: calc(100vh - 150px); }
+.hero-dos .tarjeta-cap { height: 100%; }
+.recorrido-lienzo .dos-col { height: 100%; }
+.mapa-barra { display: flex; align-items: center; gap: 16px; margin-bottom: 10px; flex-wrap: wrap; }
+.mapa-barra .controles { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.estado-mini { font-size: var(--t-xs); color: var(--tinta-3); }
+#explorador #tarjeta-mapa { height: calc(100% - 50px); min-height: 480px; display: flex; flex-direction: column; }
+#explorador #mapa-expl { flex: 1; min-height: 0; }
+@media (max-width: 980px) { .recorrido-cuerpo { grid-template-columns: 1fr; } .hero-dos { grid-template-columns: 1fr; height: auto; } }
+.recorrido-clave .muestra { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+.recorrido-clave .muestra.linea { width: 14px; height: 3px; border-radius: 2px; }
+.recorrido-clave .muestra.anillo { background: transparent; border: 1.5px dashed var(--tinta); }
+.recorrido-lienzo .dos-col .tarjeta-cap { height: calc(100vh - 150px); }
+/* cinta de recuperación */
+svg.cinta { width: 100%; height: 100%; overflow: visible; }
+svg.cinta text { font-family: var(--sans); }
+svg.cinta .fase { fill: var(--superficie-2); stroke: var(--borde); }
+svg.cinta .fase-antes { fill: var(--antes); }
+svg.cinta .fase-cierre { fill: rgba(227, 73, 72, 0.12); }
+svg.cinta .fase-meseta { fill: rgba(42, 120, 214, 0.10); }
+svg.cinta .fase-etq { font-size: 10.5px; font-weight: 600; fill: var(--tinta-2); }
+svg.cinta .sep { stroke: var(--borde-2); }
+svg.cinta .eje text { font-size: 10.5px; fill: var(--tinta-3); }
+svg.cinta .eje line { stroke: var(--regla); }
+svg.cinta .cien { stroke: var(--tinta); stroke-dasharray: 3 3; stroke-width: 0.8; }
+svg.cinta .nota { font-size: 10px; fill: var(--tinta-3); }
+svg.cinta .banda { fill: var(--azul-100); fill-opacity: 0.55; }
+svg.cinta .ventana-cmp { fill: none; stroke: var(--tinta); stroke-width: 1; stroke-dasharray: 3 2; }
+svg.cinta .evento { stroke: var(--residencial); stroke-dasharray: 2 3; }
+svg.cinta .evento-etq { fill: var(--residencial); }
+svg.cinta .serie { fill: none; stroke-width: 1.6; cursor: pointer; }
+svg.cinta .serie.sistema { stroke-width: 2.6; }
+svg.cinta .serie.resaltada { stroke-width: 2.2; }
+svg.cinta .serie-etq { font-size: 11px; font-weight: 500; }
+svg.cinta .serie-etq.resaltada { font-weight: 700; }
+/* matriz de cortes */
+svg.cortes { width: 100%; overflow: visible; }
+svg.cortes text { font-family: var(--sans); }
+svg.cortes .anio { font-size: 10px; fill: var(--tinta-3); }
+svg.cortes .sep { stroke: var(--regla); }
+svg.cortes .nota { font-size: 10px; fill: var(--tinta-3); }
+svg.cortes .nivel { font-size: 10px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+svg.cortes .nombre { font-size: 10.5px; fill: var(--tinta-2); }
+svg.cortes .dato { font-size: 10px; fill: var(--tinta-3); }
+svg.cortes .corte { fill: var(--interrumpida); }
+svg.cortes .ventana-cmp { fill: none; stroke: var(--tinta); stroke-dasharray: 3 2; }
+svg.cortes g.fila:hover .nombre { fill: var(--tinta); font-weight: 600; }

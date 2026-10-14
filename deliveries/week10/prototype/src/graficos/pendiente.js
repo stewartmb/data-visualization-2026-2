@@ -37,7 +37,7 @@ export function pendiente(cont, opts) {
       gB.append('line').attr('x1', m.l - 10).attr('x2', W - m.r + 10).attr('y1', y(v)).attr('y2', y(v)).attr('class', v === 0 ? 'cero' : 'umbral');
       gB.append('text').attr('x', W - m.r + 14).attr('y', y(v) + 3).attr('class', 'eje-etq').text(t);
     });
-    gB.append('text').attr('x', m.l - 10).attr('y', m.t - 12).attr('class', 'eje-etq').text('asimetría = (entradas 6–10 h − entradas 16–20 h) / suma');
+    gB.append('text').attr('x', W - m.r + 14).attr('y', H - 6).attr('class', 'eje-etq').text('asimetría = (E 6–10 h − E 16–20 h) / suma');
     gB.append('text').attr('x', m.l - 16).attr('y', m.t + 4).attr('text-anchor', 'end').attr('class', 'eje-etq').text('más entradas por la mañana ↑');
     gB.append('text').attr('x', m.l - 16).attr('y', H - m.b - 4).attr('text-anchor', 'end').attr('class', 'eje-etq').text('más entradas por la tarde ↓');
     ['2020', '2024'].forEach(a => gB.append('text').attr('x', x(a)).attr('y', H - m.b + 18).attr('text-anchor', 'middle').attr('class', 'anio').text(a === '2020' ? 'enero–febrero 2020' : '2024'));
@@ -56,7 +56,6 @@ export function pendiente(cont, opts) {
       gS.append('text').attr('x', x('2024') + 8).attr('y', y(b) + 4).attr('class', 'mediana-etq').attr('fill', colorTipo(t)).text(`mediana ${a > 0 ? '+' : ''}${a.toFixed(2)} → ${b > 0 ? '+' : ''}${b.toFixed(2)}`);
     });
     const nCruzan = est.filter(cruza).length, haciaTarde = est.filter(e => cruza(e) && e.asymCur < e.asymPre).length;
-    gS.append('text').attr('x', x('2024') + 8).attr('y', m.t - 12).attr('class', 'nota').text(`${nCruzan} cambian de tipo, ${haciaTarde} hacia la tarde`);
     actualizar();
   }
   function actualizar() {

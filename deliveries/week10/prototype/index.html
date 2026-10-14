@@ -20,7 +20,7 @@
   <nav class="pestanas" id="pestanas" role="tablist" aria-label="Vistas">
     <button role="tab" data-vista="perfiles" class="activa">Matriz</button>
     <button role="tab" data-vista="recorrido">Recorrido</button>
-    <button role="tab" data-vista="explorador">Explorador</button>
+    <button role="tab" data-vista="explorador">Mapa</button>
   </nav>
   <div class="acciones">
     <button class="boton chico" id="abrir-clave-barra">Qué significa cada marca</button>
@@ -74,55 +74,26 @@
     </div>
   </div>
   <div class="recorrido-cuerpo">
-    <aside class="recorrido-texto" id="recorrido-texto"></aside>
+    <aside class="recorrido-clave" id="recorrido-texto"></aside>
     <div class="recorrido-lienzo" id="recorrido-lienzo"></div>
   </div>
 </section>
 
-
-<!-- ================================================= explorador -->
-<section class="vista oculta explorador" id="explorador" data-vista="explorador">
-  <div class="interior">
-    <div class="cabecera">
-      <div class="controles">
-        <label>Borough
-          <select id="filtro-borough"><option value="">todos</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option><option>Staten Island</option></select>
-        </label>
-        <label>Tipo
-          <select id="filtro-tipo"><option value="">todos</option><option value="residencial">residencial</option><option value="mixta">mixta</option><option value="laboral">laboral</option></select>
-        </label>
-        <label><input type="checkbox" id="filtro-conf"> solo comparaciones sólidas</label>
-        <button class="boton chico" id="limpiar-todo">Quitar todo</button>
-      </div>
+<!-- ================================================= vista 3 · mapa -->
+<section class="vista oculta" id="explorador" data-vista="explorador">
+  <div class="mapa-barra">
+    <div class="segmentos" id="lentes" role="tablist">
+      <button data-lente="forma">forma del día</button><button data-lente="tipo">tipo</button><button data-lente="rec">recuperación</button><button data-lente="aplan">cambio del pico</button><button data-lente="conf">confiabilidad</button>
     </div>
-    <div class="estado-bar" id="estado-bar"></div>
-
-    <div class="rejilla-expl">
-      <div class="tarjeta" id="tarjeta-mapa">
-        <div class="cabecera-tarjeta">
-          <div><div class="titulo">Dónde</div><div class="subtitulo">el tamaño es entradas por día; la lente elige el color</div></div>
-          <div class="segmentos" id="lentes" role="tablist">
-            <button data-lente="tipo">tipo</button><button data-lente="forma">forma del día</button><button data-lente="rec">recuperación</button><button data-lente="aplan">pico</button><button data-lente="conf">confiabilidad</button>
-          </div>
-        </div>
-        <div class="cuerpo-grafico" id="mapa-expl"></div>
-      </div>
-
-      <div class="tarjeta" id="tarjeta-dispersion">
-        <div class="cabecera-tarjeta">
-          <div><div class="titulo">Cuánto y cómo</div><div class="subtitulo">arrastra un rectángulo para filtrar las demás vistas</div></div>
-        </div>
-        <div class="cuerpo-grafico" id="dispersion-expl"></div>
-      </div>
-
-      <div class="tarjeta" id="tarjeta-serie">
-        <div class="cabecera-tarjeta">
-          <div><div class="titulo">Cuándo: entradas mensuales al sistema</div><div class="subtitulo">arrastra para elegir un período; el tamaño de las estaciones en el mapa pasa a ser el promedio de ese período</div></div>
-        </div>
-        <div id="serie-expl"></div>
-      </div>
+    <div class="controles">
+      <label>Borough <select id="filtro-borough"><option value="">todos</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option><option>Staten Island</option></select></label>
+      <label>Tipo <select id="filtro-tipo"><option value="">todos</option><option value="residencial">residencial</option><option value="mixta">mixta</option><option value="laboral">laboral</option></select></label>
+      <label><input type="checkbox" id="filtro-conf"> solo comparaciones sólidas</label>
+      <button class="boton chico" id="limpiar-todo">Quitar todo</button>
+      <span id="estado-bar" class="estado-mini"></span>
     </div>
   </div>
+  <div class="tarjeta" id="tarjeta-mapa"><div class="cuerpo-grafico" id="mapa-expl"></div></div>
 </section>
 
 </main>

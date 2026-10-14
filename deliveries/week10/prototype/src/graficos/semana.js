@@ -39,7 +39,7 @@ export function semana(cont, opts) {
       if (d > 0 && d < 6) [[6, 10], [16, 20]].forEach(([a, b]) => svg.append('rect').attr('x', x(d * 24 + a)).attr('y', m.t - 4).attr('width', x(b) - x(a)).attr('height', H - m.t - m.b + 4).attr('class', 'ventana'));
     }
     o.grupos.forEach((g, k) => {
-      const y0 = m.t + k * o.altoFila, y = d3.scaleLinear([-maxAbs, maxAbs], [y0 + o.altoFila - 6, y0 + 4]);
+      const y0 = m.t + k * o.altoFila, y = d3.scaleLinear([-maxAbs, maxAbs * 0.45], [y0 + o.altoFila - 6, y0 + 4]);
       const dif = g.cur.map((v, i) => v - g.pre[i]);
       const perdioAM = d3.sum(dif.filter((v, i) => { const h = i % 24, d = Math.floor(i / 24); return d > 0 && d < 6 && h >= 6 && h < 10; }));
       svg.append('text').attr('x', m.l - 10).attr('y', y(0) - 2).attr('text-anchor', 'end').attr('class', 'grupo' + (o.resaltar === g.nombre ? ' fuerte' : '')).text(g.nombre);

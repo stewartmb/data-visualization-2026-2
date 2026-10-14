@@ -1,12 +1,12 @@
-// Los capítulos de la narrativa. Cada uno: una pregunta, el hallazgo que la
-// responde (sale del modelo, no se escribe a mano), su gráfico, y dos notas:
-// cómo se mide y qué no demuestra. El botón final manda al explorador con el
-// estado ya configurado en lo que el lector acaba de ver.
+// Los capítulos del recorrido. Cada uno es una pregunta, el hallazgo que la
+// responde (sale del modelo, no se escribe a mano), una composición de gráficos
+// a pantalla completa y, plegadas, dos notas: cómo se mide y qué no demuestra.
+// El panel de la izquierda solo lleva la pregunta, el hallazgo y qué significa
+// cada marca; el argumento lo hace el gráfico.
 
 import { estado } from './estado.js';
-import { fmt, cssVar, colorTipo, colorConf, NOMBRE_CONF, BOROUGHS } from './util.js';
+import { fmt, cssVar, colorTipo, colorConf, NOMBRE_CONF } from './util.js';
 import { perfil24 } from './graficos/perfil.js';
-import { serieMensual } from './graficos/serie.js';
 import { mapa } from './graficos/mapa.js';
 import { dispersion } from './graficos/dispersion.js';
 import { tarifas } from './graficos/tarifas.js';
@@ -14,33 +14,42 @@ import { pendiente } from './graficos/pendiente.js';
 import { reloj } from './graficos/reloj.js';
 import { semana, perfil168 } from './graficos/semana.js';
 import { tiras } from './graficos/tiras.js';
+import { cinta } from './graficos/cinta.js';
+import { cortes } from './graficos/cortes.js';
 
-const ETIQUETA_TIPO = { positivo: 'hallazgo', negativo: 'lo que no se sostiene', limite: 'límite' };
+const ALTO = 'calc(100vh - 150px)';
 
-/** "entre X y Y", o solo "X" si coinciden al redondear. */
-function rango(vals, f, invertir = false) {
-  const lo = d3.min(vals), hi = d3.max(vals);
-  if (f(lo) === f(hi)) return f(lo);
-  return invertir ? `entre ${f(hi)} y ${f(lo)}` : `entre ${f(lo)} y ${f(hi)}`;
+/** tarjeta de gráfico que ocupa toda la altura disponible */
+function tarjeta(padre, titulo, sub, alta = true) {
+  const t = d3.select(padre).append('div').attr('class', 'tarjeta tarjeta-cap').style('height', alta ? ALTO : null);
+  if (titulo) t.append('div').attr('class', 'titulo').text(titulo);
+  if (sub) t.append('div').attr('class', 'subtitulo').text(sub);
+  return t.append('div').attr('class', 'cuerpo-grafico');
 }
+const sw = (color, forma = 'punto') => `<i class="muestra ${forma}" style="background:${color}"></i>`;
 
 export function capitulos(M, G) {
   const H = Object.fromEntries(M.hallazgos.map(h => [h.id, h]));
-  const bx = M.boroughs.Bronx;
   const grandes = ['Manhattan', 'Brooklyn', 'Queens', 'Bronx'];
-  const otros = grandes.filter(b => b !== 'Bronx').map(b => M.boroughs[b]);
-  const S = M.stats;
+  const antes = `${sw(cssVar('--antes'))} gris: enero–febrero 2020, la línea base`;
+  const ahora = `${sw(cssVar('--tinta'), 'linea')} negro: 2024`;
+  const tipos = ['residencial', 'mixta', 'laboral'].map(t => `${sw(colorTipo(t))} ${t}`);
+  const anillo = `<i class="muestra anillo"></i> comparación poco confiable`;
 
   return [
-    // ------------------------------------------------------------- 0 · hero
+    // ------------------------------------------------------------- 0 · inicio
     {
-      id: 'inicio', hero: true,
+      id: 'inicio', hero: true, etiqueta: 'Inicio',
       pregunta: 'La forma del día',
-      sub: `El metro de Nueva York se programa alrededor del doble pico del día laborable: la salida de casa por la mañana y la salida del trabajo por la tarde. Entre 2020 y 2024 esa forma cambió, y la recuperación se cuenta casi siempre con un solo número que no dice a qué hora volvió la gente ni en qué barrios. Esto es lo que dicen 120 millones de registros de torniquete, estación por estación.`,
       claves: [[fmt.int(M.stats.n), 'complejos de estación'], [M.meta.meses.length, 'meses, enero 2020 a diciembre 2024'], ['24 × 7', 'horas de la semana por estación'], ['120 855 568', 'registros horarios agregados']],
+      marcas: [antes, ahora, `${sw(cssVar('--tinta'), 'ventana')} franjas: ventanas 6–10 h y 16–20 h`],
       render(fig) {
-        perfil24(fig, { pre: M.sistema.perfilPre, cur: M.sistema.perfilCur, alto: 320, animar: true, anotaciones: true, margen: { t: 22, r: 24, b: 30, l: 44 } });
-        leyendaAntesAhora(fig, 'todo el sistema, día laborable');
+        const w = d3.select(fig).append('div').attr('class', 'hero-dos');
+        const c1 = tarjeta(w.node(), 'El día laborable de todo el sistema, como reloj', 'medianoche arriba · el radio es el share de la hora', false);
+        c1.classed('centrado', true);
+        reloj(c1.node(), { pre: M.sistema.perfilPre, cur: M.sistema.perfilCur, r: 190 });
+        const c2 = tarjeta(w.node(), 'El mismo día, desplegado', 'share de cada hora en el total del día laborable', false);
+        perfil24(c2.node(), { pre: M.sistema.perfilPre, cur: M.sistema.perfilCur, alto: 440, animar: true, anotaciones: true, margen: { t: 22, r: 24, b: 30, l: 44 } });
       },
     },
     // ----------------------------------------------- 1 · cuánta gente volvió
@@ -48,10 +57,14 @@ export function capitulos(M, G) {
       id: 'volumen', numero: 1, etiqueta: 'Volumen',
       pregunta: '¿Cuánta gente volvió?',
       hallazgo: H.estanco,
-      render(fig) { serieMensual(fig, { serie: M.sistema.serie, base: M.meta.base, alto: 300, anotaciones: true }); },
-      pie: [
-        ['Cómo se mide', 'Suma de entradas por mes en las 428 estaciones. La referencia es enero de 2020, el último mes completo antes de la pandemia.'],
-        ['Qué no demuestra', 'Son entradas a estaciones, no viajes: no hay origen–destino en esta fuente. Y una caída de entradas puede ser menos demanda o menos servicio; esta serie no lo distingue.'],
+      marcas: [`${sw(cssVar('--tinta'), 'linea')} sistema`, `${sw(cssVar('--pos'), 'linea')} Bronx`, `${sw(cssVar('--tinta-3'), 'linea')} Manhattan, Brooklyn, Queens`, `${sw(cssVar('--azul-100'))} banda: del 10 % al 90 % de las 428 estaciones`],
+      render(fig) {
+        const c = tarjeta(fig, 'Entradas de cada mes sobre enero–febrero de 2020', 'el sistema, cada borough y la banda de todas las estaciones');
+        cinta(c.node(), { modelo: M });
+      },
+      notas: [
+        ['Cómo se mide', 'Suma de entradas por mes dividida por el promedio mensual de enero–febrero de 2020, el último período completo antes de la pandemia. La banda son los percentiles 10 y 90 de las 428 estaciones, cada una sobre su propia línea base.'],
+        ['Qué no demuestra', 'Son entradas a estaciones, no viajes. Y una caída de entradas puede ser menos demanda o menos servicio; esta serie no lo distingue.'],
       ],
       preset: { lente: 'rec', origen: 'capítulo 1' },
     },
@@ -60,7 +73,7 @@ export function capitulos(M, G) {
       id: 'forma', numero: 2, etiqueta: 'El doble pico',
       pregunta: '¿Sigue existiendo el doble pico?',
       hallazgo: H.aplano,
-      cuerpo: `Sí, pero más bajo y más tarde. El pico de la mañana perdió peso en tres de los cuatro boroughs grandes y el mediodía lo ganó. El cuarto es la excepción, y es el capítulo 6.`,
+      marcas: [antes, ahora, `${sw(cssVar('--tinta'), 'ventana')} franjas del reloj: 6–10 h y 16–20 h`, ...tipos, `${sw(cssVar('--tinta'), 'linea')} línea negra en las tiras: mediana del borough`],
       render(fig) {
         const fila = d3.select(fig).append('div').attr('class', 'fila-paneles cuatro');
         const maxV = d3.max(grandes, b => Math.max(d3.max(M.boroughs[b].perfilPre), d3.max(M.boroughs[b].perfilCur))) * 1.05;
@@ -68,20 +81,16 @@ export function capitulos(M, G) {
           const v = M.boroughs[b];
           const t = fila.append('div').attr('class', 'tarjeta tarjeta-reloj');
           t.append('div').attr('class', 'titulo').text(b === 'Bronx' ? 'Bronx: la excepción' : b);
-          t.append('div').attr('class', 'subtitulo').text(`${v.n} estaciones · pico/valle ${fmt.razon(v.pvPre)} → ${fmt.razon(v.pvCur)} · pico cambió ${fmt.cambio(v.aplan)}`);
-          const c = t.append('div').attr('class', 'reloj-cont');
-          reloj(c.node(), { pre: v.perfilPre, cur: v.perfilCur, r: 92, maxV });
+          t.append('div').attr('class', 'subtitulo').text(`${v.n} estaciones · pico/valle ${fmt.razon(v.pvPre)} → ${fmt.razon(v.pvCur)} · pico ${fmt.cambio(v.aplan)}`);
+          reloj(t.append('div').attr('class', 'reloj-cont').node(), { pre: v.perfilPre, cur: v.perfilCur, r: 92, maxV });
           perfil24(t.append('div').attr('class', 'reloj-perfil').node(), { pre: v.perfilPre, cur: v.perfilCur, alto: 84, compacto: true, ejeY: false, maxY: maxV, margen: { t: 6, r: 8, b: 20, l: 8 } });
         });
-        leyendaAntesAhora(fig, 'día laborable, share por hora · reloj: medianoche arriba, las franjas son las ventanas 6–10 y 16–20 h');
-        const tt = d3.select(fig).append('div').attr('class', 'tarjeta').style('margin-top', '12px');
-        tt.append('div').attr('class', 'titulo').text('Cuánto cambió el pico de cada estación, por borough: una estación por punto');
-        tt.append('div').attr('class', 'subtitulo').text(`A la izquierda del umbral, el pico se aplanó más del ${M.meta.umbrales.aplana * 100}\u00a0%. La línea negra es la mediana del borough. Color = tipo de estación.`);
-        tiras(tt.append('div').node(), { modelo: M, grupos: grandes.map(b => ({ nombre: b, fuerte: b === 'Bronx', estaciones: M.estaciones.filter(e => e.b === b) })), valor: e => e.aplan, dominio: [-0.6, 0.3], umbral: -M.meta.umbrales.aplana, etiquetaUmbral: 'umbral −5 %', ejeTitulo: 'cambio de la razón pico/valle del día laborable, 2024 frente a enero–febrero 2020', visible: () => true, altoFila: 78 });
-        leyendaTipos(tt);
+        const c = tarjeta(fig, 'Cuánto cambió el pico de cada estación, por borough: una estación por punto', `a la izquierda del umbral, el pico se aplanó más del ${M.meta.umbrales.aplana * 100} % · color = tipo`);
+        c.style('margin-top', '12px');
+        tiras(c.node(), { modelo: M, grupos: grandes.map(b => ({ nombre: b, fuerte: b === 'Bronx', estaciones: M.estaciones.filter(e => e.b === b) })), valor: e => e.aplan, dominio: [-0.6, 0.3], umbral: -M.meta.umbrales.aplana, etiquetaUmbral: 'umbral −5 %', ejeTitulo: 'cambio de la razón pico/valle del día laborable, 2024 frente a enero–febrero 2020', visible: () => true, altoFila: 78 });
       },
-      pie: [
-        ['Cómo se mide', `Razón pico/valle: el máximo entre las 6 y las 10 h dividido por el mínimo entre las 11 y las 15 h, sobre el perfil del día laborable. Se cuenta como aplanamiento una caída mayor del ${M.meta.umbrales.aplana * 100}\u00a0%; con cualquier margen serían más.`],
+      notas: [
+        ['Cómo se mide', `Razón pico/valle: el máximo entre las 6 y las 10 h dividido por el mínimo entre las 11 y las 15 h, sobre el perfil del día laborable. Se cuenta como aplanamiento una caída mayor del ${M.meta.umbrales.aplana * 100} %.`],
         ['Qué no demuestra', 'El índice mide forma, no volumen: una estación puede aplanarse y recuperar mucho, o al revés. Tampoco dice por qué se aplanó.'],
       ],
       preset: { lente: 'aplan', origen: 'capítulo 2' },
@@ -91,158 +100,94 @@ export function capitulos(M, G) {
       id: 'semana', numero: 3, etiqueta: 'La semana',
       pregunta: '¿Qué días de la semana cambiaron?',
       hallazgo: H.viernes,
-      cuerpo: `El perfil de 24 horas promedia los siete días y esconde lo más claro del cambio. Sobre las 168 horas de la semana, el jueves y el viernes por la mañana es donde más peso se perdió; sábado y domingo lo ganaron. Lunes y martes no perdieron: la semana laboral se acortó por el final.`,
+      marcas: [`${sw(cssVar('--neg'))} azul: la hora perdió peso en la semana`, `${sw(cssVar('--pos'))} rojo: lo ganó`, `${sw(cssVar('--tinta'), 'ventana')} franjas: 6–10 h y 16–20 h`, antes, ahora],
       render(fig) {
         const grupos = [{ nombre: 'Todo el sistema', fuerte: true, ...perfil168(M.estaciones) },
           ...grandes.map(b => ({ nombre: b, fuerte: b === 'Bronx', ...perfil168(M.estaciones.filter(e => e.b === b)) })),
           ...['residencial', 'mixta', 'laboral'].map(t => ({ nombre: 'estaciones ' + (t === 'mixta' ? 'mixtas' : t === 'laboral' ? 'laborales' : 'residenciales'), ...perfil168(M.estaciones.filter(e => e.tipo === t)) }))];
-        const t = d3.select(fig).append('div').attr('class', 'tarjeta');
-        t.append('div').attr('class', 'titulo').text('Share de cada una de las 168 horas de la semana en 2024 menos el de 2020, por grupo');
-        t.append('div').attr('class', 'subtitulo').text('Azul: la hora perdió peso en la semana; rojo: lo ganó. Escala común en todas las filas; las franjas grises son las ventanas 6–10 y 16–20 h de los días laborables.');
-        semana(t.append('div').node(), { grupos, resaltar: 'Bronx', altoFila: 90, margen: { t: 30, r: 16, b: 10, l: 170 } });
+        const c = tarjeta(fig, 'Share de cada una de las 168 horas de la semana: 2024 menos 2020, por grupo', 'escala común en todas las filas');
+        const alto = Math.max(64, (fig.getBoundingClientRect().height - 120) / grupos.length);
+        semana(c.node(), { grupos, resaltar: 'Bronx', altoFila: alto, margen: { t: 30, r: 16, b: 10, l: 170 } });
       },
-      pie: [
+      notas: [
         ['Cómo se mide', 'Perfil de 168 horas de cada grupo, ponderado por el volumen de cada estación, normalizado al total de la semana. Se resta el de enero–febrero de 2020 al de 2024 completo.'],
-        ['Qué no demuestra', '2024 completo incluye feriados y verano; enero–febrero de 2020 incluye dos lunes feriados. La comparación día a día se afina con la ventana calendario comparable (notebook datos_nuevos, pasada D). Y "perdió peso" es share: el viernes también perdió volumen, pero eso lo dice el capítulo 1, no este.'],
+        ['Qué no demuestra', '2024 completo incluye feriados y verano; enero–febrero de 2020 incluye dos lunes feriados. La comparación día a día se afina con la ventana calendario comparable (pasada D del notebook).'],
       ],
-      preset: { lente: 'forma', origen: 'capítulo 3: la semana' },
+      preset: { lente: 'forma', origen: 'capítulo 3' },
     },
     // --------------------------------------------- 4 · para qué se usa
     {
       id: 'tipos', numero: 4, etiqueta: 'Tipos',
       pregunta: '¿Para qué se usa cada estación?',
       hallazgo: H['una-direccion'],
-      cuerpo: `Las entradas de la mañana son gente saliendo de casa; las de la tarde, gente saliendo del trabajo. Esa asimetría separa la ciudad sin ningún dato externo: ${M.tipos.residencial.n} estaciones residenciales, ${M.tipos.laboral.n} laborales (${M.boroughs.Manhattan.tipos.laboral} de ellas en Manhattan) y ${M.tipos.mixta.n} mixtas.`,
+      marcas: [`${sw(cssVar('--antes'))} reloj: medianoche arriba, el radio es el share de la hora; gris 2020, color 2024`, ...tipos, anillo, `${sw(cssVar('--tinta'), 'linea')} en las pendientes, la línea gruesa es la mediana del tipo`],
       render(fig) {
-        const w = d3.select(fig).append('div').attr('class', 'dos-col');
-        const tm = w.append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, calc(100vh - 190px), 900px)').style('display', 'flex').style('flex-direction', 'column');
-        tm.append('div').attr('class', 'titulo').text('Tipo de cada estación, según su asimetría mañana/tarde en 2020');
-        const cm = tm.append('div').attr('class', 'cuerpo-grafico');
-        mapa(cm.node(), { modelo: M, geo: G, lente: 'tipo', interactivo: true, zoom: true, visible: () => true, tamanoPorRango: false, radioMax: 9 });
-        const tp = w.append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, calc(100vh - 190px), 900px)').style('display', 'flex').style('flex-direction', 'column');
-        tp.append('div').attr('class', 'titulo').text('La asimetría de cada estación en 2020 y en 2024, una línea por estación');
-        tp.append('div').attr('class', 'subtitulo').text(`${M.stats.cambioTipo} cruzan una banda; ${M.stats.cambioTipoHaciaTarde} de ellas hacia la tarde. Las líneas gruesas son las medianas de cada tipo.`);
-        pendiente(tp.append('div').attr('class', 'cuerpo-grafico').node(), { modelo: M, interactivo: true, visible: () => true, margen: { t: 30, r: 200, b: 34, l: 100 } });
-        leyendaTipos(tp);
+        const w = d3.select(fig).append('div').attr('class', 'dos-col ancha-izq');
+        const c1 = tarjeta(w.node(), 'La forma del día de las 428 estaciones, sobre el mapa', 'una punta hacia las 8 es el pico de la mañana (residencial); hacia las 17, el de la tarde (laboral) · acerca para leer Manhattan');
+        mapa(c1.node(), { modelo: M, geo: G, lente: 'forma', interactivo: true, zoom: true, visible: () => true, tamanoPorRango: false, radioMax: 11, escalaGlifo: 1.25, leyenda: false });
+        const c2 = tarjeta(w.node(), 'La asimetría de cada estación, 2020 → 2024', `${M.stats.cambioTipo} cruzan una banda; ${M.stats.cambioTipoHaciaTarde} hacia la tarde`);
+        pendiente(c2.node(), { modelo: M, interactivo: true, visible: () => true, margen: { t: 34, r: 150, b: 34, l: 90 } });
       },
-      pie: [
+      notas: [
         ['Cómo se mide', `Asimetría = (entradas de 6 a 10 h − entradas de 16 a 20 h) / (suma de ambas), sobre el día laborable de enero–febrero de 2020. Por encima de +${M.meta.umbrales.tipo} es residencial; por debajo de −${M.meta.umbrales.tipo}, laboral.`],
         ['Qué no demuestra', 'Es un proxy derivado del mismo torniquete, no una medida de uso del suelo. Una estación "laboral" puede ser también comercial o turística; el índice solo ve a qué hora entra la gente.'],
       ],
       preset: { lente: 'tipo', origen: 'capítulo 4' },
     },
-    // ------------------------------------------ 4 · cuánto o cómo
-    {
-      id: 'ejes', numero: 5, etiqueta: 'Cuánto o cómo',
-      pregunta: '¿Qué cambió más: cuánto o cómo?',
-      hallazgo: H.independientes,
-      cuerpo: `Cada punto es una estación. A la derecha, volvió más gente; abajo, el pico se aplanó más. La nube no es una diagonal: saber una cosa no dice la otra.`,
-      render(fig) {
-        const t = d3.select(fig).append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, calc(100vh - 190px), 900px)').style('display', 'flex').style('flex-direction', 'column');
-        t.append('div').attr('class', 'titulo').text('Recuperación frente a cambio del pico, una estación por punto, color por tipo');
-        const c = t.append('div').attr('class', 'cuerpo-grafico');
-        dispersion(c.node(), { modelo: M, brush: false, interactivo: true, visible: () => true });
-        leyendaTipos(t);
-      },
-      pie: [
-        ['Cómo se mide', `Correlación de rango de Spearman entre las dos variables, dentro de cada borough: ${grandes.map(b => `${b} ${S.rho_rec_aplan_borough[b] > 0 ? '+' : ''}${S.rho_rec_aplan_borough[b].toFixed(2)}`).join(', ')}.`],
-        ['Qué no demuestra', 'Independencia estadística no es ausencia de causa común. Las dos cosas pueden tener el mismo origen y aun así no moverse juntas estación por estación.'],
-      ],
-      preset: { lente: 'aplan', origen: 'capítulo 5' },
-    },
     // -------------------------------------------- 5 · por qué el Bronx
     {
-      id: 'bronx', numero: 6, etiqueta: 'El Bronx',
+      id: 'bronx', numero: 5, etiqueta: 'El Bronx',
       pregunta: '¿Por qué el Bronx?',
       hallazgo: H.bronx,
-      cuerpo: `Aplanar el pico es lo que hace el trabajo híbrido: se deja de viajar algunos días y el resto del día gana peso. Donde la gente no puede quedarse en casa, el pico se queda igual y solo baja el volumen. El Bronx recuperó el ${fmt.pct(bx.rec)} y su pico cambió ${fmt.cambio(bx.aplan)}; Manhattan, Brooklyn y Queens recuperaron ${rango(otros.map(o => o.rec), fmt.pct)} y su pico cambió ${rango(otros.map(o => o.aplan), fmt.cambio, true)}.`,
+      hallazgo2: H.independientes,
+      marcas: [`${sw(cssVar('--tinta'))} Bronx`, `${sw(cssVar('--tinta-4'))} resto de la ciudad`, `${sw(cssVar('--antes'))} reloj: gris 2020, color 2024`, ...tipos, anillo],
       render(fig) {
         const w = d3.select(fig).append('div').attr('class', 'dos-col');
-        const t1 = w.append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, calc(100vh - 190px), 900px)').style('display', 'flex').style('flex-direction', 'column');
-        t1.append('div').attr('class', 'titulo').text('Las estaciones del Bronx en negro; el resto de la ciudad en gris');
-        dispersion(t1.append('div').attr('class', 'cuerpo-grafico').node(), { modelo: M, brush: false, interactivo: true, visible: () => true, resaltar: e => e.b === 'Bronx', etiquetaResaltado: 'Bronx, mediana', cuadrantes: false });
-        const t2 = w.append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, calc(100vh - 190px), 900px)').style('display', 'flex').style('flex-direction', 'column');
-        t2.append('div').attr('class', 'titulo').text('La forma del día de cada estación del Bronx: el pico de la mañana sigue ahí');
-        t2.append('div').attr('class', 'subtitulo').text('cada marca es un reloj de 24 h, medianoche arriba; gris: 2020, color: 2024. Una punta hacia las 8 es el pico de la mañana');
-        mapa(t2.append('div').attr('class', 'cuerpo-grafico').node(), { modelo: M, geo: G, lente: 'forma', interactivo: true, zoom: true, visible: e => e.b === 'Bronx', enfoqueBorough: 'Bronx', tamanoPorRango: false, radioMax: 15, escalaGlifo: 2.4, leyenda: false });
-        const tabla = d3.select(fig).append('div').attr('class', 'tarjeta').style('margin-top', '14px');
-        tabla.append('div').attr('class', 'titulo').text('Por borough, mediana de sus estaciones con comparación sólida');
-        const tb = tabla.append('div').style('overflow-x', 'auto').append('table').style('width', '100%').style('margin-top', '8px').style('border-collapse', 'collapse').style('font-size', '13px').style('font-variant-numeric', 'tabular-nums');
-        tb.append('tr').html('<th style="text-align:left;font-weight:500;color:var(--tinta-3);padding:4px 0;border-bottom:1px solid var(--regla)">borough</th><th style="text-align:right;font-weight:500;color:var(--tinta-3);border-bottom:1px solid var(--regla)">estaciones</th><th style="text-align:right;font-weight:500;color:var(--tinta-3);border-bottom:1px solid var(--regla)">recuperación</th><th style="text-align:right;font-weight:500;color:var(--tinta-3);border-bottom:1px solid var(--regla)">cambio del pico</th><th style="text-align:right;font-weight:500;color:var(--tinta-3);border-bottom:1px solid var(--regla)">aplanaron más de 5 %</th><th style="text-align:right;font-weight:500;color:var(--tinta-3);border-bottom:1px solid var(--regla)">7–9 h en el día</th>');
-        ['Bronx', 'Brooklyn', 'Queens', 'Manhattan'].forEach(b => {
-          const v = M.boroughs[b];
-          tb.append('tr').style('font-weight', b === 'Bronx' ? '600' : '400').style('color', b === 'Bronx' ? 'var(--tinta)' : 'var(--tinta-2)')
-            .html(`<td style="padding:5px 0;border-bottom:1px solid var(--regla)">${b}</td><td style="text-align:right;border-bottom:1px solid var(--regla)">${v.n}</td><td style="text-align:right;border-bottom:1px solid var(--regla)">${fmt.pct(v.rec)}</td><td style="text-align:right;border-bottom:1px solid var(--regla)">${fmt.cambio(v.aplan)}</td><td style="text-align:right;border-bottom:1px solid var(--regla)">${fmt.pct(v.pctAplan)}</td><td style="text-align:right;border-bottom:1px solid var(--regla)">${fmt.pct(v.share79Pre, 1)} → ${fmt.pct(v.share79Cur, 1)}</td>`);
-        });
+        const c1 = tarjeta(w.node(), 'Recuperación frente a cambio del pico, una estación por punto', 'a la derecha, volvió más gente; abajo, el pico se aplanó más · el Bronx en negro');
+        dispersion(c1.node(), { modelo: M, brush: false, interactivo: true, visible: () => true, resaltar: e => e.b === 'Bronx', etiquetaResaltado: 'Bronx, mediana', cuadrantes: false });
+        const c2 = tarjeta(w.node(), 'La forma del día de cada estación del Bronx: el pico de la mañana sigue ahí', 'cada marca es un reloj de 24 h; una punta hacia las 8 es el pico de la mañana');
+        mapa(c2.node(), { modelo: M, geo: G, lente: 'forma', interactivo: true, zoom: true, visible: e => e.b === 'Bronx', enfoqueBorough: 'Bronx', tamanoPorRango: false, radioMax: 15, escalaGlifo: 2.4, leyenda: false });
       },
-      pie: [
-        ['Cómo se mide', `Aguanta tres pruebas: con el umbral del 5\u00a0%, con todo 2024 en vez de enero–febrero (${fmt.pct(bx.recFY)}), y restringido a estaciones de más de 2 000 entradas por día.`],
+      notas: [
+        ['Cómo se mide', `Medianas por borough sobre las estaciones con comparación sólida. Aguanta tres pruebas: con el umbral del 5 %, con todo 2024 en vez de enero–febrero (${fmt.pct(M.boroughs.Bronx.recFY)}), y restringido a estaciones de más de 2 000 entradas por día. Dentro de cada borough, la correlación de rango entre recuperación y aplanamiento va de ${d3.min(Object.values(M.stats.rho_rec_aplan_borough)).toFixed(2)} a ${d3.max(Object.values(M.stats.rho_rec_aplan_borough)).toFixed(2)}.`],
         ['Qué no demuestra', 'Los datos del torniquete no dicen por qué. La explicación del teletrabajo es una hipótesis consistente con los datos, no una medición: se contrasta con el share de trabajo desde casa del Census por área de influencia de cada estación en la siguiente versión.'],
       ],
-      preset: { lente: 'aplan', boroughs: ['Bronx'], origen: 'capítulo 6: el Bronx' },
+      preset: { lente: 'aplan', boroughs: ['Bronx'], origen: 'capítulo 5: el Bronx' },
     },
     // ------------------------------------------------- 6 · el abono
     {
-      id: 'abono', numero: 7, etiqueta: 'El abono',
+      id: 'abono', numero: 6, etiqueta: 'El abono',
       pregunta: '¿Quién dejó de comprar el abono?',
       hallazgo: H.abono,
-      cuerpo: `La composición por clase de pago es la evidencia indirecta del mecanismo. El pase ilimitado de 30 días solo conviene si se viaja casi todos los días; su desplome es lo que se espera si una parte de la ciudad pasó a viajar dos o tres días por semana.`,
+      marcas: [`${sw(cssVar('--residencial'))} MetroCard ilimitada de 30 días, resaltada`, `${sw(cssVar('--azul-500'))} OMNY, tarifa completa`, `${sw(cssVar('--tinta-4'))} otras clases`],
       render(fig) {
-        const t = d3.select(fig).append('div').attr('class', 'tarjeta');
-        t.append('div').attr('class', 'titulo').text('Share de cada clase de pago en las entradas del mes, con la ilimitada de 30 días resaltada');
-        tarifas(t.append('div').node(), { modelo: M, alto: 320, resaltar: 'Metrocard - Unlimited 30-Day' });
+        const c = tarjeta(fig, 'Share de cada clase de pago en las entradas del mes, apilado al 100 %', 'la ilimitada de 30 días es la evidencia del uso intermitente; el cruce MetroCard → OMNY es adopción tecnológica');
+        tarifas(c.node(), { modelo: M, alto: Math.max(360, innerHeight - 260), resaltar: 'Metrocard - Unlimited 30-Day' });
       },
-      pie: [
+      notas: [
         ['Cómo se mide', 'Entradas por mes, borough, método de pago y clase tarifaria, apiladas al 100 %. Las clases menores se agrupan en "otras".'],
         ['Qué no demuestra', 'La migración de MetroCard a OMNY es adopción tecnológica, no cambio de demanda: una caída de MetroCard no es una caída de pasajeros. Por eso el hallazgo es sobre el abono de 30 días, que cae en términos absolutos, y no sobre el cruce de OMNY.'],
       ],
     },
     // ------------------------------------- 7 · qué no podemos afirmar
     {
-      id: 'limites', numero: 8, etiqueta: 'Límites',
+      id: 'limites', numero: 7, etiqueta: 'Límites',
       pregunta: '¿Qué no podemos afirmar?',
       hallazgo: H['linea-base'],
-      cuerpo: `La línea base disponible son dos meses de invierno de 2020: este dataset no tiene 2019. Comparar contra ellos es correcto para la mayoría de las estaciones y engañoso para algunas: las de playa y estadio, las que tuvieron un corte de servicio en la ventana de comparación, las muy pequeñas. Esas están marcadas con anillo punteado en toda la aplicación, y las medianas por borough y por tipo se calculan sin ellas.`,
+      marcas: [`${sw(colorConf('estacional'))} ${NOMBRE_CONF.estacional}`, `${sw(colorConf('interrumpida'))} ${NOMBRE_CONF.interrumpida}`, `${sw(colorConf('pequena'))} ${NOMBRE_CONF.pequena}`, `${sw(cssVar('--azul-500'))} azul en la matriz: entradas del mes sobre ene–feb 2020`, `${sw(cssVar('--interrumpida'))} naranja: caída anómala detectada en los datos`],
       render(fig) {
-        const w = d3.select(fig).append('div').attr('class', 'dos-col ancha-izq');
-        const tm = w.append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, calc(100vh - 190px), 900px)').style('display', 'flex').style('flex-direction', 'column');
-        tm.append('div').attr('class', 'titulo').text('Confiabilidad de la comparación, estación por estación');
-        mapa(tm.append('div').attr('class', 'cuerpo-grafico').node(), { modelo: M, geo: G, lente: 'conf', interactivo: true, zoom: true, visible: () => true, tamanoPorRango: false, radioMax: 9 });
-        const lista = w.append('div').attr('class', 'tarjeta').style('overflow-y', 'auto').style('height', 'clamp(400px, calc(100vh - 190px), 900px)');
-        lista.append('div').attr('class', 'titulo').text('Las estaciones marcadas y por qué');
-        ['interrumpida', 'estacional', 'pequena'].forEach(nivel => {
-          const g = M.estaciones.filter(e => e.conf.nivel === nivel).sort((a, b) => Math.abs(b.dSeason) - Math.abs(a.dSeason));
-          if (!g.length) return;
-          lista.append('div').style('margin-top', '12px').style('font-size', '12px').style('font-weight', '600').style('color', 'var(--tinta)')
-            .html(`<i style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${colorConf(nivel)};margin-right:7px;vertical-align:middle"></i>${NOMBRE_CONF[nivel]} · ${g.length}`);
-          const ul = lista.append('ul').style('margin', '6px 0 0').style('padding-left', '18px').style('font-size', '12px').style('color', 'var(--tinta-2)').style('line-height', '1.45');
-          g.forEach(e => ul.append('li').html(`<span style="cursor:pointer;text-decoration:underline dotted" data-id="${e.id}">${e.n}</span> <span style="color:var(--tinta-3)">— ${e.conf.motivos[0]}</span>`));
-        });
-        lista.selectAll('[data-id]').on('click', function () { estado.enfocar(this.dataset.id); });
-        const cortes = M.estaciones.filter(e => e.cortes.length).map(e => ({ n: e.n, m: e.cortes }));
-        const g2 = d3.select(fig).append('div').attr('class', 'tarjeta').style('margin-top', '14px');
-        g2.append('div').attr('class', 'titulo').text('Caídas anómalas de entradas detectadas en los datos');
-        g2.append('div').attr('class', 'subtitulo').text('Un mes por debajo de la mitad de la mediana de sus ±6 meses vecinos. Detectado en los datos, sin usar avisos de servicio; varios coinciden con cierres conocidos: la línea G en julio–agosto de 2024, 21 St-Queensbridge entre septiembre de 2023 y marzo de 2024.');
-        const p = g2.append('p').style('margin-top', '8px').style('font-size', '12px').style('color', 'var(--tinta-2)').style('line-height', '1.5');
-        p.html(cortes.map(c => `<b style="color:var(--tinta);font-weight:500">${c.n}</b> ${c.m.map(fmt.mes).join(', ')}`).join(' · '));
+        const w = d3.select(fig).append('div').attr('class', 'dos-col');
+        const c1 = tarjeta(w.node(), 'Confiabilidad de la comparación, estación por estación', 'las marcadas llevan anillo punteado en toda la aplicación y no entran en las medianas');
+        mapa(c1.node(), { modelo: M, geo: G, lente: 'conf', interactivo: true, zoom: true, visible: () => true, tamanoPorRango: false, radioMax: 9 });
+        const c2 = tarjeta(w.node(), 'Las estaciones marcadas, mes a mes: por qué cada una', 'detectado en los datos, sin usar avisos de servicio; varios cortes coinciden con cierres conocidos (línea G, 2024; 21 St-Queensbridge, 2023–24)');
+        c2.style('overflow-y', 'auto');
+        cortes(c2.node(), { modelo: M });
       },
-      pie: [
+      notas: [
         ['Cómo se mide', `Sensibilidad estacional: la diferencia entre la recuperación con todo 2024 y con enero–febrero de 2024 se desvía más de ${M.meta.umbrales.estacional * 100} puntos de la del sistema. Ventana anómala: un mes de la comparación cae por debajo de la mitad de su entorno. Línea base pequeña: menos de ${M.meta.umbrales.pequena} entradas por día en 2020.`],
         ['Lo que vale para todo el proyecto', 'Son entradas, no viajes. Es el complejo de estación, no la estación individual. Son estimaciones de la MTA, dentro del 1 % de sus cifras oficiales. Y los cambios de servicio son un factor que estos datos no controlan.'],
       ],
-      preset: { lente: 'conf', origen: 'capítulo 8' },
+      preset: { lente: 'conf', origen: 'capítulo 7' },
     },
   ];
-}
-
-function leyendaAntesAhora(fig, nota) {
-  const l = d3.select(fig).append('div').attr('class', 'leyenda');
-  l.append('span').attr('class', 'item').html(`<i class="muestra" style="background:${cssVar('--antes')};border:1px solid ${cssVar('--antes-borde')}"></i>enero–febrero de 2020, la línea base`);
-  l.append('span').attr('class', 'item').html(`<i class="muestra linea" style="background:${cssVar('--tinta')}"></i>2024`);
-  if (nota) l.append('span').attr('class', 'item').style('color', 'var(--tinta-4)').text(nota);
-}
-function leyendaTipos(cont) {
-  const l = cont.append('div').attr('class', 'leyenda');
-  ['residencial', 'mixta', 'laboral'].forEach(t => l.append('span').attr('class', 'item').html(`<i class="muestra punto" style="background:${colorTipo(t)}"></i>${t}`));
-  l.append('span').attr('class', 'item').html(`<i class="muestra anillo"></i>comparación poco confiable`);
 }

@@ -15,42 +15,37 @@ Una aplicación a pantalla completa con tres vistas que comparten una sola selec
 | Vista | Qué es |
 |---|---|
 | **Matriz** | la vista base: las 428 estaciones como filas, agrupadas por borough, contra las 168 horas de la semana o los 60 meses, con tres lentes (forma del día 2024 · qué cambió 2020 → 2024 · mes a mes), bandas de fase, dos tiras sincronizadas debajo (forma del sistema y dónde se movió el día; entradas y composición tarifaria) y los ocho hallazgos como chips. Un submodo muestra la rejilla de perfiles de 168 h |
-| **Recorrido** | los ocho capítulos como botones con Play: la pregunta y el hallazgo en una columna angosta, el gráfico ocupando el resto |
-| **Explorador** | mapa con cinco lentes (incluida *forma del día*: cada estación como un reloj de 24 h), dispersión con brush, serie mensual con brush, panel de evidencia por estación |
+| **Recorrido** | siete capítulos como botones con Play, a lo FINO: un panel angosto a la izquierda con la pregunta, el hallazgo como frase y qué significa cada marca; el resto de la pantalla es el gráfico. Las notas (cómo se mide, qué no demuestra) están plegadas detrás de un botón |
+| **Mapa** | las 428 estaciones a pantalla completa con cinco lentes (forma del día como reloj de 24 h por estación, tipo, recuperación, cambio del pico, confiabilidad), filtros, y el panel de evidencia por estación |
 
 ### El recorrido
 
-Cada capítulo tiene la misma anatomía: una **pregunta** como título, el **hallazgo** como una frase etiquetada (hallazgo · lo que no se sostiene · límite), el **gráfico** a pantalla completa, dos notas plegadas — **cómo se mide** y **qué no demuestra** — y un botón que abre el explorador ya configurado en lo que se acaba de ver. Un clic en cualquier tarjeta de hallazgo de la vista Perfiles abre su capítulo.
+Cada capítulo tiene la misma anatomía: una **pregunta** como título, el **hallazgo** como una frase etiquetada (hallazgo · lo que no se sostiene · límite), el **gráfico** a pantalla completa, dos notas plegadas — **cómo se mide** y **qué no demuestra** — y un botón que abre el mapa ya configurado en lo que se acaba de ver. Un clic en cualquier chip de hallazgo de la vista Matriz abre su capítulo.
 
 | | Pregunta | Hallazgo | Gráfico |
 |---|---|---|---|
 | | La forma del día | el perfil del sistema, 2020 frente a 2024, con el pico de la mañana desdibujándose al cargar | perfil de 24 h |
-| 1 | ¿Cuánta gente volvió? | la recuperación se estancó cerca del 70 % | serie mensual con línea de referencia |
+| 1 | ¿Cuánta gente volvió? | la recuperación se estancó cerca del 70 % | cinta de recuperación: sistema y boroughs sobre la banda p10–p90 de las 428 estaciones, con fases y eventos |
 | 2 | ¿Sigue existiendo el doble pico? | el pico de la mañana se aplanó en 80 % de las estaciones | cuatro relojes de 24 h (uno por borough) + tiras de puntos del cambio del pico, una estación por punto |
 | 3 | ¿Qué días de la semana cambiaron? | la semana se inclinó: el viernes perdió 2.4 puntos del total semanal y el fin de semana ganó 3.1 | barras divergentes de las 168 horas, por borough y por tipo |
-| 4 | ¿Para qué se usa cada estación? | el cambio fue en una sola dirección: la mañana perdió peso | mapa por tipo + gráfico de pendientes de la asimetría 2020 → 2024, una línea por estación |
-| 5 | ¿Qué cambió más: cuánto o cómo? | dentro de un borough, recuperación y aplanamiento son casi independientes | dispersión recuperación × cambio del pico |
-| 6 | ¿Por qué el Bronx? | perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma | dispersión con énfasis + mapa del Bronx con un reloj por estación + tabla |
-| 7 | ¿Quién dejó de comprar el abono? | el pase de 30 días se desplomó: la evidencia del uso intermitente | áreas apiladas al 100 % por clase de pago |
-| 8 | ¿Qué no podemos afirmar? | 37 estaciones tienen una comparación poco confiable, y están marcadas | mapa de confiabilidad + lista con motivos |
+| 4 | ¿Para qué se usa cada estación? | el cambio fue en una sola dirección: la mañana perdió peso | mapa de las 428 estaciones como relojes + gráfico de pendientes de la asimetría 2020 → 2024 |
+| 5 | ¿Por qué el Bronx? | perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma (y, dentro de un borough, cuánto volvió no dice cuánto se aplanó) | dispersión con el Bronx en negro + mapa del Bronx con un reloj por estación |
+| 6 | ¿Quién dejó de comprar el abono? | el pase de 30 días se desplomó: la evidencia del uso intermitente | áreas apiladas al 100 % por clase de pago |
+| 7 | ¿Qué no podemos afirmar? | 37 estaciones tienen una comparación poco confiable, y están marcadas | mapa de confiabilidad + matriz de las 37 estaciones mes a mes, con las caídas anómalas marcadas |
 
 Los hallazgos no se escriben a mano: los genera `code/build_model.py` desde los datos, con sus cifras. Dos son negativos — lo que los datos *no* sostienen — y uno es un límite.
 
-### El explorador
+### El mapa
 
-| Vista | Qué muestra | Interacción |
-|---|---|---|
-| Mapa | 428 estaciones sobre los boroughs y el trazado del metro (`d3.geoMercator`) | cinco lentes: tipo · forma del día (reloj de 24 h por estación) · recuperación · cambio del pico · confiabilidad; zoom y paneo; clic |
-| Dispersión | recuperación (x) × cambio del pico (y), color por tipo | brush rectangular que filtra todo lo demás; clic |
-| Serie mensual | entradas del sistema, 60 meses | brush horizontal: el tamaño de las estaciones del mapa pasa a ser el promedio del período |
+| Lente | Qué codifica |
+|---|---|
+| forma del día | cada estación es un reloj de 24 h: medianoche arriba, el radio es el share de la hora; gris 2020, color del tipo 2024 |
+| tipo | residencial · mixta · laboral |
+| recuperación | azul claro → oscuro, recortado en p10–p90 |
+| cambio del pico | azul (se aplanó) ↔ gris ↔ rojo (se afiló) |
+| confiabilidad | sólida · estacional · ventana anómala · línea base pequeña |
 
-Una sola selección compartida (`src/estado.js`) que sobrevive al cambio de vista. La rejilla de perfiles de la vista base (168 h por estación, escala común, línea del color del tipo, cinco órdenes) la lee también. Filtros de borough, tipo y "solo comparaciones sólidas"; cada filtro activo es un chip que se quita con un clic. La barra dice siempre cuántas estaciones y qué share de entradas quedan, y de qué capítulo vino el lector.
-
-**Panel de evidencia.** Un clic en cualquier estación abre su panel: cifras (recuperación en las dos ventanas, razón pico/valle, asimetría), el perfil del día laborable antes y después, la serie mensual con los meses anómalos sombreados, y la tabla con los números detrás de cada afirmación. Si la comparación es poco confiable, el panel dice por qué.
-
-**Clave visual.** Un botón de la barra abre la leyenda de significado: qué codifica cada marca y qué *no* significa ("más azul no es mejor"; "el área gris no es un año normal").
-
-**Accesibilidad.** `←` `→` mueven entre capítulos, `Esc` cierra paneles; modo oscuro como conjunto propio de tokens, con botón para fijarlo; móvil (las vistas se apilan); `prefers-reduced-motion` respetado; paleta validada para daltonismo.
+Zoom y paneo; filtros por borough, tipo y confiabilidad; clic en una estación abre su panel de evidencia (cifras, perfil antes/después, serie mensual, la tabla con los números detrás). Los capítulos del recorrido mandan al mapa ya configurado.
 
 ### Implementación
 
@@ -62,7 +57,7 @@ D3.js v7.9.0 servido desde `lib/`, módulos ES nativos, sin bundler. Unas 2 000 
 
 ### 2.1 Es un argumento, no un dashboard
 
-La Semana 7 proponía cuatro paneles en una pantalla. Funcionaban y no contaban nada. La estructura de este prototipo toma de FINO (VAST Challenge 2026, UTEC) la forma de aplicación — vistas en pestañas, una selección compartida, capítulos con Play dentro de una vista — y cuatro principios: las vistas se titulan con **preguntas**; los hallazgos se escriben como **afirmaciones** e incluyen lo que no se demuestra; la **confiabilidad** de cada dato es una capa visible; y cada afirmación está a un clic de su **evidencia**. El lector puede empezar por la vista base, por el recorrido o por el explorador; la selección lo sigue.
+La Semana 7 proponía cuatro paneles en una pantalla. Funcionaban y no contaban nada. La estructura de este prototipo toma de FINO (VAST Challenge 2026, UTEC) la forma de aplicación — vistas en pestañas, una selección compartida, capítulos con Play dentro de una vista — y cuatro principios: las vistas se titulan con **preguntas**; los hallazgos se escriben como **afirmaciones** e incluyen lo que no se demuestra; la **confiabilidad** de cada dato es una capa visible; y cada afirmación está a un clic de su **evidencia**. El lector puede empezar por la vista base, por el recorrido o por el mapa; la selección lo sigue.
 
 ### 2.2 La pregunta cambió
 
@@ -109,7 +104,7 @@ El único color de la página es el dato; el cromo es negro y gris.
 ### Del prototipo
 
 1. **El perfil de 168 h de 2024 es el año completo**, no enero–febrero. La recuperación ya usa la misma ventana calendario; la forma del día todavía no. Lo corrige una pasada adicional de la API (`code/datos_nuevos.ipynb`, pasada D), pendiente.
-2. **El brush temporal solo cambia el tamaño** de las estaciones del mapa. Reconstruir la forma del día del período elegido necesita perfiles por mes (pasada E del mismo notebook).
+2. **No hay brush temporal todavía.** Reconstruir la forma del día de un período elegido necesita perfiles por mes (pasada E del mismo notebook); la lente "mes a mes" de la matriz es el sustituto por ahora.
 3. **La explicación del Bronx es una hipótesis.** Los datos del torniquete muestran el patrón, no la causa. La capa del Census (share de trabajo desde casa por área de influencia de cada estación, pasada F) es lo que podría sostenerla.
 4. **La rejilla de perfiles dibuja 120 múltiplos a la vez** de los 428; el contador lo dice. La matriz sí dibuja las 428.
 6. **El hallazgo de la semana (jueves–viernes) compara 2024 completo con enero–febrero de 2020**: incluye feriados y verano. Se afina con la ventana comparable (pasada D).
@@ -133,7 +128,7 @@ Las seis preguntas de la propuesta original (contexto geográfico, legibilidad d
 
 2. **¿El capítulo del Bronx está bien contado o estamos forzando la lectura?** Presentamos el teletrabajo como hipótesis consistente, no como causa. ¿Se percibe así, o el lector sale creyendo que lo demostramos? ¿Qué evidencia pedirían antes de creerlo?
 
-3. **¿Tres vistas es la estructura correcta?** Perfiles como vista base, Recorrido con los capítulos, Explorador libre. ¿Sobra alguna? ¿El recorrido debería ser la entrada por defecto?
+3. **¿Tres vistas es la estructura correcta?** Matriz como vista base, Recorrido con los capítulos, Mapa. ¿Sobra alguna? ¿La matriz es la entrada correcta?
 
 4. **¿Los hallazgos negativos aportan o confunden?** Dos de los ocho dicen lo que los datos no sostienen. ¿Dan confianza, o parecen un relleno?
 
@@ -149,7 +144,7 @@ Las seis preguntas de la propuesta original (contexto geográfico, legibilidad d
 |---|---|
 | 1 | Integrar las tres pasadas de `datos_nuevos.ipynb`: ventana comparable del perfil, perfiles por mes, capa del Census |
 | 2 | Contrastar la hipótesis del Bronx con el share de trabajo desde casa por estación |
-| 3 | Brush temporal que reconstruya la forma del día del período |
+| 3 | Brush temporal en la matriz que reconstruya la forma del día del período |
 | 4 | Responder cada sugerencia del design review (`deliveries/week12/PeerCritiqueResponse.md`) |
 | 5 | Paper en dos columnas; borrador en `deliveries/week12/paper/` |
 
