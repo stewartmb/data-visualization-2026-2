@@ -25,3 +25,9 @@ En Cambio se ordena por redistribución horaria, caída/aumento del peso de la m
 La explicación sobre la matriz indica dirección, período, unidad y denominador. En Leer estaciones, cada fila muestra posición y valor del criterio; también están disponibles al pasar el cursor sobre el nombre. Cambiar año, modo, día o criterio vuelve al principio de la lista.
 
 Validación específica: `scripts/redesign/check-ordering.cjs` (Playwright). Se comprobaron 68 combinaciones numéricas y la interacción real de los controles, restauración de URL, desplazamiento y ancho móvil de 390 px, sin errores de JavaScript.
+
+### Comparación de perfiles
+
+Comparar muestra dos gráficas apiladas: lunes–viernes y sábado–domingo. Cada perfil horario se normaliza al 100 % dentro de su grupo y las dos gráficas comparten escala vertical. Encima de cada gráfica se informa la participación de ese grupo en la semana completa para que la normalización no oculte desplazamientos entre laborables y fin de semana. Se conservan los dos años, las estaciones fijadas y los valores por hora al pasar el cursor. La TV sigue calculándose sobre las 168 horas, sin agregarlas.
+
+`scripts/redesign/check-comparison.cjs` verifica normalización y participación para los 2.120 perfiles, escala compartida, curvas de estaciones fijadas, tooltips y ancho móvil.

@@ -23,7 +23,7 @@ const ROOT=path.resolve(__dirname,'../..');
   assert.equal(await page.locator('#detail-body svg rect').count(),168);
   await page.locator('[data-clock="true"]').click();
   await page.locator('#pin-station').click();assert.deepEqual((await state()).pins,['1']);
-  await page.locator('#inspect-tab-compare').click();assert.equal(await page.locator('#detail-body svg path[fill="none"][stroke]').count(),2);
+  await page.locator('#inspect-tab-compare').click();assert.equal(await page.locator('#detail-body svg path[fill="none"][stroke]').count(),4);
   await page.locator('#inspect-tab-evolution').click();assert.equal(await page.locator('#detail-body svg path[fill="none"][stroke]').count(),1);
   await page.locator('#inspect-tab-source').click();assert.match(await page.locator('#detail-body').innerText(),/168 celdas/);
   await page.locator('#inspect-tab-fingerprint').click();

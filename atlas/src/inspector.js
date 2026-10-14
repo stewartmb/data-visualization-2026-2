@@ -49,17 +49,33 @@ function drawFingerprint(host,s,app){
   host.querySelectorAll('[data-neighbor]').forEach(btn=>btn.onclick=()=>app.select(btn.dataset.neighbor));
 }
 
+export function comparisonSeries(p,days){
+  const hourly=d3.range(24).map(h=>d3.sum(days,d=>p[d*24+h]));
+  const total=d3.sum(hourly);
+  return {share:100*total,values:hourly.map(v=>total?100*v/total:0)};
+}
+
 function drawComparison(host,s,app){
   const rows=[{label:'2020 · selección',p:profile(s,2020).p,color:'#7c8c99',dash:'3,3'},{label:`${state.year} · selección`,p:profile(s).p,color:'#137b80'}];
-  state.pins.filter(id=>id!==s.id).forEach((id,i)=>{const v=app.station(id);if(v&&profile(v))rows.push({label:v.name,p:profile(v).p,color:['#c96035','#8960a2','#7c8738'][i%3]});});
-  const work=p=>{const v=d3.range(24).map(h=>d3.sum(d3.range(5),d=>p[d*24+h]));const total=d3.sum(v);return v.map(x=>100*x/total);};
-  rows.forEach(r=>r.v=work(r.p));
-  host.innerHTML=`<p class="sub">Forma de un día laborable, normalizada al 100 %. Misma escala para las estaciones fijadas y los dos períodos.</p><svg class="detail-viz" viewBox="0 0 360 230" role="img" aria-label="Comparación del perfil horario laborable"></svg><div class="pair-list">${rows.map(r=>`<span style="color:${r.color}">━ ${esc(r.label)}</span>`).join('<br>')}</div><p class="sub">Fija hasta tres complejos para compararlos. El área sombreada señala la franja AM (06–10 h); la medida usa intervalos completos.</p>`;
-  const svg=d3.select(host.querySelector('svg')),x=d3.scaleLinear().domain([0,23]).range([36,346]),y=d3.scaleLinear().domain([0,d3.max(rows,r=>d3.max(r.v))*1.1]).nice().range([192,17]);
-  svg.append('rect').attr('x',x(6)).attr('y',17).attr('width',x(10)-x(6)).attr('height',175).attr('fill','#f0e7d6');
-  svg.append('g').attr('class','chart-axis').attr('transform','translate(0,192)').call(d3.axisBottom(x).tickValues([0,6,12,18,23]).tickFormat(h=>`${h} h`));
-  svg.append('g').attr('class','chart-axis').attr('transform','translate(36,0)').call(d3.axisLeft(y).ticks(4).tickFormat(v=>`${v} %`));
-  const line=d3.line().x((v,i)=>x(i)).y(v=>y(v));rows.forEach(r=>svg.append('path').attr('d',line(r.v)).attr('fill','none').attr('stroke',r.color).attr('stroke-width',2).attr('stroke-dasharray',r.dash||null));
+  state.pins.filter(id=>id!==s.id).forEach((id,i)=>{const v=app.station(id);if(v&&profile(v))rows.push({label:`${state.year} · ${v.name}`,p:profile(v).p,color:['#c96035','#8960a2','#7c8738'][i%3]});});
+  const groups=[{id:'weekday',title:'Lunes a viernes',days:[0,1,2,3,4]},{id:'weekend',title:'Sábado y domingo',days:[5,6]}];
+  groups.forEach(g=>g.series=rows.map(r=>({...r,...comparisonSeries(r.p,g.days)})));
+  const top=d3.max(groups,g=>d3.max(g.series,r=>d3.max(r.values)))||1;
+  host.innerHTML=`<p class="sub">Dos perfiles horarios: cada curva suma 100 % dentro de su grupo de días. Ambas gráficas usan la misma escala vertical.</p>
+    <div class="pair-list">${rows.map(r=>`<span style="color:${r.color}">${r.dash?'┄':'━'} ${esc(r.label)}</span>`).join('<br>')}</div>
+    ${groups.map(g=>`<section class="comparison-panel" data-group="${g.id}"><h3>${g.title}</h3><div class="comparison-shares"><b>Participación en toda la semana</b>${g.series.map(r=>`<span style="color:${r.color}">${esc(r.label)}: <strong>${fmt(r.share)} %</strong></span>`).join('')}</div><svg class="detail-viz" viewBox="0 0 360 230" role="img" aria-label="Comparación horaria: ${g.title}"></svg></section>`).join('')}
+    <p class="method-note">Las curvas describen cómo se distribuyen las entradas entre horas dentro de cada grupo. Los porcentajes sobre cada gráfica muestran cuánto aporta ese grupo a la semana completa. La distancia TV compara las 168 horas por separado; estas curvas agrupan días y no reconstruyen por sí solas toda la TV.</p><p class="sub">El sombreado de lunes a viernes señala 06:00–09:59. Pasa el cursor para leer cada hora. Las estaciones fijadas usan ${state.year}.</p>`;
+  const x=d3.scaleLinear().domain([0,23]).range([40,346]),y=d3.scaleLinear().domain([0,top*1.1]).nice().range([192,17]);
+  for(const g of groups){
+    const node=host.querySelector(`[data-group="${g.id}"] svg`),svg=d3.select(node);
+    if(g.id==='weekday')svg.append('rect').attr('x',x(6)).attr('y',17).attr('width',x(10)-x(6)).attr('height',175).attr('fill','#f0e7d6');
+    svg.append('g').attr('class','chart-axis').attr('transform','translate(0,192)').call(d3.axisBottom(x).tickValues([0,6,12,18,23]).tickFormat(h=>`${h} h`));
+    svg.append('g').attr('class','chart-axis').attr('transform','translate(40,0)').call(d3.axisLeft(y).ticks(4).tickFormat(v=>`${v} %`));
+    const line=d3.line().x((v,i)=>x(i)).y(v=>y(v));
+    g.series.forEach(r=>svg.append('path').attr('class','comparison-curve').attr('d',line(r.values)).attr('fill','none').attr('stroke',r.color).attr('stroke-width',2).attr('stroke-dasharray',r.dash||null));
+    const cursor=svg.append('line').attr('y1',17).attr('y2',192).attr('stroke','#536d71').attr('stroke-dasharray','2,3').style('display','none');
+    svg.on('pointermove',e=>{const [px]=d3.pointer(e,node),h=Math.max(0,Math.min(23,Math.round(x.invert(px))));cursor.attr('x1',x(h)).attr('x2',x(h)).style('display',null);showTooltip(`<b>${g.title} · ${h}:00–${h+1}:00</b><br>Porcentaje dentro del grupo de días<br>${g.series.map(r=>`${esc(r.label)}: ${r.values[h].toFixed(2)} %`).join('<br>')}`,e);}).on('pointerleave',()=>{cursor.style('display','none');hideTooltip();});
+  }
 }
 
 function drawEvolution(host,s,app){
