@@ -1,6 +1,6 @@
 ---
 title: "Delivery 1 — Consolidación de la primera fase"
-subtitle: "Fractal: cómo cambió el ritmo horario del metro de Nueva York, 2020–2024"
+subtitle: "La forma del día: cómo cambió el ritmo horario del metro de Nueva York, 2020–2024"
 author: "Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino"
 date: "DS5343 Data Visualization · UTEC · 2026-2"
 lang: es

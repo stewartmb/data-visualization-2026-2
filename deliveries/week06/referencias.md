@@ -1,6 +1,6 @@
 # Revisión de referencias
 
-**DS5343 · Semana 6 · Proyecto "Fractal"**
+**DS5343 · Semana 6 · Proyecto "La forma del día"**
 
 Cuatro trabajos que informan las decisiones de diseño del proyecto: dos sobre técnica de visualización y dos sobre el dominio del transporte público. Los cuatro son de acceso abierto y los PDF están en [`papers/`](papers/).
 

@@ -6,7 +6,7 @@
 
 ## 1 · Portada — 15 s
 
-> Buenas. Somos Renzo, Stewart y José. Traemos el prototipo funcional de *Fractal*.
+> Buenas. Somos Renzo, Stewart y José. Traemos el prototipo funcional de *La forma del día*.
 
 ---
 

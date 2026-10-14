@@ -1,5 +1,5 @@
 ---
-title: "Fractal: cómo cambió el ritmo horario del metro de Nueva York, 2020–2024"
+title: "La forma del día: cómo cambió el ritmo horario del metro de Nueva York, 2020–2024"
 subtitle: "DS5343 Data Visualization — Propuesta de Proyecto (Semana 5)"
 author: "Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino"
 date: "9 de septiembre de 2026"
@@ -8,7 +8,7 @@ lang: es
 
 ## 1. Equipo y título de trabajo
 
-**Título de trabajo:** Fractal: cómo cambió el ritmo horario del metro de Nueva York, 2020–2024.
+**Título de trabajo:** La forma del día: cómo cambió el ritmo horario del metro de Nueva York, 2020–2024.
 
 **Integrantes:** Renzo Acervo Correa, Stewart Maquera Bobadilla, José Condori Palomino.
 
