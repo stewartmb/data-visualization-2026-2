@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "station_profiles": 2120,
+  "normalized_cells_checked": 356160,
+  "source_hashes_checked": 4,
+  "query_windows": 45,
+  "median_tv_pp": 6.6479,
+  "calendar_adjustment": "verified against dates and raw aggregates"
+}

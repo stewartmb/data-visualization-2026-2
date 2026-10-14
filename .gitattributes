@@ -1,0 +1,4 @@
+# Snapshots and client data are referenced by byte-level SHA-256 manifests.
+# Preserve their bytes across checkouts, including CSV line endings.
+/data/redesign/* -text
+/atlas/data/* -text

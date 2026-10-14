@@ -1,222 +1,115 @@
-<div align="center">
+# La forma del día · Atlas de ritmos
 
-# La forma del día
+**Cómo cambió el ritmo horario de las entradas al metro de Nueva York**
+DS5343 Data Visualization · UTEC · 2026-2
 
-**Cómo cambió el ritmo horario del metro de Nueva York, 2020–2024**
+Renzo Alfonso Acervo Correa · Diva Stewart Maquera Bobadilla · José Eduardo Condori Palomino
 
-Proyecto final · DS5343 Data Visualization · UTEC · 2026-2
+> Esta rama propone un rediseño del proyecto: `codex/atlas-ritmos-urbanos`. La aplicación nueva está en `atlas/`. El prototipo y entregas anteriores se conservan como historia del desarrollo.
 
-`428 estaciones` · `1 827 días` · `120 855 568 registros`
+## Problema y objetivo
 
-Acervo Correa, Renzo Alfonso · Maquera Bobadilla, Diva Stewart · Condori Palomino, José Eduardo
+La recuperación del volumen de entradas puede esconder cambios en sus horarios. Buscamos descubrir, comparar y documentar cómo cambiaron los ritmos semanales entre estaciones y entre años, distinguiendo forma, volumen y ubicación.
 
-</div>
+La comparación usa **enero–febrero de cada año 2020–2024**, con corrección por número de lunes, martes, etc. El universo es **424 complejos de subway**, con perfiles de 168 horas. Son entradas agregadas, no personas identificadas ni viajes origen–destino.
 
----
+**Audiencia principal:** analistas de transporte e investigadores urbanos. **Uso:** identificar estaciones y grupos para investigar con mayor detalle. **Audiencia secundaria:** periodistas de datos. Los datos disponibles no bastan para recomendar frecuencias óptimas de trenes ni demostrar motivos de los cambios.
 
-<a id="indice"></a>
+## Abrir la aplicación
 
-## Índice
-
-| | |
-|---|---|
-| **1** | [El proyecto](#proyecto) |
-| **2** | [Entregas](#entregas) |
-| **3** | [Estructura del repositorio](#estructura) |
-| **4** | [Responsabilidades](#responsabilidades) |
-| **5** | [Cronograma](#cronograma) |
-| **6** | [Reproducción de los datos](#reproduccion) |
-| **7** | [El dataset](#dataset) |
-| **8** | [Limitaciones](#limitaciones) |
-
----
-
-<a id="proyecto"></a>
-
-## 1 · El proyecto
-
-El metro de Nueva York programa su servicio alrededor del doble pico del día laborable. Entre 2020 y 2024 esa forma cambió, pero la recuperación se reporta casi siempre con un solo número: dice cuánta demanda volvió, no a qué hora vuelve ni en qué estaciones.
-
-La unidad de análisis de este proyecto no es el volumen total sino el **perfil horario semanal de cada estación**: 24 horas × 7 días = 168 valores, normalizados por el total de la estación. Ese vector describe su ritmo, no su tamaño.
-
-**Audiencia principal:** planificadores de servicio de la MTA y analistas de transporte urbano.
-**Decisión que apoya:** dónde reasignar frecuencia de servicio.
-
-La entrega final es una visualización interactiva en D3.js con cinco vistas enlazadas por brushing. El prototipo de la Semana 10 tiene cuatro de las cinco implementadas: [`deliveries/week10/prototype/`](deliveries/week10/prototype/).
-
-[↑](#indice)
-
----
-
-<a id="entregas"></a>
-
-## 2 · Entregas
-
-| Semana | Fecha | Entrega | Carpeta |
-|---|---|---|---|
-| 4 | 2 sep | Selección y documentación del dataset | [`deliveries/week04/`](deliveries/week04/) |
-| 5 | 9 sep | Propuesta de proyecto | [`deliveries/week05/`](deliveries/week05/) |
-| 6 | 16 sep | Análisis de datos y bocetos | [`deliveries/week06/`](deliveries/week06/) |
-| 7 | 23 sep | Delivery 1 — consolidación de la primera fase | [`deliveries/week07/`](deliveries/week07/) |
-| 10 | 14 oct | Prototipo funcional y design review | [`deliveries/week10/`](deliveries/week10/) |
-| 12 | 28 oct | Borrador refinado y crítica por pares | `deliveries/week12/` |
-| 15 | 18 nov | Entrega final y exhibición | `deliveries/week15/` |
-
-[↑](#indice)
-
----
-
-<a id="estructura"></a>
-
-## 3 · Estructura del repositorio
-
-```
-data-visualization-2026-2/
-│
-├── README.md
-├── .gitignore
-│
-├── data/sample/              muestra de 10 000 filas del dataset original
-├── docs/                     diccionario · adquisición · calidad · referencias
-├── scripts/                  adquisición · verificación
-│
-└── deliveries/
-    ├── week04/               dataset seleccionado y documentado
-    ├── week05/               propuesta de proyecto
-    ├── week06/               análisis de datos y bocetos
-    ├── week07/               Delivery 1
-    └── week10/               prototipo funcional y design review
-        ├── prototype/        la aplicación D3 (HTML · CSS · módulos JS · datos)
-        └── code/             script que construye el JSON del cliente
-```
-
-[↑](#indice)
-
----
-
-<a id="responsabilidades"></a>
-
-## 4 · Responsabilidades
-
-| Integrante | Responsabilidad |
-|---|---|
-| **Renzo Acervo Correa** | Pipeline de datos, agregaciones y preparación de los JSON para el cliente |
-| **Stewart Maquera Bobadilla** | Implementación en D3.js y vistas enlazadas |
-| **José Condori Palomino** | Narrativa, diseño visual y paper |
-
-Los tres participan en la formulación de preguntas, la crítica de diseño y la presentación final.
-
-[↑](#indice)
-
----
-
-<a id="cronograma"></a>
-
-## 5 · Cronograma restante
-
-| Semana | Fecha | Objetivo |
-|---|---|---|
-| 10 | 14 oct | Prototipo funcional en D3 con las vistas A, B, C y D enlazadas — **entregado** |
-| 12 | 28 oct | Narrativa integrada, vistas D y E, respuesta a la crítica por pares |
-| 15 | 18 nov | Aplicación publicada, paper, teaser, video, poster y presentación final |
-
-[↑](#indice)
-
----
-
-<a id="reproduccion"></a>
-
-## 6 · Reproducción de los datos
-
-**Requisito único:** un app token de Socrata, gratuito → [obtenerlo](https://data.ny.gov/profile/edit/developer_settings)
-
-Se pega en la primera celda de cada notebook, en `SOCRATA_APP_TOKEN`. **No está en el repositorio.**
-
-Los notebooks corren en Google Colab sin instalar nada. En este orden:
-
-| | Script | Tiempo | Produce |
-|---|---|---|---|
-| **1** | `deliveries/week06/code/verify_station_ids.py` | ~1 min | verificación de identificadores |
-| **2** | `deliveries/week06/code/build_aggregates.py` | ~25 min | las 4 tablas agregadas |
-| **3** | `deliveries/week06/code/baseline_prepandemia.py` | ~2 min | línea base y coordenadas |
-
-<details>
-<summary><b>Detalle de cada paso</b></summary>
-
-<br>
-
-**1 · Verificación de identificadores.** Comprueba que `station_complex_id` sea estable en los cinco años. Es el supuesto del que depende toda la comparación temporal.
-
-**2 · Tablas agregadas.** Recorre los cinco años en ventanas de siete días y agrega del lado del servidor. El dataset completo nunca se descarga. Es resumible: si una ventana falla se marca y el proceso continúa.
-
-> Correr la celda de cronometraje antes de lanzar las pasadas. Si una ventana tarda más de ~20 s, bajar `WINDOW_DAYS` a 4.
-
-**3 · Línea base y coordenadas.** Extrae el perfil de enero–febrero de 2020 y la tabla de estaciones con coordenadas.
-
-</details>
-
-Las salidas quedan en `deliveries/week06/data/processed/`.
-
-### Correr el prototipo
+Desde la raíz del repositorio:
 
 ```bash
-cd deliveries/week10/prototype
-python3 -m http.server 8000
+python3 -m http.server 8765
 ```
 
-Abrir <http://localhost:8000>. No hace falta instalar ni compilar nada; sí hace falta un servidor HTTP, porque el prototipo usa módulos ES y `fetch`. Instrucciones completas y despliegue en [`deliveries/week10/README.md`](deliveries/week10/README.md).
+Abrir **http://localhost:8765/atlas/**. No necesita compilación, token ni conexión externa: D3 y los datos están incluidos. Requiere HTTP porque usa módulos ES y `fetch`.
 
-[↑](#indice)
+![Atlas semanal implementado](redesign/capturas/atlas.png)
 
----
+## Qué puede hacer el usuario
 
-<a id="dataset"></a>
-
-## 7 · El dataset
-
-| | |
+| Herramienta | Tareas que apoya |
 |---|---|
-| **Dataset** | MTA Subway Hourly Ridership: 2020–2024 |
-| **ID** | `wujg-7c2s` (Open NY / Socrata) |
-| **Fuente** | [data.ny.gov](https://data.ny.gov/Transportation/MTA-Subway-Hourly-Ridership-2020-2024/wujg-7c2s/about_data) |
-| **Publicador** | Metropolitan Transportation Authority (MTA) |
-| **Cobertura** | Nueva York · 2020–2024 · granularidad horaria |
-| **Volumen** | 120 855 568 registros · varios GB |
-| **Licencia** | Sin licencia específica declarada; sin limitaciones de uso según MTA + [Términos OPEN-NY](https://data.ny.gov/api/views/77gx-ii52/files/ef0c1840-ad54-4240-92fd-6397c49fde46?filename=OPEN-NY_20Terms_20of_20Use.pdf) |
+| Atlas semanal de estación × 168 horas | Encontrar franjas de cambio, comparar perfiles, ordenar por magnitud, volumen o semejanza |
+| Mapa con boroughs | Localizar cambios y formar grupos geográficos que persisten en las demás vistas |
+| Trayectorias fechadas AM × fin de semana | Seguir evolución conjunta en cinco temporadas; comparar sistema, grupo y estaciones |
+| Inspector de estaciones | Leer huella cíclica o matricial, comparar perfiles, consultar evolución mensual y fuentes |
+| Evidencia | Ver medidas del grupo, revisar supuestos, guardar exploraciones y exportar CSV |
 
-Cada fila = hora × complejo de estación × modo × método de pago × clase tarifaria.
+El año, filtros, selección, grupos y estaciones fijadas se conservan entre vistas y en la URL. La búsqueda por ejemplo recupera doce vecinos por distancia de Hellinger; no impone tipos de estaciones sin validarlos. Se pueden fijar hasta tres complejos para comparar.
 
-Los datos provienen de torniquetes: *swipes* de MetroCard y *taps* de OMNY. Documentación completa en [`docs/`](docs/).
+## Preguntas del rediseño
 
-[↑](#indice)
+1. ¿Qué días y horas cambiaron su peso relativo y cómo difiere el cambio entre complejos?
+2. ¿Qué complejos cambiaron más y cuáles tienen perfiles parecidos a una estación de referencia?
+3. ¿Dónde aparecen esos cambios y semejanzas, y cómo se distribuyen entre boroughs?
+4. ¿Recuperar volumen implica recuperar la forma de la semana?
+5. ¿La evolución del peso AM y de fin de semana fue continua o tuvo retrocesos entre años?
+6. ¿Qué datos y supuestos sostienen una lectura y qué casos requieren cautela?
 
----
+La [matriz de tareas](redesign/01-problema-y-tareas.md) define propósito, entradas, salida verificable y relación entre vistas. No hay una vista obligatoria por pregunta.
 
-<a id="limitaciones"></a>
+## Investigación y decisiones
 
-## 8 · Limitaciones
+El [contrato de diseño](redesign/02-investigacion-y-diseno.md) documenta la revisión de FINO y literatura sobre comparación visual, tareas, calendarios, consulta por ejemplo y trayectorias. La originalidad se busca en una experiencia coherente para este dominio: selección persistente, foco/contexto, varias lecturas del mismo dato y trazabilidad.
 
-| | |
+La [metodología](redesign/03-datos-y-metodos.md) explica las fuentes públicas, las fórmulas, el ajuste del calendario, los joins y las alternativas de enriquecimiento evaluadas. El [plan de evaluación](redesign/04-evaluacion.md) distingue pruebas técnicas realizadas y evaluación pendiente con personas.
+
+## Datos y reproducción
+
+La fuente principal es [MTA Subway Hourly Ridership: 2020–2024](https://data.ny.gov/d/wujg-7c2s), vía Open NY / Socrata. Los 120 855 568 registros del dataset original abarcan varios modos; el atlas restringe la consulta a subway y temporadas comparables.
+
+Se incorporan el [catálogo oficial de complejos MTA](https://data.ny.gov/d/5f5g-n3cz) —unión exacta en 424/424— y los [contornos de boroughs de NYC DCP](https://data.cityofnewyork.us/d/gthc-hcne). Los catálogos actuales dan contexto y no reconstruyen oferta histórica.
+
+Para reconstruir los artefactos desde los snapshots versionados, sin red ni paquetes externos:
+
+```bash
+python3 scripts/redesign/build_atlas.py
+python3 scripts/redesign/validate_atlas.py
+```
+
+Para volver a consultar las APIs oficiales:
+
+```bash
+python3 scripts/redesign/acquire_context.py
+python3 scripts/redesign/build_atlas.py
+```
+
+La adquisición usa 45 ventanas semanales y caché resumible. Las consultas y SHA-256 quedan en [`data/redesign/sources.json`](data/redesign/sources.json); la auditoría está en [`redesign/data-audit.json`](redesign/data-audit.json).
+
+## Estructura
+
+```text
+atlas/                     aplicación nueva D3 + Canvas + SVG
+  src/                     vistas, estado, inspector e interacciones
+  lib/                     D3 local y licencia
+  data/                    JSON del cliente y contornos simplificados
+redesign/                  objetivos, tareas, investigación, métodos y evaluación
+  capturas/                capturas reales del navegador
+data/redesign/             agregados comparables y snapshots públicos
+scripts/redesign/          adquisición, transformación y verificaciones
+  acquire_context.py
+  build_atlas.py
+  validate_atlas.py
+  smoke.cjs
+deliveries/                entregas históricas de semanas 4–10
+```
+
+## Entregas históricas
+
+| Semana | Contenido |
 |---|---|
-| **Entradas, no salidas** | No hay pares origen–destino. Ningún análisis de flujo de viajes es posible con esta fuente. |
-| **`transfers` ⊂ `ridership`** | Es un subconjunto, no una medida independiente. Sumarlas duplica el conteo. |
-| **Complejo, no estación** | Un complejo agrupa varias estaciones conectadas. |
-| **Son estimaciones** | Publicadas por la MTA, dentro del 1 % de sus cifras oficiales. |
-| **MetroCard → OMNY** | Es adopción tecnológica. Una caída en MetroCard no es una caída de demanda. |
-| **Línea base acotada** | Es enero–febrero de 2020, no un promedio de 2019. |
+| [4](deliveries/week04/) | Dataset, diccionario y adquisición |
+| [5](deliveries/week05/) | Propuesta inicial y presentación |
+| [6](deliveries/week06/) | Análisis, figuras, bocetos y papers |
+| [7](deliveries/week07/) | Consolidación de la primera fase |
+| [10](deliveries/week10/) | Prototipo anterior de cuatro vistas |
 
-[↑](#indice)
+Los objetivos de esas entregas reflejan el estado de cada fase. El rediseño actual está explicado en [`redesign/README.md`](redesign/README.md). Paper, póster, videos y evaluación con personas siguen pendientes como entregables finales del curso.
 
----
+## Límites de interpretación
 
-<div align="center">
+Los registros son estimaciones de entradas a complejos. No contienen destinos, personas únicas ni capacidad/frecuencia histórica. El ajuste de calendario y temporada no controla obras, feriados o cambios de servicio. Las horas sin registros se representan como cero entradas registradas y se declaran; no prueban demanda nula bajo servicio normal. La MTA documenta cierres nocturnos en enero–febrero de 2021. Las afirmaciones y medidas se acompañan de fuentes en la aplicación.
 
-<sub>
-
-Datos: Metropolitan Transportation Authority (MTA) vía Open NY · Acceso: Socrata (API SODA)
-
-Parte del código y la documentación se elaboró con asistencia de IA, revisada y validada por el equipo.
-
-</sub>
-
-</div>
+Datos: MTA / Open NY; contornos: NYC Department of City Planning. D3 v7.9.0: Mike Bostock, licencia ISC. Referente de diseño: [FINO](https://github.com/Josroyal/VAST_2026_RJJJ), sin reutilizar su código. Desarrollo y documentación de esta propuesta asistidos por IA; la revisión del equipo y las pruebas de uso deben documentarse antes de presentarla como versión final.

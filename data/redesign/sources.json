@@ -1,0 +1,352 @@
+{
+  "retrieved_at_utc": "2026-10-14T04:58:46.606227+00:00",
+  "assembled_at_utc": "2026-10-14T05:48:22.963236+00:00",
+  "hourly_source": "https://data.ny.gov/d/wujg-7c2s",
+  "queries": [
+    {
+      "start": "2020-01-01",
+      "end_exclusive": "2020-01-08",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-01-08T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70887,
+      "retrieved_at_utc": "2026-10-14T04:58:36.379082+00:00"
+    },
+    {
+      "start": "2020-01-08",
+      "end_exclusive": "2020-01-15",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-01-08T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-01-15T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69872,
+      "retrieved_at_utc": "2026-10-14T04:58:35.753333+00:00"
+    },
+    {
+      "start": "2020-01-15",
+      "end_exclusive": "2020-01-22",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-01-15T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-01-22T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69501,
+      "retrieved_at_utc": "2026-10-14T04:58:35.316058+00:00"
+    },
+    {
+      "start": "2020-01-22",
+      "end_exclusive": "2020-01-29",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-01-22T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-01-29T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70330,
+      "retrieved_at_utc": "2026-10-14T04:58:40.588114+00:00"
+    },
+    {
+      "start": "2020-01-29",
+      "end_exclusive": "2020-02-05",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-01-29T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-02-05T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70766,
+      "retrieved_at_utc": "2026-10-14T04:58:40.831669+00:00"
+    },
+    {
+      "start": "2020-02-05",
+      "end_exclusive": "2020-02-12",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-02-05T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-02-12T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70031,
+      "retrieved_at_utc": "2026-10-14T04:58:40.928571+00:00"
+    },
+    {
+      "start": "2020-02-12",
+      "end_exclusive": "2020-02-19",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-02-12T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-02-19T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69823,
+      "retrieved_at_utc": "2026-10-14T04:58:45.668565+00:00"
+    },
+    {
+      "start": "2020-02-19",
+      "end_exclusive": "2020-02-26",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-02-19T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-02-26T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69959,
+      "retrieved_at_utc": "2026-10-14T04:58:46.606227+00:00"
+    },
+    {
+      "start": "2020-02-26",
+      "end_exclusive": "2020-03-01",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-02-26T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-03-01T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 40063,
+      "retrieved_at_utc": "2026-10-14T04:58:43.786008+00:00"
+    },
+    {
+      "start": "2021-01-01",
+      "end_exclusive": "2021-01-08",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-01-08T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 61172,
+      "retrieved_at_utc": "2026-10-14T04:57:18.585305+00:00"
+    },
+    {
+      "start": "2021-01-08",
+      "end_exclusive": "2021-01-15",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-01-08T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-01-15T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 60850,
+      "retrieved_at_utc": "2026-10-14T04:57:17.762190+00:00"
+    },
+    {
+      "start": "2021-01-15",
+      "end_exclusive": "2021-01-22",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-01-15T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-01-22T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 60788,
+      "retrieved_at_utc": "2026-10-14T04:57:18.062644+00:00"
+    },
+    {
+      "start": "2021-01-22",
+      "end_exclusive": "2021-01-29",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-01-22T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-01-29T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 60793,
+      "retrieved_at_utc": "2026-10-14T04:57:22.456835+00:00"
+    },
+    {
+      "start": "2021-01-29",
+      "end_exclusive": "2021-02-05",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-01-29T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-02-05T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 58936,
+      "retrieved_at_utc": "2026-10-14T04:57:22.354194+00:00"
+    },
+    {
+      "start": "2021-02-05",
+      "end_exclusive": "2021-02-12",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-02-05T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-02-12T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 61732,
+      "retrieved_at_utc": "2026-10-14T04:57:23.187438+00:00"
+    },
+    {
+      "start": "2021-02-12",
+      "end_exclusive": "2021-02-19",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-02-12T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-02-19T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 61194,
+      "retrieved_at_utc": "2026-10-14T04:57:26.702415+00:00"
+    },
+    {
+      "start": "2021-02-19",
+      "end_exclusive": "2021-02-26",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-02-19T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-02-26T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 62983,
+      "retrieved_at_utc": "2026-10-14T04:57:27.210798+00:00"
+    },
+    {
+      "start": "2021-02-26",
+      "end_exclusive": "2021-03-01",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-02-26T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-03-01T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 27939,
+      "retrieved_at_utc": "2026-10-14T04:57:26.123885+00:00"
+    },
+    {
+      "start": "2022-01-01",
+      "end_exclusive": "2022-01-08",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-01-08T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70347,
+      "retrieved_at_utc": "2026-10-14T04:57:31.111835+00:00"
+    },
+    {
+      "start": "2022-01-08",
+      "end_exclusive": "2022-01-15",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-01-08T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-01-15T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70372,
+      "retrieved_at_utc": "2026-10-14T04:57:31.204535+00:00"
+    },
+    {
+      "start": "2022-01-15",
+      "end_exclusive": "2022-01-22",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-01-15T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-01-22T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69937,
+      "retrieved_at_utc": "2026-10-14T04:57:31.959019+00:00"
+    },
+    {
+      "start": "2022-01-22",
+      "end_exclusive": "2022-01-29",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-01-22T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-01-29T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70087,
+      "retrieved_at_utc": "2026-10-14T04:57:35.509409+00:00"
+    },
+    {
+      "start": "2022-01-29",
+      "end_exclusive": "2022-02-05",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-01-29T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-02-05T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70245,
+      "retrieved_at_utc": "2026-10-14T04:57:36.963135+00:00"
+    },
+    {
+      "start": "2022-02-05",
+      "end_exclusive": "2022-02-12",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-02-05T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-02-12T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69861,
+      "retrieved_at_utc": "2026-10-14T04:57:36.058367+00:00"
+    },
+    {
+      "start": "2022-02-12",
+      "end_exclusive": "2022-02-19",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-02-12T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-02-19T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70076,
+      "retrieved_at_utc": "2026-10-14T04:57:39.608543+00:00"
+    },
+    {
+      "start": "2022-02-19",
+      "end_exclusive": "2022-02-26",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-02-19T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-02-26T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69085,
+      "retrieved_at_utc": "2026-10-14T04:57:41.033632+00:00"
+    },
+    {
+      "start": "2022-02-26",
+      "end_exclusive": "2022-03-01",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-02-26T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-03-01T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 29151,
+      "retrieved_at_utc": "2026-10-14T04:57:39.533086+00:00"
+    },
+    {
+      "start": "2023-01-01",
+      "end_exclusive": "2023-01-08",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-01-08T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70767,
+      "retrieved_at_utc": "2026-10-14T04:57:44.607375+00:00"
+    },
+    {
+      "start": "2023-01-08",
+      "end_exclusive": "2023-01-15",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-01-08T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-01-15T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70431,
+      "retrieved_at_utc": "2026-10-14T04:57:45.248573+00:00"
+    },
+    {
+      "start": "2023-01-15",
+      "end_exclusive": "2023-01-22",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-01-15T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-01-22T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70203,
+      "retrieved_at_utc": "2026-10-14T04:57:46.006809+00:00"
+    },
+    {
+      "start": "2023-01-22",
+      "end_exclusive": "2023-01-29",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-01-22T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-01-29T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69912,
+      "retrieved_at_utc": "2026-10-14T04:57:49.220750+00:00"
+    },
+    {
+      "start": "2023-01-29",
+      "end_exclusive": "2023-02-05",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-01-29T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-02-05T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70005,
+      "retrieved_at_utc": "2026-10-14T04:57:50.160106+00:00"
+    },
+    {
+      "start": "2023-02-05",
+      "end_exclusive": "2023-02-12",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-02-05T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-02-12T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70302,
+      "retrieved_at_utc": "2026-10-14T04:57:52.278358+00:00"
+    },
+    {
+      "start": "2023-02-12",
+      "end_exclusive": "2023-02-19",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-02-12T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-02-19T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70359,
+      "retrieved_at_utc": "2026-10-14T04:57:54.562966+00:00"
+    },
+    {
+      "start": "2023-02-19",
+      "end_exclusive": "2023-02-26",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-02-19T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-02-26T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69576,
+      "retrieved_at_utc": "2026-10-14T04:57:54.437307+00:00"
+    },
+    {
+      "start": "2023-02-26",
+      "end_exclusive": "2023-03-01",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-02-26T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-03-01T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 29488,
+      "retrieved_at_utc": "2026-10-14T04:57:55.933294+00:00"
+    },
+    {
+      "start": "2024-01-01",
+      "end_exclusive": "2024-01-08",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-01-08T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 70024,
+      "retrieved_at_utc": "2026-10-14T04:57:59.357388+00:00"
+    },
+    {
+      "start": "2024-01-08",
+      "end_exclusive": "2024-01-15",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-01-08T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-01-15T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69667,
+      "retrieved_at_utc": "2026-10-14T04:57:59.432388+00:00"
+    },
+    {
+      "start": "2024-01-15",
+      "end_exclusive": "2024-01-22",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-01-15T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-01-22T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69462,
+      "retrieved_at_utc": "2026-10-14T04:58:04.428276+00:00"
+    },
+    {
+      "start": "2024-01-22",
+      "end_exclusive": "2024-01-29",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-01-22T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-01-29T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69818,
+      "retrieved_at_utc": "2026-10-14T04:58:04.807898+00:00"
+    },
+    {
+      "start": "2024-01-29",
+      "end_exclusive": "2024-02-05",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-01-29T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-02-05T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69316,
+      "retrieved_at_utc": "2026-10-14T04:58:04.398465+00:00"
+    },
+    {
+      "start": "2024-02-05",
+      "end_exclusive": "2024-02-12",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-02-05T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-02-12T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69754,
+      "retrieved_at_utc": "2026-10-14T04:58:11.157767+00:00"
+    },
+    {
+      "start": "2024-02-12",
+      "end_exclusive": "2024-02-19",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-02-12T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-02-19T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69660,
+      "retrieved_at_utc": "2026-10-14T04:58:09.462529+00:00"
+    },
+    {
+      "start": "2024-02-19",
+      "end_exclusive": "2024-02-26",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-02-19T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-02-26T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 69072,
+      "retrieved_at_utc": "2026-10-14T04:58:09.627716+00:00"
+    },
+    {
+      "start": "2024-02-26",
+      "end_exclusive": "2024-03-01",
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29+as+dow%2Cdate_extract_hh%28transit_timestamp%29+as+hour%2Csum%28ridership%29+as+n&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-02-26T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-03-01T00%3A00%3A00%27&%24group=station_complex_id%2Cdate_extract_dow%28transit_timestamp%29%2Cdate_extract_hh%28transit_timestamp%29&%24order=station_complex_id%2Cdow%2Chour&%24limit=100000",
+      "groups": 40306,
+      "retrieved_at_utc": "2026-10-14T04:58:13.251858+00:00"
+    }
+  ],
+  "context_sources": [
+    {
+      "file": "station_catalog.json",
+      "url": "https://data.ny.gov/resource/5f5g-n3cz.json?$limit=5000",
+      "retrieved_at_utc": "2026-10-14T04:57:11.601230+00:00"
+    },
+    {
+      "file": "boroughs_raw.json",
+      "url": "https://data.cityofnewyork.us/resource/gthc-hcne.json?$limit=10",
+      "retrieved_at_utc": "2026-10-14T04:57:13.656363+00:00"
+    }
+  ],
+  "files": {
+    "jan_feb_hourly_2020_2024.csv": {
+      "bytes": 6228951,
+      "sha256": "dea5f6b82dc07ae6a23b22f50d4ef41c5f10d67573b17e05808fdd8af8af5284"
+    },
+    "station_catalog.json": {
+      "bytes": 169770,
+      "sha256": "a8bf65e5734003c60b9ee750a9acdaf0bf0343bbfb300ae064098e7df76ec40c"
+    },
+    "context_events.json": {
+      "bytes": 2076,
+      "sha256": "241225d91da7be3a3b1e346e17677345f1474c9560f1f8d305401d0c207147aa"
+    },
+    "boroughs_raw.json": {
+      "bytes": 3167385,
+      "sha256": "361ac589847bee86f45179afddef98304ca05f7b04650924873b58d09f8be39f"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "result": "PASS",
+  "verified_at_utc": "2026-10-14T05:45:19.046Z",
+  "browser": "151.0.7922.34",
+  "console_errors": 0,
+  "failed_requests": 0,
+  "checks": [
+    "actual data load",
+    "168 radial and matrix cells",
+    "selection and pins",
+    "all views",
+    "service context for 63 St and L Project",
+    "geographic brush",
+    "zoom and radius compensation",
+    "empty brush and URL restore",
+    "borough filter",
+    "12 nearest neighbors",
+    "year switch",
+    "volume vs rhythm cohort",
+    "CSV export",
+    "local bookmarks",
+    "empty search",
+    "keyboard Escape",
+    "local runtime resources",
+    "390px layout"
+  ],
+  "screenshots": 6
+}
