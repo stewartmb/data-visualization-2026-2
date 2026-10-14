@@ -46,9 +46,12 @@ deliveries/week06/
 ├── code/
 ├── data/processed/
 ├── figuras/
-├── papers/
+├── papers/                     # cuatro PDF principales + README y sources.json
+│   └── antecedentes/           # selección inicial conservada
 └── sketches/
 ```
+
+**Revisión bibliográfica actualizada (14 de octubre de 2026):** los cuatro papers principales y sus PDF completos se encuentran en [referencias.md](referencias.md) y [papers/](papers/README.md). La revisión explica qué procedimiento informa cada fuente, qué adaptamos y sus límites. Los artículos de la selección inicial se conservan en `papers/antecedentes/`; las presentaciones y análisis históricos no se presentan como actualizados automáticamente por este cambio bibliográfico.
 
 [↑](#indice)
 

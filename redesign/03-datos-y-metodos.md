@@ -117,6 +117,6 @@ Son estimaciones agregadas de entradas a complejos. Faltan salidas, destinos, pe
 
 ## Referencias y alcance metodológico
 
-Las [cuatro referencias principales](05-referencias-finales.md) documentan antecedentes concretos. Van der Knaap et al. (2024), ecuaciones 1–2, informan normalización por suma y Hellinger; Fredriksson y Karlström (2025), ecuación 11, utilizan la misma TV sobre otras categorías de transporte; Dhont et al. (2020), secciones 3.2–3.3, presentan huellas circulares semanales y resta de celdas; Liu et al. (2020) aportan el antecedente de comparar forma horaria separada del volumen mediante otra métrica.
+Las [cuatro referencias principales](../deliveries/week06/referencias.md) documentan antecedentes concretos. Van der Knaap et al. (2024), ecuaciones 1–2, informan normalización por suma y Hellinger; Fredriksson y Karlström (2025), ecuación 11, utilizan la misma TV sobre otras categorías de transporte; Dhont et al. (2020), secciones 3.2–3.3, presentan huellas circulares semanales y resta de celdas; Liu et al. (2020) aportan el antecedente de comparar forma horaria separada del volumen mediante otra métrica.
 
 La adaptación del atlas cambia unidades y categorías. En particular, ajustar por la cantidad de días antes de normalizar es un paso propio de estandarización que no se atribuye a estos artículos. Elegir AM 06–10, vecinos, escalas de color y umbrales de presets tampoco se presenta como una constante validada por esas fuentes. La revisión completa enumera lo respaldado, lo adaptado y lo pendiente de evaluación.

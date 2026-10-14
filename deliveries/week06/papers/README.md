@@ -1,4 +1,4 @@
-# PDF de las cuatro referencias finales
+# Semana 6 — PDF de las cuatro referencias finales
 
 Copias completas consultadas para el atlas, guardadas en la rama `codex/atlas-ritmos-urbanos`. Los documentos se conservan sin modificar, con sus avisos originales. Fecha de descarga: **14 de octubre de 2026**.
 
@@ -9,4 +9,6 @@ Copias completas consultadas para el atlas, guardadas en la rama `codex/atlas-ri
 | Van der Knaap et al. (2024) | [Abrir PDF](van_der_knaap_2024_normalization_hellinger.pdf) | Normalización por suma y Hellinger, ecuaciones 1–2; versión proof del repositorio TU Delft |
 | Dhont et al. (2020) | [Abrir PDF](dhont_2020_circular_heatmaps.pdf) | Reloj semanal y resta de mapas circulares, secciones 3.2–3.3; versión pública del taller AALTD |
 
-La [revisión bibliográfica](../05-referencias-finales.md) contiene las citas completas, DOI, ubicación del método, adaptaciones y limitaciones. El archivo [sources.json](sources.json) registra URL de descarga, tamaño, páginas y SHA-256 de cada PDF.
+La [revisión bibliográfica](../referencias.md) contiene las citas completas, DOI, ubicación del método, adaptaciones y limitaciones. El archivo [sources.json](sources.json) registra URL de descarga, tamaño, páginas y SHA-256 de cada PDF.
+
+La selección inicial se conserva en [antecedentes/](antecedentes/README.md). Es material histórico y complementario; los cuatro artículos de la tabla son la selección principal actual.

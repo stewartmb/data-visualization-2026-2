@@ -8,7 +8,7 @@ Aplicación de esos principios: una selección compartida, vistas principales na
 
 ## Cuatro referencias principales
 
-La selección definitiva para fundamentar comparación de perfiles, TV, normalización/Hellinger y reloj semanal está en [05-referencias-finales.md](05-referencias-finales.md): Liu et al. (2020), Fredriksson y Karlström (2025), van der Knaap et al. (2024) y Dhont et al. (2020). La revisión identifica el procedimiento original y la adaptación del atlas; no atribuye TV a Procrustes ni matrices origen–destino a nuestros datos de entradas.
+La selección definitiva para fundamentar comparación de perfiles, TV, normalización/Hellinger y reloj semanal está en [05-referencias-finales.md](../deliveries/week06/referencias.md): Liu et al. (2020), Fredriksson y Karlström (2025), van der Knaap et al. (2024) y Dhont et al. (2020). La revisión identifica el procedimiento original y la adaptación del atlas; no atribuye TV a Procrustes ni matrices origen–destino a nuestros datos de entradas.
 
 En particular, Dhont et al. documentan la misma disposición de siete anillos diarios y 24 sectores horarios, además de comparación mediante resta de mapas contra una referencia. Esta referencia se incorporó durante la revisión del diseño, después de implementar el reloj; no se presenta como una fuente consultada en la primera versión.
 
