@@ -18,6 +18,7 @@ Promise.all([d3.json('data/model.json'), d3.json('data/geo.json')]).then(([M, G]
   construirNarrativa(M, G);
   montarExplorador(M, G);
   montarClave();
+  montarTema();
   document.querySelector('#cargando').remove();
 }).catch(err => {
   document.querySelector('#cargando').textContent = 'No se pudieron cargar los datos. Hay que servir la carpeta por HTTP (python3 -m http.server).';
@@ -134,6 +135,26 @@ function montarExplorador(M, G) {
   const redibujar = () => { vistas.forEach(v => v.update()); pintarBarra(); };
   estado.onChange(redibujar);
   redibujar();
+}
+
+// ============================================================ tema
+// Sigue el modo del sistema salvo que el lector elija uno; la elección se recuerda.
+function montarTema() {
+  const boton = d3.select('#tema');
+  const esOscuro = () => {
+    const t = document.documentElement.dataset.theme;
+    return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  };
+  const pintar = () => boton.text(esOscuro() ? 'Modo claro' : 'Modo oscuro');
+  boton.on('click', () => {
+    const nuevo = esOscuro() ? 'light' : 'dark';
+    document.documentElement.dataset.theme = nuevo;
+    try { localStorage.setItem('tema', nuevo); } catch (e) {}
+    pintar();
+    // los gráficos leen los colores al dibujar: se recarga la página para repintar todo
+    location.reload();
+  });
+  pintar();
 }
 
 // ============================================================ clave visual
