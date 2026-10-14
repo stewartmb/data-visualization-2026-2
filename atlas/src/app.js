@@ -1,9 +1,9 @@
-import {state,esc,fmt,profile,measures,hellinger,hideTooltip} from './model.js';
-import {renderAtlas} from './atlas-view.js?v=20261014-2';
-import {renderMap} from './map-view.js?v=20261014-6';
-import {renderPaths} from './paths-view.js';
-import {renderEvidence} from './evidence-view.js';
-import {renderInspector} from './inspector.js?v=20261014-5';
+import {state,esc,fmt,profile,measures,hellinger,hideTooltip} from './model.js?v=20261014-7';
+import {renderAtlas} from './atlas-view.js?v=20261014-7';
+import {renderMap} from './map-view.js?v=20261014-7';
+import {renderPaths} from './paths-view.js?v=20261014-7';
+import {renderEvidence} from './evidence-view.js?v=20261014-7';
+import {renderInspector} from './inspector.js?v=20261014-7';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence};
 const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia'};
@@ -18,6 +18,8 @@ function hydrate(){
   if(p.has('cohort'))state.cohort=new Set(p.get('cohort')?p.get('cohort').split(','):[]);
   if(p.get('pins'))state.pins=p.get('pins').split(',').slice(0,3);
   for(const [key,allowed] of Object.entries({mode:['delta','current','base'],sort:['change','similar','borough','morning','morningUp','afternoon','night','weekend','volume','volumeDown'],day:['all','0','1','2','3','4','5','6'],mapMetric:['change','deltaAM','deltaWeekend','recovery'],inspectorTab:['fingerprint','compare','evolution','source']}))if(allowed.includes(p.get(key)))state[key]=p.get(key);
+  for(const key of ['tvMin','tvMax'])if(p.has(key)&&Number.isFinite(+p.get(key)))state[key]=Math.max(0,Math.min(100,+p.get(key)));
+  if(state.tvMin>state.tvMax)[state.tvMin,state.tvMax]=[state.tvMax,state.tvMin];
   for(const key of ['detail','clock','pathsFocus'])if(p.has(key))state[key]=p.get(key)==='true';
 }
 function updateURL(){
@@ -27,6 +29,8 @@ function updateURL(){
   if(state.query)p.set('q',state.query);
   if(state.preset)p.set('preset',state.preset);
   if(state.cohort)p.set('cohort',[...state.cohort].join(','));
+  if(state.tvMin>0)p.set('tvMin',state.tvMin);
+  if(state.tvMax<100)p.set('tvMax',state.tvMax);
   if(state.pins.length)p.set('pins',state.pins.join(','));
   for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus'])p.set(key,state[key]);
   history.replaceState(null,'',`?${p}`);
@@ -42,6 +46,7 @@ const app={
       if(q&&!`${s.name} ${s.id} ${s.routes.join(' ')}`.toLocaleLowerCase().includes(q))return false;
       if(state.cohort&&!state.cohort.has(s.id))return false;
       const m=measures(s);
+      if(m.change<state.tvMin||m.change>state.tvMax)return false;
       if(state.preset==='morning'&&m.deltaAM>=-2)return false;
       if(state.preset==='weekend'&&m.deltaWeekend<=2)return false;
       if(state.preset==='decoupled'&&(m.recovery<80||m.recovery>120||m.change<10))return false;
@@ -76,7 +81,7 @@ function render(){
   document.querySelector('#search').value=state.query;
   document.querySelector('#period-label').textContent=`ene–feb ${state.year}`;
   document.querySelector('#cohort-count').textContent=`${items.length} / ${data.stations.length}`;
-  document.querySelector('#cohort-note').textContent=state.cohort?'Grupo de complejos seleccionado':state.preset==='morning'?'Cambio AM menor que −2 pp':state.preset==='weekend'?'Cambio de fin de semana mayor que +2 pp':state.preset==='decoupled'?'Índice volumen entre 80–120 % y cambio de forma ≥10 pp':state.query?'Resultados de búsqueda':state.borough==='all'?'Todos los complejos de subway':state.borough;
+  document.querySelector('#cohort-note').textContent=(state.tvMin>0||state.tvMax<100?`TV entre ${fmt(state.tvMin)} y ${fmt(state.tvMax)} pp · `:'')+state.cohort?'Grupo de complejos seleccionado':state.preset==='morning'?'Cambio AM menor que −2 pp':state.preset==='weekend'?'Cambio de fin de semana mayor que +2 pp':state.preset==='decoupled'?'Índice volumen entre 80–120 % y cambio de forma ≥10 pp':state.query?'Resultados de búsqueda':state.borough==='all'?'Todos los complejos de subway':state.borough;
   const selected=app.station(state.selected);
   document.body.classList.toggle('has-inspector',Boolean(selected));
   document.querySelector('#selection-label').textContent=selected?`${selected.name}${items.some(s=>s.id===selected.id)?'':' · fuera del grupo activo'}`:'Selecciona un complejo para investigar';
@@ -109,7 +114,7 @@ Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson')]).then(
   document.querySelector('#borough').addEventListener('change',e=>app.set({borough:e.target.value}));
   let timer;document.querySelector('#search').addEventListener('input',e=>{const query=e.target.value;clearTimeout(timer);timer=setTimeout(()=>app.set({query}),180);});
   document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>app.set({preset:b.dataset.preset,cohort:null,query:'',sort:'change'})));
-  document.querySelector('#reset').addEventListener('click',()=>app.set({cohort:null,preset:null,query:'',borough:'all'}));
+  document.querySelector('#reset').addEventListener('click',()=>app.set({cohort:null,preset:null,query:'',borough:'all',tvMin:0,tvMax:100}));
   document.querySelector('#save').addEventListener('click',()=>{
     const saved=app.saved();saved.unshift({name:`${labels[state.view]} · ${state.borough==='all'?'NYC':state.borough} · ${app.filtered().length} complejos`,url:location.search,date:new Date().toISOString()});
     try{localStorage.setItem('rhythm-atlas-saved',JSON.stringify(saved.slice(0,12)));app.toast('Exploración guardada en este navegador. Encuéntrala en Evidencia.');if(state.view==='evidence')render();}catch{app.toast('Este navegador no permite guardar; puedes copiar la URL.');}

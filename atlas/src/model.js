@@ -1,4 +1,4 @@
-export const state = {view:'atlas',year:2024,borough:'all',query:'',preset:null,cohort:null,selected:null,pins:[],mode:'delta',sort:'change',day:'all',detail:false,mapMetric:'change',inspectorTab:'fingerprint',clock:true,pathsFocus:true};
+export const state = {view:'atlas',year:2024,borough:'all',query:'',preset:null,cohort:null,selected:null,pins:[],mode:'delta',sort:'change',day:'all',detail:false,mapMetric:'change',tvMin:0,tvMax:100,inspectorTab:'fingerprint',clock:true,pathsFocus:true};
 export const dayShort=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 export const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const number = new Intl.NumberFormat('es-PE',{maximumFractionDigits:1});

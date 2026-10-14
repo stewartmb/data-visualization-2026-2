@@ -32,8 +32,10 @@ Comparar muestra una sola gráfica de 24 horas que reúne lunes a domingo. Cada 
 
 `scripts/redesign/check-comparison.cjs` verifica la agregación de siete días y la normalización para los 2.120 perfiles, las estaciones fijadas, los tooltips, el acceso al reloj de diferencias y el ancho móvil.
 
-### Legibilidad de la TV en el mapa
+### Colores y filtro TV del mapa
 
-La TV usa cinco intervalos fijos en puntos porcentuales: [0,5), [5,10), [10,15), [15,20) y [20,100]. Son bandas de presentación, no categorías estadísticas aprendidas ni umbrales de significancia. La leyenda informa cuántas estaciones del grupo hay en cada banda y el rango real. Los valores bajos usan un gris azulado suave; los altos se dibujan después para evitar quedar tapados.
+El mapa conserva la escala continua Viridis original para la distancia TV. El dominio usa todas las estaciones del año elegido y no se recalcula al filtrar; una estación mantiene el mismo color. Los cambios mayores se dibujan después para reducir la superposición.
 
-El control «Destacar TV desde» atenúa los valores inferiores sin eliminarlos ni cambiar el grupo compartido; el contador distingue estaciones destacadas de estaciones seleccionadas. «Destacar todas» restablece la opacidad. Los colores y las posiciones de los puntos no cambian al mover el control. El control se conserva al cambiar de vista en la sesión, pero no se guarda en la URL. `scripts/redesign/check-map-emphasis.cjs` comprueba bandas, orden de dibujo, umbral, contador, tamaño de grupo y ancho móvil; `check-map-zoom.cjs` comprueba el tamaño de puntos y bordes durante el zoom.
+«Filtrar distancia TV» permite definir mínimo y máximo inclusivos con dos barras. Al soltar una barra se aplica el rango al grupo compartido, las otras vistas y la exportación. Los puntos fuera del rango no se dibujan como contexto. El rango se guarda en la URL (`tvMin`, `tvMax`) y se restaura al recargar; «Quitar filtro TV» elimina solo este filtro y el restablecimiento general elimina todos. Los límites son puntos porcentuales, no porcentajes de variación de volumen.
+
+`scripts/redesign/check-map-emphasis.cjs` verifica colores continuos, rango inclusivo, contador, restauración desde URL, grupo compartido, colores estables y ancho móvil. `check-map-zoom.cjs` comprueba el tamaño de puntos y bordes durante el zoom.

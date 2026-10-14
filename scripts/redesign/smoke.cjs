@@ -10,7 +10,7 @@ const ROOT=path.resolve(__dirname,'../..');
   const browser=await chromium.launch({headless:true});
   const page=await browser.newPage({viewport:{width:1600,height:1050},deviceScaleFactor:1,acceptDownloads:true});
   const errors=[],requests=[];page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>requests.push(r.url()));
-  async function state(){return page.evaluate(async()=>{const {state}=await import('/atlas/src/model.js');return {...state,cohort:state.cohort?[...state.cohort]:null};});}
+  async function state(){return page.evaluate(async()=>{const {state}=await import('/atlas/src/model.js?v=20261014-7');return {...state,cohort:state.cohort?[...state.cohort]:null};});}
   await page.goto(BASE);await page.waitForSelector('#loading',{state:'hidden'});
   assert.equal(await page.locator('#cohort-count').innerText(),'424 / 424');
   assert.equal(await page.locator('#station-picker option').count(),425);
