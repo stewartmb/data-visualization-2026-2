@@ -1,0 +1,2812 @@
+mes,borough,payment_method,fare_class_category,ridership
+2020-01,Bronx,metrocard,Metrocard - Fair Fare,323961
+2020-01,Bronx,metrocard,Metrocard - Full Fare,3802676
+2020-01,Bronx,metrocard,Metrocard - Other,910143
+2020-01,Bronx,metrocard,Metrocard - Seniors & Disability,296365
+2020-01,Bronx,metrocard,Metrocard - Students,976984
+2020-01,Bronx,metrocard,Metrocard - Unlimited 30-Day,1776656
+2020-01,Bronx,metrocard,Metrocard - Unlimited 7-Day,3143589
+2020-01,Bronx,omny,OMNY - Full Fare,51248
+2020-01,Brooklyn,metrocard,Metrocard - Fair Fare,459282
+2020-01,Brooklyn,metrocard,Metrocard - Full Fare,10678445
+2020-01,Brooklyn,metrocard,Metrocard - Other,2688546
+2020-01,Brooklyn,metrocard,Metrocard - Seniors & Disability,933395
+2020-01,Brooklyn,metrocard,Metrocard - Students,2003793
+2020-01,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,7943995
+2020-01,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,5915231
+2020-01,Brooklyn,omny,OMNY - Full Fare,77981
+2020-01,Manhattan,metrocard,Metrocard - Fair Fare,688149
+2020-01,Manhattan,metrocard,Metrocard - Full Fare,30376032
+2020-01,Manhattan,metrocard,Metrocard - Other,7434359
+2020-01,Manhattan,metrocard,Metrocard - Seniors & Disability,2473457
+2020-01,Manhattan,metrocard,Metrocard - Students,2144002
+2020-01,Manhattan,metrocard,Metrocard - Unlimited 30-Day,19524351
+2020-01,Manhattan,metrocard,Metrocard - Unlimited 7-Day,12576877
+2020-01,Manhattan,omny,OMNY - Full Fare,1959655
+2020-01,Queens,metrocard,Metrocard - Fair Fare,201626
+2020-01,Queens,metrocard,Metrocard - Full Fare,7202126
+2020-01,Queens,metrocard,Metrocard - Other,1506562
+2020-01,Queens,metrocard,Metrocard - Seniors & Disability,638604
+2020-01,Queens,metrocard,Metrocard - Students,1122894
+2020-01,Queens,metrocard,Metrocard - Unlimited 30-Day,4843630
+2020-01,Queens,metrocard,Metrocard - Unlimited 7-Day,4055409
+2020-01,Queens,omny,OMNY - Full Fare,8274
+2020-01,Staten Island,metrocard,Metrocard - Fair Fare,2002
+2020-01,Staten Island,metrocard,Metrocard - Full Fare,172606
+2020-01,Staten Island,metrocard,Metrocard - Other,41209
+2020-01,Staten Island,metrocard,Metrocard - Seniors & Disability,12780
+2020-01,Staten Island,metrocard,Metrocard - Students,16412
+2020-01,Staten Island,metrocard,Metrocard - Unlimited 30-Day,34643
+2020-01,Staten Island,metrocard,Metrocard - Unlimited 7-Day,19101
+2020-01,Staten Island,omny,OMNY - Full Fare,7700
+2020-02,Bronx,metrocard,Metrocard - Fair Fare,363541
+2020-02,Bronx,metrocard,Metrocard - Full Fare,3445908
+2020-02,Bronx,metrocard,Metrocard - Other,966358
+2020-02,Bronx,metrocard,Metrocard - Seniors & Disability,282609
+2020-02,Bronx,metrocard,Metrocard - Students,864197
+2020-02,Bronx,metrocard,Metrocard - Unlimited 30-Day,1704120
+2020-02,Bronx,metrocard,Metrocard - Unlimited 7-Day,3023957
+2020-02,Bronx,omny,OMNY - Full Fare,96990
+2020-02,Brooklyn,metrocard,Metrocard - Fair Fare,519242
+2020-02,Brooklyn,metrocard,Metrocard - Full Fare,9751806
+2020-02,Brooklyn,metrocard,Metrocard - Other,2600614
+2020-02,Brooklyn,metrocard,Metrocard - Seniors & Disability,868917
+2020-02,Brooklyn,metrocard,Metrocard - Students,1787103
+2020-02,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,7729895
+2020-02,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,5681585
+2020-02,Brooklyn,omny,OMNY - Full Fare,122122
+2020-02,Manhattan,metrocard,Metrocard - Fair Fare,788971
+2020-02,Manhattan,metrocard,Metrocard - Full Fare,27041671
+2020-02,Manhattan,metrocard,Metrocard - Other,6980809
+2020-02,Manhattan,metrocard,Metrocard - Seniors & Disability,2311223
+2020-02,Manhattan,metrocard,Metrocard - Students,1904819
+2020-02,Manhattan,metrocard,Metrocard - Unlimited 30-Day,19048420
+2020-02,Manhattan,metrocard,Metrocard - Unlimited 7-Day,12058452
+2020-02,Manhattan,omny,OMNY - Full Fare,2950829
+2020-02,Queens,metrocard,Metrocard - Fair Fare,230465
+2020-02,Queens,metrocard,Metrocard - Full Fare,6489600
+2020-02,Queens,metrocard,Metrocard - Other,1446538
+2020-02,Queens,metrocard,Metrocard - Seniors & Disability,584269
+2020-02,Queens,metrocard,Metrocard - Students,980603
+2020-02,Queens,metrocard,Metrocard - Unlimited 30-Day,4664412
+2020-02,Queens,metrocard,Metrocard - Unlimited 7-Day,3909715
+2020-02,Queens,omny,OMNY - Full Fare,10168
+2020-02,Staten Island,metrocard,Metrocard - Fair Fare,2757
+2020-02,Staten Island,metrocard,Metrocard - Full Fare,153869
+2020-02,Staten Island,metrocard,Metrocard - Other,38042
+2020-02,Staten Island,metrocard,Metrocard - Seniors & Disability,11525
+2020-02,Staten Island,metrocard,Metrocard - Students,14399
+2020-02,Staten Island,metrocard,Metrocard - Unlimited 30-Day,33472
+2020-02,Staten Island,metrocard,Metrocard - Unlimited 7-Day,17549
+2020-02,Staten Island,omny,OMNY - Full Fare,9514
+2020-03,Bronx,metrocard,Metrocard - Fair Fare,298800
+2020-03,Bronx,metrocard,Metrocard - Full Fare,2339002
+2020-03,Bronx,metrocard,Metrocard - Other,677158
+2020-03,Bronx,metrocard,Metrocard - Seniors & Disability,189093
+2020-03,Bronx,metrocard,Metrocard - Students,565390
+2020-03,Bronx,metrocard,Metrocard - Unlimited 30-Day,1210081
+2020-03,Bronx,metrocard,Metrocard - Unlimited 7-Day,2116821
+2020-03,Bronx,omny,OMNY - Full Fare,131226
+2020-03,Brooklyn,metrocard,Metrocard - Fair Fare,406549
+2020-03,Brooklyn,metrocard,Metrocard - Full Fare,5739450
+2020-03,Brooklyn,metrocard,Metrocard - Other,1583190
+2020-03,Brooklyn,metrocard,Metrocard - Seniors & Disability,515440
+2020-03,Brooklyn,metrocard,Metrocard - Students,1090752
+2020-03,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,4441444
+2020-03,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,3643648
+2020-03,Brooklyn,omny,OMNY - Full Fare,78417
+2020-03,Manhattan,metrocard,Metrocard - Fair Fare,597590
+2020-03,Manhattan,metrocard,Metrocard - Full Fare,13051224
+2020-03,Manhattan,metrocard,Metrocard - Other,3641533
+2020-03,Manhattan,metrocard,Metrocard - Seniors & Disability,1149927
+2020-03,Manhattan,metrocard,Metrocard - Students,1095869
+2020-03,Manhattan,metrocard,Metrocard - Unlimited 30-Day,9863731
+2020-03,Manhattan,metrocard,Metrocard - Unlimited 7-Day,6886100
+2020-03,Manhattan,omny,OMNY - Full Fare,1492986
+2020-03,Queens,metrocard,Metrocard - Fair Fare,181201
+2020-03,Queens,metrocard,Metrocard - Full Fare,3963008
+2020-03,Queens,metrocard,Metrocard - Other,924088
+2020-03,Queens,metrocard,Metrocard - Seniors & Disability,340437
+2020-03,Queens,metrocard,Metrocard - Students,609128
+2020-03,Queens,metrocard,Metrocard - Unlimited 30-Day,2802023
+2020-03,Queens,metrocard,Metrocard - Unlimited 7-Day,2533443
+2020-03,Queens,omny,OMNY - Full Fare,8364
+2020-03,Staten Island,metrocard,Metrocard - Fair Fare,2375
+2020-03,Staten Island,metrocard,Metrocard - Full Fare,92152
+2020-03,Staten Island,metrocard,Metrocard - Other,25579
+2020-03,Staten Island,metrocard,Metrocard - Seniors & Disability,7030
+2020-03,Staten Island,metrocard,Metrocard - Students,7899
+2020-03,Staten Island,metrocard,Metrocard - Unlimited 30-Day,21955
+2020-03,Staten Island,metrocard,Metrocard - Unlimited 7-Day,13917
+2020-03,Staten Island,omny,OMNY - Full Fare,6463
+2020-04,Bronx,metrocard,Metrocard - Fair Fare,98806
+2020-04,Bronx,metrocard,Metrocard - Full Fare,850352
+2020-04,Bronx,metrocard,Metrocard - Other,250456
+2020-04,Bronx,metrocard,Metrocard - Seniors & Disability,58816
+2020-04,Bronx,metrocard,Metrocard - Students,68826
+2020-04,Bronx,metrocard,Metrocard - Unlimited 30-Day,262113
+2020-04,Bronx,metrocard,Metrocard - Unlimited 7-Day,436225
+2020-04,Bronx,omny,OMNY - Full Fare,61183
+2020-04,Brooklyn,metrocard,Metrocard - Fair Fare,120238
+2020-04,Brooklyn,metrocard,Metrocard - Full Fare,1523396
+2020-04,Brooklyn,metrocard,Metrocard - Other,375089
+2020-04,Brooklyn,metrocard,Metrocard - Seniors & Disability,124425
+2020-04,Brooklyn,metrocard,Metrocard - Students,83842
+2020-04,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,489380
+2020-04,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,587936
+2020-04,Brooklyn,omny,OMNY - Full Fare,20230
+2020-04,Manhattan,metrocard,Metrocard - Fair Fare,155346
+2020-04,Manhattan,metrocard,Metrocard - Full Fare,1974410
+2020-04,Manhattan,metrocard,Metrocard - Other,555922
+2020-04,Manhattan,metrocard,Metrocard - Seniors & Disability,165521
+2020-04,Manhattan,metrocard,Metrocard - Students,77959
+2020-04,Manhattan,metrocard,Metrocard - Unlimited 30-Day,764835
+2020-04,Manhattan,metrocard,Metrocard - Unlimited 7-Day,864748
+2020-04,Manhattan,omny,OMNY - Full Fare,163637
+2020-04,Queens,metrocard,Metrocard - Fair Fare,43231
+2020-04,Queens,metrocard,Metrocard - Full Fare,950289
+2020-04,Queens,metrocard,Metrocard - Other,212402
+2020-04,Queens,metrocard,Metrocard - Seniors & Disability,63435
+2020-04,Queens,metrocard,Metrocard - Students,37815
+2020-04,Queens,metrocard,Metrocard - Unlimited 30-Day,270030
+2020-04,Queens,metrocard,Metrocard - Unlimited 7-Day,326798
+2020-04,Queens,omny,OMNY - Full Fare,7423
+2020-04,Staten Island,metrocard,Metrocard - Fair Fare,583
+2020-04,Staten Island,metrocard,Metrocard - Full Fare,12080
+2020-04,Staten Island,metrocard,Metrocard - Other,4680
+2020-04,Staten Island,metrocard,Metrocard - Seniors & Disability,916
+2020-04,Staten Island,metrocard,Metrocard - Students,154
+2020-04,Staten Island,metrocard,Metrocard - Unlimited 30-Day,1742
+2020-04,Staten Island,metrocard,Metrocard - Unlimited 7-Day,2055
+2020-04,Staten Island,omny,OMNY - Full Fare,629
+2020-05,Bronx,metrocard,Metrocard - Fair Fare,122754
+2020-05,Bronx,metrocard,Metrocard - Full Fare,1169349
+2020-05,Bronx,metrocard,Metrocard - Other,250879
+2020-05,Bronx,metrocard,Metrocard - Seniors & Disability,75046
+2020-05,Bronx,metrocard,Metrocard - Students,84237
+2020-05,Bronx,metrocard,Metrocard - Unlimited 30-Day,252993
+2020-05,Bronx,metrocard,Metrocard - Unlimited 7-Day,471873
+2020-05,Bronx,omny,OMNY - Full Fare,96949
+2020-05,Brooklyn,metrocard,Metrocard - Fair Fare,155377
+2020-05,Brooklyn,metrocard,Metrocard - Full Fare,2219961
+2020-05,Brooklyn,metrocard,Metrocard - Other,417919
+2020-05,Brooklyn,metrocard,Metrocard - Seniors & Disability,167045
+2020-05,Brooklyn,metrocard,Metrocard - Students,110902
+2020-05,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,480017
+2020-05,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,659448
+2020-05,Brooklyn,omny,OMNY - Full Fare,34003
+2020-05,Manhattan,metrocard,Metrocard - Fair Fare,198839
+2020-05,Manhattan,metrocard,Metrocard - Full Fare,2931770
+2020-05,Manhattan,metrocard,Metrocard - Other,605177
+2020-05,Manhattan,metrocard,Metrocard - Seniors & Disability,231887
+2020-05,Manhattan,metrocard,Metrocard - Students,100988
+2020-05,Manhattan,metrocard,Metrocard - Unlimited 30-Day,754857
+2020-05,Manhattan,metrocard,Metrocard - Unlimited 7-Day,950439
+2020-05,Manhattan,omny,OMNY - Full Fare,264316
+2020-05,Queens,metrocard,Metrocard - Fair Fare,59879
+2020-05,Queens,metrocard,Metrocard - Full Fare,1517729
+2020-05,Queens,metrocard,Metrocard - Other,238697
+2020-05,Queens,metrocard,Metrocard - Seniors & Disability,92476
+2020-05,Queens,metrocard,Metrocard - Students,56343
+2020-05,Queens,metrocard,Metrocard - Unlimited 30-Day,273975
+2020-05,Queens,metrocard,Metrocard - Unlimited 7-Day,424631
+2020-05,Queens,omny,OMNY - Full Fare,19911
+2020-05,Staten Island,metrocard,Metrocard - Fair Fare,522
+2020-05,Staten Island,metrocard,Metrocard - Full Fare,15506
+2020-05,Staten Island,metrocard,Metrocard - Other,5060
+2020-05,Staten Island,metrocard,Metrocard - Seniors & Disability,1084
+2020-05,Staten Island,metrocard,Metrocard - Students,184
+2020-05,Staten Island,metrocard,Metrocard - Unlimited 30-Day,1499
+2020-05,Staten Island,metrocard,Metrocard - Unlimited 7-Day,2217
+2020-05,Staten Island,omny,OMNY - Full Fare,838
+2020-06,Bronx,metrocard,Metrocard - Fair Fare,161674
+2020-06,Bronx,metrocard,Metrocard - Full Fare,1568745
+2020-06,Bronx,metrocard,Metrocard - Other,268740
+2020-06,Bronx,metrocard,Metrocard - Seniors & Disability,97694
+2020-06,Bronx,metrocard,Metrocard - Students,122970
+2020-06,Bronx,metrocard,Metrocard - Unlimited 30-Day,317056
+2020-06,Bronx,metrocard,Metrocard - Unlimited 7-Day,579643
+2020-06,Bronx,omny,OMNY - Full Fare,164210
+2020-06,Brooklyn,metrocard,Metrocard - Fair Fare,226293
+2020-06,Brooklyn,metrocard,Metrocard - Full Fare,3494225
+2020-06,Brooklyn,metrocard,Metrocard - Other,513775
+2020-06,Brooklyn,metrocard,Metrocard - Seniors & Disability,249391
+2020-06,Brooklyn,metrocard,Metrocard - Students,187238
+2020-06,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,687733
+2020-06,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,882209
+2020-06,Brooklyn,omny,OMNY - Full Fare,72351
+2020-06,Manhattan,metrocard,Metrocard - Fair Fare,301253
+2020-06,Manhattan,metrocard,Metrocard - Full Fare,5302007
+2020-06,Manhattan,metrocard,Metrocard - Other,796985
+2020-06,Manhattan,metrocard,Metrocard - Seniors & Disability,402858
+2020-06,Manhattan,metrocard,Metrocard - Students,183415
+2020-06,Manhattan,metrocard,Metrocard - Unlimited 30-Day,1158508
+2020-06,Manhattan,metrocard,Metrocard - Unlimited 7-Day,1352899
+2020-06,Manhattan,omny,OMNY - Full Fare,585013
+2020-06,Queens,metrocard,Metrocard - Fair Fare,96150
+2020-06,Queens,metrocard,Metrocard - Full Fare,2485180
+2020-06,Queens,metrocard,Metrocard - Other,311434
+2020-06,Queens,metrocard,Metrocard - Seniors & Disability,156089
+2020-06,Queens,metrocard,Metrocard - Students,104872
+2020-06,Queens,metrocard,Metrocard - Unlimited 30-Day,428624
+2020-06,Queens,metrocard,Metrocard - Unlimited 7-Day,639459
+2020-06,Queens,omny,OMNY - Full Fare,86483
+2020-06,Staten Island,metrocard,Metrocard - Fair Fare,839
+2020-06,Staten Island,metrocard,Metrocard - Full Fare,28102
+2020-06,Staten Island,metrocard,Metrocard - Other,7462
+2020-06,Staten Island,metrocard,Metrocard - Seniors & Disability,2014
+2020-06,Staten Island,metrocard,Metrocard - Students,402
+2020-06,Staten Island,metrocard,Metrocard - Unlimited 30-Day,2388
+2020-06,Staten Island,metrocard,Metrocard - Unlimited 7-Day,3087
+2020-06,Staten Island,omny,OMNY - Full Fare,2014
+2020-07,Bronx,metrocard,Metrocard - Fair Fare,204120
+2020-07,Bronx,metrocard,Metrocard - Full Fare,1920868
+2020-07,Bronx,metrocard,Metrocard - Other,292825
+2020-07,Bronx,metrocard,Metrocard - Seniors & Disability,114927
+2020-07,Bronx,metrocard,Metrocard - Students,127
+2020-07,Bronx,metrocard,Metrocard - Unlimited 30-Day,396512
+2020-07,Bronx,metrocard,Metrocard - Unlimited 7-Day,695177
+2020-07,Bronx,omny,OMNY - Full Fare,280434
+2020-07,Brooklyn,metrocard,Metrocard - Fair Fare,314057
+2020-07,Brooklyn,metrocard,Metrocard - Full Fare,4728413
+2020-07,Brooklyn,metrocard,Metrocard - Other,604027
+2020-07,Brooklyn,metrocard,Metrocard - Seniors & Disability,325244
+2020-07,Brooklyn,metrocard,Metrocard - Students,127
+2020-07,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,996090
+2020-07,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1153291
+2020-07,Brooklyn,omny,OMNY - Full Fare,160041
+2020-07,Manhattan,metrocard,Metrocard - Fair Fare,434539
+2020-07,Manhattan,metrocard,Metrocard - Full Fare,7652771
+2020-07,Manhattan,metrocard,Metrocard - Other,1022330
+2020-07,Manhattan,metrocard,Metrocard - Seniors & Disability,573456
+2020-07,Manhattan,metrocard,Metrocard - Students,253
+2020-07,Manhattan,metrocard,Metrocard - Unlimited 30-Day,1785965
+2020-07,Manhattan,metrocard,Metrocard - Unlimited 7-Day,1894403
+2020-07,Manhattan,omny,OMNY - Full Fare,1091329
+2020-07,Queens,metrocard,Metrocard - Fair Fare,142224
+2020-07,Queens,metrocard,Metrocard - Full Fare,3390428
+2020-07,Queens,metrocard,Metrocard - Other,372945
+2020-07,Queens,metrocard,Metrocard - Seniors & Disability,210695
+2020-07,Queens,metrocard,Metrocard - Students,51
+2020-07,Queens,metrocard,Metrocard - Unlimited 30-Day,662217
+2020-07,Queens,metrocard,Metrocard - Unlimited 7-Day,911576
+2020-07,Queens,omny,OMNY - Full Fare,177916
+2020-07,Staten Island,metrocard,Metrocard - Fair Fare,1355
+2020-07,Staten Island,metrocard,Metrocard - Full Fare,42091
+2020-07,Staten Island,metrocard,Metrocard - Other,10161
+2020-07,Staten Island,metrocard,Metrocard - Seniors & Disability,3201
+2020-07,Staten Island,metrocard,Metrocard - Students,2
+2020-07,Staten Island,metrocard,Metrocard - Unlimited 30-Day,4417
+2020-07,Staten Island,metrocard,Metrocard - Unlimited 7-Day,4136
+2020-07,Staten Island,omny,OMNY - Full Fare,3466
+2020-08,Bronx,metrocard,Metrocard - Fair Fare,214423
+2020-08,Bronx,metrocard,Metrocard - Full Fare,1925164
+2020-08,Bronx,metrocard,Metrocard - Other,293393
+2020-08,Bronx,metrocard,Metrocard - Seniors & Disability,125740
+2020-08,Bronx,metrocard,Metrocard - Students,210
+2020-08,Bronx,metrocard,Metrocard - Unlimited 30-Day,409906
+2020-08,Bronx,metrocard,Metrocard - Unlimited 7-Day,703452
+2020-08,Bronx,omny,OMNY - Full Fare,330232
+2020-08,Brooklyn,metrocard,Metrocard - Fair Fare,337490
+2020-08,Brooklyn,metrocard,Metrocard - Full Fare,4986165
+2020-08,Brooklyn,metrocard,Metrocard - Other,624755
+2020-08,Brooklyn,metrocard,Metrocard - Seniors & Disability,361179
+2020-08,Brooklyn,metrocard,Metrocard - Students,132
+2020-08,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1094750
+2020-08,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1203467
+2020-08,Brooklyn,omny,OMNY - Full Fare,235301
+2020-08,Manhattan,metrocard,Metrocard - Fair Fare,477404
+2020-08,Manhattan,metrocard,Metrocard - Full Fare,8287104
+2020-08,Manhattan,metrocard,Metrocard - Other,1096150
+2020-08,Manhattan,metrocard,Metrocard - Seniors & Disability,654372
+2020-08,Manhattan,metrocard,Metrocard - Students,350
+2020-08,Manhattan,metrocard,Metrocard - Unlimited 30-Day,1984890
+2020-08,Manhattan,metrocard,Metrocard - Unlimited 7-Day,2022810
+2020-08,Manhattan,omny,OMNY - Full Fare,1460876
+2020-08,Queens,metrocard,Metrocard - Fair Fare,159865
+2020-08,Queens,metrocard,Metrocard - Full Fare,3514192
+2020-08,Queens,metrocard,Metrocard - Other,387603
+2020-08,Queens,metrocard,Metrocard - Seniors & Disability,243307
+2020-08,Queens,metrocard,Metrocard - Students,103
+2020-08,Queens,metrocard,Metrocard - Unlimited 30-Day,749564
+2020-08,Queens,metrocard,Metrocard - Unlimited 7-Day,979929
+2020-08,Queens,omny,OMNY - Full Fare,316942
+2020-08,Staten Island,metrocard,Metrocard - Fair Fare,1518
+2020-08,Staten Island,metrocard,Metrocard - Full Fare,43638
+2020-08,Staten Island,metrocard,Metrocard - Other,10018
+2020-08,Staten Island,metrocard,Metrocard - Seniors & Disability,3274
+2020-08,Staten Island,metrocard,Metrocard - Unlimited 30-Day,4431
+2020-08,Staten Island,metrocard,Metrocard - Unlimited 7-Day,4304
+2020-08,Staten Island,omny,OMNY - Full Fare,3853
+2020-09,Bronx,metrocard,Metrocard - Fair Fare,229934
+2020-09,Bronx,metrocard,Metrocard - Full Fare,2172482
+2020-09,Bronx,metrocard,Metrocard - Other,312606
+2020-09,Bronx,metrocard,Metrocard - Seniors & Disability,162239
+2020-09,Bronx,metrocard,Metrocard - Students,16007
+2020-09,Bronx,metrocard,Metrocard - Unlimited 30-Day,560917
+2020-09,Bronx,metrocard,Metrocard - Unlimited 7-Day,1083322
+2020-09,Bronx,omny,OMNY - Full Fare,344887
+2020-09,Brooklyn,metrocard,Metrocard - Fair Fare,359356
+2020-09,Brooklyn,metrocard,Metrocard - Full Fare,5653064
+2020-09,Brooklyn,metrocard,Metrocard - Other,680026
+2020-09,Brooklyn,metrocard,Metrocard - Seniors & Disability,452550
+2020-09,Brooklyn,metrocard,Metrocard - Students,39563
+2020-09,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1499468
+2020-09,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1742414
+2020-09,Brooklyn,omny,OMNY - Full Fare,344547
+2020-09,Manhattan,metrocard,Metrocard - Fair Fare,512021
+2020-09,Manhattan,metrocard,Metrocard - Full Fare,9535735
+2020-09,Manhattan,metrocard,Metrocard - Other,1230177
+2020-09,Manhattan,metrocard,Metrocard - Seniors & Disability,826348
+2020-09,Manhattan,metrocard,Metrocard - Students,51884
+2020-09,Manhattan,metrocard,Metrocard - Unlimited 30-Day,2651450
+2020-09,Manhattan,metrocard,Metrocard - Unlimited 7-Day,2753118
+2020-09,Manhattan,omny,OMNY - Full Fare,1930394
+2020-09,Queens,metrocard,Metrocard - Fair Fare,174262
+2020-09,Queens,metrocard,Metrocard - Full Fare,3861226
+2020-09,Queens,metrocard,Metrocard - Other,417969
+2020-09,Queens,metrocard,Metrocard - Seniors & Disability,309627
+2020-09,Queens,metrocard,Metrocard - Students,18423
+2020-09,Queens,metrocard,Metrocard - Unlimited 30-Day,1038656
+2020-09,Queens,metrocard,Metrocard - Unlimited 7-Day,1438478
+2020-09,Queens,omny,OMNY - Full Fare,404537
+2020-09,Staten Island,metrocard,Metrocard - Fair Fare,1931
+2020-09,Staten Island,metrocard,Metrocard - Full Fare,49067
+2020-09,Staten Island,metrocard,Metrocard - Other,10750
+2020-09,Staten Island,metrocard,Metrocard - Seniors & Disability,4013
+2020-09,Staten Island,metrocard,Metrocard - Students,801
+2020-09,Staten Island,metrocard,Metrocard - Unlimited 30-Day,5978
+2020-09,Staten Island,metrocard,Metrocard - Unlimited 7-Day,6756
+2020-09,Staten Island,omny,OMNY - Full Fare,4578
+2020-10,Bronx,metrocard,Metrocard - Fair Fare,273500
+2020-10,Bronx,metrocard,Metrocard - Full Fare,2245839
+2020-10,Bronx,metrocard,Metrocard - Other,369886
+2020-10,Bronx,metrocard,Metrocard - Seniors & Disability,172547
+2020-10,Bronx,metrocard,Metrocard - Students,107886
+2020-10,Bronx,metrocard,Metrocard - Unlimited 30-Day,648644
+2020-10,Bronx,metrocard,Metrocard - Unlimited 7-Day,1242321
+2020-10,Bronx,omny,OMNY - Full Fare,385279
+2020-10,Brooklyn,metrocard,Metrocard - Fair Fare,424393
+2020-10,Brooklyn,metrocard,Metrocard - Full Fare,5839414
+2020-10,Brooklyn,metrocard,Metrocard - Other,767097
+2020-10,Brooklyn,metrocard,Metrocard - Seniors & Disability,473836
+2020-10,Brooklyn,metrocard,Metrocard - Students,217933
+2020-10,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1746421
+2020-10,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1993708
+2020-10,Brooklyn,omny,OMNY - Full Fare,573268
+2020-10,Manhattan,metrocard,Metrocard - Fair Fare,609900
+2020-10,Manhattan,metrocard,Metrocard - Full Fare,10253334
+2020-10,Manhattan,metrocard,Metrocard - Other,1415269
+2020-10,Manhattan,metrocard,Metrocard - Seniors & Disability,892421
+2020-10,Manhattan,metrocard,Metrocard - Students,253139
+2020-10,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3162519
+2020-10,Manhattan,metrocard,Metrocard - Unlimited 7-Day,3198419
+2020-10,Manhattan,omny,OMNY - Full Fare,2477195
+2020-10,Queens,metrocard,Metrocard - Fair Fare,203621
+2020-10,Queens,metrocard,Metrocard - Full Fare,3959920
+2020-10,Queens,metrocard,Metrocard - Other,462725
+2020-10,Queens,metrocard,Metrocard - Seniors & Disability,324773
+2020-10,Queens,metrocard,Metrocard - Students,134921
+2020-10,Queens,metrocard,Metrocard - Unlimited 30-Day,1206043
+2020-10,Queens,metrocard,Metrocard - Unlimited 7-Day,1627230
+2020-10,Queens,omny,OMNY - Full Fare,492384
+2020-10,Staten Island,metrocard,Metrocard - Fair Fare,2077
+2020-10,Staten Island,metrocard,Metrocard - Full Fare,51443
+2020-10,Staten Island,metrocard,Metrocard - Other,12013
+2020-10,Staten Island,metrocard,Metrocard - Seniors & Disability,4283
+2020-10,Staten Island,metrocard,Metrocard - Students,2118
+2020-10,Staten Island,metrocard,Metrocard - Unlimited 30-Day,7646
+2020-10,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8648
+2020-10,Staten Island,omny,OMNY - Full Fare,5515
+2020-11,Bronx,metrocard,Metrocard - Fair Fare,273652
+2020-11,Bronx,metrocard,Metrocard - Full Fare,1986200
+2020-11,Bronx,metrocard,Metrocard - Other,337690
+2020-11,Bronx,metrocard,Metrocard - Seniors & Disability,157265
+2020-11,Bronx,metrocard,Metrocard - Students,94062
+2020-11,Bronx,metrocard,Metrocard - Unlimited 30-Day,582836
+2020-11,Bronx,metrocard,Metrocard - Unlimited 7-Day,1124383
+2020-11,Bronx,omny,OMNY - Full Fare,395913
+2020-11,Brooklyn,metrocard,Metrocard - Fair Fare,421946
+2020-11,Brooklyn,metrocard,Metrocard - Full Fare,5111821
+2020-11,Brooklyn,metrocard,Metrocard - Other,691808
+2020-11,Brooklyn,metrocard,Metrocard - Seniors & Disability,436849
+2020-11,Brooklyn,metrocard,Metrocard - Students,198059
+2020-11,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1591595
+2020-11,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1841449
+2020-11,Brooklyn,omny,OMNY - Full Fare,751504
+2020-11,Manhattan,metrocard,Metrocard - Fair Fare,604324
+2020-11,Manhattan,metrocard,Metrocard - Full Fare,8893403
+2020-11,Manhattan,metrocard,Metrocard - Other,1261712
+2020-11,Manhattan,metrocard,Metrocard - Seniors & Disability,816673
+2020-11,Manhattan,metrocard,Metrocard - Students,218266
+2020-11,Manhattan,metrocard,Metrocard - Unlimited 30-Day,2854820
+2020-11,Manhattan,metrocard,Metrocard - Unlimited 7-Day,2917946
+2020-11,Manhattan,omny,OMNY - Full Fare,2468007
+2020-11,Queens,metrocard,Metrocard - Fair Fare,204372
+2020-11,Queens,metrocard,Metrocard - Full Fare,3563407
+2020-11,Queens,metrocard,Metrocard - Other,430990
+2020-11,Queens,metrocard,Metrocard - Seniors & Disability,303363
+2020-11,Queens,metrocard,Metrocard - Students,120309
+2020-11,Queens,metrocard,Metrocard - Unlimited 30-Day,1125217
+2020-11,Queens,metrocard,Metrocard - Unlimited 7-Day,1512901
+2020-11,Queens,omny,OMNY - Full Fare,520552
+2020-11,Staten Island,metrocard,Metrocard - Fair Fare,1866
+2020-11,Staten Island,metrocard,Metrocard - Full Fare,42762
+2020-11,Staten Island,metrocard,Metrocard - Other,9690
+2020-11,Staten Island,metrocard,Metrocard - Seniors & Disability,3809
+2020-11,Staten Island,metrocard,Metrocard - Students,1016
+2020-11,Staten Island,metrocard,Metrocard - Unlimited 30-Day,6708
+2020-11,Staten Island,metrocard,Metrocard - Unlimited 7-Day,7034
+2020-11,Staten Island,omny,OMNY - Full Fare,5072
+2020-12,Bronx,metrocard,Metrocard - Fair Fare,296530
+2020-12,Bronx,metrocard,Metrocard - Full Fare,2057783
+2020-12,Bronx,metrocard,Metrocard - Other,300937
+2020-12,Bronx,metrocard,Metrocard - Seniors & Disability,161452
+2020-12,Bronx,metrocard,Metrocard - Students,75235
+2020-12,Bronx,metrocard,Metrocard - Unlimited 30-Day,566494
+2020-12,Bronx,metrocard,Metrocard - Unlimited 7-Day,1104013
+2020-12,Bronx,omny,OMNY - Full Fare,456815
+2020-12,Brooklyn,metrocard,Metrocard - Fair Fare,451419
+2020-12,Brooklyn,metrocard,Metrocard - Full Fare,5090333
+2020-12,Brooklyn,metrocard,Metrocard - Other,662154
+2020-12,Brooklyn,metrocard,Metrocard - Seniors & Disability,439922
+2020-12,Brooklyn,metrocard,Metrocard - Students,173421
+2020-12,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1498527
+2020-12,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1809204
+2020-12,Brooklyn,omny,OMNY - Full Fare,935529
+2020-12,Manhattan,metrocard,Metrocard - Fair Fare,650389
+2020-12,Manhattan,metrocard,Metrocard - Full Fare,8899762
+2020-12,Manhattan,metrocard,Metrocard - Other,1212795
+2020-12,Manhattan,metrocard,Metrocard - Seniors & Disability,815232
+2020-12,Manhattan,metrocard,Metrocard - Students,191235
+2020-12,Manhattan,metrocard,Metrocard - Unlimited 30-Day,2646982
+2020-12,Manhattan,metrocard,Metrocard - Unlimited 7-Day,2912842
+2020-12,Manhattan,omny,OMNY - Full Fare,2684214
+2020-12,Queens,metrocard,Metrocard - Fair Fare,219104
+2020-12,Queens,metrocard,Metrocard - Full Fare,3622074
+2020-12,Queens,metrocard,Metrocard - Other,401634
+2020-12,Queens,metrocard,Metrocard - Seniors & Disability,301692
+2020-12,Queens,metrocard,Metrocard - Students,104731
+2020-12,Queens,metrocard,Metrocard - Unlimited 30-Day,1058885
+2020-12,Queens,metrocard,Metrocard - Unlimited 7-Day,1475425
+2020-12,Queens,omny,OMNY - Full Fare,595543
+2020-12,Staten Island,metrocard,Metrocard - Fair Fare,1953
+2020-12,Staten Island,metrocard,Metrocard - Full Fare,42816
+2020-12,Staten Island,metrocard,Metrocard - Other,9899
+2020-12,Staten Island,metrocard,Metrocard - Seniors & Disability,3747
+2020-12,Staten Island,metrocard,Metrocard - Students,619
+2020-12,Staten Island,metrocard,Metrocard - Unlimited 30-Day,6535
+2020-12,Staten Island,metrocard,Metrocard - Unlimited 7-Day,7187
+2020-12,Staten Island,omny,OMNY - Full Fare,5674
+2021-01,Bronx,metrocard,Metrocard - Fair Fare,281866
+2021-01,Bronx,metrocard,Metrocard - Full Fare,1896811
+2021-01,Bronx,metrocard,Metrocard - Other,274511
+2021-01,Bronx,metrocard,Metrocard - Seniors & Disability,153927
+2021-01,Bronx,metrocard,Metrocard - Students,66591
+2021-01,Bronx,metrocard,Metrocard - Unlimited 30-Day,542819
+2021-01,Bronx,metrocard,Metrocard - Unlimited 7-Day,1057085
+2021-01,Bronx,omny,OMNY - Full Fare,471066
+2021-01,Brooklyn,metrocard,Metrocard - Fair Fare,424442
+2021-01,Brooklyn,metrocard,Metrocard - Full Fare,4617291
+2021-01,Brooklyn,metrocard,Metrocard - Other,619450
+2021-01,Brooklyn,metrocard,Metrocard - Seniors & Disability,409603
+2021-01,Brooklyn,metrocard,Metrocard - Students,160018
+2021-01,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1471495
+2021-01,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1727818
+2021-01,Brooklyn,omny,OMNY - Full Fare,1125256
+2021-01,Manhattan,metrocard,Metrocard - Fair Fare,600408
+2021-01,Manhattan,metrocard,Metrocard - Full Fare,7987273
+2021-01,Manhattan,metrocard,Metrocard - Other,1138810
+2021-01,Manhattan,metrocard,Metrocard - Seniors & Disability,754913
+2021-01,Manhattan,metrocard,Metrocard - Students,174939
+2021-01,Manhattan,metrocard,Metrocard - Unlimited 30-Day,2627359
+2021-01,Manhattan,metrocard,Metrocard - Unlimited 7-Day,2642133
+2021-01,Manhattan,omny,OMNY - Full Fare,2797403
+2021-01,Queens,metrocard,Metrocard - Fair Fare,205837
+2021-01,Queens,metrocard,Metrocard - Full Fare,3291352
+2021-01,Queens,metrocard,Metrocard - Other,374216
+2021-01,Queens,metrocard,Metrocard - Seniors & Disability,282969
+2021-01,Queens,metrocard,Metrocard - Students,91289
+2021-01,Queens,metrocard,Metrocard - Unlimited 30-Day,1041958
+2021-01,Queens,metrocard,Metrocard - Unlimited 7-Day,1412204
+2021-01,Queens,omny,OMNY - Full Fare,640523
+2021-01,Staten Island,metrocard,Metrocard - Fair Fare,2036
+2021-01,Staten Island,metrocard,Metrocard - Full Fare,42369
+2021-01,Staten Island,metrocard,Metrocard - Other,9130
+2021-01,Staten Island,metrocard,Metrocard - Seniors & Disability,3695
+2021-01,Staten Island,metrocard,Metrocard - Students,646
+2021-01,Staten Island,metrocard,Metrocard - Unlimited 30-Day,6686
+2021-01,Staten Island,metrocard,Metrocard - Unlimited 7-Day,7146
+2021-01,Staten Island,omny,OMNY - Full Fare,5735
+2021-02,Bronx,metrocard,Metrocard - Fair Fare,271338
+2021-02,Bronx,metrocard,Metrocard - Full Fare,1791317
+2021-02,Bronx,metrocard,Metrocard - Other,259814
+2021-02,Bronx,metrocard,Metrocard - Seniors & Disability,143216
+2021-02,Bronx,metrocard,Metrocard - Students,18254
+2021-02,Bronx,metrocard,Metrocard - Unlimited 30-Day,503013
+2021-02,Bronx,metrocard,Metrocard - Unlimited 7-Day,956820
+2021-02,Bronx,omny,OMNY - Full Fare,496354
+2021-02,Brooklyn,metrocard,Metrocard - Fair Fare,409942
+2021-02,Brooklyn,metrocard,Metrocard - Full Fare,4418427
+2021-02,Brooklyn,metrocard,Metrocard - Other,588630
+2021-02,Brooklyn,metrocard,Metrocard - Seniors & Disability,387739
+2021-02,Brooklyn,metrocard,Metrocard - Students,69136
+2021-02,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1367501
+2021-02,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1556472
+2021-02,Brooklyn,omny,OMNY - Full Fare,1300603
+2021-02,Manhattan,metrocard,Metrocard - Fair Fare,580985
+2021-02,Manhattan,metrocard,Metrocard - Full Fare,7543097
+2021-02,Manhattan,metrocard,Metrocard - Other,1073209
+2021-02,Manhattan,metrocard,Metrocard - Seniors & Disability,722747
+2021-02,Manhattan,metrocard,Metrocard - Students,85960
+2021-02,Manhattan,metrocard,Metrocard - Unlimited 30-Day,2480933
+2021-02,Manhattan,metrocard,Metrocard - Unlimited 7-Day,2404268
+2021-02,Manhattan,omny,OMNY - Full Fare,3026044
+2021-02,Queens,metrocard,Metrocard - Fair Fare,197206
+2021-02,Queens,metrocard,Metrocard - Full Fare,3106805
+2021-02,Queens,metrocard,Metrocard - Other,362705
+2021-02,Queens,metrocard,Metrocard - Seniors & Disability,267140
+2021-02,Queens,metrocard,Metrocard - Students,32159
+2021-02,Queens,metrocard,Metrocard - Unlimited 30-Day,970194
+2021-02,Queens,metrocard,Metrocard - Unlimited 7-Day,1275845
+2021-02,Queens,omny,OMNY - Full Fare,726983
+2021-02,Staten Island,metrocard,Metrocard - Fair Fare,1914
+2021-02,Staten Island,metrocard,Metrocard - Full Fare,39838
+2021-02,Staten Island,metrocard,Metrocard - Other,8777
+2021-02,Staten Island,metrocard,Metrocard - Seniors & Disability,3432
+2021-02,Staten Island,metrocard,Metrocard - Students,409
+2021-02,Staten Island,metrocard,Metrocard - Unlimited 30-Day,5666
+2021-02,Staten Island,metrocard,Metrocard - Unlimited 7-Day,6280
+2021-02,Staten Island,omny,OMNY - Full Fare,6297
+2021-03,Bronx,metrocard,Metrocard - Fair Fare,343539
+2021-03,Bronx,metrocard,Metrocard - Full Fare,2192064
+2021-03,Bronx,metrocard,Metrocard - Other,352153
+2021-03,Bronx,metrocard,Metrocard - Seniors & Disability,189835
+2021-03,Bronx,metrocard,Metrocard - Students,67727
+2021-03,Bronx,metrocard,Metrocard - Unlimited 30-Day,636261
+2021-03,Bronx,metrocard,Metrocard - Unlimited 7-Day,1234185
+2021-03,Bronx,omny,OMNY - Full Fare,663357
+2021-03,Brooklyn,metrocard,Metrocard - Fair Fare,513918
+2021-03,Brooklyn,metrocard,Metrocard - Full Fare,5355794
+2021-03,Brooklyn,metrocard,Metrocard - Other,759382
+2021-03,Brooklyn,metrocard,Metrocard - Seniors & Disability,522000
+2021-03,Brooklyn,metrocard,Metrocard - Students,174788
+2021-03,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1758348
+2021-03,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2004949
+2021-03,Brooklyn,omny,OMNY - Full Fare,1817455
+2021-03,Manhattan,metrocard,Metrocard - Fair Fare,738232
+2021-03,Manhattan,metrocard,Metrocard - Full Fare,9649619
+2021-03,Manhattan,metrocard,Metrocard - Other,1396813
+2021-03,Manhattan,metrocard,Metrocard - Seniors & Disability,993621
+2021-03,Manhattan,metrocard,Metrocard - Students,208465
+2021-03,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3195616
+2021-03,Manhattan,metrocard,Metrocard - Unlimited 7-Day,3183609
+2021-03,Manhattan,omny,OMNY - Full Fare,4234751
+2021-03,Queens,metrocard,Metrocard - Fair Fare,248430
+2021-03,Queens,metrocard,Metrocard - Full Fare,3765205
+2021-03,Queens,metrocard,Metrocard - Other,463834
+2021-03,Queens,metrocard,Metrocard - Seniors & Disability,363581
+2021-03,Queens,metrocard,Metrocard - Students,93858
+2021-03,Queens,metrocard,Metrocard - Unlimited 30-Day,1242349
+2021-03,Queens,metrocard,Metrocard - Unlimited 7-Day,1655043
+2021-03,Queens,omny,OMNY - Full Fare,1020658
+2021-03,Staten Island,metrocard,Metrocard - Fair Fare,2244
+2021-03,Staten Island,metrocard,Metrocard - Full Fare,47285
+2021-03,Staten Island,metrocard,Metrocard - Other,9648
+2021-03,Staten Island,metrocard,Metrocard - Seniors & Disability,4236
+2021-03,Staten Island,metrocard,Metrocard - Students,1093
+2021-03,Staten Island,metrocard,Metrocard - Unlimited 30-Day,6938
+2021-03,Staten Island,metrocard,Metrocard - Unlimited 7-Day,7290
+2021-03,Staten Island,omny,OMNY - Full Fare,7795
+2021-04,Bronx,metrocard,Metrocard - Fair Fare,344990
+2021-04,Bronx,metrocard,Metrocard - Full Fare,2171008
+2021-04,Bronx,metrocard,Metrocard - Other,346176
+2021-04,Bronx,metrocard,Metrocard - Seniors & Disability,197091
+2021-04,Bronx,metrocard,Metrocard - Students,138998
+2021-04,Bronx,metrocard,Metrocard - Unlimited 30-Day,651130
+2021-04,Bronx,metrocard,Metrocard - Unlimited 7-Day,1231726
+2021-04,Bronx,omny,OMNY - Full Fare,718124
+2021-04,Brooklyn,metrocard,Metrocard - Fair Fare,520460
+2021-04,Brooklyn,metrocard,Metrocard - Full Fare,5357680
+2021-04,Brooklyn,metrocard,Metrocard - Other,763239
+2021-04,Brooklyn,metrocard,Metrocard - Seniors & Disability,540216
+2021-04,Brooklyn,metrocard,Metrocard - Students,313422
+2021-04,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1798031
+2021-04,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2008745
+2021-04,Brooklyn,omny,OMNY - Full Fare,2139073
+2021-04,Manhattan,metrocard,Metrocard - Fair Fare,755983
+2021-04,Manhattan,metrocard,Metrocard - Full Fare,9976806
+2021-04,Manhattan,metrocard,Metrocard - Other,1415065
+2021-04,Manhattan,metrocard,Metrocard - Seniors & Disability,1054278
+2021-04,Manhattan,metrocard,Metrocard - Students,351759
+2021-04,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3315624
+2021-04,Manhattan,metrocard,Metrocard - Unlimited 7-Day,3318797
+2021-04,Manhattan,omny,OMNY - Full Fare,4960690
+2021-04,Queens,metrocard,Metrocard - Fair Fare,253159
+2021-04,Queens,metrocard,Metrocard - Full Fare,3707972
+2021-04,Queens,metrocard,Metrocard - Other,471438
+2021-04,Queens,metrocard,Metrocard - Seniors & Disability,371223
+2021-04,Queens,metrocard,Metrocard - Students,171759
+2021-04,Queens,metrocard,Metrocard - Unlimited 30-Day,1277128
+2021-04,Queens,metrocard,Metrocard - Unlimited 7-Day,1681753
+2021-04,Queens,omny,OMNY - Full Fare,1157076
+2021-04,Staten Island,metrocard,Metrocard - Fair Fare,2539
+2021-04,Staten Island,metrocard,Metrocard - Full Fare,49599
+2021-04,Staten Island,metrocard,Metrocard - Other,10290
+2021-04,Staten Island,metrocard,Metrocard - Seniors & Disability,4559
+2021-04,Staten Island,metrocard,Metrocard - Students,1800
+2021-04,Staten Island,metrocard,Metrocard - Unlimited 30-Day,7522
+2021-04,Staten Island,metrocard,Metrocard - Unlimited 7-Day,7834
+2021-04,Staten Island,omny,OMNY - Full Fare,9135
+2021-05,Bronx,metrocard,Metrocard - Fair Fare,356347
+2021-05,Bronx,metrocard,Metrocard - Full Fare,2175197
+2021-05,Bronx,metrocard,Metrocard - Other,326217
+2021-05,Bronx,metrocard,Metrocard - Seniors & Disability,200944
+2021-05,Bronx,metrocard,Metrocard - Students,167975
+2021-05,Bronx,metrocard,Metrocard - Unlimited 30-Day,670417
+2021-05,Bronx,metrocard,Metrocard - Unlimited 7-Day,1293825
+2021-05,Bronx,omny,OMNY - Full Fare,820265
+2021-05,Brooklyn,metrocard,Metrocard - Fair Fare,540758
+2021-05,Brooklyn,metrocard,Metrocard - Full Fare,5621314
+2021-05,Brooklyn,metrocard,Metrocard - Other,776969
+2021-05,Brooklyn,metrocard,Metrocard - Seniors & Disability,570896
+2021-05,Brooklyn,metrocard,Metrocard - Students,372336
+2021-05,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1904002
+2021-05,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2150813
+2021-05,Brooklyn,omny,OMNY - Full Fare,2620203
+2021-05,Manhattan,metrocard,Metrocard - Fair Fare,787940
+2021-05,Manhattan,metrocard,Metrocard - Full Fare,11005559
+2021-05,Manhattan,metrocard,Metrocard - Other,1472811
+2021-05,Manhattan,metrocard,Metrocard - Seniors & Disability,1138490
+2021-05,Manhattan,metrocard,Metrocard - Students,437628
+2021-05,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3529190
+2021-05,Manhattan,metrocard,Metrocard - Unlimited 7-Day,3822620
+2021-05,Manhattan,omny,OMNY - Full Fare,6179115
+2021-05,Queens,metrocard,Metrocard - Fair Fare,265657
+2021-05,Queens,metrocard,Metrocard - Full Fare,3843488
+2021-05,Queens,metrocard,Metrocard - Other,469245
+2021-05,Queens,metrocard,Metrocard - Seniors & Disability,392125
+2021-05,Queens,metrocard,Metrocard - Students,203365
+2021-05,Queens,metrocard,Metrocard - Unlimited 30-Day,1352822
+2021-05,Queens,metrocard,Metrocard - Unlimited 7-Day,1805277
+2021-05,Queens,omny,OMNY - Full Fare,1371550
+2021-05,Staten Island,metrocard,Metrocard - Fair Fare,2431
+2021-05,Staten Island,metrocard,Metrocard - Full Fare,51734
+2021-05,Staten Island,metrocard,Metrocard - Other,10087
+2021-05,Staten Island,metrocard,Metrocard - Seniors & Disability,5076
+2021-05,Staten Island,metrocard,Metrocard - Students,2172
+2021-05,Staten Island,metrocard,Metrocard - Unlimited 30-Day,7690
+2021-05,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8125
+2021-05,Staten Island,omny,OMNY - Full Fare,10306
+2021-06,Bronx,metrocard,Metrocard - Fair Fare,362518
+2021-06,Bronx,metrocard,Metrocard - Full Fare,2240537
+2021-06,Bronx,metrocard,Metrocard - Other,338129
+2021-06,Bronx,metrocard,Metrocard - Seniors & Disability,209889
+2021-06,Bronx,metrocard,Metrocard - Students,157697
+2021-06,Bronx,metrocard,Metrocard - Unlimited 30-Day,689045
+2021-06,Bronx,metrocard,Metrocard - Unlimited 7-Day,1320285
+2021-06,Bronx,omny,OMNY - Full Fare,931143
+2021-06,Brooklyn,metrocard,Metrocard - Fair Fare,562288
+2021-06,Brooklyn,metrocard,Metrocard - Full Fare,6016674
+2021-06,Brooklyn,metrocard,Metrocard - Other,810065
+2021-06,Brooklyn,metrocard,Metrocard - Seniors & Disability,612667
+2021-06,Brooklyn,metrocard,Metrocard - Students,346205
+2021-06,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2037607
+2021-06,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2285396
+2021-06,Brooklyn,omny,OMNY - Full Fare,3163794
+2021-06,Manhattan,metrocard,Metrocard - Fair Fare,836764
+2021-06,Manhattan,metrocard,Metrocard - Full Fare,12796921
+2021-06,Manhattan,metrocard,Metrocard - Other,1626327
+2021-06,Manhattan,metrocard,Metrocard - Seniors & Disability,1261127
+2021-06,Manhattan,metrocard,Metrocard - Students,408889
+2021-06,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3961898
+2021-06,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4415514
+2021-06,Manhattan,omny,OMNY - Full Fare,7754789
+2021-06,Queens,metrocard,Metrocard - Fair Fare,277289
+2021-06,Queens,metrocard,Metrocard - Full Fare,4134052
+2021-06,Queens,metrocard,Metrocard - Other,495081
+2021-06,Queens,metrocard,Metrocard - Seniors & Disability,422967
+2021-06,Queens,metrocard,Metrocard - Students,201195
+2021-06,Queens,metrocard,Metrocard - Unlimited 30-Day,1448282
+2021-06,Queens,metrocard,Metrocard - Unlimited 7-Day,1896755
+2021-06,Queens,omny,OMNY - Full Fare,1636486
+2021-06,Staten Island,metrocard,Metrocard - Fair Fare,2673
+2021-06,Staten Island,metrocard,Metrocard - Full Fare,60782
+2021-06,Staten Island,metrocard,Metrocard - Other,11287
+2021-06,Staten Island,metrocard,Metrocard - Seniors & Disability,5608
+2021-06,Staten Island,metrocard,Metrocard - Students,1624
+2021-06,Staten Island,metrocard,Metrocard - Unlimited 30-Day,8382
+2021-06,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9033
+2021-06,Staten Island,omny,OMNY - Full Fare,12777
+2021-07,Bronx,metrocard,Metrocard - Fair Fare,348198
+2021-07,Bronx,metrocard,Metrocard - Full Fare,2170359
+2021-07,Bronx,metrocard,Metrocard - Other,333648
+2021-07,Bronx,metrocard,Metrocard - Seniors & Disability,204132
+2021-07,Bronx,metrocard,Metrocard - Students,60988
+2021-07,Bronx,metrocard,Metrocard - Unlimited 30-Day,681712
+2021-07,Bronx,metrocard,Metrocard - Unlimited 7-Day,1293291
+2021-07,Bronx,omny,OMNY - Full Fare,971108
+2021-07,Brooklyn,metrocard,Metrocard - Fair Fare,557506
+2021-07,Brooklyn,metrocard,Metrocard - Full Fare,5900033
+2021-07,Brooklyn,metrocard,Metrocard - Other,803970
+2021-07,Brooklyn,metrocard,Metrocard - Seniors & Disability,615555
+2021-07,Brooklyn,metrocard,Metrocard - Students,121749
+2021-07,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2113559
+2021-07,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2304326
+2021-07,Brooklyn,omny,OMNY - Full Fare,3504028
+2021-07,Manhattan,metrocard,Metrocard - Fair Fare,823883
+2021-07,Manhattan,metrocard,Metrocard - Full Fare,13060393
+2021-07,Manhattan,metrocard,Metrocard - Other,1631195
+2021-07,Manhattan,metrocard,Metrocard - Seniors & Disability,1246212
+2021-07,Manhattan,metrocard,Metrocard - Students,88456
+2021-07,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4137322
+2021-07,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4721617
+2021-07,Manhattan,omny,OMNY - Full Fare,8659068
+2021-07,Queens,metrocard,Metrocard - Fair Fare,279874
+2021-07,Queens,metrocard,Metrocard - Full Fare,4178302
+2021-07,Queens,metrocard,Metrocard - Other,497436
+2021-07,Queens,metrocard,Metrocard - Seniors & Disability,433243
+2021-07,Queens,metrocard,Metrocard - Students,71342
+2021-07,Queens,metrocard,Metrocard - Unlimited 30-Day,1513792
+2021-07,Queens,metrocard,Metrocard - Unlimited 7-Day,1970321
+2021-07,Queens,omny,OMNY - Full Fare,1835686
+2021-07,Staten Island,metrocard,Metrocard - Fair Fare,2881
+2021-07,Staten Island,metrocard,Metrocard - Full Fare,63563
+2021-07,Staten Island,metrocard,Metrocard - Other,11479
+2021-07,Staten Island,metrocard,Metrocard - Seniors & Disability,5909
+2021-07,Staten Island,metrocard,Metrocard - Students,489
+2021-07,Staten Island,metrocard,Metrocard - Unlimited 30-Day,9248
+2021-07,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8881
+2021-07,Staten Island,omny,OMNY - Full Fare,14980
+2021-08,Bronx,metrocard,Metrocard - Fair Fare,358386
+2021-08,Bronx,metrocard,Metrocard - Full Fare,2152822
+2021-08,Bronx,metrocard,Metrocard - Other,340914
+2021-08,Bronx,metrocard,Metrocard - Seniors & Disability,208023
+2021-08,Bronx,metrocard,Metrocard - Students,71709
+2021-08,Bronx,metrocard,Metrocard - Unlimited 30-Day,685103
+2021-08,Bronx,metrocard,Metrocard - Unlimited 7-Day,1321002
+2021-08,Bronx,omny,OMNY - Full Fare,1017596
+2021-08,Brooklyn,metrocard,Metrocard - Fair Fare,562184
+2021-08,Brooklyn,metrocard,Metrocard - Full Fare,5619680
+2021-08,Brooklyn,metrocard,Metrocard - Other,800244
+2021-08,Brooklyn,metrocard,Metrocard - Seniors & Disability,613065
+2021-08,Brooklyn,metrocard,Metrocard - Students,130540
+2021-08,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2125250
+2021-08,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2314494
+2021-08,Brooklyn,omny,OMNY - Full Fare,3573246
+2021-08,Manhattan,metrocard,Metrocard - Fair Fare,844022
+2021-08,Manhattan,metrocard,Metrocard - Full Fare,12370361
+2021-08,Manhattan,metrocard,Metrocard - Other,1605938
+2021-08,Manhattan,metrocard,Metrocard - Seniors & Disability,1229497
+2021-08,Manhattan,metrocard,Metrocard - Students,139718
+2021-08,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4211872
+2021-08,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4605207
+2021-08,Manhattan,omny,OMNY - Full Fare,8844478
+2021-08,Queens,metrocard,Metrocard - Fair Fare,283294
+2021-08,Queens,metrocard,Metrocard - Full Fare,4079652
+2021-08,Queens,metrocard,Metrocard - Other,496964
+2021-08,Queens,metrocard,Metrocard - Seniors & Disability,436708
+2021-08,Queens,metrocard,Metrocard - Students,70152
+2021-08,Queens,metrocard,Metrocard - Unlimited 30-Day,1534160
+2021-08,Queens,metrocard,Metrocard - Unlimited 7-Day,2002214
+2021-08,Queens,omny,OMNY - Full Fare,1942407
+2021-08,Staten Island,metrocard,Metrocard - Fair Fare,2991
+2021-08,Staten Island,metrocard,Metrocard - Full Fare,63822
+2021-08,Staten Island,metrocard,Metrocard - Other,11691
+2021-08,Staten Island,metrocard,Metrocard - Seniors & Disability,6083
+2021-08,Staten Island,metrocard,Metrocard - Students,550
+2021-08,Staten Island,metrocard,Metrocard - Unlimited 30-Day,9539
+2021-08,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8685
+2021-08,Staten Island,omny,OMNY - Full Fare,15760
+2021-09,Bronx,metrocard,Metrocard - Fair Fare,374519
+2021-09,Bronx,metrocard,Metrocard - Full Fare,2145705
+2021-09,Bronx,metrocard,Metrocard - Other,368313
+2021-09,Bronx,metrocard,Metrocard - Seniors & Disability,211448
+2021-09,Bronx,metrocard,Metrocard - Students,434720
+2021-09,Bronx,metrocard,Metrocard - Unlimited 30-Day,732155
+2021-09,Bronx,metrocard,Metrocard - Unlimited 7-Day,1303089
+2021-09,Bronx,omny,OMNY - Full Fare,1029332
+2021-09,Brooklyn,metrocard,Metrocard - Fair Fare,587187
+2021-09,Brooklyn,metrocard,Metrocard - Full Fare,5796064
+2021-09,Brooklyn,metrocard,Metrocard - Other,861867
+2021-09,Brooklyn,metrocard,Metrocard - Seniors & Disability,641959
+2021-09,Brooklyn,metrocard,Metrocard - Students,973391
+2021-09,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2409416
+2021-09,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2289624
+2021-09,Brooklyn,omny,OMNY - Full Fare,3952983
+2021-09,Brooklyn,omny,OMNY - Seniors & Disability,5
+2021-09,Manhattan,metrocard,Metrocard - Fair Fare,900593
+2021-09,Manhattan,metrocard,Metrocard - Full Fare,13041771
+2021-09,Manhattan,metrocard,Metrocard - Other,1778857
+2021-09,Manhattan,metrocard,Metrocard - Seniors & Disability,1357575
+2021-09,Manhattan,metrocard,Metrocard - Students,1027787
+2021-09,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5023576
+2021-09,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4625819
+2021-09,Manhattan,omny,OMNY - Full Fare,10347662
+2021-09,Manhattan,omny,OMNY - Other,64
+2021-09,Manhattan,omny,OMNY - Seniors & Disability,54
+2021-09,Queens,metrocard,Metrocard - Fair Fare,292978
+2021-09,Queens,metrocard,Metrocard - Full Fare,4197115
+2021-09,Queens,metrocard,Metrocard - Other,538728
+2021-09,Queens,metrocard,Metrocard - Seniors & Disability,455079
+2021-09,Queens,metrocard,Metrocard - Students,548118
+2021-09,Queens,metrocard,Metrocard - Unlimited 30-Day,1669724
+2021-09,Queens,metrocard,Metrocard - Unlimited 7-Day,1990728
+2021-09,Queens,omny,OMNY - Full Fare,2190860
+2021-09,Staten Island,metrocard,Metrocard - Fair Fare,3735
+2021-09,Staten Island,metrocard,Metrocard - Full Fare,75843
+2021-09,Staten Island,metrocard,Metrocard - Other,13763
+2021-09,Staten Island,metrocard,Metrocard - Seniors & Disability,7404
+2021-09,Staten Island,metrocard,Metrocard - Students,7772
+2021-09,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11477
+2021-09,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9698
+2021-09,Staten Island,omny,OMNY - Full Fare,20579
+2021-10,Bronx,metrocard,Metrocard - Fair Fare,416155
+2021-10,Bronx,metrocard,Metrocard - Full Fare,2192615
+2021-10,Bronx,metrocard,Metrocard - Other,408092
+2021-10,Bronx,metrocard,Metrocard - Seniors & Disability,225475
+2021-10,Bronx,metrocard,Metrocard - Students,763445
+2021-10,Bronx,metrocard,Metrocard - Unlimited 30-Day,833609
+2021-10,Bronx,metrocard,Metrocard - Unlimited 7-Day,1418892
+2021-10,Bronx,omny,OMNY - Full Fare,1108696
+2021-10,Bronx,omny,OMNY - Seniors & Disability,25
+2021-10,Brooklyn,metrocard,Metrocard - Fair Fare,649475
+2021-10,Brooklyn,metrocard,Metrocard - Full Fare,5978603
+2021-10,Brooklyn,metrocard,Metrocard - Other,974242
+2021-10,Brooklyn,metrocard,Metrocard - Seniors & Disability,702413
+2021-10,Brooklyn,metrocard,Metrocard - Students,1682394
+2021-10,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2795664
+2021-10,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2527391
+2021-10,Brooklyn,omny,OMNY - Full Fare,4588317
+2021-10,Brooklyn,omny,OMNY - Other,1
+2021-10,Brooklyn,omny,OMNY - Seniors & Disability,126
+2021-10,Manhattan,metrocard,Metrocard - Fair Fare,1009187
+2021-10,Manhattan,metrocard,Metrocard - Full Fare,13868859
+2021-10,Manhattan,metrocard,Metrocard - Other,2033029
+2021-10,Manhattan,metrocard,Metrocard - Seniors & Disability,1553239
+2021-10,Manhattan,metrocard,Metrocard - Students,1708927
+2021-10,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5913671
+2021-10,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5165161
+2021-10,Manhattan,omny,OMNY - Full Fare,12282424
+2021-10,Manhattan,omny,OMNY - Other,20
+2021-10,Manhattan,omny,OMNY - Seniors & Disability,372
+2021-10,Queens,metrocard,Metrocard - Fair Fare,315001
+2021-10,Queens,metrocard,Metrocard - Full Fare,4202569
+2021-10,Queens,metrocard,Metrocard - Other,590831
+2021-10,Queens,metrocard,Metrocard - Seniors & Disability,490660
+2021-10,Queens,metrocard,Metrocard - Students,969519
+2021-10,Queens,metrocard,Metrocard - Unlimited 30-Day,1886686
+2021-10,Queens,metrocard,Metrocard - Unlimited 7-Day,2119957
+2021-10,Queens,omny,OMNY - Full Fare,2320851
+2021-10,Queens,omny,OMNY - Seniors & Disability,36
+2021-10,Staten Island,metrocard,Metrocard - Fair Fare,4136
+2021-10,Staten Island,metrocard,Metrocard - Full Fare,79650
+2021-10,Staten Island,metrocard,Metrocard - Other,14964
+2021-10,Staten Island,metrocard,Metrocard - Seniors & Disability,7628
+2021-10,Staten Island,metrocard,Metrocard - Students,13241
+2021-10,Staten Island,metrocard,Metrocard - Unlimited 30-Day,13194
+2021-10,Staten Island,metrocard,Metrocard - Unlimited 7-Day,10203
+2021-10,Staten Island,omny,OMNY - Full Fare,23414
+2021-11,Bronx,metrocard,Metrocard - Fair Fare,411502
+2021-11,Bronx,metrocard,Metrocard - Full Fare,2062770
+2021-11,Bronx,metrocard,Metrocard - Other,394806
+2021-11,Bronx,metrocard,Metrocard - Seniors & Disability,214984
+2021-11,Bronx,metrocard,Metrocard - Students,725145
+2021-11,Bronx,metrocard,Metrocard - Unlimited 30-Day,796653
+2021-11,Bronx,metrocard,Metrocard - Unlimited 7-Day,1337956
+2021-11,Bronx,omny,OMNY - Full Fare,1094031
+2021-11,Bronx,omny,OMNY - Seniors & Disability,27
+2021-11,Brooklyn,metrocard,Metrocard - Fair Fare,645211
+2021-11,Brooklyn,metrocard,Metrocard - Full Fare,5608290
+2021-11,Brooklyn,metrocard,Metrocard - Other,946717
+2021-11,Brooklyn,metrocard,Metrocard - Seniors & Disability,684926
+2021-11,Brooklyn,metrocard,Metrocard - Students,1616818
+2021-11,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2657990
+2021-11,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2428290
+2021-11,Brooklyn,omny,OMNY - Full Fare,4566631
+2021-11,Brooklyn,omny,OMNY - Seniors & Disability,180
+2021-11,Manhattan,metrocard,Metrocard - Fair Fare,1021645
+2021-11,Manhattan,metrocard,Metrocard - Full Fare,13632599
+2021-11,Manhattan,metrocard,Metrocard - Other,2047595
+2021-11,Manhattan,metrocard,Metrocard - Seniors & Disability,1573035
+2021-11,Manhattan,metrocard,Metrocard - Students,1674276
+2021-11,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5711598
+2021-11,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5310442
+2021-11,Manhattan,omny,OMNY - Full Fare,12833407
+2021-11,Manhattan,omny,OMNY - Other,92
+2021-11,Manhattan,omny,OMNY - Seniors & Disability,490
+2021-11,Queens,metrocard,Metrocard - Fair Fare,314723
+2021-11,Queens,metrocard,Metrocard - Full Fare,4006579
+2021-11,Queens,metrocard,Metrocard - Other,580986
+2021-11,Queens,metrocard,Metrocard - Seniors & Disability,482589
+2021-11,Queens,metrocard,Metrocard - Students,942266
+2021-11,Queens,metrocard,Metrocard - Unlimited 30-Day,1833256
+2021-11,Queens,metrocard,Metrocard - Unlimited 7-Day,2048716
+2021-11,Queens,omny,OMNY - Full Fare,2367741
+2021-11,Queens,omny,OMNY - Seniors & Disability,46
+2021-11,Staten Island,metrocard,Metrocard - Fair Fare,4079
+2021-11,Staten Island,metrocard,Metrocard - Full Fare,78181
+2021-11,Staten Island,metrocard,Metrocard - Other,15171
+2021-11,Staten Island,metrocard,Metrocard - Seniors & Disability,8007
+2021-11,Staten Island,metrocard,Metrocard - Students,12720
+2021-11,Staten Island,metrocard,Metrocard - Unlimited 30-Day,13594
+2021-11,Staten Island,metrocard,Metrocard - Unlimited 7-Day,11085
+2021-11,Staten Island,omny,OMNY - Full Fare,25332
+2021-11,Staten Island,omny,OMNY - Seniors & Disability,2
+2021-12,Bronx,metrocard,Metrocard - Fair Fare,412274
+2021-12,Bronx,metrocard,Metrocard - Full Fare,1991628
+2021-12,Bronx,metrocard,Metrocard - Other,372417
+2021-12,Bronx,metrocard,Metrocard - Seniors & Disability,207006
+2021-12,Bronx,metrocard,Metrocard - Students,640267
+2021-12,Bronx,metrocard,Metrocard - Unlimited 30-Day,733530
+2021-12,Bronx,metrocard,Metrocard - Unlimited 7-Day,1298894
+2021-12,Bronx,omny,OMNY - Full Fare,1106178
+2021-12,Bronx,omny,OMNY - Other,16
+2021-12,Bronx,omny,OMNY - Seniors & Disability,29
+2021-12,Brooklyn,metrocard,Metrocard - Fair Fare,645455
+2021-12,Brooklyn,metrocard,Metrocard - Full Fare,5223603
+2021-12,Brooklyn,metrocard,Metrocard - Other,892692
+2021-12,Brooklyn,metrocard,Metrocard - Seniors & Disability,659505
+2021-12,Brooklyn,metrocard,Metrocard - Students,1435010
+2021-12,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2342712
+2021-12,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2475637
+2021-12,Brooklyn,omny,OMNY - Full Fare,4277863
+2021-12,Brooklyn,omny,OMNY - Other,258
+2021-12,Brooklyn,omny,OMNY - Seniors & Disability,134
+2021-12,Manhattan,metrocard,Metrocard - Fair Fare,1030124
+2021-12,Manhattan,metrocard,Metrocard - Full Fare,12938490
+2021-12,Manhattan,metrocard,Metrocard - Other,1915216
+2021-12,Manhattan,metrocard,Metrocard - Seniors & Disability,1489268
+2021-12,Manhattan,metrocard,Metrocard - Students,1476845
+2021-12,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4886210
+2021-12,Manhattan,metrocard,Metrocard - Unlimited 7-Day,6101497
+2021-12,Manhattan,omny,OMNY - Full Fare,12047681
+2021-12,Manhattan,omny,OMNY - Other,507
+2021-12,Manhattan,omny,OMNY - Seniors & Disability,442
+2021-12,Queens,metrocard,Metrocard - Fair Fare,319843
+2021-12,Queens,metrocard,Metrocard - Full Fare,3854686
+2021-12,Queens,metrocard,Metrocard - Other,554217
+2021-12,Queens,metrocard,Metrocard - Seniors & Disability,467163
+2021-12,Queens,metrocard,Metrocard - Students,865023
+2021-12,Queens,metrocard,Metrocard - Unlimited 30-Day,1695440
+2021-12,Queens,metrocard,Metrocard - Unlimited 7-Day,2093580
+2021-12,Queens,omny,OMNY - Full Fare,2375445
+2021-12,Queens,omny,OMNY - Other,202
+2021-12,Queens,omny,OMNY - Seniors & Disability,33
+2021-12,Staten Island,metrocard,Metrocard - Fair Fare,3925
+2021-12,Staten Island,metrocard,Metrocard - Full Fare,70685
+2021-12,Staten Island,metrocard,Metrocard - Other,13270
+2021-12,Staten Island,metrocard,Metrocard - Seniors & Disability,7586
+2021-12,Staten Island,metrocard,Metrocard - Students,10752
+2021-12,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11804
+2021-12,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9695
+2021-12,Staten Island,omny,OMNY - Full Fare,22806
+2021-12,Staten Island,omny,OMNY - Seniors & Disability,2
+2022-01,Bronx,metrocard,Metrocard - Fair Fare,371913
+2022-01,Bronx,metrocard,Metrocard - Full Fare,1700428
+2022-01,Bronx,metrocard,Metrocard - Other,303289
+2022-01,Bronx,metrocard,Metrocard - Seniors & Disability,166613
+2022-01,Bronx,metrocard,Metrocard - Students,569219
+2022-01,Bronx,metrocard,Metrocard - Unlimited 30-Day,666281
+2022-01,Bronx,metrocard,Metrocard - Unlimited 7-Day,1105566
+2022-01,Bronx,omny,OMNY - Full Fare,1004822
+2022-01,Bronx,omny,OMNY - Other,212
+2022-01,Bronx,omny,OMNY - Seniors & Disability,21
+2022-01,Brooklyn,metrocard,Metrocard - Fair Fare,591363
+2022-01,Brooklyn,metrocard,Metrocard - Full Fare,4345695
+2022-01,Brooklyn,metrocard,Metrocard - Other,754196
+2022-01,Brooklyn,metrocard,Metrocard - Seniors & Disability,522966
+2022-01,Brooklyn,metrocard,Metrocard - Students,1363871
+2022-01,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2148801
+2022-01,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1982147
+2022-01,Brooklyn,omny,OMNY - Full Fare,3878231
+2022-01,Brooklyn,omny,OMNY - Other,884
+2022-01,Brooklyn,omny,OMNY - Seniors & Disability,123
+2022-01,Manhattan,metrocard,Metrocard - Fair Fare,909847
+2022-01,Manhattan,metrocard,Metrocard - Full Fare,9186299
+2022-01,Manhattan,metrocard,Metrocard - Other,1538172
+2022-01,Manhattan,metrocard,Metrocard - Seniors & Disability,1098202
+2022-01,Manhattan,metrocard,Metrocard - Students,1376226
+2022-01,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4395518
+2022-01,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4040629
+2022-01,Manhattan,omny,OMNY - Full Fare,9442186
+2022-01,Manhattan,omny,OMNY - Other,1897
+2022-01,Manhattan,omny,OMNY - Seniors & Disability,300
+2022-01,Queens,metrocard,Metrocard - Fair Fare,291410
+2022-01,Queens,metrocard,Metrocard - Full Fare,3196601
+2022-01,Queens,metrocard,Metrocard - Other,461750
+2022-01,Queens,metrocard,Metrocard - Seniors & Disability,370851
+2022-01,Queens,metrocard,Metrocard - Students,798946
+2022-01,Queens,metrocard,Metrocard - Unlimited 30-Day,1531813
+2022-01,Queens,metrocard,Metrocard - Unlimited 7-Day,1695270
+2022-01,Queens,omny,OMNY - Full Fare,2096337
+2022-01,Queens,omny,OMNY - Other,794
+2022-01,Queens,omny,OMNY - Seniors & Disability,21
+2022-01,Staten Island,metrocard,Metrocard - Fair Fare,3417
+2022-01,Staten Island,metrocard,Metrocard - Full Fare,55412
+2022-01,Staten Island,metrocard,Metrocard - Other,10321
+2022-01,Staten Island,metrocard,Metrocard - Seniors & Disability,5769
+2022-01,Staten Island,metrocard,Metrocard - Students,9325
+2022-01,Staten Island,metrocard,Metrocard - Unlimited 30-Day,10281
+2022-01,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8011
+2022-01,Staten Island,omny,OMNY - Full Fare,17648
+2022-01,Staten Island,omny,OMNY - Other,1
+2022-02,Bronx,metrocard,Metrocard - Fair Fare,406548
+2022-02,Bronx,metrocard,Metrocard - Full Fare,1758654
+2022-02,Bronx,metrocard,Metrocard - Other,353534
+2022-02,Bronx,metrocard,Metrocard - Seniors & Disability,183268
+2022-02,Bronx,metrocard,Metrocard - Students,543473
+2022-02,Bronx,metrocard,Metrocard - Unlimited 30-Day,684280
+2022-02,Bronx,metrocard,Metrocard - Unlimited 7-Day,1110539
+2022-02,Bronx,omny,OMNY - Full Fare,1075692
+2022-02,Bronx,omny,OMNY - Other,434
+2022-02,Bronx,omny,OMNY - Seniors & Disability,5
+2022-02,Brooklyn,metrocard,Metrocard - Fair Fare,641779
+2022-02,Brooklyn,metrocard,Metrocard - Full Fare,4593325
+2022-02,Brooklyn,metrocard,Metrocard - Other,851766
+2022-02,Brooklyn,metrocard,Metrocard - Seniors & Disability,582134
+2022-02,Brooklyn,metrocard,Metrocard - Students,1235844
+2022-02,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2281826
+2022-02,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2003700
+2022-02,Brooklyn,omny,OMNY - Full Fare,4497012
+2022-02,Brooklyn,omny,OMNY - Other,2314
+2022-02,Brooklyn,omny,OMNY - Seniors & Disability,31
+2022-02,Manhattan,metrocard,Metrocard - Fair Fare,1023300
+2022-02,Manhattan,metrocard,Metrocard - Full Fare,10407731
+2022-02,Manhattan,metrocard,Metrocard - Other,1802510
+2022-02,Manhattan,metrocard,Metrocard - Seniors & Disability,1274026
+2022-02,Manhattan,metrocard,Metrocard - Students,1330206
+2022-02,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4901395
+2022-02,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4157754
+2022-02,Manhattan,omny,OMNY - Full Fare,11547739
+2022-02,Manhattan,omny,OMNY - Other,6324
+2022-02,Manhattan,omny,OMNY - Seniors & Disability,102
+2022-02,Queens,metrocard,Metrocard - Fair Fare,319162
+2022-02,Queens,metrocard,Metrocard - Full Fare,3332755
+2022-02,Queens,metrocard,Metrocard - Other,528352
+2022-02,Queens,metrocard,Metrocard - Seniors & Disability,408940
+2022-02,Queens,metrocard,Metrocard - Students,719064
+2022-02,Queens,metrocard,Metrocard - Unlimited 30-Day,1598511
+2022-02,Queens,metrocard,Metrocard - Unlimited 7-Day,1687470
+2022-02,Queens,omny,OMNY - Full Fare,2367557
+2022-02,Queens,omny,OMNY - Other,1454
+2022-02,Queens,omny,OMNY - Seniors & Disability,12
+2022-02,Staten Island,metrocard,Metrocard - Fair Fare,3789
+2022-02,Staten Island,metrocard,Metrocard - Full Fare,63013
+2022-02,Staten Island,metrocard,Metrocard - Other,12385
+2022-02,Staten Island,metrocard,Metrocard - Seniors & Disability,6536
+2022-02,Staten Island,metrocard,Metrocard - Students,8337
+2022-02,Staten Island,metrocard,Metrocard - Unlimited 30-Day,10776
+2022-02,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8232
+2022-02,Staten Island,omny,OMNY - Full Fare,20927
+2022-02,Staten Island,omny,OMNY - Other,7
+2022-03,Bronx,metrocard,Metrocard - Fair Fare,498464
+2022-03,Bronx,metrocard,Metrocard - Full Fare,2033759
+2022-03,Bronx,metrocard,Metrocard - Other,443961
+2022-03,Bronx,metrocard,Metrocard - Seniors & Disability,224028
+2022-03,Bronx,metrocard,Metrocard - Students,840316
+2022-03,Bronx,metrocard,Metrocard - Unlimited 30-Day,828034
+2022-03,Bronx,metrocard,Metrocard - Unlimited 7-Day,1292274
+2022-03,Bronx,omny,OMNY - Full Fare,1360958
+2022-03,Bronx,omny,OMNY - Other,4372
+2022-03,Brooklyn,metrocard,Metrocard - Fair Fare,781353
+2022-03,Brooklyn,metrocard,Metrocard - Full Fare,5342652
+2022-03,Brooklyn,metrocard,Metrocard - Other,1058380
+2022-03,Brooklyn,metrocard,Metrocard - Seniors & Disability,722414
+2022-03,Brooklyn,metrocard,Metrocard - Students,1876168
+2022-03,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2702663
+2022-03,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2326075
+2022-03,Brooklyn,omny,OMNY - Full Fare,5816754
+2022-03,Brooklyn,omny,OMNY - Other,36348
+2022-03,Manhattan,metrocard,Metrocard - Fair Fare,1244653
+2022-03,Manhattan,metrocard,Metrocard - Full Fare,12828649
+2022-03,Manhattan,metrocard,Metrocard - Other,2256158
+2022-03,Manhattan,metrocard,Metrocard - Seniors & Disability,1606752
+2022-03,Manhattan,metrocard,Metrocard - Students,1919899
+2022-03,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5717783
+2022-03,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5226557
+2022-03,Manhattan,omny,OMNY - Full Fare,15159867
+2022-03,Manhattan,omny,OMNY - Other,184251
+2022-03,Queens,metrocard,Metrocard - Fair Fare,387010
+2022-03,Queens,metrocard,Metrocard - Full Fare,3910621
+2022-03,Queens,metrocard,Metrocard - Other,652972
+2022-03,Queens,metrocard,Metrocard - Seniors & Disability,510121
+2022-03,Queens,metrocard,Metrocard - Students,1091463
+2022-03,Queens,metrocard,Metrocard - Unlimited 30-Day,1883052
+2022-03,Queens,metrocard,Metrocard - Unlimited 7-Day,1972483
+2022-03,Queens,omny,OMNY - Full Fare,3068161
+2022-03,Queens,omny,OMNY - Other,12405
+2022-03,Staten Island,metrocard,Metrocard - Fair Fare,5078
+2022-03,Staten Island,metrocard,Metrocard - Full Fare,80522
+2022-03,Staten Island,metrocard,Metrocard - Other,15623
+2022-03,Staten Island,metrocard,Metrocard - Seniors & Disability,8275
+2022-03,Staten Island,metrocard,Metrocard - Students,13250
+2022-03,Staten Island,metrocard,Metrocard - Unlimited 30-Day,13263
+2022-03,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9775
+2022-03,Staten Island,omny,OMNY - Full Fare,27381
+2022-03,Staten Island,omny,OMNY - Other,294
+2022-04,Bronx,metrocard,Metrocard - Fair Fare,469516
+2022-04,Bronx,metrocard,Metrocard - Full Fare,1912161
+2022-04,Bronx,metrocard,Metrocard - Other,412687
+2022-04,Bronx,metrocard,Metrocard - Seniors & Disability,221042
+2022-04,Bronx,metrocard,Metrocard - Students,612415
+2022-04,Bronx,metrocard,Metrocard - Unlimited 30-Day,749003
+2022-04,Bronx,metrocard,Metrocard - Unlimited 7-Day,1214732
+2022-04,Bronx,omny,OMNY - Full Fare,1393348
+2022-04,Bronx,omny,OMNY - Other,410
+2022-04,Bronx,omny,OMNY - Seniors & Disability,24
+2022-04,Brooklyn,metrocard,Metrocard - Fair Fare,725407
+2022-04,Brooklyn,metrocard,Metrocard - Full Fare,4858887
+2022-04,Brooklyn,metrocard,Metrocard - Other,978182
+2022-04,Brooklyn,metrocard,Metrocard - Seniors & Disability,686322
+2022-04,Brooklyn,metrocard,Metrocard - Students,1334325
+2022-04,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2408568
+2022-04,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2212860
+2022-04,Brooklyn,omny,OMNY - Full Fare,5845979
+2022-04,Brooklyn,omny,OMNY - Other,1538
+2022-04,Brooklyn,omny,OMNY - Seniors & Disability,166
+2022-04,Manhattan,metrocard,Metrocard - Fair Fare,1188743
+2022-04,Manhattan,metrocard,Metrocard - Full Fare,12255980
+2022-04,Manhattan,metrocard,Metrocard - Other,2118287
+2022-04,Manhattan,metrocard,Metrocard - Seniors & Disability,1568185
+2022-04,Manhattan,metrocard,Metrocard - Students,1458348
+2022-04,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5184287
+2022-04,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5616250
+2022-04,Manhattan,omny,OMNY - Full Fare,15670564
+2022-04,Manhattan,omny,OMNY - Other,5881
+2022-04,Manhattan,omny,OMNY - Seniors & Disability,410
+2022-04,Queens,metrocard,Metrocard - Fair Fare,372532
+2022-04,Queens,metrocard,Metrocard - Full Fare,3661662
+2022-04,Queens,metrocard,Metrocard - Other,625927
+2022-04,Queens,metrocard,Metrocard - Seniors & Disability,497003
+2022-04,Queens,metrocard,Metrocard - Students,813326
+2022-04,Queens,metrocard,Metrocard - Unlimited 30-Day,1735555
+2022-04,Queens,metrocard,Metrocard - Unlimited 7-Day,1929390
+2022-04,Queens,omny,OMNY - Full Fare,3128365
+2022-04,Queens,omny,OMNY - Other,1117
+2022-04,Queens,omny,OMNY - Seniors & Disability,66
+2022-04,Staten Island,metrocard,Metrocard - Fair Fare,4533
+2022-04,Staten Island,metrocard,Metrocard - Full Fare,69462
+2022-04,Staten Island,metrocard,Metrocard - Other,13033
+2022-04,Staten Island,metrocard,Metrocard - Seniors & Disability,7335
+2022-04,Staten Island,metrocard,Metrocard - Students,9219
+2022-04,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11261
+2022-04,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8721
+2022-04,Staten Island,omny,OMNY - Full Fare,24001
+2022-04,Staten Island,omny,OMNY - Other,27
+2022-05,Bronx,metrocard,Metrocard - Fair Fare,492426
+2022-05,Bronx,metrocard,Metrocard - Full Fare,1938884
+2022-05,Bronx,metrocard,Metrocard - Other,420309
+2022-05,Bronx,metrocard,Metrocard - Seniors & Disability,230729
+2022-05,Bronx,metrocard,Metrocard - Students,725124
+2022-05,Bronx,metrocard,Metrocard - Unlimited 30-Day,779981
+2022-05,Bronx,metrocard,Metrocard - Unlimited 7-Day,1256513
+2022-05,Bronx,omny,OMNY - Full Fare,1497693
+2022-05,Bronx,omny,OMNY - Other,544
+2022-05,Bronx,omny,OMNY - Seniors & Disability,20
+2022-05,Brooklyn,metrocard,Metrocard - Fair Fare,777677
+2022-05,Brooklyn,metrocard,Metrocard - Full Fare,5019760
+2022-05,Brooklyn,metrocard,Metrocard - Other,1023031
+2022-05,Brooklyn,metrocard,Metrocard - Seniors & Disability,729882
+2022-05,Brooklyn,metrocard,Metrocard - Students,1646805
+2022-05,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2490878
+2022-05,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2297226
+2022-05,Brooklyn,omny,OMNY - Full Fare,6356830
+2022-05,Brooklyn,omny,OMNY - Other,1840
+2022-05,Brooklyn,omny,OMNY - Seniors & Disability,62
+2022-05,Manhattan,metrocard,Metrocard - Fair Fare,1248796
+2022-05,Manhattan,metrocard,Metrocard - Full Fare,12424084
+2022-05,Manhattan,metrocard,Metrocard - Other,2174197
+2022-05,Manhattan,metrocard,Metrocard - Seniors & Disability,1643551
+2022-05,Manhattan,metrocard,Metrocard - Students,1725421
+2022-05,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5236352
+2022-05,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5597625
+2022-05,Manhattan,omny,OMNY - Full Fare,16994460
+2022-05,Manhattan,omny,OMNY - Other,5607
+2022-05,Manhattan,omny,OMNY - Seniors & Disability,181
+2022-05,Queens,metrocard,Metrocard - Fair Fare,393234
+2022-05,Queens,metrocard,Metrocard - Full Fare,3766757
+2022-05,Queens,metrocard,Metrocard - Other,640365
+2022-05,Queens,metrocard,Metrocard - Seniors & Disability,520278
+2022-05,Queens,metrocard,Metrocard - Students,974993
+2022-05,Queens,metrocard,Metrocard - Unlimited 30-Day,1782068
+2022-05,Queens,metrocard,Metrocard - Unlimited 7-Day,2021885
+2022-05,Queens,omny,OMNY - Full Fare,3428588
+2022-05,Queens,omny,OMNY - Other,1195
+2022-05,Queens,omny,OMNY - Seniors & Disability,39
+2022-05,Staten Island,metrocard,Metrocard - Fair Fare,4982
+2022-05,Staten Island,metrocard,Metrocard - Full Fare,73662
+2022-05,Staten Island,metrocard,Metrocard - Other,13687
+2022-05,Staten Island,metrocard,Metrocard - Seniors & Disability,7717
+2022-05,Staten Island,metrocard,Metrocard - Students,11215
+2022-05,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12398
+2022-05,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9632
+2022-05,Staten Island,omny,OMNY - Full Fare,28331
+2022-05,Staten Island,omny,OMNY - Other,30
+2022-06,Bronx,metrocard,Metrocard - Fair Fare,477584
+2022-06,Bronx,metrocard,Metrocard - Full Fare,1929094
+2022-06,Bronx,metrocard,Metrocard - Other,380069
+2022-06,Bronx,metrocard,Metrocard - Seniors & Disability,236765
+2022-06,Bronx,metrocard,Metrocard - Students,541803
+2022-06,Bronx,metrocard,Metrocard - Unlimited 30-Day,756500
+2022-06,Bronx,metrocard,Metrocard - Unlimited 7-Day,1216427
+2022-06,Bronx,omny,OMNY - Full Fare,1613958
+2022-06,Bronx,omny,OMNY - Other,548
+2022-06,Bronx,omny,OMNY - Seniors & Disability,41
+2022-06,Brooklyn,metrocard,Metrocard - Fair Fare,758215
+2022-06,Brooklyn,metrocard,Metrocard - Full Fare,4977665
+2022-06,Brooklyn,metrocard,Metrocard - Other,967825
+2022-06,Brooklyn,metrocard,Metrocard - Seniors & Disability,745515
+2022-06,Brooklyn,metrocard,Metrocard - Students,1258563
+2022-06,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2431173
+2022-06,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2224305
+2022-06,Brooklyn,omny,OMNY - Full Fare,6694826
+2022-06,Brooklyn,omny,OMNY - Other,1257
+2022-06,Brooklyn,omny,OMNY - Seniors & Disability,195
+2022-06,Manhattan,metrocard,Metrocard - Fair Fare,1217561
+2022-06,Manhattan,metrocard,Metrocard - Full Fare,12634111
+2022-06,Manhattan,metrocard,Metrocard - Other,2084774
+2022-06,Manhattan,metrocard,Metrocard - Seniors & Disability,1648444
+2022-06,Manhattan,metrocard,Metrocard - Students,1317364
+2022-06,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5184736
+2022-06,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5428791
+2022-06,Manhattan,omny,OMNY - Full Fare,18287126
+2022-06,Manhattan,omny,OMNY - Other,3884
+2022-06,Manhattan,omny,OMNY - Seniors & Disability,663
+2022-06,Queens,metrocard,Metrocard - Fair Fare,390812
+2022-06,Queens,metrocard,Metrocard - Full Fare,3762614
+2022-06,Queens,metrocard,Metrocard - Other,606131
+2022-06,Queens,metrocard,Metrocard - Seniors & Disability,538312
+2022-06,Queens,metrocard,Metrocard - Students,757120
+2022-06,Queens,metrocard,Metrocard - Unlimited 30-Day,1756773
+2022-06,Queens,metrocard,Metrocard - Unlimited 7-Day,1996437
+2022-06,Queens,omny,OMNY - Full Fare,3656255
+2022-06,Queens,omny,OMNY - Other,992
+2022-06,Queens,omny,OMNY - Seniors & Disability,87
+2022-06,Staten Island,metrocard,Metrocard - Fair Fare,4893
+2022-06,Staten Island,metrocard,Metrocard - Full Fare,75385
+2022-06,Staten Island,metrocard,Metrocard - Other,13901
+2022-06,Staten Island,metrocard,Metrocard - Seniors & Disability,8431
+2022-06,Staten Island,metrocard,Metrocard - Students,7646
+2022-06,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12519
+2022-06,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9882
+2022-06,Staten Island,omny,OMNY - Full Fare,30320
+2022-06,Staten Island,omny,OMNY - Other,19
+2022-07,Bronx,metrocard,Metrocard - Fair Fare,436075
+2022-07,Bronx,metrocard,Metrocard - Full Fare,1807477
+2022-07,Bronx,metrocard,Metrocard - Other,360895
+2022-07,Bronx,metrocard,Metrocard - Seniors & Disability,219434
+2022-07,Bronx,metrocard,Metrocard - Students,81331
+2022-07,Bronx,metrocard,Metrocard - Unlimited 30-Day,680603
+2022-07,Bronx,metrocard,Metrocard - Unlimited 7-Day,1138819
+2022-07,Bronx,omny,OMNY - Full Fare,1553628
+2022-07,Bronx,omny,OMNY - Other,2944
+2022-07,Bronx,omny,OMNY - Seniors & Disability,80
+2022-07,Brooklyn,metrocard,Metrocard - Fair Fare,713141
+2022-07,Brooklyn,metrocard,Metrocard - Full Fare,4696769
+2022-07,Brooklyn,metrocard,Metrocard - Other,893446
+2022-07,Brooklyn,metrocard,Metrocard - Seniors & Disability,696742
+2022-07,Brooklyn,metrocard,Metrocard - Students,197875
+2022-07,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2264977
+2022-07,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2167790
+2022-07,Brooklyn,omny,OMNY - Full Fare,6550274
+2022-07,Brooklyn,omny,OMNY - Other,18528
+2022-07,Brooklyn,omny,OMNY - Seniors & Disability,270
+2022-07,Manhattan,metrocard,Metrocard - Fair Fare,1127392
+2022-07,Manhattan,metrocard,Metrocard - Full Fare,11678173
+2022-07,Manhattan,metrocard,Metrocard - Other,1889729
+2022-07,Manhattan,metrocard,Metrocard - Seniors & Disability,1453093
+2022-07,Manhattan,metrocard,Metrocard - Students,166041
+2022-07,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4721510
+2022-07,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5523020
+2022-07,Manhattan,omny,OMNY - Full Fare,17528346
+2022-07,Manhattan,omny,OMNY - Other,65093
+2022-07,Manhattan,omny,OMNY - Seniors & Disability,997
+2022-07,Queens,metrocard,Metrocard - Fair Fare,367887
+2022-07,Queens,metrocard,Metrocard - Full Fare,3562547
+2022-07,Queens,metrocard,Metrocard - Other,546675
+2022-07,Queens,metrocard,Metrocard - Seniors & Disability,502020
+2022-07,Queens,metrocard,Metrocard - Students,120488
+2022-07,Queens,metrocard,Metrocard - Unlimited 30-Day,1677008
+2022-07,Queens,metrocard,Metrocard - Unlimited 7-Day,1962096
+2022-07,Queens,omny,OMNY - Full Fare,3640413
+2022-07,Queens,omny,OMNY - Other,8782
+2022-07,Queens,omny,OMNY - Seniors & Disability,137
+2022-07,Staten Island,metrocard,Metrocard - Fair Fare,4255
+2022-07,Staten Island,metrocard,Metrocard - Full Fare,65636
+2022-07,Staten Island,metrocard,Metrocard - Other,11913
+2022-07,Staten Island,metrocard,Metrocard - Seniors & Disability,7596
+2022-07,Staten Island,metrocard,Metrocard - Students,1308
+2022-07,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11196
+2022-07,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8916
+2022-07,Staten Island,omny,OMNY - Full Fare,27762
+2022-07,Staten Island,omny,OMNY - Other,104
+2022-07,Staten Island,omny,OMNY - Seniors & Disability,3
+2022-08,Bronx,metrocard,Metrocard - Fair Fare,450155
+2022-08,Bronx,metrocard,Metrocard - Full Fare,1836964
+2022-08,Bronx,metrocard,Metrocard - Other,387174
+2022-08,Bronx,metrocard,Metrocard - Seniors & Disability,227167
+2022-08,Bronx,metrocard,Metrocard - Students,93401
+2022-08,Bronx,metrocard,Metrocard - Unlimited 30-Day,689380
+2022-08,Bronx,metrocard,Metrocard - Unlimited 7-Day,1156793
+2022-08,Bronx,omny,OMNY - Full Fare,1664017
+2022-08,Bronx,omny,OMNY - Other,502
+2022-08,Bronx,omny,OMNY - Seniors & Disability,106
+2022-08,Brooklyn,metrocard,Metrocard - Fair Fare,729645
+2022-08,Brooklyn,metrocard,Metrocard - Full Fare,4769465
+2022-08,Brooklyn,metrocard,Metrocard - Other,958955
+2022-08,Brooklyn,metrocard,Metrocard - Seniors & Disability,736630
+2022-08,Brooklyn,metrocard,Metrocard - Students,203159
+2022-08,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2254669
+2022-08,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2232279
+2022-08,Brooklyn,omny,OMNY - Full Fare,6862933
+2022-08,Brooklyn,omny,OMNY - Other,1026
+2022-08,Brooklyn,omny,OMNY - Seniors & Disability,526
+2022-08,Manhattan,metrocard,Metrocard - Fair Fare,1164728
+2022-08,Manhattan,metrocard,Metrocard - Full Fare,11826938
+2022-08,Manhattan,metrocard,Metrocard - Other,2007863
+2022-08,Manhattan,metrocard,Metrocard - Seniors & Disability,1532897
+2022-08,Manhattan,metrocard,Metrocard - Students,207027
+2022-08,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4682874
+2022-08,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5764865
+2022-08,Manhattan,omny,OMNY - Full Fare,18398741
+2022-08,Manhattan,omny,OMNY - Other,4267
+2022-08,Manhattan,omny,OMNY - Seniors & Disability,1685
+2022-08,Queens,metrocard,Metrocard - Fair Fare,377874
+2022-08,Queens,metrocard,Metrocard - Full Fare,3672691
+2022-08,Queens,metrocard,Metrocard - Other,582877
+2022-08,Queens,metrocard,Metrocard - Seniors & Disability,535742
+2022-08,Queens,metrocard,Metrocard - Students,118106
+2022-08,Queens,metrocard,Metrocard - Unlimited 30-Day,1690382
+2022-08,Queens,metrocard,Metrocard - Unlimited 7-Day,2025602
+2022-08,Queens,omny,OMNY - Full Fare,3946373
+2022-08,Queens,omny,OMNY - Other,1248
+2022-08,Queens,omny,OMNY - Seniors & Disability,174
+2022-08,Staten Island,metrocard,Metrocard - Fair Fare,4687
+2022-08,Staten Island,metrocard,Metrocard - Full Fare,69627
+2022-08,Staten Island,metrocard,Metrocard - Other,12398
+2022-08,Staten Island,metrocard,Metrocard - Seniors & Disability,8193
+2022-08,Staten Island,metrocard,Metrocard - Students,1236
+2022-08,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11643
+2022-08,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9452
+2022-08,Staten Island,omny,OMNY - Full Fare,31411
+2022-08,Staten Island,omny,OMNY - Other,78
+2022-08,Staten Island,omny,OMNY - Seniors & Disability,2
+2022-09,Bronx,metrocard,Metrocard - Fair Fare,464205
+2022-09,Bronx,metrocard,Metrocard - Full Fare,1804144
+2022-09,Bronx,metrocard,Metrocard - Other,427083
+2022-09,Bronx,metrocard,Metrocard - Seniors & Disability,230045
+2022-09,Bronx,metrocard,Metrocard - Students,461918
+2022-09,Bronx,metrocard,Metrocard - Unlimited 30-Day,723152
+2022-09,Bronx,metrocard,Metrocard - Unlimited 7-Day,1155456
+2022-09,Bronx,omny,OMNY - Full Fare,1719264
+2022-09,Bronx,omny,OMNY - Other,426
+2022-09,Bronx,omny,OMNY - Seniors & Disability,131
+2022-09,Brooklyn,metrocard,Metrocard - Fair Fare,758602
+2022-09,Brooklyn,metrocard,Metrocard - Full Fare,4765012
+2022-09,Brooklyn,metrocard,Metrocard - Other,1031132
+2022-09,Brooklyn,metrocard,Metrocard - Seniors & Disability,758644
+2022-09,Brooklyn,metrocard,Metrocard - Students,1156531
+2022-09,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2406653
+2022-09,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2184430
+2022-09,Brooklyn,omny,OMNY - Full Fare,7619127
+2022-09,Brooklyn,omny,OMNY - Other,1564
+2022-09,Brooklyn,omny,OMNY - Seniors & Disability,757
+2022-09,Manhattan,metrocard,Metrocard - Fair Fare,1224466
+2022-09,Manhattan,metrocard,Metrocard - Full Fare,11961544
+2022-09,Manhattan,metrocard,Metrocard - Other,2149205
+2022-09,Manhattan,metrocard,Metrocard - Seniors & Disability,1677053
+2022-09,Manhattan,metrocard,Metrocard - Students,1197011
+2022-09,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5123454
+2022-09,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5415527
+2022-09,Manhattan,omny,OMNY - Full Fare,21218723
+2022-09,Manhattan,omny,OMNY - Other,4217
+2022-09,Manhattan,omny,OMNY - Seniors & Disability,2767
+2022-09,Queens,metrocard,Metrocard - Fair Fare,387753
+2022-09,Queens,metrocard,Metrocard - Full Fare,3619533
+2022-09,Queens,metrocard,Metrocard - Other,634925
+2022-09,Queens,metrocard,Metrocard - Seniors & Disability,545830
+2022-09,Queens,metrocard,Metrocard - Students,667260
+2022-09,Queens,metrocard,Metrocard - Unlimited 30-Day,1743905
+2022-09,Queens,metrocard,Metrocard - Unlimited 7-Day,1980482
+2022-09,Queens,omny,OMNY - Full Fare,4255163
+2022-09,Queens,omny,OMNY - Other,1298
+2022-09,Queens,omny,OMNY - Seniors & Disability,387
+2022-09,Staten Island,metrocard,Metrocard - Fair Fare,5073
+2022-09,Staten Island,metrocard,Metrocard - Full Fare,74588
+2022-09,Staten Island,metrocard,Metrocard - Other,14174
+2022-09,Staten Island,metrocard,Metrocard - Seniors & Disability,8535
+2022-09,Staten Island,metrocard,Metrocard - Students,10009
+2022-09,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12051
+2022-09,Staten Island,metrocard,Metrocard - Unlimited 7-Day,10695
+2022-09,Staten Island,omny,OMNY - Full Fare,36846
+2022-09,Staten Island,omny,OMNY - Other,101
+2022-09,Staten Island,omny,OMNY - Seniors & Disability,2
+2022-10,Bronx,metrocard,Metrocard - Fair Fare,472160
+2022-10,Bronx,metrocard,Metrocard - Full Fare,1750893
+2022-10,Bronx,metrocard,Metrocard - Other,448879
+2022-10,Bronx,metrocard,Metrocard - Seniors & Disability,229506
+2022-10,Bronx,metrocard,Metrocard - Students,641172
+2022-10,Bronx,metrocard,Metrocard - Unlimited 30-Day,748092
+2022-10,Bronx,metrocard,Metrocard - Unlimited 7-Day,1161008
+2022-10,Bronx,omny,OMNY - Full Fare,1726228
+2022-10,Bronx,omny,OMNY - Other,846
+2022-10,Bronx,omny,OMNY - Seniors & Disability,220
+2022-10,Brooklyn,metrocard,Metrocard - Fair Fare,785895
+2022-10,Brooklyn,metrocard,Metrocard - Full Fare,4596920
+2022-10,Brooklyn,metrocard,Metrocard - Other,1080502
+2022-10,Brooklyn,metrocard,Metrocard - Seniors & Disability,748746
+2022-10,Brooklyn,metrocard,Metrocard - Students,1552787
+2022-10,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2466709
+2022-10,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2206407
+2022-10,Brooklyn,omny,OMNY - Full Fare,8062189
+2022-10,Brooklyn,omny,OMNY - Other,1545
+2022-10,Brooklyn,omny,OMNY - Seniors & Disability,1663
+2022-10,Manhattan,metrocard,Metrocard - Fair Fare,1277025
+2022-10,Manhattan,metrocard,Metrocard - Full Fare,11818643
+2022-10,Manhattan,metrocard,Metrocard - Other,2264518
+2022-10,Manhattan,metrocard,Metrocard - Seniors & Disability,1757845
+2022-10,Manhattan,metrocard,Metrocard - Students,1627811
+2022-10,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5355263
+2022-10,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5767870
+2022-10,Manhattan,omny,OMNY - Full Fare,22859656
+2022-10,Manhattan,omny,OMNY - Other,3871
+2022-10,Manhattan,omny,OMNY - Seniors & Disability,8018
+2022-10,Queens,metrocard,Metrocard - Fair Fare,405226
+2022-10,Queens,metrocard,Metrocard - Full Fare,3540608
+2022-10,Queens,metrocard,Metrocard - Other,682952
+2022-10,Queens,metrocard,Metrocard - Seniors & Disability,550869
+2022-10,Queens,metrocard,Metrocard - Students,913171
+2022-10,Queens,metrocard,Metrocard - Unlimited 30-Day,1809384
+2022-10,Queens,metrocard,Metrocard - Unlimited 7-Day,2023552
+2022-10,Queens,omny,OMNY - Full Fare,4332712
+2022-10,Queens,omny,OMNY - Other,1270
+2022-10,Queens,omny,OMNY - Seniors & Disability,935
+2022-10,Staten Island,metrocard,Metrocard - Fair Fare,4881
+2022-10,Staten Island,metrocard,Metrocard - Full Fare,69921
+2022-10,Staten Island,metrocard,Metrocard - Other,14037
+2022-10,Staten Island,metrocard,Metrocard - Seniors & Disability,8106
+2022-10,Staten Island,metrocard,Metrocard - Students,12694
+2022-10,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11824
+2022-10,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9755
+2022-10,Staten Island,omny,OMNY - Full Fare,36516
+2022-10,Staten Island,omny,OMNY - Other,108
+2022-10,Staten Island,omny,OMNY - Seniors & Disability,11
+2022-11,Bronx,metrocard,Metrocard - Fair Fare,458098
+2022-11,Bronx,metrocard,Metrocard - Full Fare,1664365
+2022-11,Bronx,metrocard,Metrocard - Other,432102
+2022-11,Bronx,metrocard,Metrocard - Seniors & Disability,217082
+2022-11,Bronx,metrocard,Metrocard - Students,624519
+2022-11,Bronx,metrocard,Metrocard - Unlimited 30-Day,706517
+2022-11,Bronx,metrocard,Metrocard - Unlimited 7-Day,1079330
+2022-11,Bronx,omny,OMNY - Full Fare,1672778
+2022-11,Bronx,omny,OMNY - Other,459
+2022-11,Bronx,omny,OMNY - Seniors & Disability,984
+2022-11,Brooklyn,metrocard,Metrocard - Fair Fare,767144
+2022-11,Brooklyn,metrocard,Metrocard - Full Fare,4374210
+2022-11,Brooklyn,metrocard,Metrocard - Other,1048267
+2022-11,Brooklyn,metrocard,Metrocard - Seniors & Disability,738759
+2022-11,Brooklyn,metrocard,Metrocard - Students,1511678
+2022-11,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2330777
+2022-11,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2035680
+2022-11,Brooklyn,omny,OMNY - Full Fare,7878625
+2022-11,Brooklyn,omny,OMNY - Other,2062
+2022-11,Brooklyn,omny,OMNY - Seniors & Disability,5964
+2022-11,Manhattan,metrocard,Metrocard - Fair Fare,1242153
+2022-11,Manhattan,metrocard,Metrocard - Full Fare,11107694
+2022-11,Manhattan,metrocard,Metrocard - Other,2188187
+2022-11,Manhattan,metrocard,Metrocard - Seniors & Disability,1733593
+2022-11,Manhattan,metrocard,Metrocard - Students,1629469
+2022-11,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5014937
+2022-11,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5042293
+2022-11,Manhattan,omny,OMNY - Full Fare,22301042
+2022-11,Manhattan,omny,OMNY - Other,4233
+2022-11,Manhattan,omny,OMNY - Seniors & Disability,29399
+2022-11,Queens,metrocard,Metrocard - Fair Fare,398443
+2022-11,Queens,metrocard,Metrocard - Full Fare,3393095
+2022-11,Queens,metrocard,Metrocard - Other,653122
+2022-11,Queens,metrocard,Metrocard - Seniors & Disability,533671
+2022-11,Queens,metrocard,Metrocard - Students,906901
+2022-11,Queens,metrocard,Metrocard - Unlimited 30-Day,1716731
+2022-11,Queens,metrocard,Metrocard - Unlimited 7-Day,1894299
+2022-11,Queens,omny,OMNY - Full Fare,4283484
+2022-11,Queens,omny,OMNY - Other,1382
+2022-11,Queens,omny,OMNY - Seniors & Disability,2978
+2022-11,Staten Island,metrocard,Metrocard - Fair Fare,5000
+2022-11,Staten Island,metrocard,Metrocard - Full Fare,70655
+2022-11,Staten Island,metrocard,Metrocard - Other,13908
+2022-11,Staten Island,metrocard,Metrocard - Seniors & Disability,8370
+2022-11,Staten Island,metrocard,Metrocard - Students,12203
+2022-11,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12331
+2022-11,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9933
+2022-11,Staten Island,omny,OMNY - Full Fare,39465
+2022-11,Staten Island,omny,OMNY - Other,147
+2022-11,Staten Island,omny,OMNY - Seniors & Disability,24
+2022-12,Bronx,metrocard,Metrocard - Fair Fare,449452
+2022-12,Bronx,metrocard,Metrocard - Full Fare,1637307
+2022-12,Bronx,metrocard,Metrocard - Other,405131
+2022-12,Bronx,metrocard,Metrocard - Seniors & Disability,210658
+2022-12,Bronx,metrocard,Metrocard - Students,583493
+2022-12,Bronx,metrocard,Metrocard - Unlimited 30-Day,652328
+2022-12,Bronx,metrocard,Metrocard - Unlimited 7-Day,1053216
+2022-12,Bronx,omny,OMNY - Full Fare,1702090
+2022-12,Bronx,omny,OMNY - Other,479
+2022-12,Bronx,omny,OMNY - Seniors & Disability,1660
+2022-12,Brooklyn,metrocard,Metrocard - Fair Fare,768465
+2022-12,Brooklyn,metrocard,Metrocard - Full Fare,4317625
+2022-12,Brooklyn,metrocard,Metrocard - Other,1005111
+2022-12,Brooklyn,metrocard,Metrocard - Seniors & Disability,724430
+2022-12,Brooklyn,metrocard,Metrocard - Students,1422847
+2022-12,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2127019
+2022-12,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2165513
+2022-12,Brooklyn,omny,OMNY - Full Fare,7862234
+2022-12,Brooklyn,omny,OMNY - Other,2051
+2022-12,Brooklyn,omny,OMNY - Seniors & Disability,9751
+2022-12,Manhattan,metrocard,Metrocard - Fair Fare,1229391
+2022-12,Manhattan,metrocard,Metrocard - Full Fare,11559151
+2022-12,Manhattan,metrocard,Metrocard - Other,2101175
+2022-12,Manhattan,metrocard,Metrocard - Seniors & Disability,1726214
+2022-12,Manhattan,metrocard,Metrocard - Students,1513863
+2022-12,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4462527
+2022-12,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5888216
+2022-12,Manhattan,omny,OMNY - Full Fare,23197622
+2022-12,Manhattan,omny,OMNY - Other,4313
+2022-12,Manhattan,omny,OMNY - Seniors & Disability,47551
+2022-12,Queens,metrocard,Metrocard - Fair Fare,395028
+2022-12,Queens,metrocard,Metrocard - Full Fare,3384610
+2022-12,Queens,metrocard,Metrocard - Other,614852
+2022-12,Queens,metrocard,Metrocard - Seniors & Disability,524532
+2022-12,Queens,metrocard,Metrocard - Students,863730
+2022-12,Queens,metrocard,Metrocard - Unlimited 30-Day,1598697
+2022-12,Queens,metrocard,Metrocard - Unlimited 7-Day,1957222
+2022-12,Queens,omny,OMNY - Full Fare,4363771
+2022-12,Queens,omny,OMNY - Other,1200
+2022-12,Queens,omny,OMNY - Seniors & Disability,4825
+2022-12,Staten Island,metrocard,Metrocard - Fair Fare,4648
+2022-12,Staten Island,metrocard,Metrocard - Full Fare,65516
+2022-12,Staten Island,metrocard,Metrocard - Other,12009
+2022-12,Staten Island,metrocard,Metrocard - Seniors & Disability,8178
+2022-12,Staten Island,metrocard,Metrocard - Students,10940
+2022-12,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11436
+2022-12,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9269
+2022-12,Staten Island,omny,OMNY - Full Fare,36983
+2022-12,Staten Island,omny,OMNY - Other,58
+2022-12,Staten Island,omny,OMNY - Seniors & Disability,35
+2023-01,Bronx,metrocard,Metrocard - Fair Fare,455296
+2023-01,Bronx,metrocard,Metrocard - Full Fare,1634172
+2023-01,Bronx,metrocard,Metrocard - Other,381798
+2023-01,Bronx,metrocard,Metrocard - Seniors & Disability,212002
+2023-01,Bronx,metrocard,Metrocard - Students,608503
+2023-01,Bronx,metrocard,Metrocard - Unlimited 30-Day,675424
+2023-01,Bronx,metrocard,Metrocard - Unlimited 7-Day,1018028
+2023-01,Bronx,omny,OMNY - Full Fare,1739695
+2023-01,Bronx,omny,OMNY - Other,370
+2023-01,Bronx,omny,OMNY - Seniors & Disability,2127
+2023-01,Brooklyn,metrocard,Metrocard - Fair Fare,783728
+2023-01,Brooklyn,metrocard,Metrocard - Full Fare,4272186
+2023-01,Brooklyn,metrocard,Metrocard - Other,988975
+2023-01,Brooklyn,metrocard,Metrocard - Seniors & Disability,729584
+2023-01,Brooklyn,metrocard,Metrocard - Students,1484080
+2023-01,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2250314
+2023-01,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1899265
+2023-01,Brooklyn,omny,OMNY - Full Fare,8178415
+2023-01,Brooklyn,omny,OMNY - Other,1670
+2023-01,Brooklyn,omny,OMNY - Seniors & Disability,12755
+2023-01,Manhattan,metrocard,Metrocard - Fair Fare,1215761
+2023-01,Manhattan,metrocard,Metrocard - Full Fare,10434775
+2023-01,Manhattan,metrocard,Metrocard - Other,2094009
+2023-01,Manhattan,metrocard,Metrocard - Seniors & Disability,1660909
+2023-01,Manhattan,metrocard,Metrocard - Students,1616824
+2023-01,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4734583
+2023-01,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4360527
+2023-01,Manhattan,omny,OMNY - Full Fare,22406285
+2023-01,Manhattan,omny,OMNY - Other,4016
+2023-01,Manhattan,omny,OMNY - Seniors & Disability,59523
+2023-01,Queens,metrocard,Metrocard - Fair Fare,406385
+2023-01,Queens,metrocard,Metrocard - Full Fare,3376047
+2023-01,Queens,metrocard,Metrocard - Other,586551
+2023-01,Queens,metrocard,Metrocard - Seniors & Disability,529446
+2023-01,Queens,metrocard,Metrocard - Students,889583
+2023-01,Queens,metrocard,Metrocard - Unlimited 30-Day,1653480
+2023-01,Queens,metrocard,Metrocard - Unlimited 7-Day,1770116
+2023-01,Queens,omny,OMNY - Full Fare,4443841
+2023-01,Queens,omny,OMNY - Other,1755
+2023-01,Queens,omny,OMNY - Seniors & Disability,6816
+2023-01,Staten Island,metrocard,Metrocard - Fair Fare,4913
+2023-01,Staten Island,metrocard,Metrocard - Full Fare,68337
+2023-01,Staten Island,metrocard,Metrocard - Other,12801
+2023-01,Staten Island,metrocard,Metrocard - Seniors & Disability,8622
+2023-01,Staten Island,metrocard,Metrocard - Students,11075
+2023-01,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11857
+2023-01,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8651
+2023-01,Staten Island,omny,OMNY - Full Fare,40109
+2023-01,Staten Island,omny,OMNY - Other,71
+2023-01,Staten Island,omny,OMNY - Seniors & Disability,81
+2023-02,Bronx,metrocard,Metrocard - Fair Fare,431495
+2023-02,Bronx,metrocard,Metrocard - Full Fare,1514105
+2023-02,Bronx,metrocard,Metrocard - Other,389973
+2023-02,Bronx,metrocard,Metrocard - Seniors & Disability,202938
+2023-02,Bronx,metrocard,Metrocard - Students,554986
+2023-02,Bronx,metrocard,Metrocard - Unlimited 30-Day,633816
+2023-02,Bronx,metrocard,Metrocard - Unlimited 7-Day,953953
+2023-02,Bronx,omny,OMNY - Full Fare,1695409
+2023-02,Bronx,omny,OMNY - Other,345
+2023-02,Bronx,omny,OMNY - Seniors & Disability,2443
+2023-02,Brooklyn,metrocard,Metrocard - Fair Fare,763758
+2023-02,Brooklyn,metrocard,Metrocard - Full Fare,3940828
+2023-02,Brooklyn,metrocard,Metrocard - Other,965828
+2023-02,Brooklyn,metrocard,Metrocard - Seniors & Disability,695936
+2023-02,Brooklyn,metrocard,Metrocard - Students,1370402
+2023-02,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2151604
+2023-02,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1796343
+2023-02,Brooklyn,omny,OMNY - Full Fare,7978317
+2023-02,Brooklyn,omny,OMNY - Other,1347
+2023-02,Brooklyn,omny,OMNY - Seniors & Disability,14496
+2023-02,Manhattan,metrocard,Metrocard - Fair Fare,1191746
+2023-02,Manhattan,metrocard,Metrocard - Full Fare,9465107
+2023-02,Manhattan,metrocard,Metrocard - Other,2011246
+2023-02,Manhattan,metrocard,Metrocard - Seniors & Disability,1566708
+2023-02,Manhattan,metrocard,Metrocard - Students,1476371
+2023-02,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4543926
+2023-02,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4167694
+2023-02,Manhattan,omny,OMNY - Full Fare,21710433
+2023-02,Manhattan,omny,OMNY - Other,3758
+2023-02,Manhattan,omny,OMNY - Seniors & Disability,67175
+2023-02,Queens,metrocard,Metrocard - Fair Fare,387134
+2023-02,Queens,metrocard,Metrocard - Full Fare,3068462
+2023-02,Queens,metrocard,Metrocard - Other,571751
+2023-02,Queens,metrocard,Metrocard - Seniors & Disability,497817
+2023-02,Queens,metrocard,Metrocard - Students,808633
+2023-02,Queens,metrocard,Metrocard - Unlimited 30-Day,1554363
+2023-02,Queens,metrocard,Metrocard - Unlimited 7-Day,1670588
+2023-02,Queens,omny,OMNY - Full Fare,4216522
+2023-02,Queens,omny,OMNY - Other,1703
+2023-02,Queens,omny,OMNY - Seniors & Disability,7962
+2023-02,Staten Island,metrocard,Metrocard - Fair Fare,4490
+2023-02,Staten Island,metrocard,Metrocard - Full Fare,60110
+2023-02,Staten Island,metrocard,Metrocard - Other,12095
+2023-02,Staten Island,metrocard,Metrocard - Seniors & Disability,7669
+2023-02,Staten Island,metrocard,Metrocard - Students,10032
+2023-02,Staten Island,metrocard,Metrocard - Unlimited 30-Day,10916
+2023-02,Staten Island,metrocard,Metrocard - Unlimited 7-Day,7396
+2023-02,Staten Island,omny,OMNY - Full Fare,35948
+2023-02,Staten Island,omny,OMNY - Other,156
+2023-02,Staten Island,omny,OMNY - Seniors & Disability,108
+2023-03,Bronx,metrocard,Metrocard - Fair Fare,507947
+2023-03,Bronx,metrocard,Metrocard - Full Fare,1764729
+2023-03,Bronx,metrocard,Metrocard - Other,462288
+2023-03,Bronx,metrocard,Metrocard - Seniors & Disability,243534
+2023-03,Bronx,metrocard,Metrocard - Students,811627
+2023-03,Bronx,metrocard,Metrocard - Unlimited 30-Day,760010
+2023-03,Bronx,metrocard,Metrocard - Unlimited 7-Day,1113000
+2023-03,Bronx,omny,OMNY - Full Fare,2045173
+2023-03,Bronx,omny,OMNY - Other,396
+2023-03,Bronx,omny,OMNY - Seniors & Disability,3673
+2023-03,Brooklyn,metrocard,Metrocard - Fair Fare,894762
+2023-03,Brooklyn,metrocard,Metrocard - Full Fare,4501079
+2023-03,Brooklyn,metrocard,Metrocard - Other,1153180
+2023-03,Brooklyn,metrocard,Metrocard - Seniors & Disability,829019
+2023-03,Brooklyn,metrocard,Metrocard - Students,1946485
+2023-03,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2519578
+2023-03,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2121887
+2023-03,Brooklyn,omny,OMNY - Full Fare,9443600
+2023-03,Brooklyn,omny,OMNY - Other,1647
+2023-03,Brooklyn,omny,OMNY - Seniors & Disability,20046
+2023-03,Manhattan,metrocard,Metrocard - Fair Fare,1391670
+2023-03,Manhattan,metrocard,Metrocard - Full Fare,11088612
+2023-03,Manhattan,metrocard,Metrocard - Other,2364352
+2023-03,Manhattan,metrocard,Metrocard - Seniors & Disability,1878473
+2023-03,Manhattan,metrocard,Metrocard - Students,2033157
+2023-03,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5304247
+2023-03,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5136140
+2023-03,Manhattan,omny,OMNY - Full Fare,26046503
+2023-03,Manhattan,omny,OMNY - Other,4590
+2023-03,Manhattan,omny,OMNY - Seniors & Disability,97020
+2023-03,Queens,metrocard,Metrocard - Fair Fare,457131
+2023-03,Queens,metrocard,Metrocard - Full Fare,3562174
+2023-03,Queens,metrocard,Metrocard - Other,706596
+2023-03,Queens,metrocard,Metrocard - Seniors & Disability,596621
+2023-03,Queens,metrocard,Metrocard - Students,1144828
+2023-03,Queens,metrocard,Metrocard - Unlimited 30-Day,1826718
+2023-03,Queens,metrocard,Metrocard - Unlimited 7-Day,1954869
+2023-03,Queens,omny,OMNY - Full Fare,5078111
+2023-03,Queens,omny,OMNY - Other,1661
+2023-03,Queens,omny,OMNY - Seniors & Disability,11704
+2023-03,Staten Island,metrocard,Metrocard - Fair Fare,5394
+2023-03,Staten Island,metrocard,Metrocard - Full Fare,71455
+2023-03,Staten Island,metrocard,Metrocard - Other,14845
+2023-03,Staten Island,metrocard,Metrocard - Seniors & Disability,9713
+2023-03,Staten Island,metrocard,Metrocard - Students,14674
+2023-03,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12819
+2023-03,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9434
+2023-03,Staten Island,omny,OMNY - Full Fare,45459
+2023-03,Staten Island,omny,OMNY - Other,327
+2023-03,Staten Island,omny,OMNY - Seniors & Disability,234
+2023-04,Bronx,metrocard,Metrocard - Fair Fare,448308
+2023-04,Bronx,metrocard,Metrocard - Full Fare,1616653
+2023-04,Bronx,metrocard,Metrocard - Other,415467
+2023-04,Bronx,metrocard,Metrocard - Seniors & Disability,231635
+2023-04,Bronx,metrocard,Metrocard - Students,538450
+2023-04,Bronx,metrocard,Metrocard - Unlimited 30-Day,672335
+2023-04,Bronx,metrocard,Metrocard - Unlimited 7-Day,1032045
+2023-04,Bronx,omny,OMNY - Full Fare,1991555
+2023-04,Bronx,omny,OMNY - Other,334
+2023-04,Bronx,omny,OMNY - Seniors & Disability,4103
+2023-04,Brooklyn,metrocard,Metrocard - Fair Fare,807090
+2023-04,Brooklyn,metrocard,Metrocard - Full Fare,4018109
+2023-04,Brooklyn,metrocard,Metrocard - Other,1027665
+2023-04,Brooklyn,metrocard,Metrocard - Seniors & Disability,762828
+2023-04,Brooklyn,metrocard,Metrocard - Students,1273183
+2023-04,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2229233
+2023-04,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2045425
+2023-04,Brooklyn,omny,OMNY - Full Fare,8973304
+2023-04,Brooklyn,omny,OMNY - Other,1676
+2023-04,Brooklyn,omny,OMNY - Seniors & Disability,22154
+2023-04,Manhattan,metrocard,Metrocard - Fair Fare,1280230
+2023-04,Manhattan,metrocard,Metrocard - Full Fare,10352907
+2023-04,Manhattan,metrocard,Metrocard - Other,2123292
+2023-04,Manhattan,metrocard,Metrocard - Seniors & Disability,1760112
+2023-04,Manhattan,metrocard,Metrocard - Students,1424103
+2023-04,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4740109
+2023-04,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5726188
+2023-04,Manhattan,omny,OMNY - Full Fare,25096741
+2023-04,Manhattan,omny,OMNY - Other,4445
+2023-04,Manhattan,omny,OMNY - Seniors & Disability,107315
+2023-04,Queens,metrocard,Metrocard - Fair Fare,423173
+2023-04,Queens,metrocard,Metrocard - Full Fare,3276423
+2023-04,Queens,metrocard,Metrocard - Other,648255
+2023-04,Queens,metrocard,Metrocard - Seniors & Disability,564032
+2023-04,Queens,metrocard,Metrocard - Students,766333
+2023-04,Queens,metrocard,Metrocard - Unlimited 30-Day,1653297
+2023-04,Queens,metrocard,Metrocard - Unlimited 7-Day,1906274
+2023-04,Queens,omny,OMNY - Full Fare,4866076
+2023-04,Queens,omny,OMNY - Other,1584
+2023-04,Queens,omny,OMNY - Seniors & Disability,12827
+2023-04,Staten Island,metrocard,Metrocard - Fair Fare,4998
+2023-04,Staten Island,metrocard,Metrocard - Full Fare,63588
+2023-04,Staten Island,metrocard,Metrocard - Other,12374
+2023-04,Staten Island,metrocard,Metrocard - Seniors & Disability,8788
+2023-04,Staten Island,metrocard,Metrocard - Students,9120
+2023-04,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11204
+2023-04,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8583
+2023-04,Staten Island,omny,OMNY - Full Fare,41865
+2023-04,Staten Island,omny,OMNY - Other,76
+2023-04,Staten Island,omny,OMNY - Seniors & Disability,285
+2023-05,Bronx,metrocard,Metrocard - Fair Fare,506015
+2023-05,Bronx,metrocard,Metrocard - Full Fare,1758128
+2023-05,Bronx,metrocard,Metrocard - Other,450740
+2023-05,Bronx,metrocard,Metrocard - Seniors & Disability,260393
+2023-05,Bronx,metrocard,Metrocard - Students,770970
+2023-05,Bronx,metrocard,Metrocard - Unlimited 30-Day,747137
+2023-05,Bronx,metrocard,Metrocard - Unlimited 7-Day,1138222
+2023-05,Bronx,omny,OMNY - Full Fare,2236829
+2023-05,Bronx,omny,OMNY - Other,566
+2023-05,Bronx,omny,OMNY - Seniors & Disability,5070
+2023-05,Brooklyn,metrocard,Metrocard - Fair Fare,915241
+2023-05,Brooklyn,metrocard,Metrocard - Full Fare,4414881
+2023-05,Brooklyn,metrocard,Metrocard - Other,1132885
+2023-05,Brooklyn,metrocard,Metrocard - Seniors & Disability,862465
+2023-05,Brooklyn,metrocard,Metrocard - Students,1871992
+2023-05,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2450743
+2023-05,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2239002
+2023-05,Brooklyn,omny,OMNY - Full Fare,9995801
+2023-05,Brooklyn,omny,OMNY - Other,1915
+2023-05,Brooklyn,omny,OMNY - Seniors & Disability,27344
+2023-05,Manhattan,metrocard,Metrocard - Fair Fare,1419400
+2023-05,Manhattan,metrocard,Metrocard - Full Fare,11047411
+2023-05,Manhattan,metrocard,Metrocard - Other,2318491
+2023-05,Manhattan,metrocard,Metrocard - Seniors & Disability,1964635
+2023-05,Manhattan,metrocard,Metrocard - Students,2006582
+2023-05,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5132386
+2023-05,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5710707
+2023-05,Manhattan,omny,OMNY - Full Fare,27760203
+2023-05,Manhattan,omny,OMNY - Other,5023
+2023-05,Manhattan,omny,OMNY - Seniors & Disability,130623
+2023-05,Queens,metrocard,Metrocard - Fair Fare,478580
+2023-05,Queens,metrocard,Metrocard - Full Fare,3528931
+2023-05,Queens,metrocard,Metrocard - Other,712822
+2023-05,Queens,metrocard,Metrocard - Seniors & Disability,636568
+2023-05,Queens,metrocard,Metrocard - Students,1125294
+2023-05,Queens,metrocard,Metrocard - Unlimited 30-Day,1798066
+2023-05,Queens,metrocard,Metrocard - Unlimited 7-Day,2062056
+2023-05,Queens,omny,OMNY - Full Fare,5509984
+2023-05,Queens,omny,OMNY - Other,1611
+2023-05,Queens,omny,OMNY - Seniors & Disability,16276
+2023-05,Staten Island,metrocard,Metrocard - Fair Fare,5904
+2023-05,Staten Island,metrocard,Metrocard - Full Fare,71433
+2023-05,Staten Island,metrocard,Metrocard - Other,14140
+2023-05,Staten Island,metrocard,Metrocard - Seniors & Disability,10305
+2023-05,Staten Island,metrocard,Metrocard - Students,13674
+2023-05,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12415
+2023-05,Staten Island,metrocard,Metrocard - Unlimited 7-Day,10051
+2023-05,Staten Island,omny,OMNY - Full Fare,49641
+2023-05,Staten Island,omny,OMNY - Other,126
+2023-05,Staten Island,omny,OMNY - Seniors & Disability,274
+2023-06,Bronx,metrocard,Metrocard - Fair Fare,470757
+2023-06,Bronx,metrocard,Metrocard - Full Fare,1635307
+2023-06,Bronx,metrocard,Metrocard - Other,384326
+2023-06,Bronx,metrocard,Metrocard - Seniors & Disability,243475
+2023-06,Bronx,metrocard,Metrocard - Students,493405
+2023-06,Bronx,metrocard,Metrocard - Unlimited 30-Day,681935
+2023-06,Bronx,metrocard,Metrocard - Unlimited 7-Day,1047583
+2023-06,Bronx,omny,OMNY - Full Fare,2120495
+2023-06,Bronx,omny,OMNY - Other,605
+2023-06,Bronx,omny,OMNY - Seniors & Disability,4830
+2023-06,Brooklyn,metrocard,Metrocard - Fair Fare,865675
+2023-06,Brooklyn,metrocard,Metrocard - Full Fare,4132969
+2023-06,Brooklyn,metrocard,Metrocard - Other,1051124
+2023-06,Brooklyn,metrocard,Metrocard - Seniors & Disability,822224
+2023-06,Brooklyn,metrocard,Metrocard - Students,1231779
+2023-06,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2277959
+2023-06,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2039314
+2023-06,Brooklyn,omny,OMNY - Full Fare,9711105
+2023-06,Brooklyn,omny,OMNY - Other,2100
+2023-06,Brooklyn,omny,OMNY - Seniors & Disability,27671
+2023-06,Manhattan,metrocard,Metrocard - Fair Fare,1327274
+2023-06,Manhattan,metrocard,Metrocard - Full Fare,10455562
+2023-06,Manhattan,metrocard,Metrocard - Other,2126972
+2023-06,Manhattan,metrocard,Metrocard - Seniors & Disability,1825513
+2023-06,Manhattan,metrocard,Metrocard - Students,1337486
+2023-06,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4830371
+2023-06,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5102642
+2023-06,Manhattan,omny,OMNY - Full Fare,27042506
+2023-06,Manhattan,omny,OMNY - Other,4517
+2023-06,Manhattan,omny,OMNY - Seniors & Disability,128954
+2023-06,Queens,metrocard,Metrocard - Fair Fare,457058
+2023-06,Queens,metrocard,Metrocard - Full Fare,3334782
+2023-06,Queens,metrocard,Metrocard - Other,644373
+2023-06,Queens,metrocard,Metrocard - Seniors & Disability,609830
+2023-06,Queens,metrocard,Metrocard - Students,768645
+2023-06,Queens,metrocard,Metrocard - Unlimited 30-Day,1690135
+2023-06,Queens,metrocard,Metrocard - Unlimited 7-Day,1933008
+2023-06,Queens,omny,OMNY - Full Fare,5420408
+2023-06,Queens,omny,OMNY - Other,1509
+2023-06,Queens,omny,OMNY - Seniors & Disability,16929
+2023-06,Staten Island,metrocard,Metrocard - Fair Fare,5699
+2023-06,Staten Island,metrocard,Metrocard - Full Fare,66077
+2023-06,Staten Island,metrocard,Metrocard - Other,12658
+2023-06,Staten Island,metrocard,Metrocard - Seniors & Disability,10011
+2023-06,Staten Island,metrocard,Metrocard - Students,7271
+2023-06,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11751
+2023-06,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9743
+2023-06,Staten Island,omny,OMNY - Full Fare,47312
+2023-06,Staten Island,omny,OMNY - Other,150
+2023-06,Staten Island,omny,OMNY - Seniors & Disability,256
+2023-07,Bronx,metrocard,Metrocard - Fair Fare,432332
+2023-07,Bronx,metrocard,Metrocard - Full Fare,1563103
+2023-07,Bronx,metrocard,Metrocard - Other,370662
+2023-07,Bronx,metrocard,Metrocard - Seniors & Disability,222408
+2023-07,Bronx,metrocard,Metrocard - Students,90823
+2023-07,Bronx,metrocard,Metrocard - Unlimited 30-Day,623632
+2023-07,Bronx,metrocard,Metrocard - Unlimited 7-Day,984610
+2023-07,Bronx,omny,OMNY - Full Fare,2055790
+2023-07,Bronx,omny,OMNY - Other,461
+2023-07,Bronx,omny,OMNY - Seniors & Disability,4850
+2023-07,Brooklyn,metrocard,Metrocard - Fair Fare,833231
+2023-07,Brooklyn,metrocard,Metrocard - Full Fare,3992138
+2023-07,Brooklyn,metrocard,Metrocard - Other,993722
+2023-07,Brooklyn,metrocard,Metrocard - Seniors & Disability,760905
+2023-07,Brooklyn,metrocard,Metrocard - Students,191830
+2023-07,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2150150
+2023-07,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1974276
+2023-07,Brooklyn,omny,OMNY - Full Fare,9436826
+2023-07,Brooklyn,omny,OMNY - Other,1987
+2023-07,Brooklyn,omny,OMNY - Seniors & Disability,26864
+2023-07,Manhattan,metrocard,Metrocard - Fair Fare,1263282
+2023-07,Manhattan,metrocard,Metrocard - Full Fare,10085050
+2023-07,Manhattan,metrocard,Metrocard - Other,2017730
+2023-07,Manhattan,metrocard,Metrocard - Seniors & Disability,1617032
+2023-07,Manhattan,metrocard,Metrocard - Students,211055
+2023-07,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4429660
+2023-07,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5355205
+2023-07,Manhattan,omny,OMNY - Full Fare,26143411
+2023-07,Manhattan,omny,OMNY - Other,5144
+2023-07,Manhattan,omny,OMNY - Seniors & Disability,117533
+2023-07,Queens,metrocard,Metrocard - Fair Fare,449565
+2023-07,Queens,metrocard,Metrocard - Full Fare,3253601
+2023-07,Queens,metrocard,Metrocard - Other,609106
+2023-07,Queens,metrocard,Metrocard - Seniors & Disability,573590
+2023-07,Queens,metrocard,Metrocard - Students,151380
+2023-07,Queens,metrocard,Metrocard - Unlimited 30-Day,1621580
+2023-07,Queens,metrocard,Metrocard - Unlimited 7-Day,1874727
+2023-07,Queens,omny,OMNY - Full Fare,5300256
+2023-07,Queens,omny,OMNY - Other,1920
+2023-07,Queens,omny,OMNY - Seniors & Disability,17076
+2023-07,Staten Island,metrocard,Metrocard - Fair Fare,5476
+2023-07,Staten Island,metrocard,Metrocard - Full Fare,61822
+2023-07,Staten Island,metrocard,Metrocard - Other,12276
+2023-07,Staten Island,metrocard,Metrocard - Seniors & Disability,9081
+2023-07,Staten Island,metrocard,Metrocard - Students,960
+2023-07,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11567
+2023-07,Staten Island,metrocard,Metrocard - Unlimited 7-Day,10391
+2023-07,Staten Island,omny,OMNY - Full Fare,46260
+2023-07,Staten Island,omny,OMNY - Other,96
+2023-07,Staten Island,omny,OMNY - Seniors & Disability,233
+2023-08,Bronx,metrocard,Metrocard - Fair Fare,460885
+2023-08,Bronx,metrocard,Metrocard - Full Fare,1615522
+2023-08,Bronx,metrocard,Metrocard - Other,412620
+2023-08,Bronx,metrocard,Metrocard - Seniors & Disability,240850
+2023-08,Bronx,metrocard,Metrocard - Students,99193
+2023-08,Bronx,metrocard,Metrocard - Unlimited 30-Day,644661
+2023-08,Bronx,metrocard,Metrocard - Unlimited 7-Day,998802
+2023-08,Bronx,omny,OMNY - Full Fare,2202551
+2023-08,Bronx,omny,OMNY - Other,565
+2023-08,Bronx,omny,OMNY - Seniors & Disability,5798
+2023-08,Brooklyn,metrocard,Metrocard - Fair Fare,880847
+2023-08,Brooklyn,metrocard,Metrocard - Full Fare,4098758
+2023-08,Brooklyn,metrocard,Metrocard - Other,1066055
+2023-08,Brooklyn,metrocard,Metrocard - Seniors & Disability,814454
+2023-08,Brooklyn,metrocard,Metrocard - Students,209935
+2023-08,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2197687
+2023-08,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2055246
+2023-08,Brooklyn,omny,OMNY - Full Fare,9645677
+2023-08,Brooklyn,omny,OMNY - Other,1985
+2023-08,Brooklyn,omny,OMNY - Seniors & Disability,29851
+2023-08,Manhattan,metrocard,Metrocard - Fair Fare,1346465
+2023-08,Manhattan,metrocard,Metrocard - Full Fare,10189618
+2023-08,Manhattan,metrocard,Metrocard - Other,2165728
+2023-08,Manhattan,metrocard,Metrocard - Seniors & Disability,1724629
+2023-08,Manhattan,metrocard,Metrocard - Students,255798
+2023-08,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4466968
+2023-08,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5606582
+2023-08,Manhattan,omny,OMNY - Full Fare,26794831
+2023-08,Manhattan,omny,OMNY - Other,5266
+2023-08,Manhattan,omny,OMNY - Seniors & Disability,131122
+2023-08,Queens,metrocard,Metrocard - Fair Fare,481417
+2023-08,Queens,metrocard,Metrocard - Full Fare,3390414
+2023-08,Queens,metrocard,Metrocard - Other,654708
+2023-08,Queens,metrocard,Metrocard - Seniors & Disability,618645
+2023-08,Queens,metrocard,Metrocard - Students,154730
+2023-08,Queens,metrocard,Metrocard - Unlimited 30-Day,1657259
+2023-08,Queens,metrocard,Metrocard - Unlimited 7-Day,1924432
+2023-08,Queens,omny,OMNY - Full Fare,5672108
+2023-08,Queens,omny,OMNY - Other,2113
+2023-08,Queens,omny,OMNY - Seniors & Disability,20395
+2023-08,Staten Island,metrocard,Metrocard - Fair Fare,6043
+2023-08,Staten Island,metrocard,Metrocard - Full Fare,67507
+2023-08,Staten Island,metrocard,Metrocard - Other,14102
+2023-08,Staten Island,metrocard,Metrocard - Seniors & Disability,10352
+2023-08,Staten Island,metrocard,Metrocard - Students,1068
+2023-08,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12065
+2023-08,Staten Island,metrocard,Metrocard - Unlimited 7-Day,10609
+2023-08,Staten Island,omny,OMNY - Full Fare,50777
+2023-08,Staten Island,omny,OMNY - Other,138
+2023-08,Staten Island,omny,OMNY - Seniors & Disability,432
+2023-09,Bronx,metrocard,Metrocard - Fair Fare,455126
+2023-09,Bronx,metrocard,Metrocard - Full Fare,1424759
+2023-09,Bronx,metrocard,Metrocard - Other,437978
+2023-09,Bronx,metrocard,Metrocard - Seniors & Disability,227861
+2023-09,Bronx,metrocard,Metrocard - Students,463804
+2023-09,Bronx,metrocard,Metrocard - Unlimited 30-Day,645050
+2023-09,Bronx,metrocard,Metrocard - Unlimited 7-Day,989114
+2023-09,Bronx,omny,OMNY - Full Fare,2066659
+2023-09,Bronx,omny,OMNY - Other,508
+2023-09,Bronx,omny,OMNY - Seniors & Disability,5760
+2023-09,Brooklyn,metrocard,Metrocard - Fair Fare,862207
+2023-09,Brooklyn,metrocard,Metrocard - Full Fare,3657621
+2023-09,Brooklyn,metrocard,Metrocard - Other,1098463
+2023-09,Brooklyn,metrocard,Metrocard - Seniors & Disability,772728
+2023-09,Brooklyn,metrocard,Metrocard - Students,1160212
+2023-09,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2214737
+2023-09,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1963554
+2023-09,Brooklyn,omny,OMNY - Full Fare,9705550
+2023-09,Brooklyn,omny,OMNY - Other,2134
+2023-09,Brooklyn,omny,OMNY - Seniors & Disability,32051
+2023-09,Manhattan,metrocard,Metrocard - Fair Fare,1341974
+2023-09,Manhattan,metrocard,Metrocard - Full Fare,9204243
+2023-09,Manhattan,metrocard,Metrocard - Other,2188559
+2023-09,Manhattan,metrocard,Metrocard - Seniors & Disability,1724077
+2023-09,Manhattan,metrocard,Metrocard - Students,1262432
+2023-09,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4595367
+2023-09,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5142430
+2023-09,Manhattan,omny,OMNY - Full Fare,27976226
+2023-09,Manhattan,omny,OMNY - Other,5793
+2023-09,Manhattan,omny,OMNY - Seniors & Disability,152534
+2023-09,Queens,metrocard,Metrocard - Fair Fare,470486
+2023-09,Queens,metrocard,Metrocard - Full Fare,2987828
+2023-09,Queens,metrocard,Metrocard - Other,687062
+2023-09,Queens,metrocard,Metrocard - Seniors & Disability,572526
+2023-09,Queens,metrocard,Metrocard - Students,705105
+2023-09,Queens,metrocard,Metrocard - Unlimited 30-Day,1632085
+2023-09,Queens,metrocard,Metrocard - Unlimited 7-Day,1875756
+2023-09,Queens,omny,OMNY - Full Fare,5573392
+2023-09,Queens,omny,OMNY - Other,2087
+2023-09,Queens,omny,OMNY - Seniors & Disability,20780
+2023-09,Staten Island,metrocard,Metrocard - Fair Fare,5664
+2023-09,Staten Island,metrocard,Metrocard - Full Fare,61998
+2023-09,Staten Island,metrocard,Metrocard - Other,13712
+2023-09,Staten Island,metrocard,Metrocard - Seniors & Disability,9524
+2023-09,Staten Island,metrocard,Metrocard - Students,9056
+2023-09,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11457
+2023-09,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9842
+2023-09,Staten Island,omny,OMNY - Full Fare,52611
+2023-09,Staten Island,omny,OMNY - Other,102
+2023-09,Staten Island,omny,OMNY - Seniors & Disability,388
+2023-10,Bronx,metrocard,Metrocard - Fair Fare,490969
+2023-10,Bronx,metrocard,Metrocard - Full Fare,1453126
+2023-10,Bronx,metrocard,Metrocard - Other,470939
+2023-10,Bronx,metrocard,Metrocard - Seniors & Disability,244762
+2023-10,Bronx,metrocard,Metrocard - Students,708772
+2023-10,Bronx,metrocard,Metrocard - Unlimited 30-Day,698868
+2023-10,Bronx,metrocard,Metrocard - Unlimited 7-Day,1016766
+2023-10,Bronx,omny,OMNY - Full Fare,2117116
+2023-10,Bronx,omny,OMNY - Other,628
+2023-10,Bronx,omny,OMNY - Seniors & Disability,6412
+2023-10,Brooklyn,metrocard,Metrocard - Fair Fare,961034
+2023-10,Brooklyn,metrocard,Metrocard - Full Fare,3824149
+2023-10,Brooklyn,metrocard,Metrocard - Other,1197918
+2023-10,Brooklyn,metrocard,Metrocard - Seniors & Disability,848442
+2023-10,Brooklyn,metrocard,Metrocard - Students,1767929
+2023-10,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2394886
+2023-10,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2088151
+2023-10,Brooklyn,omny,OMNY - Full Fare,10634547
+2023-10,Brooklyn,omny,OMNY - Other,2403
+2023-10,Brooklyn,omny,OMNY - Seniors & Disability,38518
+2023-10,Manhattan,metrocard,Metrocard - Fair Fare,1492628
+2023-10,Manhattan,metrocard,Metrocard - Full Fare,9621011
+2023-10,Manhattan,metrocard,Metrocard - Other,2385083
+2023-10,Manhattan,metrocard,Metrocard - Seniors & Disability,1929898
+2023-10,Manhattan,metrocard,Metrocard - Students,1929553
+2023-10,Manhattan,metrocard,Metrocard - Unlimited 30-Day,5061506
+2023-10,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5655458
+2023-10,Manhattan,omny,OMNY - Full Fare,30801686
+2023-10,Manhattan,omny,OMNY - Other,6659
+2023-10,Manhattan,omny,OMNY - Seniors & Disability,183932
+2023-10,Queens,metrocard,Metrocard - Fair Fare,514132
+2023-10,Queens,metrocard,Metrocard - Full Fare,3039249
+2023-10,Queens,metrocard,Metrocard - Other,736061
+2023-10,Queens,metrocard,Metrocard - Seniors & Disability,621481
+2023-10,Queens,metrocard,Metrocard - Students,1041397
+2023-10,Queens,metrocard,Metrocard - Unlimited 30-Day,1754094
+2023-10,Queens,metrocard,Metrocard - Unlimited 7-Day,1972206
+2023-10,Queens,omny,OMNY - Full Fare,5818890
+2023-10,Queens,omny,OMNY - Other,2353
+2023-10,Queens,omny,OMNY - Seniors & Disability,23530
+2023-10,Staten Island,metrocard,Metrocard - Fair Fare,6617
+2023-10,Staten Island,metrocard,Metrocard - Full Fare,67096
+2023-10,Staten Island,metrocard,Metrocard - Other,15055
+2023-10,Staten Island,metrocard,Metrocard - Seniors & Disability,10683
+2023-10,Staten Island,metrocard,Metrocard - Students,14159
+2023-10,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12887
+2023-10,Staten Island,metrocard,Metrocard - Unlimited 7-Day,10510
+2023-10,Staten Island,omny,OMNY - Full Fare,59389
+2023-10,Staten Island,omny,OMNY - Other,114
+2023-10,Staten Island,omny,OMNY - Seniors & Disability,460
+2023-11,Bronx,metrocard,Metrocard - Fair Fare,460467
+2023-11,Bronx,metrocard,Metrocard - Full Fare,1351600
+2023-11,Bronx,metrocard,Metrocard - Other,448483
+2023-11,Bronx,metrocard,Metrocard - Seniors & Disability,231798
+2023-11,Bronx,metrocard,Metrocard - Students,652800
+2023-11,Bronx,metrocard,Metrocard - Unlimited 30-Day,648505
+2023-11,Bronx,metrocard,Metrocard - Unlimited 7-Day,924299
+2023-11,Bronx,omny,OMNY - Full Fare,2103948
+2023-11,Bronx,omny,OMNY - Other,1326
+2023-11,Bronx,omny,OMNY - Seniors & Disability,6669
+2023-11,Brooklyn,metrocard,Metrocard - Fair Fare,909048
+2023-11,Brooklyn,metrocard,Metrocard - Full Fare,3514269
+2023-11,Brooklyn,metrocard,Metrocard - Other,1120786
+2023-11,Brooklyn,metrocard,Metrocard - Seniors & Disability,802462
+2023-11,Brooklyn,metrocard,Metrocard - Students,1628824
+2023-11,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2180737
+2023-11,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1831707
+2023-11,Brooklyn,omny,OMNY - Full Fare,10151350
+2023-11,Brooklyn,omny,OMNY - Other,3936
+2023-11,Brooklyn,omny,OMNY - Seniors & Disability,40327
+2023-11,Manhattan,metrocard,Metrocard - Fair Fare,1434053
+2023-11,Manhattan,metrocard,Metrocard - Full Fare,8926649
+2023-11,Manhattan,metrocard,Metrocard - Other,2253436
+2023-11,Manhattan,metrocard,Metrocard - Seniors & Disability,1886803
+2023-11,Manhattan,metrocard,Metrocard - Students,1836217
+2023-11,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4653456
+2023-11,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4730525
+2023-11,Manhattan,omny,OMNY - Full Fare,30056543
+2023-11,Manhattan,omny,OMNY - Other,7299
+2023-11,Manhattan,omny,OMNY - Seniors & Disability,200138
+2023-11,Queens,metrocard,Metrocard - Fair Fare,492795
+2023-11,Queens,metrocard,Metrocard - Full Fare,2774301
+2023-11,Queens,metrocard,Metrocard - Other,691344
+2023-11,Queens,metrocard,Metrocard - Seniors & Disability,591553
+2023-11,Queens,metrocard,Metrocard - Students,980618
+2023-11,Queens,metrocard,Metrocard - Unlimited 30-Day,1633821
+2023-11,Queens,metrocard,Metrocard - Unlimited 7-Day,1765165
+2023-11,Queens,omny,OMNY - Full Fare,5674516
+2023-11,Queens,omny,OMNY - Other,3439
+2023-11,Queens,omny,OMNY - Seniors & Disability,24585
+2023-11,Staten Island,metrocard,Metrocard - Fair Fare,6271
+2023-11,Staten Island,metrocard,Metrocard - Full Fare,60472
+2023-11,Staten Island,metrocard,Metrocard - Other,13452
+2023-11,Staten Island,metrocard,Metrocard - Seniors & Disability,10594
+2023-11,Staten Island,metrocard,Metrocard - Students,12521
+2023-11,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12140
+2023-11,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9062
+2023-11,Staten Island,omny,OMNY - Full Fare,57287
+2023-11,Staten Island,omny,OMNY - Other,114
+2023-11,Staten Island,omny,OMNY - Seniors & Disability,443
+2023-12,Bronx,metrocard,Metrocard - Fair Fare,429397
+2023-12,Bronx,metrocard,Metrocard - Full Fare,1280622
+2023-12,Bronx,metrocard,Metrocard - Other,412913
+2023-12,Bronx,metrocard,Metrocard - Seniors & Disability,219549
+2023-12,Bronx,metrocard,Metrocard - Students,550779
+2023-12,Bronx,metrocard,Metrocard - Unlimited 30-Day,588968
+2023-12,Bronx,metrocard,Metrocard - Unlimited 7-Day,872189
+2023-12,Bronx,omny,OMNY - Full Fare,2108469
+2023-12,Bronx,omny,OMNY - Other,1091
+2023-12,Bronx,omny,OMNY - Seniors & Disability,6691
+2023-12,Brooklyn,metrocard,Metrocard - Fair Fare,875954
+2023-12,Brooklyn,metrocard,Metrocard - Full Fare,3372759
+2023-12,Brooklyn,metrocard,Metrocard - Other,1055174
+2023-12,Brooklyn,metrocard,Metrocard - Seniors & Disability,789022
+2023-12,Brooklyn,metrocard,Metrocard - Students,1398967
+2023-12,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1970176
+2023-12,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1867109
+2023-12,Brooklyn,omny,OMNY - Full Fare,10057024
+2023-12,Brooklyn,omny,OMNY - Other,3392
+2023-12,Brooklyn,omny,OMNY - Seniors & Disability,41931
+2023-12,Manhattan,metrocard,Metrocard - Fair Fare,1358411
+2023-12,Manhattan,metrocard,Metrocard - Full Fare,8920273
+2023-12,Manhattan,metrocard,Metrocard - Other,2110413
+2023-12,Manhattan,metrocard,Metrocard - Seniors & Disability,1841086
+2023-12,Manhattan,metrocard,Metrocard - Students,1571915
+2023-12,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4065051
+2023-12,Manhattan,metrocard,Metrocard - Unlimited 7-Day,5373089
+2023-12,Manhattan,omny,OMNY - Full Fare,30759651
+2023-12,Manhattan,omny,OMNY - Other,7504
+2023-12,Manhattan,omny,OMNY - Seniors & Disability,210128
+2023-12,Queens,metrocard,Metrocard - Fair Fare,472127
+2023-12,Queens,metrocard,Metrocard - Full Fare,2647146
+2023-12,Queens,metrocard,Metrocard - Other,633019
+2023-12,Queens,metrocard,Metrocard - Seniors & Disability,575575
+2023-12,Queens,metrocard,Metrocard - Students,847174
+2023-12,Queens,metrocard,Metrocard - Unlimited 30-Day,1496869
+2023-12,Queens,metrocard,Metrocard - Unlimited 7-Day,1749504
+2023-12,Queens,omny,OMNY - Full Fare,5700739
+2023-12,Queens,omny,OMNY - Other,3658
+2023-12,Queens,omny,OMNY - Seniors & Disability,25621
+2023-12,Staten Island,metrocard,Metrocard - Fair Fare,5990
+2023-12,Staten Island,metrocard,Metrocard - Full Fare,54971
+2023-12,Staten Island,metrocard,Metrocard - Other,12510
+2023-12,Staten Island,metrocard,Metrocard - Seniors & Disability,9906
+2023-12,Staten Island,metrocard,Metrocard - Students,9803
+2023-12,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11280
+2023-12,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8510
+2023-12,Staten Island,omny,OMNY - Full Fare,53561
+2023-12,Staten Island,omny,OMNY - Other,90
+2023-12,Staten Island,omny,OMNY - Seniors & Disability,439
+2024-01,Bronx,metrocard,Metrocard - Fair Fare,419017
+2024-01,Bronx,metrocard,Metrocard - Full Fare,1233011
+2024-01,Bronx,metrocard,Metrocard - Other,369018
+2024-01,Bronx,metrocard,Metrocard - Seniors & Disability,206698
+2024-01,Bronx,metrocard,Metrocard - Students,576435
+2024-01,Bronx,metrocard,Metrocard - Unlimited 30-Day,597428
+2024-01,Bronx,metrocard,Metrocard - Unlimited 7-Day,810981
+2024-01,Bronx,omny,OMNY - Full Fare,2061675
+2024-01,Bronx,omny,OMNY - Other,1278
+2024-01,Bronx,omny,OMNY - Seniors & Disability,6833
+2024-01,Brooklyn,metrocard,Metrocard - Fair Fare,868018
+2024-01,Brooklyn,metrocard,Metrocard - Full Fare,3259838
+2024-01,Brooklyn,metrocard,Metrocard - Other,1015968
+2024-01,Brooklyn,metrocard,Metrocard - Seniors & Disability,756519
+2024-01,Brooklyn,metrocard,Metrocard - Students,1482128
+2024-01,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2065567
+2024-01,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1597717
+2024-01,Brooklyn,omny,OMNY - Full Fare,10102851
+2024-01,Brooklyn,omny,OMNY - Other,2583
+2024-01,Brooklyn,omny,OMNY - Seniors & Disability,42253
+2024-01,Manhattan,metrocard,Metrocard - Fair Fare,1314439
+2024-01,Manhattan,metrocard,Metrocard - Full Fare,7911488
+2024-01,Manhattan,metrocard,Metrocard - Other,2075292
+2024-01,Manhattan,metrocard,Metrocard - Seniors & Disability,1699300
+2024-01,Manhattan,metrocard,Metrocard - Students,1671202
+2024-01,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4274831
+2024-01,Manhattan,metrocard,Metrocard - Unlimited 7-Day,3882617
+2024-01,Manhattan,omny,OMNY - Full Fare,28547996
+2024-01,Manhattan,omny,OMNY - Other,7777
+2024-01,Manhattan,omny,OMNY - Seniors & Disability,204769
+2024-01,Queens,metrocard,Metrocard - Fair Fare,466645
+2024-01,Queens,metrocard,Metrocard - Full Fare,2527675
+2024-01,Queens,metrocard,Metrocard - Other,597532
+2024-01,Queens,metrocard,Metrocard - Seniors & Disability,546770
+2024-01,Queens,metrocard,Metrocard - Students,879285
+2024-01,Queens,metrocard,Metrocard - Unlimited 30-Day,1517941
+2024-01,Queens,metrocard,Metrocard - Unlimited 7-Day,1530935
+2024-01,Queens,omny,OMNY - Full Fare,5556214
+2024-01,Queens,omny,OMNY - Other,3286
+2024-01,Queens,omny,OMNY - Seniors & Disability,26143
+2024-01,Staten Island,metrocard,Metrocard - Fair Fare,5951
+2024-01,Staten Island,metrocard,Metrocard - Full Fare,56379
+2024-01,Staten Island,metrocard,Metrocard - Other,12804
+2024-01,Staten Island,metrocard,Metrocard - Seniors & Disability,10056
+2024-01,Staten Island,metrocard,Metrocard - Students,10074
+2024-01,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12058
+2024-01,Staten Island,metrocard,Metrocard - Unlimited 7-Day,7564
+2024-01,Staten Island,omny,OMNY - Full Fare,54316
+2024-01,Staten Island,omny,OMNY - Other,110
+2024-01,Staten Island,omny,OMNY - Seniors & Disability,498
+2024-02,Bronx,metrocard,Metrocard - Fair Fare,421890
+2024-02,Bronx,metrocard,Metrocard - Full Fare,1164523
+2024-02,Bronx,metrocard,Metrocard - Other,414114
+2024-02,Bronx,metrocard,Metrocard - Seniors & Disability,207970
+2024-02,Bronx,metrocard,Metrocard - Students,563874
+2024-02,Bronx,metrocard,Metrocard - Unlimited 30-Day,567372
+2024-02,Bronx,metrocard,Metrocard - Unlimited 7-Day,777235
+2024-02,Bronx,omny,OMNY - Full Fare,2045128
+2024-02,Bronx,omny,OMNY - Other,1413
+2024-02,Bronx,omny,OMNY - Seniors & Disability,7119
+2024-02,Brooklyn,metrocard,Metrocard - Fair Fare,881694
+2024-02,Brooklyn,metrocard,Metrocard - Full Fare,3043210
+2024-02,Brooklyn,metrocard,Metrocard - Other,1038048
+2024-02,Brooklyn,metrocard,Metrocard - Seniors & Disability,756989
+2024-02,Brooklyn,metrocard,Metrocard - Students,1432714
+2024-02,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1977441
+2024-02,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1540071
+2024-02,Brooklyn,omny,OMNY - Full Fare,10036016
+2024-02,Brooklyn,omny,OMNY - Other,2449
+2024-02,Brooklyn,omny,OMNY - Seniors & Disability,43949
+2024-02,Manhattan,metrocard,Metrocard - Fair Fare,1371288
+2024-02,Manhattan,metrocard,Metrocard - Full Fare,7404124
+2024-02,Manhattan,metrocard,Metrocard - Other,2124876
+2024-02,Manhattan,metrocard,Metrocard - Seniors & Disability,1701825
+2024-02,Manhattan,metrocard,Metrocard - Students,1617786
+2024-02,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4155348
+2024-02,Manhattan,metrocard,Metrocard - Unlimited 7-Day,3803815
+2024-02,Manhattan,omny,OMNY - Full Fare,28774274
+2024-02,Manhattan,omny,OMNY - Other,6657
+2024-02,Manhattan,omny,OMNY - Seniors & Disability,215079
+2024-02,Queens,metrocard,Metrocard - Fair Fare,480892
+2024-02,Queens,metrocard,Metrocard - Full Fare,2389311
+2024-02,Queens,metrocard,Metrocard - Other,619515
+2024-02,Queens,metrocard,Metrocard - Seniors & Disability,552779
+2024-02,Queens,metrocard,Metrocard - Students,833204
+2024-02,Queens,metrocard,Metrocard - Unlimited 30-Day,1457442
+2024-02,Queens,metrocard,Metrocard - Unlimited 7-Day,1515187
+2024-02,Queens,omny,OMNY - Full Fare,5574557
+2024-02,Queens,omny,OMNY - Other,3683
+2024-02,Queens,omny,OMNY - Seniors & Disability,27844
+2024-02,Staten Island,metrocard,Metrocard - Fair Fare,6251
+2024-02,Staten Island,metrocard,Metrocard - Full Fare,52394
+2024-02,Staten Island,metrocard,Metrocard - Other,11743
+2024-02,Staten Island,metrocard,Metrocard - Seniors & Disability,9883
+2024-02,Staten Island,metrocard,Metrocard - Students,9802
+2024-02,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11343
+2024-02,Staten Island,metrocard,Metrocard - Unlimited 7-Day,7165
+2024-02,Staten Island,omny,OMNY - Full Fare,52716
+2024-02,Staten Island,omny,OMNY - Other,112
+2024-02,Staten Island,omny,OMNY - Seniors & Disability,484
+2024-03,Bronx,metrocard,Metrocard - Fair Fare,468980
+2024-03,Bronx,metrocard,Metrocard - Full Fare,1279935
+2024-03,Bronx,metrocard,Metrocard - Other,477294
+2024-03,Bronx,metrocard,Metrocard - Seniors & Disability,229160
+2024-03,Bronx,metrocard,Metrocard - Students,679250
+2024-03,Bronx,metrocard,Metrocard - Unlimited 30-Day,611103
+2024-03,Bronx,metrocard,Metrocard - Unlimited 7-Day,846921
+2024-03,Bronx,omny,OMNY - Full Fare,2312228
+2024-03,Bronx,omny,OMNY - Other,1392
+2024-03,Bronx,omny,OMNY - Seniors & Disability,8110
+2024-03,Brooklyn,metrocard,Metrocard - Fair Fare,969054
+2024-03,Brooklyn,metrocard,Metrocard - Full Fare,3234811
+2024-03,Brooklyn,metrocard,Metrocard - Other,1154750
+2024-03,Brooklyn,metrocard,Metrocard - Seniors & Disability,818020
+2024-03,Brooklyn,metrocard,Metrocard - Students,1717592
+2024-03,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2114357
+2024-03,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1725852
+2024-03,Brooklyn,omny,OMNY - Full Fare,11105551
+2024-03,Brooklyn,omny,OMNY - Other,2797
+2024-03,Brooklyn,omny,OMNY - Seniors & Disability,49554
+2024-03,Manhattan,metrocard,Metrocard - Fair Fare,1486835
+2024-03,Manhattan,metrocard,Metrocard - Full Fare,7971101
+2024-03,Manhattan,metrocard,Metrocard - Other,2292295
+2024-03,Manhattan,metrocard,Metrocard - Seniors & Disability,1823868
+2024-03,Manhattan,metrocard,Metrocard - Students,1855121
+2024-03,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4369274
+2024-03,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4569379
+2024-03,Manhattan,omny,OMNY - Full Fare,32008286
+2024-03,Manhattan,omny,OMNY - Other,7314
+2024-03,Manhattan,omny,OMNY - Seniors & Disability,244382
+2024-03,Queens,metrocard,Metrocard - Fair Fare,536758
+2024-03,Queens,metrocard,Metrocard - Full Fare,2569436
+2024-03,Queens,metrocard,Metrocard - Other,723691
+2024-03,Queens,metrocard,Metrocard - Seniors & Disability,598118
+2024-03,Queens,metrocard,Metrocard - Students,1010018
+2024-03,Queens,metrocard,Metrocard - Unlimited 30-Day,1572573
+2024-03,Queens,metrocard,Metrocard - Unlimited 7-Day,1674490
+2024-03,Queens,omny,OMNY - Full Fare,6210614
+2024-03,Queens,omny,OMNY - Other,3522
+2024-03,Queens,omny,OMNY - Seniors & Disability,31735
+2024-03,Staten Island,metrocard,Metrocard - Fair Fare,7138
+2024-03,Staten Island,metrocard,Metrocard - Full Fare,55224
+2024-03,Staten Island,metrocard,Metrocard - Other,12757
+2024-03,Staten Island,metrocard,Metrocard - Seniors & Disability,10988
+2024-03,Staten Island,metrocard,Metrocard - Students,12212
+2024-03,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12162
+2024-03,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8048
+2024-03,Staten Island,omny,OMNY - Full Fare,58862
+2024-03,Staten Island,omny,OMNY - Other,123
+2024-03,Staten Island,omny,OMNY - Seniors & Disability,566
+2024-04,Bronx,metrocard,Metrocard - Fair Fare,460441
+2024-04,Bronx,metrocard,Metrocard - Full Fare,1249638
+2024-04,Bronx,metrocard,Metrocard - Other,458359
+2024-04,Bronx,metrocard,Metrocard - Seniors & Disability,232657
+2024-04,Bronx,metrocard,Metrocard - Students,571315
+2024-04,Bronx,metrocard,Metrocard - Unlimited 30-Day,590396
+2024-04,Bronx,metrocard,Metrocard - Unlimited 7-Day,847464
+2024-04,Bronx,omny,OMNY - Full Fare,2398054
+2024-04,Bronx,omny,OMNY - Other,1358
+2024-04,Bronx,omny,OMNY - Seniors & Disability,8697
+2024-04,Brooklyn,metrocard,Metrocard - Fair Fare,952070
+2024-04,Brooklyn,metrocard,Metrocard - Full Fare,3106302
+2024-04,Brooklyn,metrocard,Metrocard - Other,1123499
+2024-04,Brooklyn,metrocard,Metrocard - Seniors & Disability,818750
+2024-04,Brooklyn,metrocard,Metrocard - Students,1404222
+2024-04,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2034386
+2024-04,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1739939
+2024-04,Brooklyn,omny,OMNY - Full Fare,11096010
+2024-04,Brooklyn,omny,OMNY - Other,3447
+2024-04,Brooklyn,omny,OMNY - Seniors & Disability,52277
+2024-04,Manhattan,metrocard,Metrocard - Fair Fare,1491776
+2024-04,Manhattan,metrocard,Metrocard - Full Fare,7831904
+2024-04,Manhattan,metrocard,Metrocard - Other,2259876
+2024-04,Manhattan,metrocard,Metrocard - Seniors & Disability,1859925
+2024-04,Manhattan,metrocard,Metrocard - Students,1657299
+2024-04,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4300009
+2024-04,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4966014
+2024-04,Manhattan,omny,OMNY - Full Fare,32003475
+2024-04,Manhattan,omny,OMNY - Other,8135
+2024-04,Manhattan,omny,OMNY - Seniors & Disability,260270
+2024-04,Queens,metrocard,Metrocard - Fair Fare,540940
+2024-04,Queens,metrocard,Metrocard - Full Fare,2522812
+2024-04,Queens,metrocard,Metrocard - Other,708740
+2024-04,Queens,metrocard,Metrocard - Seniors & Disability,612268
+2024-04,Queens,metrocard,Metrocard - Students,854245
+2024-04,Queens,metrocard,Metrocard - Unlimited 30-Day,1537123
+2024-04,Queens,metrocard,Metrocard - Unlimited 7-Day,1708339
+2024-04,Queens,omny,OMNY - Full Fare,6270854
+2024-04,Queens,omny,OMNY - Other,3945
+2024-04,Queens,omny,OMNY - Seniors & Disability,33391
+2024-04,Staten Island,metrocard,Metrocard - Fair Fare,7250
+2024-04,Staten Island,metrocard,Metrocard - Full Fare,55581
+2024-04,Staten Island,metrocard,Metrocard - Other,13317
+2024-04,Staten Island,metrocard,Metrocard - Seniors & Disability,10929
+2024-04,Staten Island,metrocard,Metrocard - Students,9504
+2024-04,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12007
+2024-04,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8091
+2024-04,Staten Island,omny,OMNY - Full Fare,59210
+2024-04,Staten Island,omny,OMNY - Other,116
+2024-04,Staten Island,omny,OMNY - Seniors & Disability,600
+2024-05,Bronx,metrocard,Metrocard - Fair Fare,486018
+2024-05,Bronx,metrocard,Metrocard - Full Fare,1252568
+2024-05,Bronx,metrocard,Metrocard - Other,448030
+2024-05,Bronx,metrocard,Metrocard - Seniors & Disability,246878
+2024-05,Bronx,metrocard,Metrocard - Students,718285
+2024-05,Bronx,metrocard,Metrocard - Unlimited 30-Day,615255
+2024-05,Bronx,metrocard,Metrocard - Unlimited 7-Day,868091
+2024-05,Bronx,omny,OMNY - Full Fare,2601134
+2024-05,Bronx,omny,OMNY - Other,4206
+2024-05,Bronx,omny,OMNY - Seniors & Disability,9776
+2024-05,Brooklyn,metrocard,Metrocard - Fair Fare,1027161
+2024-05,Brooklyn,metrocard,Metrocard - Full Fare,3160759
+2024-05,Brooklyn,metrocard,Metrocard - Other,1146140
+2024-05,Brooklyn,metrocard,Metrocard - Seniors & Disability,878381
+2024-05,Brooklyn,metrocard,Metrocard - Students,1868514
+2024-05,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2129911
+2024-05,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1758480
+2024-05,Brooklyn,omny,OMNY - Full Fare,12038206
+2024-05,Brooklyn,omny,OMNY - Other,8463
+2024-05,Brooklyn,omny,OMNY - Seniors & Disability,57751
+2024-05,Manhattan,metrocard,Metrocard - Fair Fare,1575898
+2024-05,Manhattan,metrocard,Metrocard - Full Fare,7896174
+2024-05,Manhattan,metrocard,Metrocard - Other,2270784
+2024-05,Manhattan,metrocard,Metrocard - Seniors & Disability,1967306
+2024-05,Manhattan,metrocard,Metrocard - Students,2085952
+2024-05,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4401771
+2024-05,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4757497
+2024-05,Manhattan,omny,OMNY - Full Fare,34719524
+2024-05,Manhattan,omny,OMNY - Other,20473
+2024-05,Manhattan,omny,OMNY - Seniors & Disability,280732
+2024-05,Queens,metrocard,Metrocard - Fair Fare,583624
+2024-05,Queens,metrocard,Metrocard - Full Fare,2513786
+2024-05,Queens,metrocard,Metrocard - Other,714334
+2024-05,Queens,metrocard,Metrocard - Seniors & Disability,653475
+2024-05,Queens,metrocard,Metrocard - Students,1115878
+2024-05,Queens,metrocard,Metrocard - Unlimited 30-Day,1606714
+2024-05,Queens,metrocard,Metrocard - Unlimited 7-Day,1750680
+2024-05,Queens,omny,OMNY - Full Fare,6930948
+2024-05,Queens,omny,OMNY - Other,9671
+2024-05,Queens,omny,OMNY - Seniors & Disability,37339
+2024-05,Staten Island,metrocard,Metrocard - Fair Fare,7954
+2024-05,Staten Island,metrocard,Metrocard - Full Fare,57481
+2024-05,Staten Island,metrocard,Metrocard - Other,13503
+2024-05,Staten Island,metrocard,Metrocard - Seniors & Disability,12188
+2024-05,Staten Island,metrocard,Metrocard - Students,12144
+2024-05,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12588
+2024-05,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8633
+2024-05,Staten Island,omny,OMNY - Full Fare,66670
+2024-05,Staten Island,omny,OMNY - Other,159
+2024-05,Staten Island,omny,OMNY - Seniors & Disability,690
+2024-06,Bronx,metrocard,Metrocard - Fair Fare,435052
+2024-06,Bronx,metrocard,Metrocard - Full Fare,1100737
+2024-06,Bronx,metrocard,Metrocard - Other,370521
+2024-06,Bronx,metrocard,Metrocard - Seniors & Disability,226130
+2024-06,Bronx,metrocard,Metrocard - Students,458326
+2024-06,Bronx,metrocard,Metrocard - Unlimited 30-Day,544837
+2024-06,Bronx,metrocard,Metrocard - Unlimited 7-Day,788629
+2024-06,Bronx,omny,OMNY - Full Fare,2506307
+2024-06,Bronx,omny,OMNY - Other,5785
+2024-06,Bronx,omny,OMNY - Seniors & Disability,9215
+2024-06,Brooklyn,metrocard,Metrocard - Fair Fare,931468
+2024-06,Brooklyn,metrocard,Metrocard - Full Fare,2754781
+2024-06,Brooklyn,metrocard,Metrocard - Other,974005
+2024-06,Brooklyn,metrocard,Metrocard - Seniors & Disability,812006
+2024-06,Brooklyn,metrocard,Metrocard - Students,1190953
+2024-06,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1903991
+2024-06,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1559050
+2024-06,Brooklyn,omny,OMNY - Fair Fare,37
+2024-06,Brooklyn,omny,OMNY - Full Fare,11395780
+2024-06,Brooklyn,omny,OMNY - Other,11861
+2024-06,Brooklyn,omny,OMNY - Seniors & Disability,53739
+2024-06,Manhattan,metrocard,Metrocard - Fair Fare,1425595
+2024-06,Manhattan,metrocard,Metrocard - Full Fare,6993356
+2024-06,Manhattan,metrocard,Metrocard - Other,1880936
+2024-06,Manhattan,metrocard,Metrocard - Seniors & Disability,1774416
+2024-06,Manhattan,metrocard,Metrocard - Students,1345692
+2024-06,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3942528
+2024-06,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4019026
+2024-06,Manhattan,omny,OMNY - Fair Fare,19
+2024-06,Manhattan,omny,OMNY - Full Fare,33328689
+2024-06,Manhattan,omny,OMNY - Other,50533
+2024-06,Manhattan,omny,OMNY - Seniors & Disability,251699
+2024-06,Queens,metrocard,Metrocard - Fair Fare,544352
+2024-06,Queens,metrocard,Metrocard - Full Fare,2227179
+2024-06,Queens,metrocard,Metrocard - Other,604502
+2024-06,Queens,metrocard,Metrocard - Seniors & Disability,609645
+2024-06,Queens,metrocard,Metrocard - Students,736714
+2024-06,Queens,metrocard,Metrocard - Unlimited 30-Day,1457346
+2024-06,Queens,metrocard,Metrocard - Unlimited 7-Day,1600733
+2024-06,Queens,omny,OMNY - Fair Fare,6
+2024-06,Queens,omny,OMNY - Full Fare,6826656
+2024-06,Queens,omny,OMNY - Other,12398
+2024-06,Queens,omny,OMNY - Seniors & Disability,36398
+2024-06,Staten Island,metrocard,Metrocard - Fair Fare,7630
+2024-06,Staten Island,metrocard,Metrocard - Full Fare,51136
+2024-06,Staten Island,metrocard,Metrocard - Other,10546
+2024-06,Staten Island,metrocard,Metrocard - Seniors & Disability,11272
+2024-06,Staten Island,metrocard,Metrocard - Students,6795
+2024-06,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11627
+2024-06,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8062
+2024-06,Staten Island,omny,OMNY - Full Fare,64712
+2024-06,Staten Island,omny,OMNY - Other,142
+2024-06,Staten Island,omny,OMNY - Seniors & Disability,700
+2024-07,Bronx,metrocard,Metrocard - Fair Fare,438805
+2024-07,Bronx,metrocard,Metrocard - Full Fare,1158880
+2024-07,Bronx,metrocard,Metrocard - Other,372769
+2024-07,Bronx,metrocard,Metrocard - Seniors & Disability,218803
+2024-07,Bronx,metrocard,Metrocard - Students,81021
+2024-07,Bronx,metrocard,Metrocard - Unlimited 30-Day,532516
+2024-07,Bronx,metrocard,Metrocard - Unlimited 7-Day,777072
+2024-07,Bronx,omny,OMNY - Fair Fare,5
+2024-07,Bronx,omny,OMNY - Full Fare,2569625
+2024-07,Bronx,omny,OMNY - Other,6485
+2024-07,Bronx,omny,OMNY - Seniors & Disability,8882
+2024-07,Brooklyn,metrocard,Metrocard - Fair Fare,950398
+2024-07,Brooklyn,metrocard,Metrocard - Full Fare,2891149
+2024-07,Brooklyn,metrocard,Metrocard - Other,947285
+2024-07,Brooklyn,metrocard,Metrocard - Seniors & Disability,798580
+2024-07,Brooklyn,metrocard,Metrocard - Students,192046
+2024-07,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1845473
+2024-07,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1567110
+2024-07,Brooklyn,omny,OMNY - Fair Fare,312
+2024-07,Brooklyn,omny,OMNY - Full Fare,11018032
+2024-07,Brooklyn,omny,OMNY - Other,14613
+2024-07,Brooklyn,omny,OMNY - Seniors & Disability,51288
+2024-07,Manhattan,metrocard,Metrocard - Fair Fare,1455124
+2024-07,Manhattan,metrocard,Metrocard - Full Fare,7062419
+2024-07,Manhattan,metrocard,Metrocard - Other,1846014
+2024-07,Manhattan,metrocard,Metrocard - Seniors & Disability,1673197
+2024-07,Manhattan,metrocard,Metrocard - Students,222057
+2024-07,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3826867
+2024-07,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4356656
+2024-07,Manhattan,omny,OMNY - Fair Fare,138
+2024-07,Manhattan,omny,OMNY - Full Fare,33645470
+2024-07,Manhattan,omny,OMNY - Other,81435
+2024-07,Manhattan,omny,OMNY - Seniors & Disability,232252
+2024-07,Queens,metrocard,Metrocard - Fair Fare,578047
+2024-07,Queens,metrocard,Metrocard - Full Fare,2401969
+2024-07,Queens,metrocard,Metrocard - Other,596452
+2024-07,Queens,metrocard,Metrocard - Seniors & Disability,618984
+2024-07,Queens,metrocard,Metrocard - Students,139349
+2024-07,Queens,metrocard,Metrocard - Unlimited 30-Day,1470526
+2024-07,Queens,metrocard,Metrocard - Unlimited 7-Day,1647494
+2024-07,Queens,omny,OMNY - Fair Fare,37
+2024-07,Queens,omny,OMNY - Full Fare,7034460
+2024-07,Queens,omny,OMNY - Other,11992
+2024-07,Queens,omny,OMNY - Seniors & Disability,36431
+2024-07,Staten Island,metrocard,Metrocard - Fair Fare,8640
+2024-07,Staten Island,metrocard,Metrocard - Full Fare,54069
+2024-07,Staten Island,metrocard,Metrocard - Other,10586
+2024-07,Staten Island,metrocard,Metrocard - Seniors & Disability,11360
+2024-07,Staten Island,metrocard,Metrocard - Students,926
+2024-07,Staten Island,metrocard,Metrocard - Unlimited 30-Day,12186
+2024-07,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8832
+2024-07,Staten Island,omny,OMNY - Full Fare,69129
+2024-07,Staten Island,omny,OMNY - Other,89
+2024-07,Staten Island,omny,OMNY - Seniors & Disability,702
+2024-08,Bronx,metrocard,Metrocard - Fair Fare,439320
+2024-08,Bronx,metrocard,Metrocard - Full Fare,1109783
+2024-08,Bronx,metrocard,Metrocard - Other,373300
+2024-08,Bronx,metrocard,Metrocard - Seniors & Disability,219289
+2024-08,Bronx,metrocard,Metrocard - Students,96406
+2024-08,Bronx,metrocard,Metrocard - Unlimited 30-Day,495233
+2024-08,Bronx,metrocard,Metrocard - Unlimited 7-Day,750406
+2024-08,Bronx,omny,OMNY - Fair Fare,2
+2024-08,Bronx,omny,OMNY - Full Fare,2599637
+2024-08,Bronx,omny,OMNY - Other,13496
+2024-08,Bronx,omny,OMNY - Seniors & Disability,9325
+2024-08,Brooklyn,metrocard,Metrocard - Fair Fare,952370
+2024-08,Brooklyn,metrocard,Metrocard - Full Fare,2803908
+2024-08,Brooklyn,metrocard,Metrocard - Other,930586
+2024-08,Brooklyn,metrocard,Metrocard - Seniors & Disability,795423
+2024-08,Brooklyn,metrocard,Metrocard - Students,208813
+2024-08,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1729687
+2024-08,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1549712
+2024-08,Brooklyn,omny,OMNY - Fair Fare,336
+2024-08,Brooklyn,omny,OMNY - Full Fare,11065198
+2024-08,Brooklyn,omny,OMNY - Other,24809
+2024-08,Brooklyn,omny,OMNY - Seniors & Disability,52073
+2024-08,Brooklyn,omny,OMNY - Students,18
+2024-08,Manhattan,metrocard,Metrocard - Fair Fare,1463903
+2024-08,Manhattan,metrocard,Metrocard - Full Fare,6730350
+2024-08,Manhattan,metrocard,Metrocard - Other,1804182
+2024-08,Manhattan,metrocard,Metrocard - Seniors & Disability,1656253
+2024-08,Manhattan,metrocard,Metrocard - Students,267481
+2024-08,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3517617
+2024-08,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4440177
+2024-08,Manhattan,omny,OMNY - Fair Fare,137
+2024-08,Manhattan,omny,OMNY - Full Fare,33064614
+2024-08,Manhattan,omny,OMNY - Other,128110
+2024-08,Manhattan,omny,OMNY - Seniors & Disability,235098
+2024-08,Manhattan,omny,OMNY - Students,132
+2024-08,Queens,metrocard,Metrocard - Fair Fare,584114
+2024-08,Queens,metrocard,Metrocard - Full Fare,2320803
+2024-08,Queens,metrocard,Metrocard - Other,586919
+2024-08,Queens,metrocard,Metrocard - Seniors & Disability,621527
+2024-08,Queens,metrocard,Metrocard - Students,149870
+2024-08,Queens,metrocard,Metrocard - Unlimited 30-Day,1389938
+2024-08,Queens,metrocard,Metrocard - Unlimited 7-Day,1642676
+2024-08,Queens,omny,OMNY - Fair Fare,44
+2024-08,Queens,omny,OMNY - Full Fare,7228419
+2024-08,Queens,omny,OMNY - Other,19844
+2024-08,Queens,omny,OMNY - Seniors & Disability,39060
+2024-08,Queens,omny,OMNY - Students,2
+2024-08,Staten Island,metrocard,Metrocard - Fair Fare,8522
+2024-08,Staten Island,metrocard,Metrocard - Full Fare,50999
+2024-08,Staten Island,metrocard,Metrocard - Other,10117
+2024-08,Staten Island,metrocard,Metrocard - Seniors & Disability,11627
+2024-08,Staten Island,metrocard,Metrocard - Students,779
+2024-08,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11509
+2024-08,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8681
+2024-08,Staten Island,omny,OMNY - Full Fare,67105
+2024-08,Staten Island,omny,OMNY - Other,157
+2024-08,Staten Island,omny,OMNY - Seniors & Disability,683
+2024-09,Bronx,metrocard,Metrocard - Fair Fare,480059
+2024-09,Bronx,metrocard,Metrocard - Full Fare,1139633
+2024-09,Bronx,metrocard,Metrocard - Other,375026
+2024-09,Bronx,metrocard,Metrocard - Seniors & Disability,236233
+2024-09,Bronx,metrocard,Metrocard - Unlimited 30-Day,544499
+2024-09,Bronx,metrocard,Metrocard - Unlimited 7-Day,793069
+2024-09,Bronx,omny,OMNY - Fair Fare,1
+2024-09,Bronx,omny,OMNY - Full Fare,2739853
+2024-09,Bronx,omny,OMNY - Other,75596
+2024-09,Bronx,omny,OMNY - Seniors & Disability,10332
+2024-09,Bronx,omny,OMNY - Students,757783
+2024-09,Brooklyn,metrocard,Metrocard - Fair Fare,1024805
+2024-09,Brooklyn,metrocard,Metrocard - Full Fare,2789210
+2024-09,Brooklyn,metrocard,Metrocard - Other,946375
+2024-09,Brooklyn,metrocard,Metrocard - Seniors & Disability,830333
+2024-09,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1898041
+2024-09,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1569620
+2024-09,Brooklyn,omny,OMNY - Fair Fare,285
+2024-09,Brooklyn,omny,OMNY - Full Fare,12302131
+2024-09,Brooklyn,omny,OMNY - Other,130357
+2024-09,Brooklyn,omny,OMNY - Seniors & Disability,60746
+2024-09,Brooklyn,omny,OMNY - Students,1908783
+2024-09,Manhattan,metrocard,Metrocard - Fair Fare,1578997
+2024-09,Manhattan,metrocard,Metrocard - Full Fare,6517598
+2024-09,Manhattan,metrocard,Metrocard - Other,1810730
+2024-09,Manhattan,metrocard,Metrocard - Seniors & Disability,1816930
+2024-09,Manhattan,metrocard,Metrocard - Students,1
+2024-09,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3900682
+2024-09,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4007616
+2024-09,Manhattan,omny,OMNY - Fair Fare,146
+2024-09,Manhattan,omny,OMNY - Full Fare,36109834
+2024-09,Manhattan,omny,OMNY - Other,230959
+2024-09,Manhattan,omny,OMNY - Seniors & Disability,293116
+2024-09,Manhattan,omny,OMNY - Students,2165203
+2024-09,Queens,metrocard,Metrocard - Fair Fare,607350
+2024-09,Queens,metrocard,Metrocard - Full Fare,2214300
+2024-09,Queens,metrocard,Metrocard - Other,574552
+2024-09,Queens,metrocard,Metrocard - Seniors & Disability,622568
+2024-09,Queens,metrocard,Metrocard - Students,2
+2024-09,Queens,metrocard,Metrocard - Unlimited 30-Day,1453876
+2024-09,Queens,metrocard,Metrocard - Unlimited 7-Day,1616873
+2024-09,Queens,omny,OMNY - Fair Fare,56
+2024-09,Queens,omny,OMNY - Full Fare,7441689
+2024-09,Queens,omny,OMNY - Other,95128
+2024-09,Queens,omny,OMNY - Seniors & Disability,41009
+2024-09,Queens,omny,OMNY - Students,1057584
+2024-09,Staten Island,metrocard,Metrocard - Fair Fare,9121
+2024-09,Staten Island,metrocard,Metrocard - Full Fare,52289
+2024-09,Staten Island,metrocard,Metrocard - Other,10625
+2024-09,Staten Island,metrocard,Metrocard - Seniors & Disability,11884
+2024-09,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11980
+2024-09,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8557
+2024-09,Staten Island,omny,OMNY - Full Fare,73269
+2024-09,Staten Island,omny,OMNY - Other,768
+2024-09,Staten Island,omny,OMNY - Seniors & Disability,866
+2024-09,Staten Island,omny,OMNY - Students,14186
+2024-10,Bronx,metrocard,Metrocard - Fair Fare,524925
+2024-10,Bronx,metrocard,Metrocard - Full Fare,1169703
+2024-10,Bronx,metrocard,Metrocard - Other,399970
+2024-10,Bronx,metrocard,Metrocard - Seniors & Disability,254091
+2024-10,Bronx,metrocard,Metrocard - Students,1
+2024-10,Bronx,metrocard,Metrocard - Unlimited 30-Day,595216
+2024-10,Bronx,metrocard,Metrocard - Unlimited 7-Day,831288
+2024-10,Bronx,omny,OMNY - Fair Fare,1
+2024-10,Bronx,omny,OMNY - Full Fare,2896368
+2024-10,Bronx,omny,OMNY - Other,86200
+2024-10,Bronx,omny,OMNY - Seniors & Disability,11323
+2024-10,Bronx,omny,OMNY - Students,1096402
+2024-10,Brooklyn,metrocard,Metrocard - Fair Fare,1097350
+2024-10,Brooklyn,metrocard,Metrocard - Full Fare,2791780
+2024-10,Brooklyn,metrocard,Metrocard - Other,1009800
+2024-10,Brooklyn,metrocard,Metrocard - Seniors & Disability,887025
+2024-10,Brooklyn,metrocard,Metrocard - Students,1
+2024-10,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2002340
+2024-10,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1643433
+2024-10,Brooklyn,omny,OMNY - Fair Fare,215
+2024-10,Brooklyn,omny,OMNY - Full Fare,13069703
+2024-10,Brooklyn,omny,OMNY - Other,155038
+2024-10,Brooklyn,omny,OMNY - Seniors & Disability,66602
+2024-10,Brooklyn,omny,OMNY - Students,2560178
+2024-10,Manhattan,metrocard,Metrocard - Fair Fare,1727995
+2024-10,Manhattan,metrocard,Metrocard - Full Fare,6866358
+2024-10,Manhattan,metrocard,Metrocard - Other,1976714
+2024-10,Manhattan,metrocard,Metrocard - Seniors & Disability,1991898
+2024-10,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4209374
+2024-10,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4524510
+2024-10,Manhattan,omny,OMNY - Fair Fare,138
+2024-10,Manhattan,omny,OMNY - Full Fare,39984565
+2024-10,Manhattan,omny,OMNY - Other,273780
+2024-10,Manhattan,omny,OMNY - Seniors & Disability,335985
+2024-10,Manhattan,omny,OMNY - Students,3035010
+2024-10,Queens,metrocard,Metrocard - Fair Fare,653014
+2024-10,Queens,metrocard,Metrocard - Full Fare,2264232
+2024-10,Queens,metrocard,Metrocard - Other,608278
+2024-10,Queens,metrocard,Metrocard - Seniors & Disability,666067
+2024-10,Queens,metrocard,Metrocard - Unlimited 30-Day,1542521
+2024-10,Queens,metrocard,Metrocard - Unlimited 7-Day,1688345
+2024-10,Queens,omny,OMNY - Fair Fare,52
+2024-10,Queens,omny,OMNY - Full Fare,7794686
+2024-10,Queens,omny,OMNY - Other,128076
+2024-10,Queens,omny,OMNY - Seniors & Disability,44603
+2024-10,Queens,omny,OMNY - Students,1478149
+2024-10,Staten Island,metrocard,Metrocard - Fair Fare,9722
+2024-10,Staten Island,metrocard,Metrocard - Full Fare,54694
+2024-10,Staten Island,metrocard,Metrocard - Other,12012
+2024-10,Staten Island,metrocard,Metrocard - Seniors & Disability,12990
+2024-10,Staten Island,metrocard,Metrocard - Unlimited 30-Day,13076
+2024-10,Staten Island,metrocard,Metrocard - Unlimited 7-Day,9418
+2024-10,Staten Island,omny,OMNY - Full Fare,82270
+2024-10,Staten Island,omny,OMNY - Other,929
+2024-10,Staten Island,omny,OMNY - Seniors & Disability,947
+2024-10,Staten Island,omny,OMNY - Students,19253
+2024-11,Bronx,metrocard,Metrocard - Fair Fare,475779
+2024-11,Bronx,metrocard,Metrocard - Full Fare,1030252
+2024-11,Bronx,metrocard,Metrocard - Other,360320
+2024-11,Bronx,metrocard,Metrocard - Seniors & Disability,230151
+2024-11,Bronx,metrocard,Metrocard - Unlimited 30-Day,525110
+2024-11,Bronx,metrocard,Metrocard - Unlimited 7-Day,745360
+2024-11,Bronx,omny,OMNY - Full Fare,2644235
+2024-11,Bronx,omny,OMNY - Other,78909
+2024-11,Bronx,omny,OMNY - Seniors & Disability,9636
+2024-11,Bronx,omny,OMNY - Students,957916
+2024-11,Brooklyn,metrocard,Metrocard - Fair Fare,1009775
+2024-11,Brooklyn,metrocard,Metrocard - Full Fare,2442112
+2024-11,Brooklyn,metrocard,Metrocard - Other,896584
+2024-11,Brooklyn,metrocard,Metrocard - Seniors & Disability,808772
+2024-11,Brooklyn,metrocard,Metrocard - Students,1
+2024-11,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1775343
+2024-11,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1426081
+2024-11,Brooklyn,omny,OMNY - Fair Fare,176
+2024-11,Brooklyn,omny,OMNY - Full Fare,12229778
+2024-11,Brooklyn,omny,OMNY - Other,143497
+2024-11,Brooklyn,omny,OMNY - Seniors & Disability,63585
+2024-11,Brooklyn,omny,OMNY - Students,2223831
+2024-11,Manhattan,metrocard,Metrocard - Fair Fare,1574932
+2024-11,Manhattan,metrocard,Metrocard - Full Fare,5834318
+2024-11,Manhattan,metrocard,Metrocard - Other,1730679
+2024-11,Manhattan,metrocard,Metrocard - Seniors & Disability,1825950
+2024-11,Manhattan,metrocard,Metrocard - Students,2
+2024-11,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3684921
+2024-11,Manhattan,metrocard,Metrocard - Unlimited 7-Day,3680417
+2024-11,Manhattan,omny,OMNY - Fair Fare,102
+2024-11,Manhattan,omny,OMNY - Full Fare,36835926
+2024-11,Manhattan,omny,OMNY - Other,266966
+2024-11,Manhattan,omny,OMNY - Seniors & Disability,320061
+2024-11,Manhattan,omny,OMNY - Students,2711071
+2024-11,Queens,metrocard,Metrocard - Fair Fare,599645
+2024-11,Queens,metrocard,Metrocard - Full Fare,1946204
+2024-11,Queens,metrocard,Metrocard - Other,539832
+2024-11,Queens,metrocard,Metrocard - Seniors & Disability,605668
+2024-11,Queens,metrocard,Metrocard - Unlimited 30-Day,1387976
+2024-11,Queens,metrocard,Metrocard - Unlimited 7-Day,1483835
+2024-11,Queens,omny,OMNY - Fair Fare,34
+2024-11,Queens,omny,OMNY - Full Fare,7252170
+2024-11,Queens,omny,OMNY - Other,120090
+2024-11,Queens,omny,OMNY - Seniors & Disability,40294
+2024-11,Queens,omny,OMNY - Students,1302172
+2024-11,Staten Island,metrocard,Metrocard - Fair Fare,8652
+2024-11,Staten Island,metrocard,Metrocard - Full Fare,45641
+2024-11,Staten Island,metrocard,Metrocard - Other,9578
+2024-11,Staten Island,metrocard,Metrocard - Seniors & Disability,11218
+2024-11,Staten Island,metrocard,Metrocard - Unlimited 30-Day,11736
+2024-11,Staten Island,metrocard,Metrocard - Unlimited 7-Day,8219
+2024-11,Staten Island,omny,OMNY - Full Fare,71657
+2024-11,Staten Island,omny,OMNY - Other,924
+2024-11,Staten Island,omny,OMNY - Seniors & Disability,951
+2024-11,Staten Island,omny,OMNY - Students,15547
+2024-12,Bronx,metrocard,Metrocard - Fair Fare,461084
+2024-12,Bronx,metrocard,Metrocard - Full Fare,980014
+2024-12,Bronx,metrocard,Metrocard - Other,351440
+2024-12,Bronx,metrocard,Metrocard - Seniors & Disability,217668
+2024-12,Bronx,metrocard,Metrocard - Students,2
+2024-12,Bronx,metrocard,Metrocard - Unlimited 30-Day,487830
+2024-12,Bronx,metrocard,Metrocard - Unlimited 7-Day,703311
+2024-12,Bronx,omny,OMNY - Fair Fare,11
+2024-12,Bronx,omny,OMNY - Full Fare,2696312
+2024-12,Bronx,omny,OMNY - Other,64247
+2024-12,Bronx,omny,OMNY - Seniors & Disability,9671
+2024-12,Bronx,omny,OMNY - Students,901089
+2024-12,Brooklyn,metrocard,Metrocard - Fair Fare,1005911
+2024-12,Brooklyn,metrocard,Metrocard - Full Fare,2385928
+2024-12,Brooklyn,metrocard,Metrocard - Other,877813
+2024-12,Brooklyn,metrocard,Metrocard - Seniors & Disability,800151
+2024-12,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1647549
+2024-12,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1459468
+2024-12,Brooklyn,omny,OMNY - Fair Fare,213
+2024-12,Brooklyn,omny,OMNY - Full Fare,12197068
+2024-12,Brooklyn,omny,OMNY - Other,118436
+2024-12,Brooklyn,omny,OMNY - Seniors & Disability,63972
+2024-12,Brooklyn,omny,OMNY - Students,2100089
+2024-12,Manhattan,metrocard,Metrocard - Fair Fare,1555511
+2024-12,Manhattan,metrocard,Metrocard - Full Fare,6082465
+2024-12,Manhattan,metrocard,Metrocard - Other,1693289
+2024-12,Manhattan,metrocard,Metrocard - Seniors & Disability,1839079
+2024-12,Manhattan,metrocard,Metrocard - Students,1
+2024-12,Manhattan,metrocard,Metrocard - Unlimited 30-Day,3356015
+2024-12,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4244918
+2024-12,Manhattan,omny,OMNY - Fair Fare,148
+2024-12,Manhattan,omny,OMNY - Full Fare,38415274
+2024-12,Manhattan,omny,OMNY - Other,311347
+2024-12,Manhattan,omny,OMNY - Seniors & Disability,330689
+2024-12,Manhattan,omny,OMNY - Students,2597078
+2024-12,Queens,metrocard,Metrocard - Fair Fare,600269
+2024-12,Queens,metrocard,Metrocard - Full Fare,1922870
+2024-12,Queens,metrocard,Metrocard - Other,528960
+2024-12,Queens,metrocard,Metrocard - Seniors & Disability,593152
+2024-12,Queens,metrocard,Metrocard - Unlimited 30-Day,1295677
+2024-12,Queens,metrocard,Metrocard - Unlimited 7-Day,1492019
+2024-12,Queens,omny,OMNY - Fair Fare,55
+2024-12,Queens,omny,OMNY - Full Fare,7417013
+2024-12,Queens,omny,OMNY - Other,93649
+2024-12,Queens,omny,OMNY - Seniors & Disability,40142
+2024-12,Queens,omny,OMNY - Students,1246210
+2024-12,Staten Island,metrocard,Metrocard - Fair Fare,8504
+2024-12,Staten Island,metrocard,Metrocard - Full Fare,42980
+2024-12,Staten Island,metrocard,Metrocard - Other,9925
+2024-12,Staten Island,metrocard,Metrocard - Seniors & Disability,10772
+2024-12,Staten Island,metrocard,Metrocard - Unlimited 30-Day,10754
+2024-12,Staten Island,metrocard,Metrocard - Unlimited 7-Day,7217
+2024-12,Staten Island,omny,OMNY - Fair Fare,2
+2024-12,Staten Island,omny,OMNY - Full Fare,74407
+2024-12,Staten Island,omny,OMNY - Other,742
+2024-12,Staten Island,omny,OMNY - Seniors & Disability,1005
+2024-12,Staten Island,omny,OMNY - Students,13537
