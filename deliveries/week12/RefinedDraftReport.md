@@ -7,26 +7,18 @@ Acervo Correa, Renzo Alfonso · Maquera Bobadilla, Diva Stewart · Condori Palom
 
 ---
 
-## 1 · Qué cambió desde la Semana 10
+## 1 · De dónde venimos y qué cambia en esta entrega
 
-La Semana 10 entregó cuatro vistas enlazadas que funcionaban. No contaban nada: eran un dashboard. Esta versión las convierte en un argumento.
+El prototipo de la Semana 10 ya es la aplicación narrativa: siete capítulos, explorador enlazado, capa de confiabilidad, hallazgos generados desde el modelo, mapa con geografía real. Esta entrega no reconstruye; integra y responde.
 
 | | Semana 10 | Semana 12 |
 |---|---|---|
-| Estructura | cuatro paneles en una pantalla | siete capítulos guiados, cada uno con una pregunta, un hallazgo y un gráfico, más un explorador libre |
-| Hallazgos | en el PDF del reporte | escritos en la interfaz, generados desde el modelo de datos, incluidos los negativos |
-| Pregunta central | ¿se aplanó el pico? (conocido) | ¿quién resistió y dónde? El Bronx perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma |
-| Tipología | ninguna | residencial / mixta / laboral, derivada de la asimetría mañana/tarde de las entradas |
-| Línea base | enero–febrero 2020 contra todo 2024 | misma ventana calendario (enero–febrero de 2024) para la recuperación; el perfil de 168 h se corrige con la pasada D del notebook **[pendiente]** |
-| Confiabilidad | nota al pie | capa visual: 37 estaciones marcadas con anillo punteado y motivo, excluidas de las medianas por grupo |
-| Cortes de servicio | no considerados | detectados en los datos, mostrados en el panel de cada estación y listados en el capítulo 7 |
-| Mapa | puntos sobre lat/lon | `d3.geoMercator`, contornos de boroughs y trazado del metro |
-| Evidencia | tooltip | panel por estación con cifras, perfil, serie mensual y la tabla de los números detrás |
-| Leyenda | valores | significado: qué codifica cada marca y qué no |
-| Vistas | A, B, C, D | A, B, C, D y E (composición tarifaria), más el perfil de 24 h por borough y por tipo |
-| Diseño | colores de D3 | sistema de tokens validado para daltonismo; modo oscuro; móvil |
-
----
+| Perfil de 168 h de 2024 | año completo | enero–febrero de 2024, la misma ventana que la línea base (pasada D del notebook) **[pendiente]** |
+| Brush temporal | cambia el tamaño de las estaciones en el mapa | reconstruye la forma del día del período elegido (pasada E) **[pendiente]** |
+| Capítulo 5, el Bronx | hipótesis del trabajo híbrido, declarada como hipótesis | contrastada con el share de trabajo desde casa del Census por área de influencia de cada estación (pasada F) **[pendiente]** |
+| Feedback del design review | seis preguntas abiertas | cada sugerencia respondida en `PeerCritiqueResponse.md` **[pendiente]** |
+| Paper | — | borrador completo en dos columnas, `paper/` |
+| Página del proyecto | — | la propia aplicación, con enlaces al paper, al repositorio y a los videos cuando existan |
 
 ## 2 · El problema y la audiencia
 

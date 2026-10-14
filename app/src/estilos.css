@@ -162,7 +162,7 @@ svg text { font-family: var(--sans); }
 .rejilla-expl {
   display: grid; gap: 14px;
   grid-template-columns: minmax(380px, 11fr) minmax(400px, 13fr);
-  grid-template-rows: 500px 330px auto;
+  grid-template-rows: 560px 340px auto;
 }
 #tarjeta-mapa { grid-column: 1; grid-row: 1; display: flex; flex-direction: column; }
 #tarjeta-dispersion { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; }

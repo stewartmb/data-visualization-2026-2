@@ -89,7 +89,7 @@ function construirNarrativa(M, G) {
 // ============================================================ explorador
 function montarExplorador(M, G) {
   const vistas = [];
-  const vMapa = mapa('#mapa-expl', { modelo: M, geo: G });
+  const vMapa = mapa('#mapa-expl', { modelo: M, geo: G, radioMax: 14 });
   const vDisp = dispersion('#dispersion-expl', { modelo: M, brush: true });
   const vMult = multiples('#multiples-expl', { modelo: M, contador: '#contador-multiples', selOrden: '#orden-multiples' });
   const vSerie = serieMensual('#serie-expl', { serie: M.sistema.serie, base: M.meta.base, alto: 210, brush: true, onRango: r => estado.fijarRango(r) });

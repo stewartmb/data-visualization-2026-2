@@ -63,7 +63,7 @@ export function capitulos(M, G) {
         grandes.forEach(b => {
           const v = M.boroughs[b];
           const t = fila.append('div').attr('class', 'tarjeta');
-          t.append('div').attr('class', 'titulo').text(b);
+          t.append('div').attr('class', 'titulo').text(b === 'Bronx' ? 'Bronx: la excepción' : b);
           t.append('div').attr('class', 'subtitulo').text(`${v.n} estaciones · pico/valle ${fmt.razon(v.pvPre)} → ${fmt.razon(v.pvCur)} · 7–9 h: ${fmt.pct(v.share79Pre, 1)} → ${fmt.pct(v.share79Cur, 1)} del día`);
           perfil24(t.append('div').node(), { pre: v.perfilPre, cur: v.perfilCur, alto: 190, compacto: true, maxY, margen: { t: 12, r: 10, b: 26, l: 36 } });
         });

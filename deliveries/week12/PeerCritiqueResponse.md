@@ -11,18 +11,14 @@ Feedback recibido en el design review del 14 de octubre de 2026 y la respuesta d
 
 ## 1 · Las seis preguntas que llevamos al review
 
-Estas eran las decisiones en las que estábamos divididos. Lo que se decidió, y por qué:
-
 | # | Pregunta | Feedback recibido | Decisión | Justificación |
 |---|---|---|---|---|
-| 1 | ¿El mapa necesita contexto geográfico? | **[pendiente]** | **implementada** | Contornos de boroughs y trazado del metro con `d3.geoMercator`, en gris recesivo. Las preguntas 5 y 6 son geográficas; el fondo no compite con el color porque solo el dato tiene color. |
-| 2 | ¿Se entiende "pico/valle"? | **[pendiente]** | **implementada** | Se mantiene el índice, pero ya no se pide que el lector lo compre a ciegas: el capítulo 2 lo muestra sobre el perfil (pico 10.4 % → 9.1 %, valle 3.6 % → 3.9 %, razón 2.90 → 2.35) y cada capítulo dice *cómo se mide*. |
-| 3 | ¿El orden por defecto de los perfiles? | **[pendiente]** | **implementada** | Por defecto, "más se aplanó": es la pregunta del proyecto. Las estaciones poco confiables llevan ⚠ en la tarjeta para que el primer puesto no engañe. |
-| 4 | ¿Vale la pena el brush temporal como está? | **[pendiente]** | **aplazada** al 24 oct | Se mantiene porque la barra dice exactamente qué hace ("el tamaño pasa a ser el promedio del período"). Con los perfiles por mes del notebook, pasará a reconstruir la forma del día del período. |
-| 5 | ¿Qué hacemos con Mets-Willets Point? | **[pendiente]** | **implementada** | Ni excluirla ni anotarla: convertir el problema en una capa. 37 estaciones con comparación poco confiable llevan anillo punteado y motivo, no entran en las medianas por grupo, y el capítulo 7 las lista. |
-| 6 | ¿El recorte de color en p10/p90 esconde algo? | **[pendiente]** | **implementada** | Se mantiene el recorte y se declara en la leyenda ("fuera de ese rango el color no distingue"). Los extremos se leen en el panel de la estación y en la dispersión, que no recorta. |
-
----
+| 1 | ¿La tipología residencial / mixta / laboral convence, o "promete más de lo que mide"? | **[pendiente]** | | |
+| 2 | ¿El capítulo del Bronx está bien contado, o parece que forzamos la lectura del teletrabajo? ¿Qué evidencia pedirían? | **[pendiente]** | | |
+| 3 | ¿Narrativa más explorador es la estructura correcta, o estorba a quien ya sabe qué busca? | **[pendiente]** | | |
+| 4 | ¿Los hallazgos negativos ("lo que no se sostiene") aportan o confunden? | **[pendiente]** | | |
+| 5 | ¿La capa de confiabilidad (anillo punteado, 37 estaciones) se lee, o es ruido? ¿Excluirlas por defecto? | **[pendiente]** | | |
+| 6 | ¿Qué le falta para que lo use un periodista o un investigador? | **[pendiente]** | | |
 
 ## 2 · Sugerencias recibidas
 
@@ -37,7 +33,7 @@ Estas eran las decisiones en las que estábamos divididos. Lo que se decidió, y
 
 ## 3 · Cambios que no vinieron del review
 
-Decisiones tomadas por el equipo entre la Semana 10 y la 12, por revisión propia. Se documentan porque cambian lo que el revisor vio.
+Decisiones tomadas por el equipo entre la Semana 7 y la 10, por revisión propia, antes del design review. Se documentan porque explican por qué el prototipo cambió tanto respecto del Delivery 1.
 
 | # | Cambio | Por qué |
 |---|---|---|
