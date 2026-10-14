@@ -3,7 +3,7 @@
 **Cómo cambió el ritmo horario de las entradas al metro de Nueva York**
 DS5343 Data Visualization · UTEC · 2026-2
 
-Renzo Alfonso Acervo Correa · Diva Stewart Maquera Bobadilla · José Eduardo Condori Palomino
+Renzo Alfonso Acervo Correa · Diva Stewart Maquera Bobadilla
 
 > Esta rama propone un rediseño del proyecto: `codex/atlas-ritmos-urbanos`. La aplicación nueva está en `atlas/`. El prototipo y entregas anteriores se conservan como historia del desarrollo.
 
