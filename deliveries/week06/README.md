@@ -40,7 +40,6 @@ deliveries/week06/
 │
 ├── DataAnalysis.md
 ├── PresentationWeek06.pptx
-├── especificacion-vistas.md
 ├── referencias.md
 ├── README.md
 │
@@ -250,7 +249,6 @@ Los dos valores más bajos son 0 y 6 → domingo y sábado. Asumirlo al revés h
 | Documento | Contiene |
 |---|---|
 | [`DataAnalysis.md`](DataAnalysis.md) | Informe completo: datos, transformaciones, hallazgos, limitaciones, diseño |
-| [`especificacion-vistas.md`](especificacion-vistas.md) | Las cinco vistas: encodings, interacciones, justificación |
 | [`referencias.md`](referencias.md) | Los cuatro papers y qué decisión sostiene cada uno |
 
 [↑](#indice)

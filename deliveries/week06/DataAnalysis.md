@@ -191,6 +191,6 @@ La aplicación es una página con cinco vistas enlazadas por brushing: una selec
 
 **Interacciones.** Brushing temporal en C que define el rango de todas las vistas; selección por clic o lazo en A y D que filtra el resto; filtro por tipo de perfil en B; conmutador prepandemia / 2024 / diferencia en B; detalles bajo demanda en hover en todas.
 
-Los bocetos están en [`sketches/`](sketches/) y la especificación completa de cada vista, con títulos, ejes, leyendas y anotaciones, en [`especificacion-vistas.md`](especificacion-vistas.md).
+Los bocetos de cada vista, con títulos, ejes, leyendas, anotaciones e interacciones, están en [`sketches/`](sketches/).
 
 La revisión de las cuatro referencias que sustentan estas decisiones está en [`referencias.md`](referencias.md).
