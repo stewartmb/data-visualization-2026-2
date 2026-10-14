@@ -1,6 +1,6 @@
 # La forma del día — la aplicación
 
-Visualización interactiva en D3.js de cómo cambió el ritmo horario del metro de Nueva York entre 2020 y 2024, estación por estación. Una aplicación de tres vistas — Perfiles, Recorrido y Explorador — con una sola selección compartida.
+Visualización interactiva en D3.js de cómo cambió el ritmo horario del metro de Nueva York entre 2020 y 2024, estación por estación. Una aplicación de tres vistas — Matriz, Recorrido y Explorador — con una sola selección compartida.
 
 **En línea:** <https://stewartmb.github.io/data-visualization-2026-2/app/> *(requiere GitHub Pages activado en el repositorio: Settings → Pages → `main` → `/ (root)`)*
 
@@ -28,15 +28,16 @@ Pensada para 1 200 px o más de ancho. Funciona en móvil (las vistas se apilan)
 | | Inicio | La forma del día | el perfil del sistema, 2020 frente a 2024 |
 | 1 | Volumen | ¿Cuánta gente volvió? | la recuperación se estancó cerca del 70 % |
 | 2 | Forma | ¿Sigue existiendo el doble pico? | el pico de la mañana se aplanó en 80 % de las estaciones |
-| 3 | Tipos | ¿Para qué se usa cada estación? | el cambio fue en una sola dirección: la mañana perdió peso |
-| 4 | Ejes | ¿Qué cambió más: cuánto o cómo? | dentro de un borough, recuperación y aplanamiento son casi independientes |
-| 5 | Bronx | ¿Por qué el Bronx? | perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma |
-| 6 | Abono | ¿Quién dejó de comprar el abono? | el pase de 30 días se desplomó: la evidencia del uso intermitente |
-| 7 | Límites | ¿Qué no podemos afirmar? | 37 estaciones tienen una comparación poco confiable, y están marcadas |
+| 3 | Semana | ¿Qué días de la semana cambiaron? | la semana se inclinó: el viernes perdió 2.4 puntos del total semanal y el fin de semana ganó 3.1 |
+| 4 | Tipos | ¿Para qué se usa cada estación? | el cambio fue en una sola dirección: la mañana perdió peso |
+| 5 | Ejes | ¿Qué cambió más: cuánto o cómo? | dentro de un borough, recuperación y aplanamiento son casi independientes |
+| 6 | Bronx | ¿Por qué el Bronx? | perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma |
+| 7 | Abono | ¿Quién dejó de comprar el abono? | el pase de 30 días se desplomó: la evidencia del uso intermitente |
+| 8 | Límites | ¿Qué no podemos afirmar? | 37 estaciones tienen una comparación poco confiable, y están marcadas |
 
-**Perfiles** es la vista base: los siete hallazgos como tarjetas, el perfil de 24 h con selector (sistema · borough · tipo) y la rejilla de las 428 estaciones a 168 h. **Recorrido** lleva los capítulos como botones, con Play; cada uno termina con *cómo se mide* y *qué no demuestra* plegados, y un botón que abre el explorador ya configurado en lo que se acaba de leer. Los hallazgos no se escriben a mano: los genera `code/build_model.py` desde los datos, incluidos los negativos.
+**Matriz** es la vista base: las 428 estaciones como filas, agrupadas por borough, contra las 168 horas de la semana o los 60 meses, con tres lentes (forma del día 2024 · qué cambió 2020 → 2024 · mes a mes), dos tiras sincronizadas debajo y los ocho hallazgos como chips. Un submodo muestra la rejilla de perfiles de 168 h. **Recorrido** lleva los capítulos como botones, con Play; cada uno termina con *cómo se mide* y *qué no demuestra* plegados, y un botón que abre el explorador ya configurado en lo que se acaba de leer. Los hallazgos no se escriben a mano: los genera `code/build_model.py` desde los datos, incluidos los negativos.
 
-**Explorador.** Mapa (cuatro lentes: tipo · recuperación · cambio del pico · confiabilidad), dispersión recuperación × cambio del pico, serie mensual. Un clic en una estación abre su panel de evidencia: cifras, perfil antes/después, serie mensual y la tabla con los números detrás de cada afirmación. Un rectángulo en la dispersión o un período en la serie filtran todo lo demás. `←` `→` mueven entre capítulos dentro de Recorrido; `Esc` cierra paneles. La selección sobrevive al cambio de vista.
+**Explorador.** Mapa (cinco lentes: tipo · forma del día, con cada estación como un reloj de 24 h · recuperación · cambio del pico · confiabilidad), dispersión recuperación × cambio del pico, serie mensual. Un clic en una estación abre su panel de evidencia: cifras, perfil antes/después, serie mensual y la tabla con los números detrás de cada afirmación. Un rectángulo en la dispersión o un período en la serie filtran todo lo demás. `←` `→` mueven entre capítulos dentro de Recorrido; `Esc` cierra paneles. La selección sobrevive al cambio de vista.
 
 **Qué significa cada marca.** El botón de la barra abre la clave visual: qué codifica cada color y cada forma, y qué *no* significa.
 
@@ -51,14 +52,19 @@ app/
 │   ├── tokens.css             el sistema de diseño: colores por rol, tipografía, ritmo; modo oscuro
 │   ├── estilos.css            estilos
 │   ├── main.js                carga datos, monta las tres vistas y el panel
-│   ├── capitulos.js           los siete capítulos: pregunta, hallazgo, gráfico, notas, preset
+│   ├── capitulos.js           los ocho capítulos: pregunta, hallazgo, gráfico, notas, preset
 │   ├── estado.js              estado compartido del explorador (selección, filtros, lente, período)
 │   ├── panel-estacion.js      el panel de evidencia de una estación
 │   ├── util.js                formato, colores por rol, tooltip
 │   └── graficos/
+│       ├── matriz.js          estaciones × horas de la semana o meses, tres lentes, canvas + SVG
+│       ├── reloj.js           perfil de 24 h en coordenadas polares (gráfico y glifo)
+│       ├── semana.js          barras divergentes de las 168 horas, por grupo
+│       ├── tiras.js           tiras de puntos (beeswarm) por grupo
+│       ├── pendiente.js       gráfico de pendientes de la asimetría 2020 → 2024
 │       ├── perfil.js          perfil de 24 h (hero, boroughs, tipos, panel) y de 168 h (rejilla)
 │       ├── serie.js           serie mensual con brush
-│       ├── mapa.js            mapa con d3.geoMercator, lentes y leyenda de significado
+│       ├── mapa.js            mapa con d3.geoMercator, cinco lentes (una de glifos) y leyenda de significado
 │       ├── dispersion.js      recuperación × cambio del pico, con brush
 │       ├── multiples.js       rejilla de perfiles semanales
 │       └── tarifas.js         composición tarifaria apilada al 100 %
@@ -95,7 +101,7 @@ Las tablas agregadas de entrada se producen con los notebooks de la Semana 6 a p
 | clave | qué es |
 |---|---|
 | `meta` | ventanas de comparación, umbrales, percentiles, meses |
-| `hallazgos` | los siete hallazgos como afirmaciones, con su tipo: positivo · negativo · límite |
+| `hallazgos` | los ocho hallazgos como afirmaciones, con su tipo: positivo · negativo · límite |
 | `stats` | conteos, medianas, correlaciones de Spearman (global y por borough) |
 | `sistema` | serie mensual y perfil de 24 h del sistema, antes y ahora |
 | `boroughs`, `tipos` | resúmenes por grupo: medianas sobre estaciones con comparación sólida, perfiles agregados |

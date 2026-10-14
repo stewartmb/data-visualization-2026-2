@@ -18,7 +18,7 @@
 <header class="barra">
   <a class="marca" href="#perfiles">La forma del día <small>metro de Nueva York, 2020–2024</small></a>
   <nav class="pestanas" id="pestanas" role="tablist" aria-label="Vistas">
-    <button role="tab" data-vista="perfiles" class="activa">Perfiles</button>
+    <button role="tab" data-vista="perfiles" class="activa">Matriz</button>
     <button role="tab" data-vista="recorrido">Recorrido</button>
     <button role="tab" data-vista="explorador">Explorador</button>
   </nav>
@@ -32,30 +32,35 @@
 
 <main id="app">
 
-<!-- ================================================= vista 1 · perfiles -->
+<!-- ================================================= vista 1 · matriz -->
 <section class="vista" id="perfiles" data-vista="perfiles">
-  <div class="hallazgos" id="hallazgos"></div>
-  <div class="perfiles-rejilla">
-    <div class="tarjeta" id="tarjeta-perfil-grande">
-      <div class="cabecera-tarjeta">
-        <div><div class="titulo">La forma del día laborable</div><div class="subtitulo">gris: enero–febrero 2020 · línea: 2024 · share de cada hora en el día</div></div>
-        <div class="controles"><label>Ver <select id="perfil-sel"></select></label></div>
-      </div>
-      <div class="cuerpo-grafico" id="perfil-grande"></div>
-      <div class="leyenda" id="perfil-leyenda"></div>
+  <div class="matriz-barra">
+    <div class="lentes-matriz" id="lentes-matriz" role="tablist">
+      <button data-lente="forma" class="activo">Forma del día 2024</button>
+      <button data-lente="cambio">Qué cambió 2020 → 2024</button>
+      <button data-lente="meses">Mes a mes</button>
     </div>
-    <div class="tarjeta" id="tarjeta-multiples-p">
+    <div class="matriz-leyenda" id="matriz-leyenda"></div>
+    <div class="controles">
+      <label>Orden <select id="orden-matriz"><option value="asym">asimetría mañana/tarde</option><option value="aplan">más se aplanó</option><option value="rec">más recuperó</option><option value="vol">más volumen</option><option value="nom">nombre</option></select></label>
+      <label>Borough <select id="filtro-borough-p"><option value="">todos</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option></select></label>
+      <label>Tipo <select id="filtro-tipo-p"><option value="">todos</option><option value="residencial">residencial</option><option value="mixta">mixta</option><option value="laboral">laboral</option></select></label>
+      <div class="submodo" id="submodo"><button data-modo="matriz" class="activo">Matriz</button><button data-modo="rejilla">Rejilla</button></div>
+    </div>
+  </div>
+  <div class="matriz-cuerpo">
+    <div class="tarjeta" id="tarjeta-matriz"><div id="matriz-expl" class="matriz-lienzo"></div></div>
+    <div class="tarjeta oculta" id="tarjeta-multiples-p">
       <div class="cabecera-tarjeta">
-        <div><div class="titulo">Cada estación, 168 horas</div><div class="subtitulo">de domingo a sábado · color = tipo · escala común</div></div>
+        <div><div class="titulo">Cada estación, 168 horas</div><div class="subtitulo">de domingo a sábado · color = tipo · escala común · gris: 2020</div></div>
         <div class="controles"><span id="contador-multiples" class="contador"></span>
           <label>Orden <select id="orden-multiples"><option value="aplan">más se aplanó</option><option value="rec">menos recuperó</option><option value="chg">más cambió de forma</option><option value="vol">más volumen</option><option value="nom">nombre</option></select></label>
-          <label>Borough <select id="filtro-borough-p"><option value="">todos</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option></select></label>
-          <label>Tipo <select id="filtro-tipo-p"><option value="">todos</option><option value="residencial">residencial</option><option value="mixta">mixta</option><option value="laboral">laboral</option></select></label>
         </div>
       </div>
       <div class="sm-cuerpo" id="multiples-expl"></div>
     </div>
   </div>
+  <div class="hallazgos-tira" id="hallazgos"></div>
 </section>
 
 <!-- ================================================= vista 2 · recorrido -->
@@ -97,7 +102,7 @@
         <div class="cabecera-tarjeta">
           <div><div class="titulo">Dónde</div><div class="subtitulo">el tamaño es entradas por día; la lente elige el color</div></div>
           <div class="segmentos" id="lentes" role="tablist">
-            <button data-lente="tipo">tipo</button><button data-lente="rec">recuperación</button><button data-lente="aplan">pico</button><button data-lente="conf">confiabilidad</button>
+            <button data-lente="tipo">tipo</button><button data-lente="forma">forma del día</button><button data-lente="rec">recuperación</button><button data-lente="aplan">pico</button><button data-lente="conf">confiabilidad</button>
           </div>
         </div>
         <div class="cuerpo-grafico" id="mapa-expl"></div>
@@ -129,6 +134,16 @@
 <aside class="clave-visual" id="clave-visual" aria-label="Qué significa cada marca">
   <button class="cerrar" aria-label="Cerrar">×</button>
   <h3>Qué significa cada marca</h3>
+  <section>
+    <h4>La matriz</h4>
+    <div class="fila"><i class="muestra degradado"></i><div><b>Cada fila es una estación</b>, agrupadas por borough; cada columna, una hora de la semana o un mes. En "Forma del día" el azul es el share de esa hora en 2024; en "Qué cambió", azul perdió share y rojo lo ganó; en "Mes a mes", el azul es cuánto de enero–febrero de 2020 volvió ese mes. <span class="no">La franja de color a la izquierda de cada fila es el tipo; la ámbar o naranja, una comparación poco confiable.</span></div></div>
+    <div class="fila"><i class="muestra" style="background:var(--tinta);opacity:.08"></i><div><b>Franjas grises</b> sobre los días laborables: las ventanas 6–10 y 16–20 h con las que se mide el pico y la asimetría. <span class="no">Lo que pasa fuera de ellas también cuenta, pero no entra en los índices.</span></div></div>
+    <div class="fila"><i class="muestra polar"></i><div><b>Barras bajo la matriz</b>: el share de cada hora en 2024 menos el de 2020, para todo el sistema. Azul: la hora perdió peso; rojo: lo ganó.</div></div>
+  </section>
+  <section>
+    <h4>Relojes</h4>
+    <div class="fila"><i class="muestra punto" style="background:var(--antes);border:1px solid var(--antes-borde)"></i><div><b>Reloj de 24 h</b>: medianoche arriba, las horas en el sentido del reloj, el radio es el share de la hora. Gris: 2020; color: 2024. Una punta hacia las 8 es el pico de la mañana; hacia las 17, el de la tarde. <span class="no">En el mapa, el tamaño del reloj sigue siendo el volumen: la forma es lo que cambia.</span></div></div>
+  </section>
   <section>
     <h4>El antes y el ahora</h4>
     <div class="fila"><i class="muestra" style="background:var(--antes);border:1px solid var(--antes-borde)"></i><div><b>Área gris</b>: el perfil de enero–febrero de 2020, la línea base. <span class="no">No es "un año normal": son dos meses de invierno, los únicos previos a la pandemia que tiene este dataset.</span></div></div>

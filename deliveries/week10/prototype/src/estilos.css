@@ -247,7 +247,7 @@ svg text { font-family: var(--sans); }
 
 /* con el panel abierto, el explorador se corre para no quedar tapado */
 @media (min-width: 1100px) {
-  body.con-panel .explorador { padding-right: calc(var(--margen) + min(440px, 100vw)); }
+  body.con-panel .vista { padding-right: calc(var(--margen) + min(440px, 100vw)); }
   body.con-panel .barra { padding-right: calc(var(--margen) + min(440px, 100vw)); }
 }
 
@@ -344,10 +344,13 @@ body.app { overflow: hidden; }
 /* explorador como vista */
 .vista.explorador { padding-top: 10px; }
 .vista.explorador .cabecera { margin-bottom: 10px; }
-.vista.explorador .rejilla-expl { grid-template-columns: minmax(380px, 1fr) minmax(380px, 1fr); grid-template-rows: minmax(360px, 1fr) 290px; height: calc(100% - 100px); min-height: 620px; }
-.vista.explorador #tarjeta-mapa { grid-column: 1; grid-row: 1; }
+.vista.explorador > .interior { max-width: none; height: 100%; display: flex; flex-direction: column; }
+.vista.explorador .rejilla-expl { flex: 1; min-height: 0; height: auto; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) 270px; }
+.vista.explorador #tarjeta-mapa { grid-column: 1; grid-row: 1 / 3; }
 .vista.explorador #tarjeta-dispersion { grid-column: 2; grid-row: 1; }
-.vista.explorador #tarjeta-serie { grid-column: 1 / -1; grid-row: 2; }
+.vista.explorador #tarjeta-serie { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; }
+.vista.explorador #tarjeta-serie #serie-expl { flex: 1; min-height: 0; }
+.vista.explorador .estado-bar { margin-bottom: 10px; }
 @media (max-width: 980px) {
   body.app { overflow: auto; } #app { height: auto; overflow: visible; } .vista { height: auto; }
   .perfiles-rejilla, .recorrido-cuerpo { grid-template-columns: 1fr; height: auto; }
@@ -358,3 +361,129 @@ body.app { overflow: hidden; }
 }
 @media (max-width: 980px) { .vista.oculta { display: block; } }
 .recorrido-lienzo .fila-paneles { grid-template-columns: 1fr 1fr; }
+.recorrido-lienzo .fila-paneles.cuatro { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1300px) { .recorrido-lienzo .fila-paneles.cuatro { grid-template-columns: 1fr 1fr; } }
+
+/* =========================================================================
+   MATRIZ — vista principal: estaciones × tiempo
+   ========================================================================= */
+.matriz-barra { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; flex-wrap: nowrap; white-space: nowrap; }
+.lentes-matriz { display: inline-flex; border: 1px solid var(--borde-2); border-radius: 999px; padding: 3px; gap: 2px; background: var(--superficie); }
+.lentes-matriz button { border: 0; background: transparent; padding: 5px 13px; border-radius: 999px; font-size: var(--t-xs); font-weight: 600; color: var(--tinta-2); cursor: pointer; }
+.lentes-matriz button.activo { background: var(--tinta); color: var(--pagina); }
+.matriz-leyenda { display: flex; align-items: center; gap: 8px; font-size: var(--t-xs); color: var(--tinta-3); }
+.matriz-leyenda .barra-color { width: 110px; height: 9px; border-radius: 2px; border: 1px solid var(--borde); }
+.matriz-leyenda b { color: var(--tinta); font-weight: 600; }
+.matriz-barra .controles { margin-left: auto; display: flex; align-items: center; gap: 12px; flex: none; }
+.matriz-barra .controles select { max-width: 150px; }
+.submodo { display: inline-flex; border: 1px solid var(--borde); border-radius: 6px; overflow: hidden; }
+.submodo button { border: 0; background: var(--superficie); padding: 4px 10px; font-size: var(--t-xs); color: var(--tinta-2); cursor: pointer; }
+.submodo button.activo { background: var(--superficie-2); color: var(--tinta); font-weight: 600; }
+.matriz-cuerpo { height: calc(100% - 108px); min-height: 480px; }
+#tarjeta-matriz { height: 100%; padding: 8px 8px 6px 8px; }
+#tarjeta-matriz.oculta, #tarjeta-multiples-p.oculta { display: none; }
+#tarjeta-multiples-p { height: 100%; display: flex; flex-direction: column; min-height: 0; }
+.matriz-lienzo { position: relative; width: 100%; height: 100%; }
+.matriz-capa { position: absolute; inset: 0; cursor: crosshair; }
+.matriz-capa canvas, .matriz-svg { position: absolute; left: 0; top: 0; }
+.matriz-svg { pointer-events: none; overflow: visible; }
+.matriz-svg text { font-family: var(--sans); }
+.matriz-svg .banda-lab { fill: var(--superficie-2); stroke: var(--borde); }
+.matriz-svg .banda-fin { fill: transparent; stroke: var(--borde); }
+.matriz-svg .banda-fase { fill: var(--superficie-2); stroke: var(--borde); }
+.matriz-svg .fase-antes { fill: var(--antes); }
+.matriz-svg .fase-cierre { fill: rgba(227, 73, 72, 0.12); }
+.matriz-svg .fase-meseta { fill: rgba(42, 120, 214, 0.10); }
+.matriz-svg .cab-dia { font-size: 10.5px; font-weight: 600; fill: var(--tinta-2); }
+.matriz-svg .cab-hora { font-size: 9px; fill: var(--tinta-3); }
+.matriz-svg .cab-nota { font-size: 9px; fill: var(--tinta-3); font-style: italic; }
+.matriz-svg .ventana { fill: var(--tinta); fill-opacity: 0.045; }
+.matriz-svg .ventana-cmp { fill: none; stroke: var(--tinta); stroke-width: 1.2; stroke-dasharray: 3 2; }
+.matriz-svg .sep-dia { stroke: var(--borde-2); stroke-width: 1; }
+.matriz-svg .marca-evento { stroke: var(--residencial); stroke-width: 1.2; stroke-dasharray: 2 3; }
+.matriz-svg .grupo-nombre { font-size: 12px; font-weight: 600; fill: var(--tinta); }
+.matriz-svg .grupo-n { font-size: 10px; fill: var(--tinta-3); }
+.matriz-svg .grupo { pointer-events: all; }
+.matriz-svg .grupo:hover .grupo-nombre { text-decoration: underline; }
+.matriz-svg .tira-titulo { font-size: 10px; font-weight: 600; fill: var(--tinta-2); letter-spacing: 0.04em; text-transform: uppercase; }
+.matriz-svg .tira-sub { font-size: 9.5px; fill: var(--tinta-3); }
+.matriz-svg .area-antes { fill: var(--antes); stroke: var(--antes-borde); stroke-width: 0.8; }
+.matriz-svg .area-indice { fill: var(--azul-100); }
+.matriz-svg .linea-ahora { fill: none; stroke: var(--tinta); stroke-width: 1.4; }
+.matriz-svg .linea-serie { fill: none; stroke-width: 1.6; }
+.matriz-svg .eje-cero { stroke: var(--borde-2); stroke-width: 0.8; }
+.matriz-svg .fila-hover { fill: none; stroke: var(--tinta); stroke-width: 1; }
+.matriz-svg .fila-sel { fill: none; stroke: var(--tinta); stroke-width: 1.6; }
+.matriz-svg .fila-sel-etq { font-size: 10.5px; font-weight: 600; fill: var(--tinta); }
+.matriz-svg .col-hover { fill: var(--tinta); fill-opacity: 0.06; }
+.matriz-etq { position: absolute; left: 0; width: 140px; background: var(--superficie); border: 1px solid var(--borde-2); border-radius: 4px; padding: 3px 6px; font-size: 10.5px; line-height: 1.2; pointer-events: none; z-index: 2; }
+.matriz-etq b { display: block; font-weight: 600; color: var(--tinta); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.matriz-etq span { color: var(--tinta-3); font-size: 9.5px; }
+/* hallazgos como una tira de chips debajo de la matriz */
+.hallazgos-tira { display: flex; gap: 6px; margin-top: 8px; overflow-x: auto; }
+.hallazgos-tira .hallazgo-card { min-height: 0; min-width: 0; flex: 1 1 0; padding: 5px 9px; flex-direction: row; align-items: center; gap: 7px; }
+.hallazgos-tira .hallazgo-card .n { flex: none; }
+.hallazgos-tira .hallazgo-card .n .tipo { display: none; }
+.hallazgos-tira .hallazgo-card.negativo .n { border: 1px solid var(--tinta); border-radius: 3px; padding: 0 4px; }
+.hallazgos-tira .hallazgo-card .t { font-size: 11.5px; font-weight: 500; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* relojes y pendientes */
+.tarjeta-reloj { display: flex; flex-direction: column; align-items: stretch; }
+.reloj-cont { display: flex; justify-content: center; padding: 6px 0 2px; }
+.reloj-perfil { width: 100%; }
+svg.reloj { overflow: visible; }
+.reloj-titulo { font-size: 12px; font-weight: 600; fill: var(--tinta); }
+.reloj-ventana { fill: var(--tinta); fill-opacity: 0.05; }
+.reloj-centro { fill: none; stroke: var(--regla); }
+.reloj-antes { fill: var(--antes); stroke: var(--antes-borde); stroke-width: 0.8; }
+.reloj-tick { stroke: var(--borde-2); stroke-width: 1; }
+.reloj-hora { font-size: 10px; fill: var(--tinta-3); }
+.reloj-nota { font-size: 10.5px; fill: var(--tinta-2); font-weight: 500; }
+svg.pendiente { width: 100%; height: 100%; overflow: visible; }
+svg.pendiente line:not(.cero):not(.umbral):not(.mediana) { stroke-width: 0.9; stroke-opacity: 0.22; cursor: pointer; }
+svg.pendiente line.cruza { stroke-opacity: 0.85; stroke-width: 1.1; }
+svg.pendiente line.apagada, svg.pendiente circle.apagada { stroke-opacity: 0.05; fill-opacity: 0.1; }
+svg.pendiente line.sel { stroke: var(--tinta) !important; stroke-opacity: 1; stroke-width: 2.4; }
+svg.pendiente circle.sel { stroke: var(--tinta); stroke-width: 2; }
+svg.pendiente line.mediana { stroke-width: 3.5; stroke-opacity: 1; }
+svg.pendiente line.cero { stroke: var(--borde-2); }
+svg.pendiente line.umbral { stroke: var(--borde-2); stroke-dasharray: 3 3; }
+svg.pendiente .banda-etq { font-size: 12px; font-weight: 600; }
+svg.pendiente .eje-etq, svg.pendiente .nota { font-size: 10.5px; fill: var(--tinta-3); }
+svg.pendiente .anio { font-size: 12px; font-weight: 600; fill: var(--tinta); }
+svg.pendiente .mediana-etq { font-size: 10.5px; font-weight: 600; }
+svg.pendiente circle { fill-opacity: 0.6; }
+svg.semana { width: 100%; overflow: visible; }
+svg.semana text { font-family: var(--sans); }
+svg.semana .banda-lab { fill: var(--superficie-2); stroke: var(--borde); }
+svg.semana .banda-fin { fill: transparent; stroke: var(--borde); }
+svg.semana .dia { font-size: 10.5px; font-weight: 600; fill: var(--tinta-2); }
+svg.semana .sep { stroke: var(--borde-2); }
+svg.semana .ventana { fill: var(--tinta); fill-opacity: 0.045; }
+svg.semana .cero { stroke: var(--borde-2); stroke-width: 0.8; }
+svg.semana .grupo { font-size: 12px; font-weight: 500; fill: var(--tinta); }
+svg.semana .grupo.fuerte { font-weight: 700; }
+svg.semana .grupo-sub { font-size: 10px; fill: var(--tinta-3); }
+svg.semana .nota { font-size: 10px; fill: var(--tinta-3); }
+/* glifos de forma del día en el mapa */
+.glifo { cursor: pointer; }
+.glifo .glifo-antes { fill: var(--antes); stroke: var(--antes-borde); stroke-width: 0.5; }
+.glifo .glifo-ahora { fill-opacity: 0.22; }
+.glifo.apagada { opacity: 0.12; }
+.glifo.sel .glifo-ahora { stroke: var(--tinta); stroke-width: 2; fill-opacity: 0.35; }
+.glifo.dudosa .glifo-ahora { stroke-dasharray: 2 1.5; }
+svg.tiras { width: 100%; overflow: visible; }
+svg.tiras text { font-family: var(--sans); }
+svg.tiras .eje text { font-size: 10px; fill: var(--tinta-3); }
+svg.tiras .eje line { stroke: var(--regla); }
+svg.tiras .eje-titulo { font-size: 10px; fill: var(--tinta-3); }
+svg.tiras .umbral { stroke: var(--tinta); stroke-dasharray: 3 3; }
+svg.tiras .umbral-etq { font-size: 10px; fill: var(--tinta-2); }
+svg.tiras .mediana { stroke: var(--tinta); stroke-width: 2; }
+svg.tiras .grupo { font-size: 12px; font-weight: 500; fill: var(--tinta); }
+svg.tiras .grupo.fuerte { font-weight: 700; }
+svg.tiras .grupo-sub { font-size: 10px; fill: var(--tinta-3); }
+svg.tiras .punto { fill-opacity: 0.8; cursor: pointer; }
+svg.tiras .punto.dudosa { stroke: var(--tinta); stroke-width: 0.8; stroke-dasharray: 1.5 1; fill-opacity: 0.5; }
+svg.tiras .punto.apagada { fill-opacity: 0.08; }
+svg.tiras .punto.sel { stroke: var(--tinta); stroke-width: 2.5; fill-opacity: 1; }

@@ -285,6 +285,24 @@ def spearman(x, y):
     return round(1 - 6 * d2 / (n * (n * n - 1)), 3)
 
 validas = [e for e in estaciones if e["rec"] is not None and e["aplan"] is not None]
+
+def perfil168_ponderado(es):
+    pre = [0.0] * 168; cur = [0.0] * 168; wp = wc = 0.0
+    for e in es:
+        for i in range(168):
+            pre[i] += e["pre"][i] * e["dPre"]; cur[i] += e["cur"][i] * e["d24"]
+        wp += e["dPre"]; wc += e["d24"]
+    return [v / wp for v in pre], [v / wc for v in cur]
+
+def semana_de(es):
+    """Cambio del share semanal de cada día y de su ventana 6–10 h, 2024 − 2020, en fracción."""
+    pre, cur = perfil168_ponderado(es)
+    dia = [round(sum(cur[d*24:(d+1)*24]) - sum(pre[d*24:(d+1)*24]), 4) for d in range(7)]
+    am = [round(sum(cur[d*24+6:d*24+10]) - sum(pre[d*24+6:d*24+10]), 4) for d in range(7)]
+    return dict(dia=dia, am=am)
+
+semana_sis = semana_de(estaciones)
+semana_boro = {b: semana_de([e for e in estaciones if e["b"] == b]) for b in ("Manhattan", "Brooklyn", "Queens", "Bronx")}
 stats = dict(
     n=len(estaciones), nValidas=len(validas),
     nAplanaron=sum(1 for e in validas if e["aplan"] < -UMBRAL_APLANA),
@@ -298,6 +316,7 @@ stats = dict(
     cambioTipo=sum(1 for e in validas if tipo_de(e["asymPre"]) != tipo_de(e["asymCur"])),
     cambioTipoHaciaTarde=sum(1 for e in validas if tipo_de(e["asymPre"]) != tipo_de(e["asymCur"]) and e["asymCur"] < e["asymPre"]),
     asymCambioMediano=round(st.median(e["asymCur"] - e["asymPre"] for e in validas), 4),
+    semana=semana_sis, semanaBorough=semana_boro,
     conf=dict(Counter(e["conf"]["nivel"] for e in estaciones)),
     pvSistemaPre=pico_valle(sistemaPre), pvSistemaCur=pico_valle(sistemaCur),
     ventanaComparable=usa_ventana_comparable,
@@ -322,22 +341,25 @@ hallazgos = [
     dict(id="aplano", numero=2, tipo="positivo",
          titulo=f"El pico de la mañana se aplanó en {stats['nAplanaron']/stats['nValidas']*100:.0f} % de las estaciones",
          cuerpo=f"La razón pico/valle del día laborable cayó un {-stats['aplanMediano']*100:.0f} % en la estación mediana. Se cuenta aplanamiento solo si supera el 5 %; con cualquier margen serían {sum(1 for e in validas if e['aplan']<0)} de {stats['nValidas']}."),
-    dict(id="bronx", numero=3, tipo="positivo",
+    dict(id="viernes", numero=3, tipo="positivo",
+         titulo=f"La semana se inclinó: el viernes perdió {-semana_sis['dia'][5]*100:.1f} puntos del total semanal y el fin de semana ganó {(semana_sis['dia'][0]+semana_sis['dia'][6])*100:.1f}",
+         cuerpo=f"Sobre las 168 horas de la semana, el jueves y el viernes son los días que más peso perdieron ({semana_sis['dia'][4]*100:+.1f} y {semana_sis['dia'][5]*100:+.1f} pp), casi todo en la ventana de la mañana; sábado y domingo lo ganaron. Lunes y martes no perdieron. Es la huella semanal del trabajo híbrido, y en el Bronx la mañana del viernes perdió {-semana_boro['Bronx']['am'][5]*100:.1f} pp frente a {-min(semana_boro[b]['am'][5] for b in ('Manhattan','Brooklyn','Queens'))*100:.1f}–{-max(semana_boro[b]['am'][5] for b in ('Manhattan','Brooklyn','Queens'))*100:.1f} en los demás."),
+    dict(id="bronx", numero=4, tipo="positivo",
          titulo="El Bronx perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma",
          cuerpo=f"Recuperación mediana del {bx.get('rec',0)*100:.0f}\u00a0% frente a {rango_pct([o['rec'] for o in otros])} en Manhattan, Brooklyn y Queens; cambio mediano del pico de {bx.get('aplan',0)*100:+.0f}\u00a0% frente a {rango_cambio([o['aplan'] for o in otros])}. Donde no hay trabajo híbrido, el pico se queda y solo baja el volumen."),
-    dict(id="independientes", numero=4, tipo="negativo",
+    dict(id="independientes", numero=5, tipo="negativo",
          titulo="Dentro de un borough, cuánto volvió una estación no dice casi nada de cuánto se aplanó",
          cuerpo=f"La correlación de rango entre recuperación y aplanamiento va de ρ = {min(stats['rho_rec_aplan_borough'].values()):+.2f} a {max(stats['rho_rec_aplan_borough'].values()):+.2f} dentro de cada borough. Son dos ejes de cambio distintos, y por eso la aplicación los muestra en dos canales distintos. La relación que sí existe ({stats['rho_rec_aplan']:+.2f} en el total) es entre boroughs, y es la del Bronx."),
-    dict(id="una-direccion", numero=5, tipo="positivo",
+    dict(id="una-direccion", numero=6, tipo="positivo",
          titulo="El cambio fue en una sola dirección: la mañana perdió peso frente a la tarde",
          cuerpo=f"La asimetría mañana/tarde bajó {-stats['asymCambioMediano']:.2f} en la estación mediana, y {stats['cambioTipoHaciaTarde']} de las {stats['cambioTipo']} estaciones que cruzaron un umbral de tipo lo hicieron hacia 'laboral'. Ninguna zona se volvió más residencial. El {(1-stats['cambioTipo']/stats['nValidas'])*100:.0f} % conservó su tipo: la ciudad no se reorganizó, se atenuó."),
-    dict(id="linea-base", numero=6, tipo="limite",
+    dict(id="linea-base", numero=7, tipo="limite",
          titulo=f"{sum(v for k,v in stats['conf'].items() if k!='solida')} estaciones tienen una comparación poco confiable, y están marcadas",
          cuerpo=f"{plural(stats['conf'].get('estacional',0), 'es sensible', 'son sensibles')} a la estación del año (playas, estadios, aeropuerto), {plural(stats['conf'].get('interrumpida',0), 'tuvo', 'tuvieron')} una caída anómala de entradas en la ventana de comparación y {plural(stats['conf'].get('pequena',0), 'tiene', 'tienen')} una línea base demasiado pequeña. No se excluyen: se muestran con anillo punteado, y las medianas por borough y por tipo se calculan sin ellas."),
 ]
 if tarifas and tarifas.get("ilimitado30"):
     i30 = tarifas["ilimitado30"]
-    hallazgos.append(dict(id="abono", numero=7, tipo="positivo",
+    hallazgos.append(dict(id="abono", numero=8, tipo="positivo",
         titulo="El abono de 30 días se desplomó: la evidencia del uso intermitente",
         cuerpo=f"Pasó del {i30['ini']*100:.0f} % al {i30['fin']*100:.0f} % de las entradas. Un pase mensual solo conviene con uso diario regular; su caída es consistente con el aplanamiento del pico. La migración MetroCard → OMNY, en cambio, es adopción tecnológica y no cambio de demanda."))
 

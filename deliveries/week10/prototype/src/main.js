@@ -10,7 +10,7 @@ import { dispersion } from './graficos/dispersion.js';
 import { multiples } from './graficos/multiples.js';
 import { serieMensual } from './graficos/serie.js';
 import { panelEstacion } from './panel-estacion.js';
-import { perfil24 } from './graficos/perfil.js';
+import { matriz } from './graficos/matriz.js';
 
 const ETIQUETA_TIPO = { positivo: 'hallazgo', negativo: 'lo que no se sostiene', limite: 'límite' };
 
@@ -51,34 +51,36 @@ function construirHallazgos(M, caps) {
   M.hallazgos.forEach(h => {
     const cap = caps.find(c => c.hallazgo && c.hallazgo.id === h.id);
     const b = cont.append('button').attr('class', 'hallazgo-card').attr('title', 'Abrir en el recorrido');
+    b.classed(h.tipo, true).attr('title', h.tipo === 'negativo' ? 'Lo que no se sostiene · abrir en el recorrido' : h.tipo === 'limite' ? 'Límite · abrir en el recorrido' : 'Abrir en el recorrido');
     b.append('div').attr('class', 'n').html(`<span>${h.numero}</span><span class="tipo ${h.tipo}">${ETIQUETA_TIPO[h.tipo]}</span>`);
     b.append('div').attr('class', 't').text(h.titulo);
     b.on('click', () => { irA('recorrido'); if (cap) mostrarCapitulo(caps.indexOf(cap)); });
   });
 }
 
-let perfilGrande = null;
+let vMatriz = null;
 function construirPerfiles(M) {
-  const opciones = [['sistema', 'todo el sistema'],
-    ...['Manhattan', 'Brooklyn', 'Queens', 'Bronx'].map(b => ['b:' + b, b]),
-    ...['residencial', 'mixta', 'laboral'].map(t => ['t:' + t, 'estaciones ' + (t === 'mixta' ? 'mixtas' : t === 'laboral' ? 'laborales' : 'residenciales')])];
-  const sel = d3.select('#perfil-sel');
-  sel.selectAll('option').data(opciones).join('option').attr('value', d => d[0]).text(d => d[1]);
-  const datosDe = v => v === 'sistema' ? [M.sistema.perfilPre, M.sistema.perfilCur, null]
-    : v.startsWith('b:') ? [M.boroughs[v.slice(2)].perfilPre, M.boroughs[v.slice(2)].perfilCur, null]
-    : [M.tipos[v.slice(2)].perfilPre, M.tipos[v.slice(2)].perfilCur, v.slice(2)];
-  const pintar = (animar) => {
-    const [pre, cur, tipo] = datosDe(sel.property('value'));
-    const el = document.querySelector('#perfil-grande');
-    const alto = Math.max(260, el.getBoundingClientRect().height - 8);
-    if (perfilGrande) perfilGrande.destruir();
-    perfilGrande = perfil24(el, { pre, cur, tipo, alto, animar, anotaciones: true, margen: { t: 22, r: 24, b: 30, l: 44 } });
-    d3.select('#perfil-leyenda').html(`<span class="item"><i class="muestra" style="background:var(--antes);border:1px solid var(--antes-borde)"></i>enero–febrero de 2020, la línea base</span><span class="item"><i class="muestra linea" style="background:${tipo ? 'var(--' + tipo + ')' : 'var(--tinta)'}"></i>2024</span>`);
+  vMatriz = matriz('#matriz-expl', { modelo: M, lente: 'forma', orden: 'asym' });
+  const leyenda = () => {
+    const l = vMatriz.leyenda();
+    d3.select('#matriz-leyenda').html(`<b>${l.titulo}</b><span>${l.ext[0]}</span><i class="barra-color" style="background:linear-gradient(90deg,${l.grad.join(',')})"></i><span>${l.ext[l.ext.length - 1]}</span>`);
   };
-  sel.on('change', () => pintar(false));
-  pintar(true);
-  addEventListener('resize', () => { if (!document.querySelector('#perfiles').classList.contains('oculta')) pintar(false); });
-  // filtros de la rejilla (escriben en el estado compartido)
+  d3.selectAll('#lentes-matriz button').on('click', function () {
+    d3.selectAll('#lentes-matriz button').classed('activo', b => b === this);
+    const l = this.dataset.lente;
+    if (l === 'meses' && d3.select('#orden-matriz').property('value') === 'asym') { d3.select('#orden-matriz').property('value', 'rec'); vMatriz.orden('rec'); }
+    vMatriz.lente(l); leyenda();
+  });
+  d3.select('#orden-matriz').on('change', function () { vMatriz.orden(this.value); });
+  d3.selectAll('#submodo button').on('click', function () {
+    d3.selectAll('#submodo button').classed('activo', b => b === this);
+    const m = this.dataset.modo;
+    d3.select('#tarjeta-matriz').classed('oculta', m !== 'matriz');
+    d3.select('#tarjeta-multiples-p').classed('oculta', m !== 'rejilla');
+    requestAnimationFrame(() => dispatchEvent(new Event('resize')));
+  });
+  leyenda();
+  // filtros (escriben en el estado compartido)
   d3.select('#filtro-borough-p').on('change', function () { estado.fijarBoroughs(this.value ? new Set([this.value]) : null); });
   d3.select('#filtro-tipo-p').on('change', function () { estado.fijarTipos(this.value ? new Set([this.value]) : null); });
 }
@@ -140,9 +142,9 @@ function montarExplorador(M, G) {
   const vMapa = mapa('#mapa-expl', { modelo: M, geo: G, radioMax: 14 });
   const vDisp = dispersion('#dispersion-expl', { modelo: M, brush: true });
   const vMult = multiples('#multiples-expl', { modelo: M, contador: '#contador-multiples', selOrden: '#orden-multiples' });
-  const vSerie = serieMensual('#serie-expl', { serie: M.sistema.serie, base: M.meta.base, alto: 210, brush: true, onRango: r => estado.fijarRango(r) });
+  const vSerie = serieMensual('#serie-expl', { serie: M.sistema.serie, base: M.meta.base, alto: 190, brush: true, onRango: r => estado.fijarRango(r) });
   const panel = panelEstacion('#panel-estacion');
-  vistas.push(vMapa, vDisp, vMult, panel);
+  vistas.push(vMapa, vDisp, vMult, panel, vMatriz);
 
   // lentes del mapa
   d3.selectAll('#lentes button').on('click', function () { estado.fijarLente(this.dataset.lente); });

@@ -2,7 +2,7 @@
 
 **5 minutos.** Dos demos en vivo (slides 3–5). Si te atrasas, recorta la 6 y salta a la 7.
 
-**Antes de entrar:** la aplicación abierta en otra pestaña, en la vista Perfiles, en modo claro. Probar una vez: pestaña Recorrido, `→`, clic en una estación en Explorador, `Esc`.
+**Antes de entrar:** la aplicación abierta en otra pestaña, en la vista Matriz con la lente "Forma del día 2024", en modo claro. Probar una vez: pestaña Recorrido, `→`, clic en una estación en Explorador, `Esc`.
 
 ---
 
@@ -22,23 +22,27 @@
 
 ## 3 · El prototipo — 60 s · **DEMO**
 
-**Cambiar a la pestaña de la aplicación**, vista Perfiles.
+**Cambiar a la pestaña de la aplicación**, vista Matriz.
 
-> Esta es la vista base. Arriba, los siete hallazgos del proyecto como tarjetas. Abajo a la izquierda, la forma del día de todo el sistema: el área gris es enero–febrero de 2020, la línea negra es 2024; el pico de la mañana pasó del 10.4 al 9.1 por ciento del día. A la derecha, las 428 estaciones, una por tarjeta, 168 horas cada una.
+> Esta es la vista base: las 428 estaciones, una por fila, agrupadas por borough, contra las 168 horas de la semana. El azul es el share de cada hora en 2024. Se ve el doble pico de lunes a viernes, el fin de semana plano, y que Manhattan se carga hacia la tarde y los otros boroughs hacia la mañana.
+
+**Clic en "Qué cambió 2020 → 2024".**
+
+> Misma matriz, pero 2024 menos 2020. Azul perdió peso, rojo ganó. Lo más azul de toda la semana es el jueves y el viernes por la mañana; el fin de semana ganó. Y las filas del Bronx, abajo, casi no tienen azul. Todo eso antes de leer una cifra.
 
 **Clic en la pestaña Recorrido, luego `→` dos veces** hasta el capítulo 2.
 
-> El recorrido lleva los siete capítulos: una pregunta, el hallazgo como frase, el gráfico, y plegados, cómo se mide y qué no demuestra.
+> El recorrido lleva los ocho capítulos: una pregunta, el hallazgo como frase, el gráfico, y plegados, cómo se mide y qué no demuestra.
 
-> El capítulo 2: el mismo perfil, por borough. Manhattan, Brooklyn y Queens pierden el pico de la mañana. El Bronx, no.
+> El capítulo 2: el día como un reloj, por borough. Manhattan, Brooklyn y Queens pierden la punta de las 8. El Bronx, no. Y abajo, cada estación como un punto: en el Bronx la mitad no cruza el umbral; en los demás, entre el 78 y el 92 por ciento.
 
 ## 4 · El hallazgo — 60 s · **DEMO**
 
-**Presionar `→` tres veces** hasta el capítulo 5.
+**Presionar `→` cuatro veces** hasta el capítulo 6.
 
 > El Bronx perdió más pasajeros que ningún otro borough — 56 por ciento de recuperación contra 69 — y es el único donde el día no cambió de forma: su pico cambió 5 por ciento; los demás, entre 16 y 19.
 >
-> A la izquierda, cada punto es una estación: recuperación en x, cambio del pico en y. Las del Bronx en negro, apiladas donde el pico no cambió. A la derecha, el mapa del Bronx con la lente de cambio del pico: casi nada de azul.
+> A la izquierda, cada punto es una estación: recuperación en x, cambio del pico en y. Las del Bronx en negro, apiladas donde el pico no cambió. A la derecha, el mapa del Bronx con cada estación dibujada como un reloj: todas apuntan a las 8 de la mañana, igual que en 2020.
 >
 > Nuestra lectura: aplanar el pico es lo que hace el trabajo híbrido. Donde la gente no puede quedarse en casa, el pico se queda y solo baja el volumen. Es una hipótesis consistente con los datos, no una medición. Lo decimos en la propia página.
 
@@ -46,7 +50,7 @@
 
 **Clic en "Ver estas estaciones en el explorador".** Baja con el Bronx filtrado.
 
-> El botón manda al explorador ya configurado: 68 estaciones, el Bronx. Cuatro vistas y una sola selección.
+> El botón manda al explorador ya configurado: 68 estaciones, el Bronx. Mapa, dispersión, serie y una sola selección.
 
 **Clic en una estación grande del mapa** (161 St-Yankee Stadium si se ve; si no, cualquiera).
 
@@ -74,7 +78,7 @@
 >
 > Uno: si la tipología convence o si "residencial / laboral" promete más de lo que mide.
 > Dos: si el Bronx está bien contado o parece que forzamos la lectura del teletrabajo. Qué evidencia pedirían.
-> Tres: si narrativa más explorador es la estructura correcta, o estorba a quien ya sabe qué busca.
+> Tres: si Matriz, Recorrido y Explorador es la estructura correcta, o sobra alguna.
 > Cuatro: si los hallazgos negativos — lo que los datos no sostienen — aportan o confunden.
 > Cinco: si la capa de confiabilidad se lee o es ruido.
 > Seis: qué le falta para que lo use un periodista o un investigador.
@@ -99,6 +103,12 @@ Lo pide el curso, y las vistas comparten un estado propio que es más fácil de 
 
 **¿Cuánto tarda en cargar?**
 1.6 MB de modelo más 77 KB de geografía. El dataset crudo son más de 4 GB; nunca se descarga.
+
+**¿La matriz no es demasiado densa?**
+Son 72 mil celdas, pero el ojo lee bandas: el pico de la mañana, el fin de semana, el Bronx. Pasar el mouse da la estación y el valor; clic en un borough lo aísla; el submodo Rejilla da los perfiles uno a uno.
+
+**¿De dónde sale lo del viernes?**
+De las 168 horas: share de cada hora sobre el total de la semana, 2024 menos 2020. El viernes perdió 2.4 puntos del total semanal y el jueves 1.7, casi todo entre las 6 y las 10; sábado y domingo ganaron 3.1. Lunes y martes no perdieron.
 
 **¿Qué significa "lo que no se sostiene"?**
 Un hallazgo negativo: lo que uno esperaría ver y los datos no muestran. Dentro de un borough, cuánto volvió una estación casi no se relaciona con cuánto se aplanó. Lo decimos porque saberlo cambia cómo se lee el resto.

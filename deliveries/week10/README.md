@@ -2,11 +2,13 @@
 
 **DS5343 Data Visualization · UTEC · 2026-2** · entrega del 14 de octubre de 2026
 
-Prototipo en D3.js de *La forma del día*: una aplicación de tres vistas — Perfiles, Recorrido y Explorador — sobre los 428 complejos de estación del metro de Nueva York, 2020–2024.
+Prototipo en D3.js de *La forma del día*: una aplicación de tres vistas — Matriz, Recorrido y Explorador — sobre los 428 complejos de estación del metro de Nueva York, 2020–2024.
 
-![Perfiles](capturas/01-perfiles.png)
+![Matriz](capturas/01-matriz-forma.png)
 
-![Recorrido](capturas/07-bronx.png)
+![Qué cambió](capturas/02-matriz-cambio.png)
+
+![Recorrido](capturas/10-bronx.png)
 
 ---
 
@@ -31,11 +33,11 @@ prototype/
 │   ├── tokens.css             sistema de diseño: colores por rol, tipografía; modo oscuro
 │   ├── estilos.css
 │   ├── main.js                carga datos, construye los capítulos, monta el explorador
-│   ├── capitulos.js           los siete capítulos: pregunta, hallazgo, gráfico, notas, preset
+│   ├── capitulos.js           los ocho capítulos: pregunta, hallazgo, gráfico, notas, preset
 │   ├── estado.js              estado compartido del explorador
 │   ├── panel-estacion.js      panel de evidencia de una estación
 │   ├── util.js
-│   └── graficos/              perfil · serie · mapa · dispersion · multiples · tarifas
+│   └── graficos/              matriz · perfil · reloj · semana · tiras · pendiente · serie · mapa · dispersion · multiples · tarifas
 ├── data/model.json · geo.json
 └── lib/d3.min.js              D3 v7.9.0
 ```
@@ -61,11 +63,11 @@ Pensado para 1 200 px o más de ancho; funciona en móvil (las vistas se apilan)
 
 ## Cómo se lee
 
-**Perfiles** (vista base): los siete hallazgos arriba; el perfil de 24 h con selector (sistema, borough, tipo) y la rejilla de las 428 estaciones. Clic en un hallazgo abre su capítulo.
+**Matriz** (vista base): las 428 estaciones como filas, agrupadas por borough, contra las 168 horas de la semana o los 60 meses. Tres lentes: forma del día 2024, qué cambió 2020 → 2024, mes a mes. Debajo, sincronizadas, la forma del sistema y dónde se movió el día (o las entradas y la composición tarifaria). Pasar el mouse muestra la estación y el valor; clic abre su evidencia; clic en un borough lo aísla. Los ocho hallazgos van abajo como chips; clic abre su capítulo.
 
 **Recorrido**: los capítulos como botones, con Play. Cada uno: la pregunta, el hallazgo, el gráfico, *cómo se mide* y *qué no demuestra* plegados, y un botón que abre el explorador ya configurado.
 
-**Explorador**: mapa (cuatro lentes), dispersión y serie mensual, enlazados por una sola selección que también sobrevive al cambiar de vista. Clic en una estación → su panel de evidencia. Rectángulo en la dispersión → filtra. Período en la serie → cambia el tamaño en el mapa. Doble clic limpia un brush; "Quitar todo" limpia todo.
+**Explorador**: mapa (cinco lentes; *forma del día* dibuja cada estación como un reloj de 24 h), dispersión y serie mensual, enlazados por una sola selección que también sobrevive al cambiar de vista. Clic en una estación → su panel de evidencia. Rectángulo en la dispersión → filtra. Período en la serie → cambia el tamaño en el mapa. Doble clic limpia un brush; "Quitar todo" limpia todo.
 
 El botón **"Qué significa cada marca"** de la barra abre la clave visual.
 

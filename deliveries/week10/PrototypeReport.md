@@ -14,9 +14,9 @@ Una aplicación a pantalla completa con tres vistas que comparten una sola selec
 
 | Vista | Qué es |
 |---|---|
-| **Perfiles** | la vista base: los siete hallazgos como una tira de tarjetas, el perfil de 24 h con selector (sistema · borough · tipo) y la rejilla de las 428 estaciones a 168 h |
-| **Recorrido** | los siete capítulos como botones con Play: la pregunta y el hallazgo en una columna angosta, el gráfico ocupando el resto |
-| **Explorador** | mapa con cuatro lentes, dispersión con brush, serie mensual con brush, panel de evidencia por estación |
+| **Matriz** | la vista base: las 428 estaciones como filas, agrupadas por borough, contra las 168 horas de la semana o los 60 meses, con tres lentes (forma del día 2024 · qué cambió 2020 → 2024 · mes a mes), bandas de fase, dos tiras sincronizadas debajo (forma del sistema y dónde se movió el día; entradas y composición tarifaria) y los ocho hallazgos como chips. Un submodo muestra la rejilla de perfiles de 168 h |
+| **Recorrido** | los ocho capítulos como botones con Play: la pregunta y el hallazgo en una columna angosta, el gráfico ocupando el resto |
+| **Explorador** | mapa con cinco lentes (incluida *forma del día*: cada estación como un reloj de 24 h), dispersión con brush, serie mensual con brush, panel de evidencia por estación |
 
 ### El recorrido
 
@@ -26,12 +26,13 @@ Cada capítulo tiene la misma anatomía: una **pregunta** como título, el **hal
 |---|---|---|---|
 | | La forma del día | el perfil del sistema, 2020 frente a 2024, con el pico de la mañana desdibujándose al cargar | perfil de 24 h |
 | 1 | ¿Cuánta gente volvió? | la recuperación se estancó cerca del 70 % | serie mensual con línea de referencia |
-| 2 | ¿Sigue existiendo el doble pico? | el pico de la mañana se aplanó en 80 % de las estaciones | cuatro perfiles de 24 h, uno por borough |
-| 3 | ¿Para qué se usa cada estación? | el cambio fue en una sola dirección: la mañana perdió peso | mapa por tipo + tres perfiles agregados |
-| 4 | ¿Qué cambió más: cuánto o cómo? | dentro de un borough, recuperación y aplanamiento son casi independientes | dispersión recuperación × cambio del pico |
-| 5 | ¿Por qué el Bronx? | perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma | dispersión con énfasis + mapa del Bronx + tabla |
-| 6 | ¿Quién dejó de comprar el abono? | el pase de 30 días se desplomó: la evidencia del uso intermitente | áreas apiladas al 100 % por clase de pago |
-| 7 | ¿Qué no podemos afirmar? | 37 estaciones tienen una comparación poco confiable, y están marcadas | mapa de confiabilidad + lista con motivos |
+| 2 | ¿Sigue existiendo el doble pico? | el pico de la mañana se aplanó en 80 % de las estaciones | cuatro relojes de 24 h (uno por borough) + tiras de puntos del cambio del pico, una estación por punto |
+| 3 | ¿Qué días de la semana cambiaron? | la semana se inclinó: el viernes perdió 2.4 puntos del total semanal y el fin de semana ganó 3.1 | barras divergentes de las 168 horas, por borough y por tipo |
+| 4 | ¿Para qué se usa cada estación? | el cambio fue en una sola dirección: la mañana perdió peso | mapa por tipo + gráfico de pendientes de la asimetría 2020 → 2024, una línea por estación |
+| 5 | ¿Qué cambió más: cuánto o cómo? | dentro de un borough, recuperación y aplanamiento son casi independientes | dispersión recuperación × cambio del pico |
+| 6 | ¿Por qué el Bronx? | perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma | dispersión con énfasis + mapa del Bronx con un reloj por estación + tabla |
+| 7 | ¿Quién dejó de comprar el abono? | el pase de 30 días se desplomó: la evidencia del uso intermitente | áreas apiladas al 100 % por clase de pago |
+| 8 | ¿Qué no podemos afirmar? | 37 estaciones tienen una comparación poco confiable, y están marcadas | mapa de confiabilidad + lista con motivos |
 
 Los hallazgos no se escriben a mano: los genera `code/build_model.py` desde los datos, con sus cifras. Dos son negativos — lo que los datos *no* sostienen — y uno es un límite.
 
@@ -39,7 +40,7 @@ Los hallazgos no se escriben a mano: los genera `code/build_model.py` desde los 
 
 | Vista | Qué muestra | Interacción |
 |---|---|---|
-| Mapa | 428 estaciones sobre los boroughs y el trazado del metro (`d3.geoMercator`) | cuatro lentes: tipo · recuperación · cambio del pico · confiabilidad; zoom y paneo; clic |
+| Mapa | 428 estaciones sobre los boroughs y el trazado del metro (`d3.geoMercator`) | cinco lentes: tipo · forma del día (reloj de 24 h por estación) · recuperación · cambio del pico · confiabilidad; zoom y paneo; clic |
 | Dispersión | recuperación (x) × cambio del pico (y), color por tipo | brush rectangular que filtra todo lo demás; clic |
 | Serie mensual | entradas del sistema, 60 meses | brush horizontal: el tamaño de las estaciones del mapa pasa a ser el promedio del período |
 
@@ -92,6 +93,8 @@ El único color de la página es el dato; el cromo es negro y gris.
 | tamaño | entradas por día | contexto, en el canal menos preciso; no cambia con la lente |
 | anillo punteado | confiabilidad | el estado se ve sin robar el canal de color |
 | área gris + línea | antes / ahora | con dos líneas superpuestas el "antes" quedaba tapado |
+| matriz (canvas) | 428 × 168 celdas | la vista base muestra todas las estaciones y todas las horas a la vez; el patrón (pico de la mañana, jueves–viernes, el Bronx) aparece antes de leer una sola cifra |
+| reloj de 24 h | forma del día de una estación | en coordenadas polares la forma se lee como glifo y cabe en un mapa; la hora es cíclica |
 
 **Alternativas descartadas:** 428 líneas superpuestas (el *overplotting* borra la forma); animar la transición entre años (rinde peor para comparar dos momentos distantes, Lee et al. 2020); cuatro mapas en vez de cuatro lentes (el lector compararía con la memoria y no con el ojo); una dispersión pico/valle antes × después (los dos ejes del cambio son la pregunta; el antes/después ya lo cuenta el perfil).
 
@@ -108,7 +111,8 @@ El único color de la página es el dato; el cromo es negro y gris.
 1. **El perfil de 168 h de 2024 es el año completo**, no enero–febrero. La recuperación ya usa la misma ventana calendario; la forma del día todavía no. Lo corrige una pasada adicional de la API (`code/datos_nuevos.ipynb`, pasada D), pendiente.
 2. **El brush temporal solo cambia el tamaño** de las estaciones del mapa. Reconstruir la forma del día del período elegido necesita perfiles por mes (pasada E del mismo notebook).
 3. **La explicación del Bronx es una hipótesis.** Los datos del torniquete muestran el patrón, no la causa. La capa del Census (share de trabajo desde casa por área de influencia de cada estación, pasada F) es lo que podría sostenerla.
-4. **Se dibujan 120 múltiplos a la vez** de los 428; el contador lo dice.
+4. **La rejilla de perfiles dibuja 120 múltiplos a la vez** de los 428; el contador lo dice. La matriz sí dibuja las 428.
+6. **El hallazgo de la semana (jueves–viernes) compara 2024 completo con enero–febrero de 2020**: incluye feriados y verano. Se afina con la ventana comparable (pasada D).
 5. **Sin navegación por teclado dentro del mapa** ni descripción textual de los gráficos más allá del `aria-label`.
 
 ### De los datos
@@ -131,7 +135,7 @@ Las seis preguntas de la propuesta original (contexto geográfico, legibilidad d
 
 3. **¿Tres vistas es la estructura correcta?** Perfiles como vista base, Recorrido con los capítulos, Explorador libre. ¿Sobra alguna? ¿El recorrido debería ser la entrada por defecto?
 
-4. **¿Los hallazgos negativos aportan o confunden?** Dos de los siete dicen lo que los datos no sostienen. ¿Dan confianza, o parecen un relleno?
+4. **¿Los hallazgos negativos aportan o confunden?** Dos de los ocho dicen lo que los datos no sostienen. ¿Dan confianza, o parecen un relleno?
 
 5. **¿La capa de confiabilidad se lee?** El anillo punteado y el capítulo 7 marcan 37 estaciones. ¿Es la cantidad correcta de aviso, o es ruido? ¿Deberíamos excluirlas de las vistas por defecto?
 

@@ -14,7 +14,7 @@ export function mapa(cont, opts) {
     modelo: null, geo: null, lente: null, interactivo: true, zoom: true, leyenda: true,
     visible: null,            // fn(e) → bool; si es null usa estado.esVisible
     enfoqueBorough: null,     // 'Bronx' → encuadra ese borough
-    radioMax: 12, tamanoPorRango: true, alto: null,
+    radioMax: 12, tamanoPorRango: true, alto: null, escalaGlifo: 1,
   }, opts);
   const el = typeof cont === 'string' ? document.querySelector(cont) : cont;
   const M = o.modelo, G = o.geo, est = M.estaciones;
@@ -25,6 +25,7 @@ export function mapa(cont, opts) {
   const gBoro = g.append('g');
   const gLin = g.append('g');
   const gEst = g.append('g');
+  const gGlif = g.append('g').attr('class', 'glifos');
   const ley = o.leyenda ? root.append('div').attr('class', 'mapa-leyenda') : null;
 
   const proy = d3.geoMercator();
@@ -46,7 +47,18 @@ export function mapa(cont, opts) {
   };
 
   const puntos = gEst.selectAll('circle').data(est, d => d.id).join('circle').attr('class', 'estacion');
+  // lente "forma": cada estación es un reloj de 24 h; radio = share de la hora, escala por volumen
+  const perfil24De = arr => { const p = new Array(24).fill(0); for (let i = 0; i < 168; i++) if (i >= 24 && i < 144) p[i % 24] += arr[i]; const s = d3.sum(p) || 1; return p.map(v => v / s); };
+  const p24 = new Map(est.map(e => [e.id, { pre: perfil24De(e.pre), cur: perfil24De(e.cur) }]));
+  const maxP = d3.quantile(est.flatMap(e => p24.get(e.id).cur), 0.98);
+  const glifo = (perfil, R) => d3.lineRadial().angle((d, i) => i / 24 * 2 * Math.PI).radius(d => Math.min(1.15, d / maxP) * R).curve(d3.curveCardinalClosed)(perfil);
+  const glifos = gGlif.selectAll('g').data(est, d => d.id).join('g').attr('class', 'glifo');
+  glifos.append('path').attr('class', 'glifo-antes');
+  glifos.append('path').attr('class', 'glifo-ahora');
   if (o.interactivo) {
+    glifos.on('click', (ev, d) => { ev.stopPropagation(); estado.seleccionar(d.id); })
+      .on('mousemove', (ev, d) => tooltip(ttEstacion(d), ev))
+      .on('mouseleave', () => tooltip(null));
     puntos.on('click', (ev, d) => { ev.stopPropagation(); estado.seleccionar(d.id); })
       .on('mousemove', (ev, d) => tooltip(ttEstacion(d, estado.rango ? `<div class="fila"><span>entradas/día en el período</span><span>${fmt.int(estado.volumen(d))}</span></div>` : ''), ev))
       .on('mouseleave', () => tooltip(null));
@@ -71,6 +83,7 @@ export function mapa(cont, opts) {
     gBoro.selectAll('path').data(G.boroughs.features).join('path').attr('class', 'boro').attr('d', path);
     gLin.selectAll('path').data(G.lineas.features).join('path').attr('class', 'linea-metro').attr('d', path);
     puntos.attr('cx', e => proy([e.lon, e.lat])[0]).attr('cy', e => proy([e.lon, e.lat])[1]);
+    glifos.attr('transform', e => `translate(${proy([e.lon, e.lat])})`);
   }
 
   function pintar() {
@@ -83,6 +96,16 @@ export function mapa(cont, opts) {
       // un filtro apaga; una selección no: en el mapa el contexto geográfico importa
       .classed('apagada', e => !visible(e));
     puntos.filter(e => e.id === sel).raise();
+    const esForma = lente() === 'forma';
+    gEst.style('display', esForma ? 'none' : null);
+    gGlif.style('display', esForma ? null : 'none');
+    if (esForma) {
+      const R = e => (rad(e) * 1.7 + 2.5 / Math.sqrt(zk)) * o.escalaGlifo;
+      glifos.classed('apagada', e => !visible(e)).classed('sel', e => e.id === sel).classed('dudosa', e => e.conf.nivel !== 'solida');
+      glifos.select('.glifo-antes').attr('d', e => glifo(p24.get(e.id).pre, R(e)));
+      glifos.select('.glifo-ahora').attr('d', e => glifo(p24.get(e.id).cur, R(e))).attr('stroke', e => colorTipo(e.tipo)).attr('fill', e => colorTipo(e.tipo)).attr('stroke-width', 1.1 / Math.sqrt(zk));
+      glifos.filter(e => e.id === sel).raise();
+    }
     if (ley) pintarLeyenda();
   }
 
@@ -95,6 +118,12 @@ export function mapa(cont, opts) {
         <div><i class="punto" style="background:${colorTipo('mixta')}"></i> mixta</div>
         <div><i class="punto" style="background:${colorTipo('laboral')}"></i> laboral: salen del trabajo por la tarde</div>
         <div class="nota">según la asimetría mañana/tarde de las entradas en enero–febrero de 2020</div>`;
+    } else if (l === 'forma') {
+      html = `<b>La forma del día de cada estación</b>
+        <div>cada marca es un reloj de 24 h: medianoche arriba, las horas en el sentido del reloj, el radio es el share de la hora</div>
+        <div><i class="punto" style="background:${cssVar('--antes')};border:1px solid ${cssVar('--antes-borde')}"></i> gris: enero–febrero 2020</div>
+        <div><i class="punto" style="background:${colorTipo('residencial')}"></i><i class="punto" style="background:${colorTipo('mixta')}"></i><i class="punto" style="background:${colorTipo('laboral')}"></i> color del tipo: 2024</div>
+        <div class="nota">una punta hacia las 8 es el pico de la mañana; hacia las 17, el de la tarde. Acerca el mapa para leer Manhattan</div>`;
     } else if (l === 'rec') {
       html = `<b>Recuperación: entradas en ene–feb 2024 frente a ene–feb 2020</b>
         <div class="barra-color" style="background:linear-gradient(90deg,${cssVar('--azul-100')},${cssVar('--azul-700')})"></div>
@@ -119,7 +148,7 @@ export function mapa(cont, opts) {
   }
 
   if (o.zoom) {
-    zoom = d3.zoom().scaleExtent([1, 10]).on('zoom', ev => { zk = ev.transform.k; g.attr('transform', ev.transform); puntos.attr('r', e => rad(e)); gLin.selectAll('path').attr('stroke-width', .9 / Math.sqrt(zk)); });
+    zoom = d3.zoom().scaleExtent([1, 10]).on('zoom', ev => { zk = ev.transform.k; g.attr('transform', ev.transform); puntos.attr('r', e => rad(e)); gLin.selectAll('path').attr('stroke-width', .9 / Math.sqrt(zk)); if (lente() === 'forma') pintar(); });
     svg.call(zoom);
   }
 
