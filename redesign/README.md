@@ -1,4 +1,4 @@
-# Rediseño: La forma del día · Atlas de ritmos
+# Rediseño: Fractal · Atlas de ritmos
 
 Propuesta e implementación en la rama `codex/atlas-ritmos-urbanos`. La aplicación está en [`../atlas/`](../atlas/); el prototipo de Semana 10 se conserva como antecedente.
 

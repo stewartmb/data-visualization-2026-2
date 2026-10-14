@@ -1,4 +1,4 @@
-# La forma del día · Atlas de ritmos
+# Fractal · Atlas de ritmos
 
 **Cómo cambió el ritmo horario de las entradas al metro de Nueva York**
 DS5343 Data Visualization · UTEC · 2026-2

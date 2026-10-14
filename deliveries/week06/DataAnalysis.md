@@ -1,7 +1,7 @@
 # Análisis de datos y diseño de vistas
 
 **DS5343 Data Visualization · UTEC · 2026-2 · Entrega Semana 6**
-Proyecto: *La forma del día — cómo cambió el ritmo horario del metro de Nueva York, 2020–2024*
+Proyecto: *Fractal — cómo cambió el ritmo horario del metro de Nueva York, 2020–2024*
 
 Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino
 

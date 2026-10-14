@@ -1,9 +1,9 @@
-# Prototype Report — La forma del día
+# Prototype Report — Fractal
 
 **DS5343 Data Visualization · UTEC · 2026-2 · Semana 10**
 Acervo Correa, Renzo Alfonso · Maquera Bobadilla, Diva Stewart · Condori Palomino, José Eduardo
 
-Prototipo funcional en D3.js del proyecto *La forma del día: cómo cambió el ritmo horario del metro de Nueva York, 2020–2024*.
+Prototipo funcional en D3.js del proyecto *Fractal: cómo cambió el ritmo horario del metro de Nueva York, 2020–2024*.
 
 ---
 

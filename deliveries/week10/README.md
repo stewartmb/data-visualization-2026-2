@@ -2,7 +2,7 @@
 
 **DS5343 Data Visualization · UTEC · 2026-2** · entrega del 14 de octubre de 2026
 
-Prototipo en D3.js de *La forma del día*. Cuatro vistas enlazadas sobre 428 complejos de estación del metro de Nueva York, 2020–2024.
+Prototipo en D3.js de *Fractal*. Cuatro vistas enlazadas sobre 428 complejos de estación del metro de Nueva York, 2020–2024.
 
 ![El prototipo](capturas/prototipo.png)
 

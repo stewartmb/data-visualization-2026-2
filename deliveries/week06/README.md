@@ -1,6 +1,6 @@
 <div align="center">
 
-# La forma del día
+# Fractal
 
 **Cómo cambió el ritmo horario del metro de Nueva York, 2020–2024**
 
