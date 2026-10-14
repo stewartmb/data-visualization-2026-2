@@ -31,3 +31,9 @@ Validación específica: `scripts/redesign/check-ordering.cjs` (Playwright). Se 
 Comparar muestra una sola gráfica de 24 horas que reúne lunes a domingo. Cada valor es la suma del peso semanal de esa hora en los siete días; el perfil completo suma 100 %. Se comparan 2020, el año elegido y las estaciones fijadas con una misma escala vertical. Agrupar días puede ocultar redistribuciones entre ellos: un botón lleva directamente a Huella → Reloj semanal → Diferencia, que conserva las 168 horas utilizadas en la distancia TV.
 
 `scripts/redesign/check-comparison.cjs` verifica la agregación de siete días y la normalización para los 2.120 perfiles, las estaciones fijadas, los tooltips, el acceso al reloj de diferencias y el ancho móvil.
+
+### Legibilidad de la TV en el mapa
+
+La TV usa cinco intervalos fijos en puntos porcentuales: [0,5), [5,10), [10,15), [15,20) y [20,100]. Son bandas de presentación, no categorías estadísticas aprendidas ni umbrales de significancia. La leyenda informa cuántas estaciones del grupo hay en cada banda y el rango real. Los valores bajos usan un gris azulado suave; los altos se dibujan después para evitar quedar tapados.
+
+El control «Destacar TV desde» atenúa los valores inferiores sin eliminarlos ni cambiar el grupo compartido; el contador distingue estaciones destacadas de estaciones seleccionadas. «Destacar todas» restablece la opacidad. Los colores y las posiciones de los puntos no cambian al mover el control. El control se conserva al cambiar de vista en la sesión, pero no se guarda en la URL. `scripts/redesign/check-map-emphasis.cjs` comprueba bandas, orden de dibujo, umbral, contador, tamaño de grupo y ancho móvil; `check-map-zoom.cjs` comprueba el tamaño de puntos y bordes durante el zoom.

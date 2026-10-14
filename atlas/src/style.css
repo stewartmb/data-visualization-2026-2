@@ -13,3 +13,5 @@
 @media(max-width:820px){.toolbar label{max-width:100%;min-width:0}.toolbar select{min-width:0;max-width:100%}#matrix-sort{flex:1;width:250px}.order-explanation{font-size:11px}}
 
 .comparison-panel{border-top:1px solid var(--line);padding-top:15px;margin-top:18px}.comparison-panel h3{font-size:14px}.comparison-shares{display:flex;flex-direction:column;gap:4px;font-size:10px;line-height:1.5;margin:10px 0}.comparison-shares>b{color:var(--muted);font-size:9px;font-weight:500}
+
+.map-emphasis{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;padding:12px 15px;margin-bottom:15px;background:#eef3ed;border-radius:5px;font-size:11px}.map-emphasis label{font-weight:600}.map-emphasis input{width:190px;max-width:100%;accent-color:var(--teal)}.map-emphasis small{flex-basis:100%;color:var(--muted);line-height:1.5}.map-bands{display:flex;gap:8px 15px;flex-wrap:wrap}.map-bands>span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}.map-bands i{width:13px;height:13px;border:1px solid #60756f55;border-radius:50%;flex-shrink:0}.map-bands small{color:var(--muted)}.viz-card:has(.map-svg) .chart-note{flex-wrap:wrap;line-height:1.5}

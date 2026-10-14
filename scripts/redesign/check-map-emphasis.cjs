@@ -1,0 +1,10 @@
+const {chromium}=require('playwright');const assert=require('node:assert/strict');
+(async()=>{const b=await chromium.launch();const p=await b.newPage({viewport:{width:1440,height:1000}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto('http://127.0.0.1:8765/atlas/?view=map');await p.waitForSelector('#map-min-tv');
+ const initial=await p.evaluate(()=>{const dots=[...document.querySelectorAll('.map-dot')];return {values:dots.map(c=>c.__data__.change),colors:[...new Set(dots.map(c=>c.getAttribute('fill')))],counts:[...document.querySelectorAll('.map-bands small')].map(e=>+e.textContent.replace(/\D/g,''))};});
+ assert.equal(initial.values.length,424);assert.equal(initial.colors.length,5);assert.deepEqual(initial.counts,[74,285,57,6,2]);assert.ok(initial.values.every((v,i,a)=>i===0||v>=a[i-1]));
+ await p.locator('#map-min-tv').fill('15');await p.locator('#map-min-tv').dispatchEvent('input');assert.match(await p.locator('#map-emphasis-count').innerText(),/^8 de 424/);assert.equal(await p.locator('.map-dot[opacity="1"]').count(),8);assert.equal(await p.locator('.map-dot').count(),424);assert.equal(await p.locator('#cohort-count').innerText(),'424 / 424');
+ await p.screenshot({path:'work/map-emphasis.png',fullPage:true});
+ await p.locator('#map-emphasis-reset').click();assert.equal(await p.locator('.map-dot[opacity="1"]').count(),424);
+ await p.selectOption('#map-metric','deltaAM');assert.equal(await p.locator('#map-min-tv').count(),0);assert.equal(await p.locator('.map-dot').count(),424);
+ await p.selectOption('#map-metric','change');assert.equal(await p.locator('#map-min-tv').inputValue(),'0');
+ await p.setViewportSize({width:390,height:844});await p.waitForTimeout(350);assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));assert.deepEqual(errors,[]);console.log(JSON.stringify({status:'PASS',bands:initial.counts,highlightAt15:8,errors}));await b.close();})().catch(e=>{console.error(e);process.exit(1)});

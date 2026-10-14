@@ -1,10 +1,13 @@
 import {state,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats} from './model.js';
 let transform=d3.zoomIdentity;
+let minimumTV=0;
+const tvBreaks=[5,10,15,20],tvColors=['#cbd5df','#7b9fbc','#26858b','#db8b30','#f2cc35'];
 const names={change:'Cambio de forma · distancia TV (pp)',deltaAM:'Cambio del peso AM · puntos porcentuales',deltaWeekend:'Cambio del peso de fin de semana · puntos porcentuales',recovery:'Índice de volumen · 2020 = 100 %'};
 
 export function renderMap(host,app,items){
   host.innerHTML=heading('02 / SITUAR EL CAMBIO','El ritmo también tiene geografía.','Localiza los patrones del atlas. Una estación puede recuperar volumen y, aun así, distribuir sus entradas en horarios distintos.','T2 · T3 · T4')+`
   <div class="toolbar"><label>Color<select id="map-metric">${Object.entries(names).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label><span class="spacer" style="font-size:10px;color:var(--muted)">Clic: investigar · rueda: acercar · arrastrar: mover</span></div>
+  ${state.mapMetric==='change'?`<div class="map-emphasis"><label for="map-min-tv">Destacar TV desde <output id="map-threshold">${fmt(minimumTV)} pp</output></label><input id="map-min-tv" type="range" min="0" max="100" step="0.5" value="${minimumTV}" aria-label="Destacar estaciones desde una distancia TV mínima"><button id="map-emphasis-reset" class="text-button">Destacar todas</button><span id="map-emphasis-count"></span><small>Los valores inferiores quedan atenuados como contexto; este control no cambia el grupo seleccionado.</small></div>`:''}
   <div class="viz-card"><div class="map-control"><button id="map-select">Seleccionar área</button><button id="map-center">Centrar ↺</button></div><svg class="map-svg" role="img" aria-label="Mapa de complejos de estación en los boroughs de Nueva York"></svg><div class="map-credit">Contornos: NYC Department of City Planning · catálogo MTA actual</div><div class="chart-note"><span id="map-key"></span><span>Todos los puntos tienen igual tamaño; solo el color codifica el cambio.</span></div></div>${stats(items)}
   <div class="narrative"><b>Una selección, cuatro lentes</b><span>El grupo definido aquí se conserva en el atlas, las trayectorias y la tabla de evidencia. Los filtros identifican asociaciones espaciales; no explican sus causas.</span></div>`;
   const select=host.querySelector('#map-metric');select.value=state.mapMetric;select.onchange=()=>app.set({mapMetric:select.value});
@@ -16,10 +19,22 @@ export function renderMap(host,app,items){
   g.selectAll('.map-bg').data(app.geo.features).join('path').attr('class','map-bg').attr('fill-rule','evenodd').attr('d',path);
   const labels=[['MANHATTAN',-74.003,40.789],['BROOKLYN',-73.987,40.635],['QUEENS',-73.817,40.740],['BRONX',-73.854,40.870],['STATEN ISLAND',-74.151,40.586]];
   g.selectAll('.borough-name').data(labels).join('text').attr('class','borough-name').attr('x',d=>projection(d.slice(1))[0]).attr('y',d=>projection(d.slice(1))[1]).attr('text-anchor','middle').text(d=>d[0]);
-  const ids=new Set(items.map(s=>s.id)),color=metricColor(state.mapMetric,app.data.stations.filter(s=>profile(s)));
+  const ids=new Set(items.map(s=>s.id)),color=state.mapMetric==='change'?d3.scaleThreshold(tvBreaks,tvColors):metricColor(state.mapMetric,app.data.stations.filter(s=>profile(s)));
   g.selectAll('.context-point').data(app.data.stations.filter(s=>!ids.has(s.id))).join('circle').attr('class','context-point').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',1.6).attr('fill','#b8c7c1').attr('opacity',.45);
   const points=g.selectAll('.map-dot').data(items).join('circle').attr('class','map-dot').attr('vector-effect','non-scaling-stroke').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',4.1).attr('fill',s=>color(metricValue(s,state.mapMetric)))
     .on('pointerenter',(e,s)=>showTooltip(`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${names[state.mapMetric]}: ${fmt(metricValue(s,state.mapMetric))}<br><small>Clic para abrir huella y evidencia</small>`,e)).on('pointermove',(e,s)=>showTooltip(`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${names[state.mapMetric]}: ${fmt(metricValue(s,state.mapMetric))}`,e)).on('pointerleave',hideTooltip).on('click',(e,s)=>{e.stopPropagation();e.shiftKey?app.pin(s.id):app.select(s.id);});
+  // Draw larger changes last so low values cannot cover them in dense areas.
+  points.sort((a,b)=>Math.abs(metricValue(a,state.mapMetric))-Math.abs(metricValue(b,state.mapMetric)));
+  if(state.mapMetric==='change'){
+    const range=host.querySelector('#map-min-tv'),maximum=d3.max(app.data.stations,s=>metricValue(s,'change'))||0;
+    range.max=Math.ceil(maximum);minimumTV=Math.min(minimumTV,+range.max);range.value=minimumTV;
+    function emphasize(){
+      minimumTV=+range.value;host.querySelector('#map-threshold').textContent=`${fmt(minimumTV)} pp`;
+      points.attr('opacity',s=>metricValue(s,'change')>=minimumTV?1:.14);
+      const count=items.filter(s=>metricValue(s,'change')>=minimumTV).length;host.querySelector('#map-emphasis-count').textContent=`${count} de ${items.length} estaciones destacadas`;
+    }
+    range.oninput=emphasize;host.querySelector('#map-emphasis-reset').onclick=()=>{range.value=0;emphasize();};emphasize();
+  }
   const active=app.data.stations.filter(s=>s.id===state.selected||state.pins.includes(s.id));
   const rings=g.selectAll('.selected-ring').data(active).join('circle').attr('class','selected-ring').attr('vector-effect','non-scaling-stroke').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',7).attr('fill','none').attr('stroke',s=>s.id===state.selected?'#102937':'#c96035').attr('stroke-width',2).style('pointer-events','none');
   const selected=app.station(state.selected);
@@ -40,7 +55,15 @@ export function renderMap(host,app,items){
     });
     brushLayer=svg.append('g').attr('class','map-brush').call(brush);
   };
-  const domain=color.domain(),min=domain[0],max=domain.at(-1);
-  const legend=host.querySelector('#map-key');legend.innerHTML=`<span class="color-key">${fmt(min)}<span class="gradient" style="background:linear-gradient(90deg,${d3.range(11).map(i=>color(min+(max-min)*i/10)).join(',')})"></span>${fmt(max)} ${state.mapMetric==='recovery'?'%':'pp'}</span>`;
+  const legend=host.querySelector('#map-key');
+  if(state.mapMetric==='change'){
+    const bands=['0–<5','5–<10','10–<15','15–<20','20–100'];
+    legend.innerHTML=`<div class="map-bands" aria-label="Intervalos de distancia TV en puntos porcentuales">${bands.map((label,i)=>{const lo=i?tvBreaks[i-1]:0,hi=tvBreaks[i]??101,count=items.filter(s=>{const v=metricValue(s,'change');return v>=lo&&v<hi;}).length;return `<span><i style="background:${tvColors[i]}"></i>${label} pp <small>(${count})</small></span>`;}).join('')}</div>`;
+    const min=d3.min(items,s=>metricValue(s,'change')),max=d3.max(items,s=>metricValue(s,'change'));
+    host.querySelector('.chart-note>span:last-child').textContent=items.length?`Rango del grupo: ${fmt(min)}–${fmt(max)} pp. Gris azulado significa cambio bajo, no necesariamente cero. Valores altos se dibujan encima; tamaño constante.`:'Grupo vacío.';
+  }else{
+    const domain=color.domain(),min=domain[0],max=domain.at(-1);
+    legend.innerHTML=`<span class="color-key">${fmt(min)}<span class="gradient" style="background:linear-gradient(90deg,${d3.range(11).map(i=>color(min+(max-min)*i/10)).join(',')})"></span>${fmt(max)} ${state.mapMetric==='recovery'?'%':'pp'}</span>`;
+  }
   if(!items.length)app.toast('El grupo está vacío; los puntos grises conservan el contexto geográfico.');
 }
