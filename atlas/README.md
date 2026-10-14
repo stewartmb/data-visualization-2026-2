@@ -28,6 +28,6 @@ Validación específica: `scripts/redesign/check-ordering.cjs` (Playwright). Se 
 
 ### Comparación de perfiles
 
-Comparar muestra dos gráficas apiladas: lunes–viernes y sábado–domingo. Cada perfil horario se normaliza al 100 % dentro de su grupo y las dos gráficas comparten escala vertical. Encima de cada gráfica se informa la participación de ese grupo en la semana completa para que la normalización no oculte desplazamientos entre laborables y fin de semana. Se conservan los dos años, las estaciones fijadas y los valores por hora al pasar el cursor. La TV sigue calculándose sobre las 168 horas, sin agregarlas.
+Comparar muestra una sola gráfica de 24 horas que reúne lunes a domingo. Cada valor es la suma del peso semanal de esa hora en los siete días; el perfil completo suma 100 %. Se comparan 2020, el año elegido y las estaciones fijadas con una misma escala vertical. Agrupar días puede ocultar redistribuciones entre ellos: un botón lleva directamente a Huella → Reloj semanal → Diferencia, que conserva las 168 horas utilizadas en la distancia TV.
 
-`scripts/redesign/check-comparison.cjs` verifica normalización y participación para los 2.120 perfiles, escala compartida, curvas de estaciones fijadas, tooltips y ancho móvil.
+`scripts/redesign/check-comparison.cjs` verifica la agregación de siete días y la normalización para los 2.120 perfiles, las estaciones fijadas, los tooltips, el acceso al reloj de diferencias y el ancho móvil.

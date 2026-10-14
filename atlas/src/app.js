@@ -3,7 +3,7 @@ import {renderAtlas} from './atlas-view.js?v=20261014-2';
 import {renderMap} from './map-view.js?v=20261014-3';
 import {renderPaths} from './paths-view.js';
 import {renderEvidence} from './evidence-view.js';
-import {renderInspector} from './inspector.js?v=20261014-4';
+import {renderInspector} from './inspector.js?v=20261014-5';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence};
 const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia'};
