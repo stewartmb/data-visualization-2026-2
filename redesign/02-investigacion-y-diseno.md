@@ -6,7 +6,13 @@ Se revisaron el [repositorio FINO](https://github.com/Josroyal/VAST_2026_RJJJ), 
 
 Aplicación de esos principios: una selección compartida, vistas principales navegables, inspección bajo demanda, comparación por ejemplo y una superficie de evidencia. No se reutilizan código, textos ni activos de FINO. No se fabrican grafos de pasajeros, conexiones de viaje ni cadenas causales para imitar su apariencia.
 
-## Literatura y decisiones concretas
+## Cuatro referencias principales
+
+La selección definitiva para fundamentar comparación de perfiles, TV, normalización/Hellinger y reloj semanal está en [05-referencias-finales.md](05-referencias-finales.md): Liu et al. (2020), Fredriksson y Karlström (2025), van der Knaap et al. (2024) y Dhont et al. (2020). La revisión identifica el procedimiento original y la adaptación del atlas; no atribuye TV a Procrustes ni matrices origen–destino a nuestros datos de entradas.
+
+En particular, Dhont et al. documentan la misma disposición de siete anillos diarios y 24 sectores horarios, además de comparación mediante resta de mapas contra una referencia. Esta referencia se incorporó durante la revisión del diseño, después de implementar el reloj; no se presenta como una fuente consultada en la primera versión.
+
+## Literatura complementaria y decisiones concretas
 
 ### Brehmer y Munzner (2013): A Multi-Level Typology of Abstract Visualization Tasks
 
@@ -59,7 +65,7 @@ Estudia la conexión de puntos de dos medidas en secuencia temporal y posibles m
 - **Huella:** ángulo = hora; anillo = día; color = misma medida y escala del atlas. Equivalente matricial disponible. No se interpreta el área de sectores.
 - **Geografía:** posición = coordenada real; puntos de igual tamaño; color = una medida seleccionada. Se distinguen cambio de forma, peso AM, fin de semana e índice de volumen.
 - **Trayectorias:** x = peso AM de lunes–viernes; y = peso de fin de semana en semana comparable; línea = secuencia de años; color = sistema, grupo o complejos seleccionados. Enfoque cambia dominios con ejes visibles; contexto permite ver todas las estaciones.
-- **Comparador:** x = hora laborable; y = porcentaje de entradas laborables; escala compartida; referencia 2020 y selección actual, con pocas estaciones fijadas.
+- **Comparador:** x = hora del día; y = porcentaje semanal sumado en esa hora de lunes a domingo; escala compartida; referencia 2020 y selección actual, con pocas estaciones fijadas.
 
 ## Interacción y continuidad
 

@@ -41,6 +41,7 @@ Abrir **http://localhost:8765/atlas/**. No requiere compilación, tokens ni depe
 | [01-problema-y-tareas.md](01-problema-y-tareas.md) | Problema, audiencia, seis preguntas y tareas; entradas, salidas, vistas e interacciones |
 | [02-investigacion-y-diseno.md](02-investigacion-y-diseno.md) | FINO, literatura, alternativas y justificación de cada representación |
 | [03-datos-y-metodos.md](03-datos-y-metodos.md) | Fuentes, esquema, normalización, fórmulas, enriquecimientos y límites |
+| [05-referencias-finales.md](05-referencias-finales.md) | Cuatro papers principales, procedimientos concretos, adaptaciones y límites |
 | [04-evaluacion.md](04-evaluacion.md) | Verificaciones técnicas y protocolo pendiente con personas |
 | [data-audit.json](data-audit.json) | Auditoría numérica reproducible y huellas de archivos |
 

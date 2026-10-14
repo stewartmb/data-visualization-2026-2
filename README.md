@@ -52,6 +52,8 @@ La [matriz de tareas](redesign/01-problema-y-tareas.md) define propósito, entra
 
 ## Investigación y decisiones
 
+Las [cuatro referencias principales](redesign/05-referencias-finales.md) documentan antecedentes de comparación de perfiles, TV, normalización/Hellinger y reloj semanal con resta de períodos. Cada una distingue el método original de nuestra adaptación.
+
 El [contrato de diseño](redesign/02-investigacion-y-diseno.md) documenta la revisión de FINO y literatura sobre comparación visual, tareas, calendarios, consulta por ejemplo y trayectorias. La originalidad se busca en una experiencia coherente para este dominio: selección persistente, foco/contexto, varias lecturas del mismo dato y trazabilidad.
 
 La [metodología](redesign/03-datos-y-metodos.md) explica las fuentes públicas, las fórmulas, el ajuste del calendario, los joins y las alternativas de enriquecimiento evaluadas. El [plan de evaluación](redesign/04-evaluacion.md) distingue pruebas técnicas realizadas y evaluación pendiente con personas.
