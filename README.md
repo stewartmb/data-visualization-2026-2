@@ -42,7 +42,7 @@ La unidad de análisis de este proyecto no es el volumen total sino el **perfil 
 **Audiencia principal:** planificadores de servicio de la MTA y analistas de transporte urbano.
 **Decisión que apoya:** dónde reasignar frecuencia de servicio.
 
-La entrega final es una visualización interactiva en D3.js con cinco vistas enlazadas por brushing.
+La entrega final es una visualización interactiva en D3.js con cinco vistas enlazadas por brushing. El prototipo de la Semana 10 tiene cuatro de las cinco implementadas: [`deliveries/week10/prototype/`](deliveries/week10/prototype/).
 
 [↑](#indice)
 
@@ -58,7 +58,7 @@ La entrega final es una visualización interactiva en D3.js con cinco vistas enl
 | 5 | 9 sep | Propuesta de proyecto | [`deliveries/week05/`](deliveries/week05/) |
 | 6 | 16 sep | Análisis de datos y bocetos | [`deliveries/week06/`](deliveries/week06/) |
 | 7 | 23 sep | Delivery 1 — consolidación de la primera fase | [`deliveries/week07/`](deliveries/week07/) |
-| 10 | 14 oct | Prototipo funcional y design review | `deliveries/week10/` |
+| 10 | 14 oct | Prototipo funcional y design review | [`deliveries/week10/`](deliveries/week10/) |
 | 12 | 28 oct | Borrador refinado y crítica por pares | `deliveries/week12/` |
 | 15 | 18 nov | Entrega final y exhibición | `deliveries/week15/` |
 
@@ -84,7 +84,10 @@ data-visualization-2026-2/
     ├── week04/               dataset seleccionado y documentado
     ├── week05/               propuesta de proyecto
     ├── week06/               análisis de datos y bocetos
-    └── week07/               Delivery 1
+    ├── week07/               Delivery 1
+    └── week10/               prototipo funcional y design review
+        ├── prototype/        la aplicación D3 (HTML · CSS · módulos JS · datos)
+        └── code/             script que construye el JSON del cliente
 ```
 
 [↑](#indice)
@@ -113,7 +116,7 @@ Los tres participan en la formulación de preguntas, la crítica de diseño y la
 
 | Semana | Fecha | Objetivo |
 |---|---|---|
-| 10 | 14 oct | Prototipo funcional en D3 con las vistas A, B y C enlazadas |
+| 10 | 14 oct | Prototipo funcional en D3 con las vistas A, B, C y D enlazadas — **entregado** |
 | 12 | 28 oct | Narrativa integrada, vistas D y E, respuesta a la crítica por pares |
 | 15 | 18 nov | Aplicación publicada, paper, teaser, video, poster y presentación final |
 
@@ -153,6 +156,15 @@ Los notebooks corren en Google Colab sin instalar nada. En este orden:
 </details>
 
 Las salidas quedan en `deliveries/week06/data/processed/`.
+
+### Correr el prototipo
+
+```bash
+cd deliveries/week10/prototype
+python3 -m http.server 8000
+```
+
+Abrir <http://localhost:8000>. No hace falta instalar ni compilar nada; sí hace falta un servidor HTTP, porque el prototipo usa módulos ES y `fetch`. Instrucciones completas y despliegue en [`deliveries/week10/README.md`](deliveries/week10/README.md).
 
 [↑](#indice)
 
