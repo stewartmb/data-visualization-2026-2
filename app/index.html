@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La forma del día — el ritmo del metro de Nueva York, 2020–2024</title>
+<meta name="description" content="Cómo cambió el ritmo horario del metro de Nueva York entre 2020 y 2024, estación por estación. Proyecto de visualización de datos en D3.js.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='black'/><path d='M1 12 L4 5 L6 11 L8 3 L10 11 L12 6 L15 12' stroke='white' fill='none' stroke-width='1.4'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/tokens.css">
+<link rel="stylesheet" href="src/estilos.css">
+</head>
+<body>
+
+<header class="barra">
+  <a class="marca" href="#inicio">La forma del día <small>metro de Nueva York, 2020–2024</small></a>
+  <nav class="progreso" id="progreso" aria-label="Capítulos"></nav>
+  <div class="acciones">
+    <button class="boton chico" id="abrir-clave-barra">Qué significa cada marca</button>
+    <a class="boton chico" href="#explorador">Explorador</a>
+  </div>
+</header>
+
+<div id="cargando" style="padding:40px var(--margen);color:var(--tinta-3)">Cargando los datos…</div>
+
+<main id="narrativa"></main>
+
+<!-- ================================================= explorador -->
+<section class="explorador" id="explorador">
+  <div class="interior">
+    <div class="cabecera">
+      <div>
+        <h2>Explorar las 428 estaciones</h2>
+        <p>Las cuatro vistas comparten una selección: un clic, un rectángulo en la dispersión o un período en la serie temporal cambian todo lo demás. Doble clic para limpiar un brush.</p>
+      </div>
+      <div class="controles">
+        <label>Borough
+          <select id="filtro-borough"><option value="">todos</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option><option>Staten Island</option></select>
+        </label>
+        <label>Tipo
+          <select id="filtro-tipo"><option value="">todos</option><option value="residencial">residencial</option><option value="mixta">mixta</option><option value="laboral">laboral</option></select>
+        </label>
+        <label><input type="checkbox" id="filtro-conf"> solo comparaciones sólidas</label>
+        <button class="boton chico" id="limpiar-todo">Quitar todo</button>
+      </div>
+    </div>
+    <div class="estado-bar" id="estado-bar"></div>
+
+    <div class="rejilla-expl">
+      <div class="tarjeta" id="tarjeta-mapa">
+        <div class="cabecera-tarjeta">
+          <div><div class="titulo">Dónde</div><div class="subtitulo">el tamaño es entradas por día; la lente elige el color</div></div>
+          <div class="segmentos" id="lentes" role="tablist">
+            <button data-lente="tipo">tipo</button><button data-lente="rec">recuperación</button><button data-lente="aplan">pico</button><button data-lente="conf">confiabilidad</button>
+          </div>
+        </div>
+        <div class="cuerpo-grafico" id="mapa-expl"></div>
+      </div>
+
+      <div class="tarjeta" id="tarjeta-multiples">
+        <div class="cabecera-tarjeta">
+          <div><div class="titulo">Cómo: el ritmo de cada estación</div><div class="subtitulo">168 horas, de domingo a sábado; gris = enero–febrero 2020, color = 2024, escala común</div></div>
+          <div class="controles"><span id="contador-multiples" style="font-size:11.5px;font-weight:600;color:var(--tinta)"></span>
+            <label>Orden <select id="orden-multiples"><option value="aplan">más se aplanó</option><option value="rec">menos recuperó</option><option value="chg">más cambió de forma</option><option value="vol">más volumen</option><option value="nom">nombre</option></select></label>
+          </div>
+        </div>
+        <div class="sm-cuerpo" id="multiples-expl"></div>
+      </div>
+
+      <div class="tarjeta" id="tarjeta-dispersion">
+        <div class="cabecera-tarjeta">
+          <div><div class="titulo">Cuánto y cómo</div><div class="subtitulo">arrastra un rectángulo para filtrar las demás vistas</div></div>
+        </div>
+        <div class="cuerpo-grafico" id="dispersion-expl"></div>
+      </div>
+
+      <div class="tarjeta" id="tarjeta-serie">
+        <div class="cabecera-tarjeta">
+          <div><div class="titulo">Cuándo: entradas mensuales al sistema</div><div class="subtitulo">arrastra para elegir un período; el tamaño de las estaciones en el mapa pasa a ser el promedio de ese período</div></div>
+        </div>
+        <div id="serie-expl"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= panel de estación -->
+<aside class="panel" id="panel-estacion" aria-label="Detalle de la estación"></aside>
+
+<!-- ================================================= clave visual -->
+<aside class="clave-visual" id="clave-visual" aria-label="Qué significa cada marca">
+  <button class="cerrar" aria-label="Cerrar">×</button>
+  <h3>Qué significa cada marca</h3>
+  <section>
+    <h4>El antes y el ahora</h4>
+    <div class="fila"><i class="muestra" style="background:var(--antes);border:1px solid var(--antes-borde)"></i><div><b>Área gris</b>: el perfil de enero–febrero de 2020, la línea base. <span class="no">No es "un año normal": son dos meses de invierno, los únicos previos a la pandemia que tiene este dataset.</span></div></div>
+    <div class="fila"><i class="muestra linea" style="background:var(--tinta)"></i><div><b>Línea</b>: el perfil de 2024. En el explorador toma el color del tipo de la estación.</div></div>
+  </section>
+  <section>
+    <h4>El tipo de cada estación</h4>
+    <div class="fila"><i class="muestra punto" style="background:var(--residencial)"></i><div><b>Residencial</b>: más entradas por la mañana que por la tarde. La gente sale de casa.</div></div>
+    <div class="fila"><i class="muestra punto" style="background:var(--laboral)"></i><div><b>Laboral</b>: más entradas por la tarde. La gente sale del trabajo.</div></div>
+    <div class="fila"><i class="muestra punto" style="background:var(--mixta)"></i><div><b>Mixta</b>: entradas parejas. <span class="no">El tipo se fija con los datos de 2020 y no cambia con los filtros: el color sigue a la estación.</span></div></div>
+  </section>
+  <section>
+    <h4>Las dos medidas del cambio</h4>
+    <div class="fila"><i class="muestra degradado"></i><div><b>Recuperación</b>, azul claro → oscuro: entradas de enero–febrero de 2024 frente a enero–febrero de 2020. <span class="no">Recortada en p10 y p90: fuera de ese rango el color no distingue.</span></div></div>
+    <div class="fila"><i class="muestra polar"></i><div><b>Cambio del pico</b>, azul ↔ gris ↔ rojo: cuánto cambió la razón pico/valle. Azul es la dirección común (se aplanó); rojo, la excepción (se afiló). <span class="no">Más azul no es "mejor".</span></div></div>
+  </section>
+  <section>
+    <h4>Confiabilidad</h4>
+    <div class="fila"><i class="muestra anillo"></i><div><b>Anillo punteado</b>: la comparación de esta estación es poco confiable (estacional, con corte de servicio, o con línea base pequeña). <span class="no">Se muestra; no se esconde. Pero no sostiene conclusiones por sí sola.</span></div></div>
+    <div class="fila"><i class="muestra punto" style="background:var(--estacional)"></i><div>Sensible a la estación del año: playas, estadios, el aeropuerto.</div></div>
+    <div class="fila"><i class="muestra punto" style="background:var(--interrumpida)"></i><div>Caída anómala en la ventana de comparación: un corte de servicio o un cierre estacional.</div></div>
+  </section>
+  <section>
+    <h4>Tamaño</h4>
+    <div class="fila"><i class="muestra punto" style="background:var(--tinta-4)"></i><div><b>Radio</b>: entradas por día en 2024, en escala de raíz cuadrada. Con un período elegido en la serie temporal, pasa a ser el promedio de ese período. <span class="no">El tamaño nunca cambia con la lente: es contexto, no el foco.</span></div></div>
+  </section>
+</aside>
+
+<footer class="pie-pagina">
+  <div class="interior">
+    <div><b>Datos</b>MTA Subway Hourly Ridership 2020–2024 (<code>wujg-7c2s</code>), Metropolitan Transportation Authority vía Open NY. 120 855 568 registros agregados del lado del servidor con la API SODA de Socrata. Geografía: NYC Department of City Planning y GTFS estático de la MTA.</div>
+    <div><b>Método</b>Todo lo que afirma esta página sale de <code>build_model.py</code> sobre las tablas agregadas; no hay cálculo en el navegador que no se pueda reproducir. Los hallazgos, incluidos los negativos, se generan desde el modelo.</div>
+    <div><b>Proyecto</b>Acervo Correa, Renzo Alfonso · Maquera Bobadilla, Diva Stewart · Condori Palomino, José Eduardo. DS5343 Data Visualization, UTEC, 2026-2. D3.js v7. Parte del código se elaboró con asistencia de IA, revisada y validada por el equipo.</div>
+  </div>
+</footer>
+
+<script src="lib/d3.min.js"></script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
