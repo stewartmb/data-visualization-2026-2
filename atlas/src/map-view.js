@@ -7,7 +7,7 @@ export function renderMap(host,app,items){
 
   host.innerHTML=heading('02 / SITUAR EL CAMBIO','El ritmo también tiene geografía.','Localiza los patrones del atlas. Una estación puede recuperar volumen y, aun así, distribuir sus entradas en horarios distintos.','T2 · T3 · T4')+`
   <div class="toolbar"><label>Color<select id="map-metric">${Object.entries(names).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label><span class="spacer" style="font-size:10px;color:var(--muted)">Clic: investigar · rueda: acercar · arrastrar: mover</span></div>
-  ${state.mapMetric==='change'?`<div class="map-emphasis"><b>Filtrar distancia TV</b><label for="map-min-tv">Desde <output id="map-min-output">${fmt(state.tvMin)} pp</output><input id="map-min-tv" type="range" min="0" max="${rangeLimit}" step="0.5" value="${Math.min(state.tvMin,rangeLimit)}" aria-label="Distancia TV mínima"></label><label for="map-max-tv">Hasta <output id="map-max-output">${fmt(upper)} pp</output><input id="map-max-tv" type="range" min="0" max="${rangeLimit}" step="0.5" value="${upper}" aria-label="Distancia TV máxima"></label><button id="map-range-reset" class="text-button">Quitar filtro TV</button><span>${items.length} estaciones en el grupo</span><small>Se aplica al soltar la barra. Solo se muestran estaciones dentro del rango; el filtro se conserva en las otras vistas.</small></div>`:''}
+  ${state.mapMetric==='change'?`<div class="map-emphasis"><b>Filtrar distancia TV</b><div class="tv-range-control"><div class="tv-range-values"><span>Mínimo: <output id="map-min-output">${fmt(state.tvMin)} pp</output></span><span>Máximo: <output id="map-max-output">${fmt(upper)} pp</output></span></div><div class="dual-range" role="group" aria-label="Rango de distancia TV"><div class="dual-range-track"></div><div class="dual-range-selected"></div><input id="map-min-tv" type="range" min="0" max="${rangeLimit}" step="0.5" value="${Math.min(state.tvMin,rangeLimit)}" aria-label="Distancia TV mínima"><input id="map-max-tv" type="range" min="0" max="${rangeLimit}" step="0.5" value="${upper}" aria-label="Distancia TV máxima"></div></div><button id="map-range-reset" class="text-button">Quitar filtro TV</button><span>${items.length} estaciones en el grupo</span><small>Se aplica al soltar la barra. Solo se muestran estaciones dentro del rango; el filtro se conserva en las otras vistas.</small></div>`:''}
   <div class="viz-card"><div class="map-control"><button id="map-select">Seleccionar área</button><button id="map-center">Centrar ↺</button></div><svg class="map-svg" role="img" aria-label="Mapa de complejos de estación en los boroughs de Nueva York"></svg><div class="map-credit">Contornos: NYC Department of City Planning · catálogo MTA actual</div><div class="chart-note"><span id="map-key"></span><span>Todos los puntos tienen igual tamaño; solo el color codifica el cambio.</span></div></div>${stats(items)}
   <div class="narrative"><b>Una selección, cuatro lentes</b><span>El grupo definido aquí se conserva en el atlas, las trayectorias y la tabla de evidencia. Los filtros identifican asociaciones espaciales; no explican sus causas.</span></div>`;
   const select=host.querySelector('#map-metric');select.value=state.mapMetric;select.onchange=()=>app.set({mapMetric:select.value});
@@ -27,9 +27,22 @@ export function renderMap(host,app,items){
   points.sort((a,b)=>Math.abs(metricValue(a,state.mapMetric))-Math.abs(metricValue(b,state.mapMetric)));
   if(state.mapMetric==='change'){
     const lower=host.querySelector('#map-min-tv'),higher=host.querySelector('#map-max-tv');
-    lower.oninput=()=>{if(+lower.value>+higher.value)higher.value=lower.value;preview();};
-    higher.oninput=()=>{if(+higher.value<+lower.value)lower.value=higher.value;preview();};
-    function preview(){host.querySelector('#map-min-output').textContent=`${fmt(+lower.value)} pp`;host.querySelector('#map-max-output').textContent=`${fmt(+higher.value)} pp`;}
+    lower.oninput=()=>{if(+lower.value>+higher.value)lower.value=higher.value;preview();};
+    higher.oninput=()=>{if(+higher.value<+lower.value)higher.value=lower.value;preview();};
+    function preview(){
+      host.querySelector('#map-min-output').textContent=`${fmt(+lower.value)} pp`;host.querySelector('#map-max-output').textContent=`${fmt(+higher.value)} pp`;
+      const track=host.querySelector('.dual-range-selected');track.style.left=`${100*lower.value/rangeLimit}%`;track.style.width=`${100*(higher.value-lower.value)/rangeLimit}%`;
+      lower.setAttribute('aria-valuemax',higher.value);higher.setAttribute('aria-valuemin',lower.value);
+      lower.setAttribute('aria-valuetext',`${fmt(+lower.value)} puntos porcentuales`);higher.setAttribute('aria-valuetext',`${fmt(+higher.value)} puntos porcentuales`);
+      lower.style.zIndex=+lower.value===rangeLimit?'4':'2';
+    }
+    preview();
+    host.querySelector('.dual-range').addEventListener('pointerdown',e=>{
+      if(e.target.tagName==='INPUT')return;
+      const rect=e.currentTarget.getBoundingClientRect(),value=Math.max(0,Math.min(rangeLimit,Math.round((e.clientX-rect.left)/rect.width*rangeLimit*2)/2));
+      const handle=Math.abs(value-lower.value)<Math.abs(value-higher.value)?lower:higher;
+      handle.value=value;handle.dispatchEvent(new Event('input'));handle.focus();handle.dispatchEvent(new Event('change'));
+    });
     const apply=()=>app.set({tvMin:+lower.value,tvMax:+higher.value===rangeLimit?100:+higher.value});
     lower.onchange=apply;higher.onchange=apply;host.querySelector('#map-range-reset').onclick=()=>app.set({tvMin:0,tvMax:100});
   }
