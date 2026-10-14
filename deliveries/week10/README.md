@@ -4,6 +4,12 @@
 
 Prototipo en D3.js de *La forma del día*. Cuatro vistas enlazadas sobre 428 complejos de estación del metro de Nueva York, 2020–2024.
 
+![El prototipo](capturas/prototipo.png)
+
+Un brush sobre la dispersión filtra el mapa y los perfiles. Acá quedan seleccionadas 161 de las 428 estaciones, el 55 % de las entradas del sistema:
+
+![Estado filtrado](capturas/filtrado.png)
+
 ---
 
 ## Contenido
@@ -15,6 +21,8 @@ Prototipo en D3.js de *La forma del día*. Cuatro vistas enlazadas sobre 428 com
 | [`prototype/`](prototype/) | código fuente completo del prototipo |
 | [`prototype/data/app.json`](prototype/data/app.json) | datos procesados que consume la aplicación (1.4 MB) |
 | [`code/build_app_json.py`](code/build_app_json.py) | script que reconstruye `app.json` desde los CSV de la Semana 6 |
+| [`guion-exposicion.md`](guion-exposicion.md) | guion del design review, cronometrado a 5 minutos |
+| [`capturas/`](capturas/) | capturas del prototipo corriendo |
 
 ```
 prototype/
