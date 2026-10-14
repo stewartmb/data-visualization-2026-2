@@ -2,12 +2,13 @@
 
 Selección final revisada el **14 de octubre de 2026**. Se eligieron por su relación con procedimientos concretos del atlas: comparar perfiles, medir diferencias entre distribuciones, buscar semejanzas y representar ciclos semanales. FINO es un referente de experiencia de investigación; no sustituye estas fuentes metodológicas.
 
-Los cuatro textos completos tienen enlaces públicos. Los enlaces conducen a versiones editoriales abiertas o a la copia depositada por los autores en el sitio del taller. Disponibilidad de lectura no equivale automáticamente a permiso para redistribuir todos los PDF: esta revisión enlaza los documentos originales.
+Los cuatro textos completos tienen enlaces públicos. Los enlaces conducen a versiones editoriales abiertas o a la copia depositada por los autores en el sitio del taller. Las copias consultadas se encuentran en [papers/](papers/README.md), con enlaces a las fuentes y huellas SHA-256. Se conservan sin modificar, incluidos sus avisos de autoría y derechos.
 
 ## 1. Comparación de forma de perfiles horarios
 
 **Liu, L., Miller, H. J., & Scheff, J. (2020).** The impacts of COVID-19 pandemic on public transit demand in the United States. *PLOS ONE, 15*(11), e0242476. https://doi.org/10.1371/journal.pone.0242476
 
+- **PDF en esta rama:** [Abrir o descargar](papers/liu_2020_transit_demand.pdf)
 - **Texto completo abierto:** https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0242476
 - **Dónde revisar:** sección *Change in daily transit demand dynamics*, Figura 3 y ecuaciones 9–10.
 - **Procedimiento del artículo:** compara curvas horarias antes/durante la pandemia mediante Procrustes ordinario, limitado al cambio de escala; también compara miércoles y domingo. La Figura 3 muestra perfiles del sistema MTA de Nueva York. La fuente horaria es actividad en la aplicación Transit, un indicador de demanda, no conteos de entradas de estaciones.
@@ -18,6 +19,7 @@ Los cuatro textos completos tienen enlaces públicos. Los enlaces conducen a ver
 
 **Fredriksson, J., & Karlström, A. (2025).** A Fully Neural Network-Based Travel Demand and Scheduling Model, Covering Activities, Destinations, and Modes of Transportation. *Data Science for Transportation, 7*, 28. https://doi.org/10.1007/s42421-025-00141-5
 
+- **PDF en esta rama:** [Abrir o descargar](papers/fredriksson_2025_travel_demand_tv.pdf)
 - **Texto completo abierto:** https://link.springer.com/article/10.1007/s42421-025-00141-5
 - **Dónde revisar:** ecuación 11 y explicación de la propagación de errores hacia el reparto modal.
 - **Procedimiento del artículo:** compara la distribución observada y simulada de cuatro modos (caminar, bicicleta, transporte público y automóvil), mediante `TV(p,q) = ½ Σ |p_m − q_m|`. Interpreta la medida como la proporción del reparto modal que difiere entre distribuciones.
@@ -28,6 +30,7 @@ Los cuatro textos completos tienen enlaces públicos. Los enlaces conducen a ver
 
 **Van der Knaap, R. J. H., de Bruyn, M., van Oort, N., Huisman, D., & Goverde, R. M. P. (2024).** Clustering railway passenger demand patterns from large-scale origin–destination data. *Journal of Rail Transport Planning & Management, 31*, 100452. https://doi.org/10.1016/j.jrtpm.2024.100452
 
+- **PDF en esta rama:** [Abrir o descargar](papers/van_der_knaap_2024_normalization_hellinger.pdf)
 - **PDF completo abierto (TU Delft, versión proof):** https://pure.tudelft.nl/ws/portalfiles/portal/206768699/1-s2.0-S2210970624000222-main.pdf
 - **Dónde revisar:** sección 2.1, ecuaciones 1–3, páginas numeradas 4–5 del artículo (el archivo incluye una portada institucional).
 - **Procedimiento del artículo:** divide cada celda de una matriz origen–destino por la suma de todas sus celdas para obtener una distribución que suma 1. Compara matrices normalizadas con Hellinger cuadrática; contrasta ese análisis con el de matrices sin normalizar, que conservan volumen además de estructura.
@@ -38,6 +41,7 @@ Los cuatro textos completos tienen enlaces públicos. Los enlaces conducen a ver
 
 **Dhont, M., Tsiporkova, E., Tourwé, T., & González-Deleito, N. (2020).** Visual Analytics for Extracting Trends from Spatio-temporal Data. En *Advanced Analytics and Learning on Temporal Data*, LNCS 12588, pp. 122–137. https://doi.org/10.1007/978-3-030-65742-0_9
 
+- **PDF en esta rama:** [Abrir o descargar](papers/dhont_2020_circular_heatmaps.pdf)
 - **PDF completo público del taller:** https://project.inria.fr/aaltd20/files/2020/08/AALTD_20_paper_DhontVisual.pdf
 - **Ficha institucional:** https://researchportal.vub.be/en/publications/visual-analytics-for-extracting-trends-from-spatio-temporal-data/
 - **Dónde revisar en la versión del taller:** sección 3.2, sección 3.3 y Figuras 2–3, páginas 6–8.

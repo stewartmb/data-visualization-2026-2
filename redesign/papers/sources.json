@@ -1,0 +1,30 @@
+{
+  "liu_2020_transit_demand.pdf": {
+    "source_url": "https://journals.plos.org/plosone/article/file?id=10.1371/journal.pone.0242476&type=printable",
+    "retrieved_on": "2026-10-14",
+    "bytes": 2829738,
+    "pages": 22,
+    "sha256": "9b3382fb7ed711547ee401bc3bdd475b92d35600f9775c0d84576b9fead89d7a"
+  },
+  "fredriksson_2025_travel_demand_tv.pdf": {
+    "source_url": "https://link.springer.com/content/pdf/10.1007/s42421-025-00141-5.pdf",
+    "retrieved_on": "2026-10-14",
+    "bytes": 8052517,
+    "pages": 35,
+    "sha256": "b2f8c5e021ced307e10414e0d3d5c2e0decdb088d7cee7e989879bd2374e8bfd"
+  },
+  "van_der_knaap_2024_normalization_hellinger.pdf": {
+    "source_url": "https://pure.tudelft.nl/ws/portalfiles/portal/206768699/1-s2.0-S2210970624000222-main.pdf",
+    "retrieved_on": "2026-10-14",
+    "bytes": 3783342,
+    "pages": 18,
+    "sha256": "6c4bc8daa3fcac9c32156623e2577d3f8181c24600ce452e66700ff8384c4f74"
+  },
+  "dhont_2020_circular_heatmaps.pdf": {
+    "source_url": "https://project.inria.fr/aaltd20/files/2020/08/AALTD_20_paper_DhontVisual.pdf",
+    "retrieved_on": "2026-10-14",
+    "bytes": 6787648,
+    "pages": 16,
+    "sha256": "f2ece6b3f2832465c6286c3ca00d3b42e565218f837fdfa6340a1ee2fc1ed451"
+  }
+}
