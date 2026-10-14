@@ -41,7 +41,7 @@ export function capitulos(M, G) {
     },
     // ----------------------------------------------- 1 · cuánta gente volvió
     {
-      id: 'volumen', numero: 1,
+      id: 'volumen', numero: 1, etiqueta: 'Volumen',
       pregunta: '¿Cuánta gente volvió?',
       hallazgo: H.estanco,
       render(fig) { serieMensual(fig, { serie: M.sistema.serie, base: M.meta.base, alto: 300, anotaciones: true }); },
@@ -53,7 +53,7 @@ export function capitulos(M, G) {
     },
     // ------------------------------------------- 2 · sigue el doble pico
     {
-      id: 'forma', numero: 2,
+      id: 'forma', numero: 2, etiqueta: 'El doble pico',
       pregunta: '¿Sigue existiendo el doble pico?',
       hallazgo: H.aplano,
       cuerpo: `Sí, pero más bajo y más tarde. El pico de la mañana perdió peso en tres de los cuatro boroughs grandes y el mediodía lo ganó. El cuarto es la excepción, y es el capítulo 5.`,
@@ -65,7 +65,7 @@ export function capitulos(M, G) {
           const t = fila.append('div').attr('class', 'tarjeta');
           t.append('div').attr('class', 'titulo').text(b === 'Bronx' ? 'Bronx: la excepción' : b);
           t.append('div').attr('class', 'subtitulo').text(`${v.n} estaciones · pico/valle ${fmt.razon(v.pvPre)} → ${fmt.razon(v.pvCur)} · 7–9 h: ${fmt.pct(v.share79Pre, 1)} → ${fmt.pct(v.share79Cur, 1)} del día`);
-          perfil24(t.append('div').node(), { pre: v.perfilPre, cur: v.perfilCur, alto: 190, compacto: true, maxY, margen: { t: 12, r: 10, b: 26, l: 36 } });
+          perfil24(t.append('div').node(), { pre: v.perfilPre, cur: v.perfilCur, alto: 250, compacto: true, maxY, margen: { t: 12, r: 10, b: 26, l: 36 } });
         });
         leyendaAntesAhora(fig, 'día laborable, share por hora');
       },
@@ -77,13 +77,13 @@ export function capitulos(M, G) {
     },
     // --------------------------------------------- 3 · para qué se usa
     {
-      id: 'tipos', numero: 3,
+      id: 'tipos', numero: 3, etiqueta: 'Tipos',
       pregunta: '¿Para qué se usa cada estación?',
       hallazgo: H['una-direccion'],
       cuerpo: `Las entradas de la mañana son gente saliendo de casa; las de la tarde, gente saliendo del trabajo. Esa asimetría separa la ciudad sin ningún dato externo: ${M.tipos.residencial.n} estaciones residenciales, ${M.tipos.laboral.n} laborales (${M.boroughs.Manhattan.tipos.laboral} de ellas en Manhattan) y ${M.tipos.mixta.n} mixtas.`,
       render(fig) {
         const w = d3.select(fig).append('div').attr('class', 'dos-col ancha-izq');
-        const tm = w.append('div').attr('class', 'tarjeta').style('height', '520px').style('display', 'flex').style('flex-direction', 'column');
+        const tm = w.append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, 64vh, 760px)').style('display', 'flex').style('flex-direction', 'column');
         tm.append('div').attr('class', 'titulo').text('Tipo de cada estación, según su asimetría mañana/tarde en 2020');
         const cm = tm.append('div').attr('class', 'cuerpo-grafico');
         mapa(cm.node(), { modelo: M, geo: G, lente: 'tipo', interactivo: true, zoom: true, visible: () => true, tamanoPorRango: false, radioMax: 9 });
@@ -105,12 +105,12 @@ export function capitulos(M, G) {
     },
     // ------------------------------------------ 4 · cuánto o cómo
     {
-      id: 'ejes', numero: 4,
+      id: 'ejes', numero: 4, etiqueta: 'Cuánto o cómo',
       pregunta: '¿Qué cambió más: cuánto o cómo?',
       hallazgo: H.independientes,
       cuerpo: `Cada punto es una estación. A la derecha, volvió más gente; abajo, el pico se aplanó más. La nube no es una diagonal: saber una cosa no dice la otra.`,
       render(fig) {
-        const t = d3.select(fig).append('div').attr('class', 'tarjeta').style('height', '460px').style('display', 'flex').style('flex-direction', 'column');
+        const t = d3.select(fig).append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, 64vh, 760px)').style('display', 'flex').style('flex-direction', 'column');
         t.append('div').attr('class', 'titulo').text('Recuperación frente a cambio del pico, una estación por punto, color por tipo');
         const c = t.append('div').attr('class', 'cuerpo-grafico');
         dispersion(c.node(), { modelo: M, brush: false, interactivo: true, visible: () => true });
@@ -124,16 +124,16 @@ export function capitulos(M, G) {
     },
     // -------------------------------------------- 5 · por qué el Bronx
     {
-      id: 'bronx', numero: 5,
+      id: 'bronx', numero: 5, etiqueta: 'El Bronx',
       pregunta: '¿Por qué el Bronx?',
       hallazgo: H.bronx,
       cuerpo: `Aplanar el pico es lo que hace el trabajo híbrido: se deja de viajar algunos días y el resto del día gana peso. Donde la gente no puede quedarse en casa, el pico se queda igual y solo baja el volumen. El Bronx recuperó el ${fmt.pct(bx.rec)} y su pico cambió ${fmt.cambio(bx.aplan)}; Manhattan, Brooklyn y Queens recuperaron ${rango(otros.map(o => o.rec), fmt.pct)} y su pico cambió ${rango(otros.map(o => o.aplan), fmt.cambio, true)}.`,
       render(fig) {
         const w = d3.select(fig).append('div').attr('class', 'dos-col');
-        const t1 = w.append('div').attr('class', 'tarjeta').style('height', '440px').style('display', 'flex').style('flex-direction', 'column');
+        const t1 = w.append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, 64vh, 760px)').style('display', 'flex').style('flex-direction', 'column');
         t1.append('div').attr('class', 'titulo').text('Las estaciones del Bronx en negro; el resto de la ciudad en gris');
         dispersion(t1.append('div').attr('class', 'cuerpo-grafico').node(), { modelo: M, brush: false, interactivo: true, visible: () => true, resaltar: e => e.b === 'Bronx', etiquetaResaltado: 'Bronx, mediana', cuadrantes: false });
-        const t2 = w.append('div').attr('class', 'tarjeta').style('height', '440px').style('display', 'flex').style('flex-direction', 'column');
+        const t2 = w.append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, 64vh, 760px)').style('display', 'flex').style('flex-direction', 'column');
         t2.append('div').attr('class', 'titulo').text('Cambio del pico, estación por estación');
         mapa(t2.append('div').attr('class', 'cuerpo-grafico').node(), { modelo: M, geo: G, lente: 'aplan', interactivo: true, zoom: true, visible: () => true, enfoqueBorough: 'Bronx', tamanoPorRango: false, radioMax: 10 });
         const tabla = d3.select(fig).append('div').attr('class', 'tarjeta').style('margin-top', '14px');
@@ -154,7 +154,7 @@ export function capitulos(M, G) {
     },
     // ------------------------------------------------- 6 · el abono
     {
-      id: 'abono', numero: 6,
+      id: 'abono', numero: 6, etiqueta: 'El abono',
       pregunta: '¿Quién dejó de comprar el abono?',
       hallazgo: H.abono,
       cuerpo: `La composición por clase de pago es la evidencia indirecta del mecanismo. El pase ilimitado de 30 días solo conviene si se viaja casi todos los días; su desplome es lo que se espera si una parte de la ciudad pasó a viajar dos o tres días por semana.`,
@@ -170,16 +170,16 @@ export function capitulos(M, G) {
     },
     // ------------------------------------- 7 · qué no podemos afirmar
     {
-      id: 'limites', numero: 7,
+      id: 'limites', numero: 7, etiqueta: 'Límites',
       pregunta: '¿Qué no podemos afirmar?',
       hallazgo: H['linea-base'],
       cuerpo: `La línea base disponible son dos meses de invierno de 2020: este dataset no tiene 2019. Comparar contra ellos es correcto para la mayoría de las estaciones y engañoso para algunas: las de playa y estadio, las que tuvieron un corte de servicio en la ventana de comparación, las muy pequeñas. Esas están marcadas con anillo punteado en toda la aplicación, y las medianas por borough y por tipo se calculan sin ellas.`,
       render(fig) {
         const w = d3.select(fig).append('div').attr('class', 'dos-col ancha-izq');
-        const tm = w.append('div').attr('class', 'tarjeta').style('height', '480px').style('display', 'flex').style('flex-direction', 'column');
+        const tm = w.append('div').attr('class', 'tarjeta').style('height', 'clamp(400px, 64vh, 760px)').style('display', 'flex').style('flex-direction', 'column');
         tm.append('div').attr('class', 'titulo').text('Confiabilidad de la comparación, estación por estación');
         mapa(tm.append('div').attr('class', 'cuerpo-grafico').node(), { modelo: M, geo: G, lente: 'conf', interactivo: true, zoom: true, visible: () => true, tamanoPorRango: false, radioMax: 9 });
-        const lista = w.append('div').attr('class', 'tarjeta').style('overflow-y', 'auto').style('height', '480px');
+        const lista = w.append('div').attr('class', 'tarjeta').style('overflow-y', 'auto').style('height', 'clamp(400px, 64vh, 760px)');
         lista.append('div').attr('class', 'titulo').text('Las estaciones marcadas y por qué');
         ['interrumpida', 'estacional', 'pequena'].forEach(nivel => {
           const g = M.estaciones.filter(e => e.conf.nivel === nivel).sort((a, b) => Math.abs(b.dSeason) - Math.abs(a.dSeason));

@@ -10,81 +10,128 @@ import { dispersion } from './graficos/dispersion.js';
 import { multiples } from './graficos/multiples.js';
 import { serieMensual } from './graficos/serie.js';
 import { panelEstacion } from './panel-estacion.js';
+import { perfil24 } from './graficos/perfil.js';
 
 const ETIQUETA_TIPO = { positivo: 'hallazgo', negativo: 'lo que no se sostiene', limite: 'límite' };
 
 Promise.all([d3.json('data/model.json'), d3.json('data/geo.json')]).then(([M, G]) => {
   estado.init(M, G);
-  construirNarrativa(M, G);
+  document.body.classList.add('app');
+  const caps = capitulos(M, G);
+  construirHallazgos(M, caps);
+  construirPerfiles(M);
+  construirRecorrido(caps);
   montarExplorador(M, G);
+  montarPestanas();
   montarClave();
   montarTema();
   document.querySelector('#cargando').remove();
+  const h = location.hash.slice(1);
+  if (['perfiles', 'recorrido', 'explorador'].includes(h)) irA(h);
 }).catch(err => {
   document.querySelector('#cargando').textContent = 'No se pudieron cargar los datos. Hay que servir la carpeta por HTTP (python3 -m http.server).';
   console.error(err);
 });
 
-// ============================================================ narrativa
-function construirNarrativa(M, G) {
-  const caps = capitulos(M, G);
-  const cont = d3.select('#narrativa');
-  const prog = d3.select('#progreso');
+// ============================================================ pestañas
+function irA(vista) {
+  d3.selectAll('.vista').classed('oculta', function () { return this.dataset.vista !== vista; });
+  d3.selectAll('#pestanas button').classed('activa', function () { return this.dataset.vista === vista; });
+  history.replaceState(null, '', '#' + vista);
+  // los gráficos miden su contenedor al dibujar: avisar que cambió el tamaño visible
+  requestAnimationFrame(() => dispatchEvent(new Event('resize')));
+}
+function montarPestanas() {
+  d3.selectAll('#pestanas button').on('click', function () { irA(this.dataset.vista); });
+}
 
-  caps.forEach(c => {
-    const sec = cont.append('section').attr('class', 'capitulo' + (c.hero ? ' hero' : '')).attr('id', c.id);
-    const i = sec.append('div').attr('class', 'interior');
-    if (c.hero) {
-      i.append('h1').attr('class', 'pregunta').text(c.pregunta);
-      i.append('p').attr('class', 'sub').text(c.sub);
-      const fig = i.append('div').attr('class', 'figura');
-      c.render(fig.node());
-      const cl = i.append('div').attr('class', 'claves');
-      c.claves.forEach(([b, s]) => { const k = cl.append('div').attr('class', 'clave'); k.append('b').text(b); k.append('span').text(s); });
-      i.append('div').attr('class', 'acciones').html(`<a class="boton primario" href="#volumen">Empezar a leer</a><a class="boton" href="#explorador">Ir al explorador</a><button class="boton" id="abrir-clave">Qué significa cada marca</button>`);
-    } else {
-      i.append('div').attr('class', 'numero').text(`Capítulo ${c.numero} de ${caps.length - 1}`);
-      i.append('h2').attr('class', 'pregunta').text(c.pregunta);
-      const h = c.hallazgo;
-      i.append('p').attr('class', 'hallazgo').html(`<span class="tipo ${h.tipo}">${ETIQUETA_TIPO[h.tipo]}</span>${h.titulo}`);
-      i.append('p').attr('class', 'cuerpo').text(c.cuerpo || h.cuerpo);
-      if (c.cuerpo) i.append('p').attr('class', 'cuerpo').style('margin-top', '8px').style('color', 'var(--tinta-3)').style('font-size', 'var(--t-m)').text(h.cuerpo);
-      const fig = i.append('div').attr('class', 'figura');
-      c.render(fig.node());
-      if (c.pie) {
-        const p = i.append('div').attr('class', 'pie');
-        c.pie.forEach(([t, x]) => p.append('div').html(`<b>${t}</b>${x}`));
-      }
-      const acc = i.append('div').attr('class', 'acciones');
-      if (c.preset) acc.append('button').attr('class', 'boton').text('Ver estas estaciones en el explorador').on('click', () => {
-        estado.aplicarPreset(c.preset);
-        document.querySelector('#explorador').scrollIntoView({ behavior: 'smooth' });
-      });
-      const sig = caps[caps.indexOf(c) + 1];
-      if (sig) acc.append('a').attr('class', 'boton').attr('href', '#' + sig.id).text(`Capítulo ${sig.numero}: ${sig.pregunta}`);
-      else acc.append('a').attr('class', 'boton primario').attr('href', '#explorador').text('Explorar los datos');
-    }
-    prog.append('a').attr('href', '#' + c.id).attr('title', c.hero ? 'Inicio' : `${c.numero} · ${c.pregunta}`).attr('aria-label', c.hero ? 'Inicio' : c.pregunta);
+// ============================================================ vista 1 · hallazgos + perfiles
+function construirHallazgos(M, caps) {
+  const cont = d3.select('#hallazgos');
+  M.hallazgos.forEach(h => {
+    const cap = caps.find(c => c.hallazgo && c.hallazgo.id === h.id);
+    const b = cont.append('button').attr('class', 'hallazgo-card').attr('title', 'Abrir en el recorrido');
+    b.append('div').attr('class', 'n').html(`<span>${h.numero}</span><span class="tipo ${h.tipo}">${ETIQUETA_TIPO[h.tipo]}</span>`);
+    b.append('div').attr('class', 't').text(h.titulo);
+    b.on('click', () => { irA('recorrido'); if (cap) mostrarCapitulo(caps.indexOf(cap)); });
   });
-  prog.append('a').attr('href', '#explorador').attr('title', 'Explorador').attr('aria-label', 'Explorador');
+}
 
-  // progreso: qué sección está a la vista
-  const secciones = [...document.querySelectorAll('section.capitulo, section.explorador')];
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(en => { if (en.isIntersecting) { const id = en.target.id; prog.selectAll('a').classed('actual', function () { return this.getAttribute('href') === '#' + id; }); } });
-  }, { rootMargin: '-45% 0px -45% 0px' });
-  secciones.forEach(s => io.observe(s));
+let perfilGrande = null;
+function construirPerfiles(M) {
+  const opciones = [['sistema', 'todo el sistema'],
+    ...['Manhattan', 'Brooklyn', 'Queens', 'Bronx'].map(b => ['b:' + b, b]),
+    ...['residencial', 'mixta', 'laboral'].map(t => ['t:' + t, 'estaciones ' + (t === 'mixta' ? 'mixtas' : t === 'laboral' ? 'laborales' : 'residenciales')])];
+  const sel = d3.select('#perfil-sel');
+  sel.selectAll('option').data(opciones).join('option').attr('value', d => d[0]).text(d => d[1]);
+  const datosDe = v => v === 'sistema' ? [M.sistema.perfilPre, M.sistema.perfilCur, null]
+    : v.startsWith('b:') ? [M.boroughs[v.slice(2)].perfilPre, M.boroughs[v.slice(2)].perfilCur, null]
+    : [M.tipos[v.slice(2)].perfilPre, M.tipos[v.slice(2)].perfilCur, v.slice(2)];
+  const pintar = (animar) => {
+    const [pre, cur, tipo] = datosDe(sel.property('value'));
+    const el = document.querySelector('#perfil-grande');
+    const alto = Math.max(260, el.getBoundingClientRect().height - 8);
+    if (perfilGrande) perfilGrande.destruir();
+    perfilGrande = perfil24(el, { pre, cur, tipo, alto, animar, anotaciones: true, margen: { t: 22, r: 24, b: 30, l: 44 } });
+    d3.select('#perfil-leyenda').html(`<span class="item"><i class="muestra" style="background:var(--antes);border:1px solid var(--antes-borde)"></i>enero–febrero de 2020, la línea base</span><span class="item"><i class="muestra linea" style="background:${tipo ? 'var(--' + tipo + ')' : 'var(--tinta)'}"></i>2024</span>`);
+  };
+  sel.on('change', () => pintar(false));
+  pintar(true);
+  addEventListener('resize', () => { if (!document.querySelector('#perfiles').classList.contains('oculta')) pintar(false); });
+  // filtros de la rejilla (escriben en el estado compartido)
+  d3.select('#filtro-borough-p').on('change', function () { estado.fijarBoroughs(this.value ? new Set([this.value]) : null); });
+  d3.select('#filtro-tipo-p').on('change', function () { estado.fijarTipos(this.value ? new Set([this.value]) : null); });
+}
 
-  // teclado: ← → entre capítulos
+// ============================================================ vista 2 · recorrido
+let capActual = 0, capsRef = null, playTimer = null;
+function construirRecorrido(caps) {
+  capsRef = caps;
+  const barra = d3.select('#capitulos-barra');
+  caps.forEach((c, i) => barra.append('button').attr('role', 'tab').text(c.hero ? 'Inicio' : `${c.numero} · ${c.etiqueta || c.pregunta}`).on('click', () => mostrarCapitulo(i)));
+  d3.select('#cap-prev').on('click', () => mostrarCapitulo(Math.max(0, capActual - 1)));
+  d3.select('#cap-next').on('click', () => mostrarCapitulo(Math.min(caps.length - 1, capActual + 1)));
+  d3.select('#cap-play').on('click', function () {
+    if (playTimer) { clearInterval(playTimer); playTimer = null; d3.select(this).text('Play'); return; }
+    d3.select(this).text('Pausa');
+    playTimer = setInterval(() => { if (capActual >= caps.length - 1) { clearInterval(playTimer); playTimer = null; d3.select('#cap-play').text('Play'); return; } mostrarCapitulo(capActual + 1); }, 9000);
+  });
   document.addEventListener('keydown', ev => {
-    if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'SELECT' || ev.altKey || ev.metaKey || ev.ctrlKey) return;
-    if (ev.key !== 'ArrowRight' && ev.key !== 'ArrowLeft') return;
-    const ids = secciones.map(s => s.id);
-    const actual = prog.select('a.actual').attr('href')?.slice(1) || ids[0];
-    const i = Math.max(0, ids.indexOf(actual));
-    const j = ev.key === 'ArrowRight' ? Math.min(ids.length - 1, i + 1) : Math.max(0, i - 1);
-    document.getElementById(ids[j]).scrollIntoView({ behavior: 'smooth' });
+    if (document.querySelector('#recorrido').classList.contains('oculta')) return;
+    if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'SELECT') return;
+    if (ev.key === 'ArrowRight') mostrarCapitulo(Math.min(caps.length - 1, capActual + 1));
+    if (ev.key === 'ArrowLeft') mostrarCapitulo(Math.max(0, capActual - 1));
   });
+  mostrarCapitulo(0);
+}
+function mostrarCapitulo(i) {
+  const caps = capsRef, c = caps[i]; capActual = i;
+  d3.selectAll('#capitulos-barra button').classed('activa', (_, j) => j === i);
+  const t = d3.select('#recorrido-texto').html('');
+  const lienzo = d3.select('#recorrido-lienzo').html('');
+  if (c.hero) {
+    t.append('div').attr('class', 'numero').text('Inicio');
+    t.append('h2').attr('class', 'pregunta').text(c.pregunta);
+    t.append('p').attr('class', 'cuerpo').text(c.sub);
+    const w = lienzo.append('div').attr('class', 'hero-lienzo');
+    const fig = w.append('div').attr('class', 'figura').style('flex', '1');
+    c.render(fig.node());
+    const cl = w.append('div').attr('class', 'claves');
+    c.claves.forEach(([b, s]) => { const k = cl.append('div').attr('class', 'clave'); k.append('b').text(b); k.append('span').text(s); });
+  } else {
+    t.append('div').attr('class', 'numero').text(`Capítulo ${c.numero} de ${caps.length - 1}`);
+    t.append('h2').attr('class', 'pregunta').text(c.pregunta);
+    const h = c.hallazgo;
+    t.append('p').attr('class', 'hallazgo').html(`<span class="tipo ${h.tipo}">${ETIQUETA_TIPO[h.tipo]}</span>${h.titulo}`);
+    t.append('p').attr('class', 'cuerpo').text(c.cuerpo || h.cuerpo);
+    if (c.cuerpo) t.append('p').attr('class', 'cuerpo').style('color', 'var(--tinta-3)').text(h.cuerpo);
+    if (c.pie) c.pie.forEach(([tt, x]) => { const d = t.append('details'); d.append('summary').text(tt); d.append('div').text(x); });
+    const acc = t.append('div').attr('class', 'acciones');
+    if (c.preset) acc.append('button').attr('class', 'boton chico').text('Ver estas estaciones en el explorador').on('click', () => { estado.aplicarPreset(c.preset); irA('explorador'); });
+    const fig = lienzo.append('div').attr('class', 'figura');
+    c.render(fig.node());
+  }
+  requestAnimationFrame(() => dispatchEvent(new Event('resize')));
 }
 
 // ============================================================ explorador
@@ -128,6 +175,8 @@ function montarExplorador(M, G) {
     });
     d3.selectAll('#lentes button').classed('activo', function () { return this.dataset.lente === estado.lente; });
     d3.select('#filtro-borough').property('value', estado.boroughs ? [...estado.boroughs][0] : '');
+    d3.select('#filtro-borough-p').property('value', estado.boroughs ? [...estado.boroughs][0] : '');
+    d3.select('#filtro-tipo-p').property('value', estado.tipos ? [...estado.tipos][0] : '');
     d3.select('#filtro-tipo').property('value', estado.tipos ? [...estado.tipos][0] : '');
     d3.select('#filtro-conf').property('checked', estado.soloConfiables);
   }
@@ -151,7 +200,6 @@ function montarTema() {
     document.documentElement.dataset.theme = nuevo;
     try { localStorage.setItem('tema', nuevo); } catch (e) {}
     pintar();
-    // los gráficos leen los colores al dibujar: se recarga la página para repintar todo
     location.reload();
   });
   pintar();

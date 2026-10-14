@@ -287,3 +287,74 @@ svg text { font-family: var(--sans); }
   .barra { grid-template-columns: 1fr auto; }
   .progreso { display: none; }
 }
+
+/* =========================================================================
+   APLICACIÓN A PANTALLA COMPLETA — pestañas, vista de perfiles, recorrido
+   ========================================================================= */
+html, body { height: 100%; }
+body.app { overflow: hidden; }
+#app { height: calc(100vh - 52px); overflow: hidden; }
+.vista { height: 100%; padding: 12px var(--margen) 14px; overflow: auto; }
+.vista.oculta { display: none; }
+
+.pestanas { display: inline-flex; justify-self: center; border: 1px solid var(--borde-2); border-radius: 999px; padding: 3px; gap: 2px; }
+.pestanas button { border: 0; background: transparent; padding: 5px 14px; border-radius: 999px; font-size: var(--t-s); color: var(--tinta-2); cursor: pointer; }
+.pestanas button.activa { background: var(--tinta); color: var(--pagina); }
+
+/* hallazgos: tira de tarjetas */
+.hallazgos { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 12px; }
+.hallazgo-card { border: 1px solid var(--borde); border-radius: var(--radio); background: var(--superficie); padding: 9px 11px; cursor: pointer; min-height: 86px; display: flex; flex-direction: column; gap: 4px; text-align: left; font: inherit; color: inherit; }
+.hallazgo-card:hover { border-color: var(--borde-2); }
+.hallazgo-card .n { font-size: var(--t-xs); color: var(--tinta-3); display: flex; justify-content: space-between; }
+.hallazgo-card .n .tipo { border: 1px solid var(--borde-2); border-radius: 3px; padding: 0 5px; font-weight: 600; }
+.hallazgo-card .n .tipo.negativo { color: var(--tinta); border-color: var(--tinta); }
+.hallazgo-card .t { font-size: 12.5px; font-weight: 600; color: var(--tinta); line-height: 1.25; }
+@media (max-width: 1200px) { .hallazgos { grid-template-columns: repeat(4, 1fr); } }
+
+/* vista perfiles */
+.perfiles-rejilla { display: grid; grid-template-columns: minmax(420px, 5fr) minmax(420px, 7fr); gap: 12px; height: calc(100% - 110px); min-height: 480px; }
+#tarjeta-perfil-grande, #tarjeta-multiples-p { display: flex; flex-direction: column; min-height: 0; }
+#perfil-grande { flex: 1; min-height: 0; }
+.contador { font-size: var(--t-xs); font-weight: 600; color: var(--tinta); }
+
+/* recorrido */
+.recorrido-barra { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.capitulos { display: flex; gap: 4px; flex-wrap: wrap; }
+.capitulos button { border: 1px solid var(--borde); background: var(--superficie); border-radius: 999px; padding: 5px 12px; font-size: var(--t-xs); color: var(--tinta-2); cursor: pointer; }
+.capitulos button.activa { background: var(--tinta); color: var(--pagina); border-color: var(--tinta); }
+.recorrido-ctrl { display: flex; gap: 6px; }
+.recorrido-cuerpo { display: grid; grid-template-columns: minmax(280px, 300px) 1fr; gap: 14px; height: calc(100% - 50px); min-height: 480px; }
+.recorrido-texto { border: 1px solid var(--borde); border-radius: var(--radio); background: var(--superficie); padding: 16px 18px; overflow: auto; }
+.recorrido-texto .numero { font-size: var(--t-xs); color: var(--tinta-3); }
+.recorrido-texto .pregunta { font-family: var(--serif); font-weight: 500; font-size: 26px; line-height: 1.08; letter-spacing: -0.01em; margin-top: 4px; color: var(--tinta); }
+.recorrido-texto .hallazgo { margin-top: 12px; font-size: 14.5px; font-weight: 600; line-height: 1.3; color: var(--tinta); }
+.recorrido-texto .hallazgo .tipo { display: inline-block; font-size: 10.5px; font-weight: 600; color: var(--tinta-3); border: 1px solid var(--borde-2); border-radius: 3px; padding: 0 5px; margin-right: 6px; vertical-align: middle; }
+.recorrido-texto .hallazgo .tipo.negativo { color: var(--tinta); border-color: var(--tinta); }
+.recorrido-texto .cuerpo { margin-top: 10px; font-size: var(--t-s); line-height: 1.5; color: var(--tinta-2); }
+.recorrido-texto details { margin-top: 12px; font-size: var(--t-xs); color: var(--tinta-3); line-height: 1.5; }
+.recorrido-texto summary { cursor: pointer; color: var(--tinta); font-weight: 600; font-size: var(--t-xs); }
+.recorrido-texto .acciones { margin-top: 14px; display: flex; flex-direction: column; gap: 6px; }
+.recorrido-lienzo { overflow: auto; min-height: 0; }
+.recorrido-lienzo .figura { min-height: 100%; }
+.recorrido-lienzo .hero-lienzo { height: 100%; display: flex; flex-direction: column; }
+.recorrido-lienzo .hero-lienzo .claves { display: flex; gap: 30px; margin-top: 10px; flex-wrap: wrap; }
+.recorrido-lienzo .hero-lienzo .clave b { display: block; font-size: 24px; font-weight: 600; color: var(--tinta); line-height: 1; }
+.recorrido-lienzo .hero-lienzo .clave span { font-size: var(--t-xs); color: var(--tinta-3); }
+
+/* explorador como vista */
+.vista.explorador { padding-top: 10px; }
+.vista.explorador .cabecera { margin-bottom: 10px; }
+.vista.explorador .rejilla-expl { grid-template-columns: minmax(380px, 1fr) minmax(380px, 1fr); grid-template-rows: minmax(360px, 1fr) 290px; height: calc(100% - 100px); min-height: 620px; }
+.vista.explorador #tarjeta-mapa { grid-column: 1; grid-row: 1; }
+.vista.explorador #tarjeta-dispersion { grid-column: 2; grid-row: 1; }
+.vista.explorador #tarjeta-serie { grid-column: 1 / -1; grid-row: 2; }
+@media (max-width: 980px) {
+  body.app { overflow: auto; } #app { height: auto; overflow: visible; } .vista { height: auto; }
+  .perfiles-rejilla, .recorrido-cuerpo { grid-template-columns: 1fr; height: auto; }
+  #tarjeta-perfil-grande { height: 360px; } #tarjeta-multiples-p { height: 560px; }
+  .vista.explorador .rejilla-expl { grid-template-columns: 1fr; grid-template-rows: none; height: auto; }
+  .vista.explorador #tarjeta-mapa, .vista.explorador #tarjeta-dispersion, .vista.explorador #tarjeta-serie { grid-column: 1; grid-row: auto; }
+  .pestanas { display: none; }
+}
+@media (max-width: 980px) { .vista.oculta { display: block; } }
+.recorrido-lienzo .fila-paneles { grid-template-columns: 1fr 1fr; }

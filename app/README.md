@@ -1,6 +1,6 @@
 # La forma del día — la aplicación
 
-Visualización interactiva en D3.js de cómo cambió el ritmo horario del metro de Nueva York entre 2020 y 2024, estación por estación. Siete capítulos guiados y un explorador libre con cuatro vistas enlazadas.
+Visualización interactiva en D3.js de cómo cambió el ritmo horario del metro de Nueva York entre 2020 y 2024, estación por estación. Una aplicación de tres vistas — Perfiles, Recorrido y Explorador — con una sola selección compartida.
 
 **En línea:** <https://stewartmb.github.io/data-visualization-2026-2/app/> *(requiere GitHub Pages activado en el repositorio: Settings → Pages → `main` → `/ (root)`)*
 
@@ -34,9 +34,9 @@ Pensada para 1 200 px o más de ancho. Funciona en móvil (las vistas se apilan)
 | 6 | Abono | ¿Quién dejó de comprar el abono? | el pase de 30 días se desplomó: la evidencia del uso intermitente |
 | 7 | Límites | ¿Qué no podemos afirmar? | 37 estaciones tienen una comparación poco confiable, y están marcadas |
 
-Cada capítulo termina con *cómo se mide* y *qué no demuestra*, y un botón que abre el explorador ya configurado en lo que se acaba de leer. Los hallazgos no se escriben a mano: los genera `code/build_model.py` desde los datos, incluidos los negativos.
+**Perfiles** es la vista base: los siete hallazgos como tarjetas, el perfil de 24 h con selector (sistema · borough · tipo) y la rejilla de las 428 estaciones a 168 h. **Recorrido** lleva los capítulos como botones, con Play; cada uno termina con *cómo se mide* y *qué no demuestra* plegados, y un botón que abre el explorador ya configurado en lo que se acaba de leer. Los hallazgos no se escriben a mano: los genera `code/build_model.py` desde los datos, incluidos los negativos.
 
-**Explorador.** Mapa (cuatro lentes: tipo · recuperación · cambio del pico · confiabilidad), rejilla de perfiles de 168 h, dispersión recuperación × cambio del pico, serie mensual. Un clic en una estación abre su panel de evidencia: cifras, perfil antes/después, serie mensual y la tabla con los números detrás de cada afirmación. Un rectángulo en la dispersión o un período en la serie filtran todo lo demás. `←` `→` mueven entre capítulos; `Esc` cierra paneles.
+**Explorador.** Mapa (cuatro lentes: tipo · recuperación · cambio del pico · confiabilidad), dispersión recuperación × cambio del pico, serie mensual. Un clic en una estación abre su panel de evidencia: cifras, perfil antes/después, serie mensual y la tabla con los números detrás de cada afirmación. Un rectángulo en la dispersión o un período en la serie filtran todo lo demás. `←` `→` mueven entre capítulos dentro de Recorrido; `Esc` cierra paneles. La selección sobrevive al cambio de vista.
 
 **Qué significa cada marca.** El botón de la barra abre la clave visual: qué codifica cada color y cada forma, y qué *no* significa.
 
@@ -46,11 +46,11 @@ Cada capítulo termina con *cómo se mide* y *qué no demuestra*, y un botón qu
 
 ```
 app/
-├── index.html                 la página: narrativa + explorador + clave visual
+├── index.html                 la aplicación: tres vistas + panel de evidencia + clave visual
 ├── src/
 │   ├── tokens.css             el sistema de diseño: colores por rol, tipografía, ritmo; modo oscuro
 │   ├── estilos.css            estilos
-│   ├── main.js                carga datos, construye los capítulos, monta el explorador
+│   ├── main.js                carga datos, monta las tres vistas y el panel
 │   ├── capitulos.js           los siete capítulos: pregunta, hallazgo, gráfico, notas, preset
 │   ├── estado.js              estado compartido del explorador (selección, filtros, lente, período)
 │   ├── panel-estacion.js      el panel de evidencia de una estación

@@ -2,9 +2,11 @@
 
 **DS5343 Data Visualization · UTEC · 2026-2** · entrega del 14 de octubre de 2026
 
-Prototipo en D3.js de *La forma del día*: siete capítulos guiados y un explorador de cuatro vistas enlazadas sobre los 428 complejos de estación del metro de Nueva York, 2020–2024.
+Prototipo en D3.js de *La forma del día*: una aplicación de tres vistas — Perfiles, Recorrido y Explorador — sobre los 428 complejos de estación del metro de Nueva York, 2020–2024.
 
-![El prototipo](capturas/01-inicio.png)
+![Perfiles](capturas/01-perfiles.png)
+
+![Recorrido](capturas/07-bronx.png)
 
 ---
 
@@ -24,7 +26,7 @@ Prototipo en D3.js de *La forma del día*: siete capítulos guiados y un explora
 
 ```
 prototype/
-├── index.html                 la página: narrativa + explorador + clave visual
+├── index.html                 la aplicación: tres vistas + panel de evidencia + clave visual
 ├── src/
 │   ├── tokens.css             sistema de diseño: colores por rol, tipografía; modo oscuro
 │   ├── estilos.css
@@ -53,15 +55,17 @@ Abrir <http://localhost:8000>. Cualquier servidor estático sirve (`npx serve .`
 
 Pensado para 1 200 px o más de ancho; funciona en móvil (las vistas se apilan) y en modo oscuro.
 
-**Teclado:** `←` `→` entre capítulos · `Esc` cierra el panel y la clave visual.
+**Teclado:** `←` `→` entre capítulos (en Recorrido) · `Esc` cierra el panel y la clave visual.
 
 ---
 
 ## Cómo se lee
 
-Arriba, la narrativa: cada capítulo es una pregunta, su hallazgo, el gráfico, *cómo se mide* y *qué no demuestra*. El botón "Ver estas estaciones en el explorador" baja al explorador con ese capítulo ya configurado.
+**Perfiles** (vista base): los siete hallazgos arriba; el perfil de 24 h con selector (sistema, borough, tipo) y la rejilla de las 428 estaciones. Clic en un hallazgo abre su capítulo.
 
-Abajo, el explorador: mapa (cuatro lentes), rejilla de perfiles de 168 h, dispersión y serie mensual, enlazados por una sola selección. Clic en una estación → su panel de evidencia. Rectángulo en la dispersión → filtra. Período en la serie → cambia el tamaño en el mapa. Doble clic limpia un brush; "Quitar todo" limpia todo.
+**Recorrido**: los capítulos como botones, con Play. Cada uno: la pregunta, el hallazgo, el gráfico, *cómo se mide* y *qué no demuestra* plegados, y un botón que abre el explorador ya configurado.
+
+**Explorador**: mapa (cuatro lentes), dispersión y serie mensual, enlazados por una sola selección que también sobrevive al cambiar de vista. Clic en una estación → su panel de evidencia. Rectángulo en la dispersión → filtra. Período en la serie → cambia el tamaño en el mapa. Doble clic limpia un brush; "Quitar todo" limpia todo.
 
 El botón **"Qué significa cada marca"** de la barra abre la clave visual.
 

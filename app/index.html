@@ -16,27 +16,69 @@
 <body>
 
 <header class="barra">
-  <a class="marca" href="#inicio">La forma del día <small>metro de Nueva York, 2020–2024</small></a>
-  <nav class="progreso" id="progreso" aria-label="Capítulos"></nav>
+  <a class="marca" href="#perfiles">La forma del día <small>metro de Nueva York, 2020–2024</small></a>
+  <nav class="pestanas" id="pestanas" role="tablist" aria-label="Vistas">
+    <button role="tab" data-vista="perfiles" class="activa">Perfiles</button>
+    <button role="tab" data-vista="recorrido">Recorrido</button>
+    <button role="tab" data-vista="explorador">Explorador</button>
+  </nav>
   <div class="acciones">
     <button class="boton chico" id="abrir-clave-barra">Qué significa cada marca</button>
     <button class="boton chico" id="tema" aria-label="Cambiar entre modo claro y oscuro" title="Modo claro / oscuro">Modo oscuro</button>
-    <a class="boton chico" href="#explorador">Explorador</a>
   </div>
 </header>
 
 <div id="cargando" style="padding:40px var(--margen);color:var(--tinta-3)">Cargando los datos…</div>
 
-<main id="narrativa"></main>
+<main id="app">
+
+<!-- ================================================= vista 1 · perfiles -->
+<section class="vista" id="perfiles" data-vista="perfiles">
+  <div class="hallazgos" id="hallazgos"></div>
+  <div class="perfiles-rejilla">
+    <div class="tarjeta" id="tarjeta-perfil-grande">
+      <div class="cabecera-tarjeta">
+        <div><div class="titulo">La forma del día laborable</div><div class="subtitulo">gris: enero–febrero 2020 · línea: 2024 · share de cada hora en el día</div></div>
+        <div class="controles"><label>Ver <select id="perfil-sel"></select></label></div>
+      </div>
+      <div class="cuerpo-grafico" id="perfil-grande"></div>
+      <div class="leyenda" id="perfil-leyenda"></div>
+    </div>
+    <div class="tarjeta" id="tarjeta-multiples-p">
+      <div class="cabecera-tarjeta">
+        <div><div class="titulo">Cada estación, 168 horas</div><div class="subtitulo">de domingo a sábado · color = tipo · escala común</div></div>
+        <div class="controles"><span id="contador-multiples" class="contador"></span>
+          <label>Orden <select id="orden-multiples"><option value="aplan">más se aplanó</option><option value="rec">menos recuperó</option><option value="chg">más cambió de forma</option><option value="vol">más volumen</option><option value="nom">nombre</option></select></label>
+          <label>Borough <select id="filtro-borough-p"><option value="">todos</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option></select></label>
+          <label>Tipo <select id="filtro-tipo-p"><option value="">todos</option><option value="residencial">residencial</option><option value="mixta">mixta</option><option value="laboral">laboral</option></select></label>
+        </div>
+      </div>
+      <div class="sm-cuerpo" id="multiples-expl"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================= vista 2 · recorrido -->
+<section class="vista oculta" id="recorrido" data-vista="recorrido">
+  <div class="recorrido-barra">
+    <div class="capitulos" id="capitulos-barra" role="tablist"></div>
+    <div class="recorrido-ctrl">
+      <button class="boton chico" id="cap-prev" aria-label="Capítulo anterior">←</button>
+      <button class="boton chico" id="cap-play">Play</button>
+      <button class="boton chico" id="cap-next" aria-label="Capítulo siguiente">→</button>
+    </div>
+  </div>
+  <div class="recorrido-cuerpo">
+    <aside class="recorrido-texto" id="recorrido-texto"></aside>
+    <div class="recorrido-lienzo" id="recorrido-lienzo"></div>
+  </div>
+</section>
+
 
 <!-- ================================================= explorador -->
-<section class="explorador" id="explorador">
+<section class="vista oculta explorador" id="explorador" data-vista="explorador">
   <div class="interior">
     <div class="cabecera">
-      <div>
-        <h2>Explorar las 428 estaciones</h2>
-        <p>Las cuatro vistas comparten una selección: un clic, un rectángulo en la dispersión o un período en la serie temporal cambian todo lo demás. Doble clic para limpiar un brush.</p>
-      </div>
       <div class="controles">
         <label>Borough
           <select id="filtro-borough"><option value="">todos</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option><option>Staten Island</option></select>
@@ -61,16 +103,6 @@
         <div class="cuerpo-grafico" id="mapa-expl"></div>
       </div>
 
-      <div class="tarjeta" id="tarjeta-multiples">
-        <div class="cabecera-tarjeta">
-          <div><div class="titulo">Cómo: el ritmo de cada estación</div><div class="subtitulo">168 horas, de domingo a sábado; gris = enero–febrero 2020, color = 2024, escala común</div></div>
-          <div class="controles"><span id="contador-multiples" style="font-size:11.5px;font-weight:600;color:var(--tinta)"></span>
-            <label>Orden <select id="orden-multiples"><option value="aplan">más se aplanó</option><option value="rec">menos recuperó</option><option value="chg">más cambió de forma</option><option value="vol">más volumen</option><option value="nom">nombre</option></select></label>
-          </div>
-        </div>
-        <div class="sm-cuerpo" id="multiples-expl"></div>
-      </div>
-
       <div class="tarjeta" id="tarjeta-dispersion">
         <div class="cabecera-tarjeta">
           <div><div class="titulo">Cuánto y cómo</div><div class="subtitulo">arrastra un rectángulo para filtrar las demás vistas</div></div>
@@ -87,6 +119,8 @@
     </div>
   </div>
 </section>
+
+</main>
 
 <!-- ================================================= panel de estación -->
 <aside class="panel" id="panel-estacion" aria-label="Detalle de la estación"></aside>
@@ -123,13 +157,7 @@
   </section>
 </aside>
 
-<footer class="pie-pagina">
-  <div class="interior">
-    <div><b>Datos</b>MTA Subway Hourly Ridership 2020–2024 (<code>wujg-7c2s</code>), Metropolitan Transportation Authority vía Open NY. 120 855 568 registros agregados del lado del servidor con la API SODA de Socrata. Geografía: NYC Department of City Planning y GTFS estático de la MTA.</div>
-    <div><b>Método</b>Todo lo que afirma esta página sale de <code>build_model.py</code> sobre las tablas agregadas; no hay cálculo en el navegador que no se pueda reproducir. Los hallazgos, incluidos los negativos, se generan desde el modelo.</div>
-    <div><b>Proyecto</b>Acervo Correa, Renzo Alfonso · Maquera Bobadilla, Diva Stewart · Condori Palomino, José Eduardo. DS5343 Data Visualization, UTEC, 2026-2. D3.js v7. Parte del código se elaboró con asistencia de IA, revisada y validada por el equipo.</div>
-  </div>
-</footer>
+
 
 <script src="lib/d3.min.js"></script>
 <script type="module" src="src/main.js"></script>

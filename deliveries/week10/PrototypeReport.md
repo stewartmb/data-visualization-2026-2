@@ -10,11 +10,17 @@ En línea: <https://stewartmb.github.io/data-visualization-2026-2/deliveries/wee
 
 ## 1 · Qué está implementado
 
-Una visualización narrativa con dos registros en una sola página: siete capítulos guiados y un explorador libre de cuatro vistas enlazadas. Todo corre en el navegador sobre los datos reales del proyecto: 428 complejos de estación, 60 meses, perfiles de 168 horas, desde un modelo de 1.6 MB y una geografía de 77 KB.
+Una aplicación a pantalla completa con tres vistas que comparten una sola selección. Todo corre en el navegador sobre los datos reales del proyecto: 428 complejos de estación, 60 meses, perfiles de 168 horas, desde un modelo de 1.6 MB y una geografía de 77 KB.
 
-### Los capítulos
+| Vista | Qué es |
+|---|---|
+| **Perfiles** | la vista base: los siete hallazgos como una tira de tarjetas, el perfil de 24 h con selector (sistema · borough · tipo) y la rejilla de las 428 estaciones a 168 h |
+| **Recorrido** | los siete capítulos como botones con Play: la pregunta y el hallazgo en una columna angosta, el gráfico ocupando el resto |
+| **Explorador** | mapa con cuatro lentes, dispersión con brush, serie mensual con brush, panel de evidencia por estación |
 
-Cada uno tiene la misma anatomía: una **pregunta** como título, el **hallazgo** como una frase etiquetada (hallazgo · lo que no se sostiene · límite), el **gráfico**, dos notas — **cómo se mide** y **qué no demuestra** — y un botón que abre el explorador ya configurado en lo que se acaba de ver.
+### El recorrido
+
+Cada capítulo tiene la misma anatomía: una **pregunta** como título, el **hallazgo** como una frase etiquetada (hallazgo · lo que no se sostiene · límite), el **gráfico** a pantalla completa, dos notas plegadas — **cómo se mide** y **qué no demuestra** — y un botón que abre el explorador ya configurado en lo que se acaba de ver. Un clic en cualquier tarjeta de hallazgo de la vista Perfiles abre su capítulo.
 
 | | Pregunta | Hallazgo | Gráfico |
 |---|---|---|---|
@@ -34,17 +40,16 @@ Los hallazgos no se escriben a mano: los genera `code/build_model.py` desde los 
 | Vista | Qué muestra | Interacción |
 |---|---|---|
 | Mapa | 428 estaciones sobre los boroughs y el trazado del metro (`d3.geoMercator`) | cuatro lentes: tipo · recuperación · cambio del pico · confiabilidad; zoom y paneo; clic |
-| Rejilla de perfiles | 168 h por estación, escala vertical común, línea del color del tipo | orden por aplanamiento, recuperación, cambio de forma, volumen, nombre; clic |
 | Dispersión | recuperación (x) × cambio del pico (y), color por tipo | brush rectangular que filtra todo lo demás; clic |
 | Serie mensual | entradas del sistema, 60 meses | brush horizontal: el tamaño de las estaciones del mapa pasa a ser el promedio del período |
 
-Una sola selección compartida (`src/estado.js`). Filtros de borough, tipo y "solo comparaciones sólidas" en la barra; cada filtro activo es un chip que se quita con un clic. La barra dice siempre cuántas estaciones y qué share de entradas quedan, y de qué capítulo vino el lector.
+Una sola selección compartida (`src/estado.js`) que sobrevive al cambio de vista. La rejilla de perfiles de la vista base (168 h por estación, escala común, línea del color del tipo, cinco órdenes) la lee también. Filtros de borough, tipo y "solo comparaciones sólidas"; cada filtro activo es un chip que se quita con un clic. La barra dice siempre cuántas estaciones y qué share de entradas quedan, y de qué capítulo vino el lector.
 
 **Panel de evidencia.** Un clic en cualquier estación abre su panel: cifras (recuperación en las dos ventanas, razón pico/valle, asimetría), el perfil del día laborable antes y después, la serie mensual con los meses anómalos sombreados, y la tabla con los números detrás de cada afirmación. Si la comparación es poco confiable, el panel dice por qué.
 
 **Clave visual.** Un botón de la barra abre la leyenda de significado: qué codifica cada marca y qué *no* significa ("más azul no es mejor"; "el área gris no es un año normal").
 
-**Accesibilidad.** `←` `→` mueven entre capítulos, `Esc` cierra paneles; modo oscuro como conjunto propio de tokens; móvil (las vistas se apilan); `prefers-reduced-motion` respetado; paleta validada para daltonismo.
+**Accesibilidad.** `←` `→` mueven entre capítulos, `Esc` cierra paneles; modo oscuro como conjunto propio de tokens, con botón para fijarlo; móvil (las vistas se apilan); `prefers-reduced-motion` respetado; paleta validada para daltonismo.
 
 ### Implementación
 
@@ -56,7 +61,7 @@ D3.js v7.9.0 servido desde `lib/`, módulos ES nativos, sin bundler. Unas 2 000 
 
 ### 2.1 Es un argumento, no un dashboard
 
-La Semana 7 proponía cuatro paneles en una pantalla. Funcionaban y no contaban nada. La estructura de este prototipo toma cuatro principios de FINO (VAST Challenge 2026, UTEC): las vistas se titulan con **preguntas**; los hallazgos se escriben como **afirmaciones** e incluyen lo que no se demuestra; la **confiabilidad** de cada dato es una capa visible; y cada afirmación está a un clic de su **evidencia**. El explorador se conserva porque la exploración libre importa, pero el lector llega a él sabiendo qué buscar.
+La Semana 7 proponía cuatro paneles en una pantalla. Funcionaban y no contaban nada. La estructura de este prototipo toma de FINO (VAST Challenge 2026, UTEC) la forma de aplicación — vistas en pestañas, una selección compartida, capítulos con Play dentro de una vista — y cuatro principios: las vistas se titulan con **preguntas**; los hallazgos se escriben como **afirmaciones** e incluyen lo que no se demuestra; la **confiabilidad** de cada dato es una capa visible; y cada afirmación está a un clic de su **evidencia**. El lector puede empezar por la vista base, por el recorrido o por el explorador; la selección lo sigue.
 
 ### 2.2 La pregunta cambió
 
@@ -124,7 +129,7 @@ Las seis preguntas de la propuesta original (contexto geográfico, legibilidad d
 
 2. **¿El capítulo del Bronx está bien contado o estamos forzando la lectura?** Presentamos el teletrabajo como hipótesis consistente, no como causa. ¿Se percibe así, o el lector sale creyendo que lo demostramos? ¿Qué evidencia pedirían antes de creerlo?
 
-3. **¿Narrativa más explorador es la estructura correcta?** La alternativa es un solo explorador con anotaciones. ¿La narrativa guía o estorba a quien ya sabe lo que busca?
+3. **¿Tres vistas es la estructura correcta?** Perfiles como vista base, Recorrido con los capítulos, Explorador libre. ¿Sobra alguna? ¿El recorrido debería ser la entrada por defecto?
 
 4. **¿Los hallazgos negativos aportan o confunden?** Dos de los siete dicen lo que los datos no sostienen. ¿Dan confianza, o parecen un relleno?
 

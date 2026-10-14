@@ -2,7 +2,7 @@
 
 **5 minutos.** Dos demos en vivo (slides 3–5). Si te atrasas, recorta la 6 y salta a la 7.
 
-**Antes de entrar:** la aplicación abierta en otra pestaña, ya cargada, scroll arriba del todo. Probar una vez: `→` para bajar un capítulo, clic en una estación, `Esc`.
+**Antes de entrar:** la aplicación abierta en otra pestaña, en la vista Perfiles, en modo claro. Probar una vez: pestaña Recorrido, `→`, clic en una estación en Explorador, `Esc`.
 
 ---
 
@@ -22,13 +22,13 @@
 
 ## 3 · El prototipo — 60 s · **DEMO**
 
-**Cambiar a la pestaña de la aplicación.** Dejar que el pico se desdibuje (pasa solo al cargar).
+**Cambiar a la pestaña de la aplicación**, vista Perfiles.
 
-> Esto es la forma del día de todo el sistema. El área gris es enero–febrero de 2020; la línea negra es 2024. El pico de la mañana pasó del 10.4 al 9.1 por ciento del día.
->
-> La estructura es un argumento, no un dashboard: siete capítulos, cada uno con una pregunta como título, el hallazgo escrito como una frase, el gráfico, cómo se mide y qué no demuestra.
+> Esta es la vista base. Arriba, los siete hallazgos del proyecto como tarjetas. Abajo a la izquierda, la forma del día de todo el sistema: el área gris es enero–febrero de 2020, la línea negra es 2024; el pico de la mañana pasó del 10.4 al 9.1 por ciento del día. A la derecha, las 428 estaciones, una por tarjeta, 168 horas cada una.
 
-**Presionar `→` dos veces** hasta el capítulo 2.
+**Clic en la pestaña Recorrido, luego `→` dos veces** hasta el capítulo 2.
+
+> El recorrido lleva los siete capítulos: una pregunta, el hallazgo como frase, el gráfico, y plegados, cómo se mide y qué no demuestra.
 
 > El capítulo 2: el mismo perfil, por borough. Manhattan, Brooklyn y Queens pierden el pico de la mañana. El Bronx, no.
 
