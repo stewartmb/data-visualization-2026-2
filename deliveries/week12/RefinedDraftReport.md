@@ -34,7 +34,7 @@ El metro de Nueva York se programa alrededor del doble pico del día laborable. 
 
 ## 3 · Datos y método
 
-**Fuente.** MTA Subway Hourly Ridership 2020–2024 (`wujg-7c2s`, Open NY). 120 855 568 registros horarios por complejo de estación, método de pago y clase tarifaria. Nunca se descarga crudo: se agrega del lado del servidor con SoQL en ventanas de 7 días (Semana 6).
+**Fuente.** MTA Subway Hourly Ridership 2020–2024 (`wujg-7c2s`, Open NY). Registros horarios por complejo de estación, método de pago y clase tarifaria. Nunca se descarga crudo: se agrega del lado del servidor con SoQL en ventanas de 7 días (Semana 6).
 
 **Tablas agregadas.** Estación × día; estación × día-de-la-semana × hora, por año y para enero–febrero de 2020; mes × borough × pago × tarifa.
 

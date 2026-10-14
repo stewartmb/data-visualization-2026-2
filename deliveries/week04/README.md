@@ -16,7 +16,7 @@ Acervo Correa, Renzo Alfonso · Maquera Bobadilla, Diva Stewart · Condori Palom
 | **Fuente** | [data.ny.gov](https://data.ny.gov/Transportation/MTA-Subway-Hourly-Ridership-2020-2024/wujg-7c2s/about_data) |
 | **Publicador** | Metropolitan Transportation Authority (MTA) |
 | **Cobertura** | Nueva York · 2020–2024 · granularidad horaria |
-| **Volumen** | 120,855,568 registros · varios GB |
+| **Volumen** | varios GB; se trabaja con una muestra estratificada de 10,000 filas |
 | **Acceso** | 2 de septiembre de 2026 |
 | **Licencia** | Sin licencia específica declarada; sin limitaciones de uso según MTA + [Términos OPEN-NY](https://data.ny.gov/api/views/77gx-ii52/files/ef0c1840-ad54-4240-92fd-6397c49fde46?filename=OPEN-NY_20Terms_20of_20Use.pdf) |
 

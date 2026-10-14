@@ -6,7 +6,7 @@
 
 Proyecto final · DS5343 Data Visualization · UTEC · 2026-2
 
-`428 estaciones` · `1 827 días` · `120 855 568 registros`
+`428 estaciones` · `1 827 días` · `60 meses`
 
 **[Abrir la aplicación](https://stewartmb.github.io/data-visualization-2026-2/app/)** · [código](app/) · [paper](deliveries/week12/paper/paper.pdf)
 
@@ -197,7 +197,7 @@ Tres segundos, sin dependencias. Todo lo que afirma la aplicación — incluidos
 | **Fuente** | [data.ny.gov](https://data.ny.gov/Transportation/MTA-Subway-Hourly-Ridership-2020-2024/wujg-7c2s/about_data) |
 | **Publicador** | Metropolitan Transportation Authority (MTA) |
 | **Cobertura** | Nueva York · 2020–2024 · granularidad horaria |
-| **Volumen** | 120 855 568 registros · varios GB |
+| **Volumen** | agregados horarios por complejo de estación; el dataset crudo supera los 4 GB y nunca se descarga |
 | **Licencia** | Sin licencia específica declarada; sin limitaciones de uso según MTA + [Términos OPEN-NY](https://data.ny.gov/api/views/77gx-ii52/files/ef0c1840-ad54-4240-92fd-6397c49fde46?filename=OPEN-NY_20Terms_20of_20Use.pdf) |
 
 Cada fila = hora × complejo de estación × modo × método de pago × clase tarifaria.

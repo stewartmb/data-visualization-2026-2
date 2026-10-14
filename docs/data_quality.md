@@ -10,7 +10,7 @@ La evaluacion se ejecuto el 2026-09-02 sobre una muestra reproducible de **10,00
 - MetroCard y OMNY;
 - los cinco boroughs atendidos por los modos incluidos.
 
-La asignacion modal fue controlada para garantizar cobertura. Por ello, sus proporciones no estiman la distribucion de los 120,855,568 registros completos.
+La asignacion modal fue controlada para garantizar cobertura. Por ello, sus proporciones no estiman la distribucion del dataset completo.
 
 ## Resultados
 

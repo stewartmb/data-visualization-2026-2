@@ -41,7 +41,7 @@ export function capitulos(M, G) {
     {
       id: 'inicio', hero: true, etiqueta: 'Inicio',
       pregunta: 'La forma del día',
-      claves: [[fmt.int(M.stats.n), 'complejos de estación'], [M.meta.meses.length, 'meses, enero 2020 a diciembre 2024'], ['24 × 7', 'horas de la semana por estación'], ['120 855 568', 'registros horarios agregados']],
+      claves: [[fmt.int(M.stats.n), 'complejos de estación'], [M.meta.meses.length, 'meses, enero 2020 a diciembre 2024'], ['24 × 7', 'horas de la semana por estación'], ['ene–feb', 'ventana de comparación: 2020 frente a 2024']],
       marcas: [antes, ahora, `${sw(cssVar('--tinta'), 'ventana')} franjas: ventanas 6–10 h y 16–20 h`],
       render(fig) {
         const w = d3.select(fig).append('div').attr('class', 'hero-dos');
