@@ -8,6 +8,8 @@ Proyecto final · DS5343 Data Visualization · UTEC · 2026-2
 
 `428 estaciones` · `1 827 días` · `120 855 568 registros`
 
+**[Abrir la aplicación](https://stewartmb.github.io/data-visualization-2026-2/app/)** · [código](app/) · [paper](deliveries/week12/paper/paper.pdf)
+
 Acervo Correa, Renzo Alfonso · Maquera Bobadilla, Diva Stewart · Condori Palomino, José Eduardo
 
 </div>
@@ -39,10 +41,11 @@ El metro de Nueva York programa su servicio alrededor del doble pico del día la
 
 La unidad de análisis de este proyecto no es el volumen total sino el **perfil horario semanal de cada estación**: 24 horas × 7 días = 168 valores, normalizados por el total de la estación. Ese vector describe su ritmo, no su tamaño.
 
-**Audiencia principal:** planificadores de servicio de la MTA y analistas de transporte urbano.
-**Decisión que apoya:** dónde reasignar frecuencia de servicio.
+**Lo que encontramos.** El pico de la mañana se aplanó en el 80 % de las estaciones. Una tipología derivada de la asimetría mañana/tarde de las entradas separa la ciudad en estaciones residenciales, mixtas y laborales, y el cambio fue en una sola dirección: la mañana perdió peso. Y **el Bronx perdió más pasajeros que ningún otro borough y es el único donde la forma del día no cambió**: donde la gente no puede quedarse en casa, el pico se queda y solo baja el volumen.
 
-La entrega final es una visualización interactiva en D3.js con cinco vistas enlazadas por brushing. El prototipo de la Semana 10 tiene cuatro de las cinco implementadas: [`deliveries/week10/prototype/`](deliveries/week10/prototype/).
+**Audiencia:** investigadores de transporte urbano, periodismo de datos y gobierno local.
+
+La aplicación es una visualización narrativa en D3.js: siete capítulos guiados, cada uno con una pregunta, un hallazgo y su evidencia, más un explorador de cuatro vistas enlazadas. Está en [`app/`](app/) y se publica con GitHub Pages.
 
 [↑](#indice)
 
@@ -59,7 +62,7 @@ La entrega final es una visualización interactiva en D3.js con cinco vistas enl
 | 6 | 16 sep | Análisis de datos y bocetos | [`deliveries/week06/`](deliveries/week06/) |
 | 7 | 23 sep | Delivery 1 — consolidación de la primera fase | [`deliveries/week07/`](deliveries/week07/) |
 | 10 | 14 oct | Prototipo funcional y design review | [`deliveries/week10/`](deliveries/week10/) |
-| 12 | 28 oct | Borrador refinado y crítica por pares | `deliveries/week12/` |
+| 12 | 28 oct | Borrador refinado y crítica por pares | [`deliveries/week12/`](deliveries/week12/) · en curso |
 | 15 | 18 nov | Entrega final y exhibición | `deliveries/week15/` |
 
 [↑](#indice)
@@ -76,6 +79,12 @@ data-visualization-2026-2/
 ├── README.md
 ├── .gitignore
 │
+├── app/                      la aplicación: narrativa + explorador (D3.js)
+│   ├── index.html
+│   ├── src/                  módulos ES: capítulos, estado, gráficos, panel de evidencia
+│   ├── data/                 model.json (el modelo analítico) · geo.json
+│   └── code/                 build_model.py · build_geo.py · datos_nuevos.ipynb
+│
 ├── data/sample/              muestra de 10 000 filas del dataset original
 ├── docs/                     diccionario · adquisición · calidad · referencias
 ├── scripts/                  adquisición · verificación
@@ -85,9 +94,8 @@ data-visualization-2026-2/
     ├── week05/               propuesta de proyecto
     ├── week06/               análisis de datos y bocetos
     ├── week07/               Delivery 1
-    └── week10/               prototipo funcional y design review
-        ├── prototype/        la aplicación D3 (HTML · CSS · módulos JS · datos)
-        └── code/             script que construye el JSON del cliente
+    ├── week10/               prototipo funcional y design review
+    └── week12/               borrador refinado: reporte, respuesta a la crítica, paper
 ```
 
 [↑](#indice)
@@ -117,7 +125,7 @@ Los tres participan en la formulación de preguntas, la crítica de diseño y la
 | Semana | Fecha | Objetivo |
 |---|---|---|
 | 10 | 14 oct | Prototipo funcional en D3 con las vistas A, B, C y D enlazadas — **entregado** |
-| 12 | 28 oct | Narrativa integrada, vistas D y E, respuesta a la crítica por pares |
+| 12 | 28 oct | Narrativa en siete capítulos, vista E, capa de confiabilidad, respuesta a la crítica por pares, borrador del paper |
 | 15 | 18 nov | Aplicación publicada, paper, teaser, video, poster y presentación final |
 
 [↑](#indice)
@@ -157,14 +165,22 @@ Los notebooks corren en Google Colab sin instalar nada. En este orden:
 
 Las salidas quedan en `deliveries/week06/data/processed/`.
 
-### Correr el prototipo
+### Correr la aplicación
 
 ```bash
-cd deliveries/week10/prototype
+cd app
 python3 -m http.server 8000
 ```
 
-Abrir <http://localhost:8000>. No hace falta instalar ni compilar nada; sí hace falta un servidor HTTP, porque el prototipo usa módulos ES y `fetch`. Instrucciones completas y despliegue en [`deliveries/week10/README.md`](deliveries/week10/README.md).
+Abrir <http://localhost:8000>. No hace falta instalar ni compilar nada; sí hace falta un servidor HTTP, porque usa módulos ES y `fetch`. Estructura, modelo de datos y sistema de diseño en [`app/README.md`](app/README.md).
+
+### Reconstruir el modelo analítico
+
+```bash
+python3 app/code/build_model.py deliveries/week06/data/processed app/data/model.json
+```
+
+Tres segundos, sin dependencias. Todo lo que afirma la aplicación — incluidos los hallazgos — sale de ahí.
 
 [↑](#indice)
 
@@ -203,7 +219,8 @@ Los datos provienen de torniquetes: *swipes* de MetroCard y *taps* de OMNY. Docu
 | **Complejo, no estación** | Un complejo agrupa varias estaciones conectadas. |
 | **Son estimaciones** | Publicadas por la MTA, dentro del 1 % de sus cifras oficiales. |
 | **MetroCard → OMNY** | Es adopción tecnológica. Una caída en MetroCard no es una caída de demanda. |
-| **Línea base acotada** | Es enero–febrero de 2020, no un promedio de 2019. |
+| **Línea base acotada** | Es enero–febrero de 2020, no un promedio de 2019. La recuperación se compara contra la misma ventana calendario de 2024. Las 37 estaciones donde la comparación es poco confiable están marcadas en la aplicación. |
+| **Cambios de servicio** | Se detectan en los datos las caídas anómalas de entradas; no se cruzan con avisos de la MTA. |
 
 [↑](#indice)
 
