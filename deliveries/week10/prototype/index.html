@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La forma del día — metro de Nueva York, 2020–2024</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='%231b4f8c'/><path d='M1 12 L4 5 L6 11 L8 3 L10 11 L12 6 L15 12' stroke='white' fill='none' stroke-width='1.4'/></svg>">
+<link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <h1>La forma del día</h1>
+    <p>Cómo cambió el ritmo horario del metro de Nueva York, 2020–2024</p>
+  </div>
+  <div class="status" id="status">cargando…</div>
+</header>
+
+<main class="grid">
+
+  <!-- A · MAPA -->
+  <section class="panel" id="panel-mapa">
+    <div class="panel-head">
+      <h2>A · Recuperación por estación</h2>
+      <p class="sub">2024 frente a enero–febrero 2020 · color = recuperación · tamaño = entradas/día</p>
+    </div>
+    <div class="panel-body"><svg id="mapa"></svg></div>
+    <div class="legend" id="legend-mapa"></div>
+  </section>
+
+  <!-- B · PERFILES -->
+  <section class="panel" id="panel-perfiles">
+    <div class="panel-head">
+      <h2>B · Perfiles semanales</h2>
+      <p class="sub">168 horas (24 h × 7 días), share del total semanal de cada estación ·
+        <span class="k-pre">gris: ene–feb 2020</span> · <span class="k-cur">azul: 2024</span></p>
+      <div class="controls">
+        <span class="cuenta" id="cuenta-perfiles"></span>
+        <label>Ordenar
+          <select id="orden">
+            <option value="rec">recuperación</option>
+            <option value="vol">volumen</option>
+            <option value="chg">magnitud del cambio</option>
+            <option value="nom">nombre</option>
+          </select>
+        </label>
+        <label>Modo
+          <select id="modo">
+            <option value="ambos">ambos</option>
+            <option value="cur">solo 2024</option>
+            <option value="pre">solo prepandemia</option>
+            <option value="dif">diferencia</option>
+          </select>
+        </label>
+      </div>
+    </div>
+    <div class="panel-body scroll" id="perfiles"></div>
+  </section>
+
+  <!-- D · DISPERSIÓN -->
+  <section class="panel" id="panel-dispersion">
+    <div class="panel-head">
+      <h2>D · Pico/valle, antes y después</h2>
+      <p class="sub">escala log · <span class="k-apl">naranja: aplanó el pico</span> ·
+        <span class="k-afi">azul: lo afiló</span> · la distancia a la diagonal es la magnitud del cambio<br>
+        arrastra para filtrar las demás vistas · doble clic para limpiar</p>
+    </div>
+    <div class="panel-body"><svg id="dispersion"></svg></div>
+  </section>
+
+  <!-- C · SERIE TEMPORAL -->
+  <section class="panel wide" id="panel-serie">
+    <div class="panel-head">
+      <h2>C · Entradas mensuales al sistema</h2>
+      <p class="sub">arrastra para elegir el período — el tamaño de los puntos del mapa pasa a ser el de ese período · doble clic para limpiar</p>
+    </div>
+    <div class="panel-body"><svg id="serie"></svg></div>
+  </section>
+
+</main>
+
+<footer class="pie">
+  Datos: Metropolitan Transportation Authority (MTA) vía Open NY · 120 855 568 registros agregados del lado del servidor con la API SODA de Socrata.
+  Prototipo de la semana 10 — DS5343 Data Visualization, UTEC 2026-2.
+</footer>
+
+<div class="tooltip" id="tt"></div>
+
+<script src="lib/d3.min.js"></script>
+<script type="module" src="src/main.js"></script>
+</body>
+</html>
