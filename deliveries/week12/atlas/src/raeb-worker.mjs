@@ -1,6 +1,7 @@
-import {makeScene,bundle,bundleFree} from './raeb-core.mjs';
+import {makeScene,bundle,bundleFree} from './raeb-core.mjs?v=gpu4';
 const layouts=new Map();
 let network=null,sourceId=0,requestId=0,scene=null,pending=null,processing=false,warming=false,weights=null,selected=-1;
+let sentLevels=new Set();
 async function decompress(url,json=false){
   const response=await fetch(url);if(!response.ok)throw Error(`No se pudo leer ${url}: ${response.status}`);
   const decoded=new Response(response.body.pipeThrough(new DecompressionStream('gzip')));
@@ -45,12 +46,22 @@ onmessage=async({data})=>{
       const buffer=await decompress(data.frameUrl);if(current!==sourceId)return;weights=new Float32Array(buffer);if(current!==sourceId)return;
       scene=makeScene(data.nodes,data.links,network.paths,weights,data.width,data.height,data.samples);
       selection();
-      const free=scene.css(scene.seed(0)),reference=scene.css(scene.seed(5)),metadata=scene.metadata.slice(),retention=scene.sampleLevels.slice();
-      postMessage({type:'scene',sourceId,free:free.buffer,reference:reference.buffer,metadata:metadata.buffer,retention:retention.buffer,count:scene.active.length,samples:scene.samples,kernel:scene.kernel},[free.buffer,reference.buffer,metadata.buffer,retention.buffer]);
+      const free=scene.seed(0).slice(),reference=scene.seed(5).slice(),metadata=scene.metadata.slice(),retention=scene.sampleLevels.slice();
+      const railInfo=new Float32Array(scene.routes.length*8),vertices=[];
+      scene.routes.forEach((r,i)=>{railInfo.set([vertices.length/2,r.length,scene.hierarchy.level[i],0,0,0,0,0],i*8);for(const p of r)vertices.push(...p);});
+      const railVertices=new Float32Array(vertices),grid={width:scene.width,height:scene.height,gridToCss:scene.gridToCss,kernel:scene.kernel};sentLevels=new Set([0,5]);
+      postMessage({type:'scene',sourceId,free:free.buffer,reference:reference.buffer,metadata:metadata.buffer,retention:retention.buffer,count:scene.active.length,samples:scene.samples,kernel:scene.kernel,grid,railInfo:railInfo.buffer,railVertices:railVertices.buffer},[free.buffer,reference.buffer,metadata.buffer,retention.buffer,railInfo.buffer,railVertices.buffer]);
       // Do not compute an unrelated free layout before the requested level.
       warming=false;solveLatest();
     }else if(data.type==='selection'){
       if(data.sourceId===sourceId){selected=data.selected;selection();}
+    }else if(data.type==='gpuParameters'){
+      if(data.sourceId!==sourceId||!scene)return;
+      requestId=data.id;
+      for(const level of new Set([Math.floor(data.fidelity*5),Math.ceil(data.fidelity*5)]))if(!sentLevels.has(level)){
+        const points=scene.seed(level).slice();sentLevels.add(level);postMessage({type:'gpuLevel',sourceId,level,points:points.buffer},[points.buffer]);
+      }
+      postMessage({type:'gpuJob',sourceId,id:data.id,fidelity:data.fidelity,strength:data.strength});
     }else if(data.type==='parameters'){
       requestId=data.id;pending=data;solveLatest();
     }

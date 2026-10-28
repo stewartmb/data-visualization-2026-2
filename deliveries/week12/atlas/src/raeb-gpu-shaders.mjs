@@ -31,16 +31,16 @@ struct Optical {blue:Wide,orange:Wide,}
 @group(0) @binding(22) var<storage,read_write> statistics:array<vec4f>;
 @group(0) @binding(23) var<storage,read> railVertices:array<vec2f>;
 @group(0) @binding(24) var<storage,read> rails:array<vec4f>;
-fn addWide(target:ptr<storage,Wide,read_write>,amount:f32){
+fn addWide(accumulator:ptr<storage,Wide,read_write>,amount:f32){
  let value=floor(max(0.0,amount)*65536.0+0.5);
  let high=floor(value/4294967296.0);
  let low=u32(value-high*4294967296.0);
- let old=atomicAdd(&(*target).lo,low);
+ let old=atomicAdd(&(*accumulator).lo,low);
  let carry=select(0u,1u,old>0xffffffffu-low);
- atomicAdd(&(*target).hi,u32(high)+carry);
+ atomicAdd(&(*accumulator).hi,u32(high)+carry);
 }
-fn readWide(target:ptr<storage,Wide,read_write>)->f32{
- return (f32(atomicLoad(&(*target).hi))*4294967296.0+f32(atomicLoad(&(*target).lo)))/65536.0;
+fn readWide(accumulator:ptr<storage,Wide,read_write>)->f32{
+ return (f32(atomicLoad(&(*accumulator).hi))*4294967296.0+f32(atomicLoad(&(*accumulator).lo)))/65536.0;
 }
 fn retained(i:u32)->f32{return clamp(p.control.x*5.0-levels[i]+1.0,0.0,1.0);}
 fn seed(i:u32)->vec2f{return mix(lowSeed[i],highSeed[i],p.control.w);}
@@ -95,7 +95,7 @@ var<workgroup> maxWork:array<f32,256>;
  let step=select(p.control.z,min(p.control.z,.45),binding>0.0);
  advected[i]=clamp(xy+step*delta,vec2f(1),vec2f(p.dims.xy)-vec2f(2));
 }
-@compute @workgroup_size(256) fn smooth(@builtin(global_invocation_id) id:vec3u){
+@compute @workgroup_size(256) fn smoothPoints(@builtin(global_invocation_id) id:vec3u){
  let i=id.x;if(i>=p.dims.z*p.dims.w){return;}let j=i%p.dims.w;
  if(j==0u||j==p.dims.w-1u){points[i]=seed(i);return;}
  let candidate=.25*advected[i-1u]+.5*advected[i]+.25*advected[i+1u];

@@ -23,13 +23,13 @@ El balance semanal de 2023 incluye 0,133315 viajes representativos no mapeados; 
 | §5.2, guía | Densidad reforzada en los segmentos conservados, θ=1,1 maxρ | Membresía continua al interpolar jerarquías |
 | §6.1, estabilidad | NMI de imágenes de curvas sucesivas; umbral0,8 | Raster reducido, máximo48 iteraciones; reportar `converged=false` si no llega |
 | §6.2, desviación | Fréchet contra el camino mapeado | Muestra determinista de hasta128 curvas; diagnóstico, no error completo |
-| Interacción | Worker cancelable y WebGL2 | Vista previa GPU continua; resultado final interpolado en90 ms; geometría GTFS completa en f=1 |
+| Interacción | WebGPU para cálculo y raster; worker para preparar caminos; CPU/WebGL2 como respaldo | Caché de dos resultados por cohorte; geometría GTFS completa en f=1 |
 
 Esto es una **adaptación ferroviaria implementada de los componentes de RAEB**, no una reproducción idéntica de los experimentos ni del ejecutable original. La dirección no participa en el campo de agrupamiento; se conserva en las entidades OD y al resaltar los salientes de un origen. En f=0 se resuelven una vez las curvas O→D y D→O equivalentes, sumando pesos; después se expanden todas las entidades dirigidas. No hay muestreo de pares.
 
 La barra de agrupación multiplica el radio estimado, y b=0 desactiva advección. La de fidelidad controla cuánta referencia conserva la semilla y el campo guía: f=0 produce haces libres que pueden cruzar el agua; f=1 muestra los shapes completos. La geometría libre es abstracción visual y nunca se devuelve al grafo como infraestructura.
 
-La guía de enlaces conservados se dibuja inmediatamente en SVG. El worker entrega primero una semilla del nivel elegido y después su refinamiento; no se interpola una maraña libre para simular alta fidelidad. Las curvas libres conservan WebGL. La vista previa no equivale a una solución convergida y el estado lo indica. El zoom transforma la cámara y las capas SVG: no recalcula KDE ni OD. Durante el movimiento se reduce el muestreo de dibujo a8 vértices y se recuperan32 al estabilizarse; los datos y la solución no cambian.
+En el respaldo CPU, la guía de enlaces conservados se dibuja en SVG. El worker entrega primero una semilla del nivel elegido y después su refinamiento; no se interpola una maraña libre para simular alta fidelidad. Las curvas libres conservan WebGL. La vista previa no equivale a una solución convergida y el estado lo indica. El zoom transforma la cámara y las capas SVG: no recalcula KDE ni OD. Durante el movimiento se reduce el muestreo de dibujo a8 vértices y se recuperan32 al estabilizarse; los datos y la solución no cambian.
 
 Densidad visual: opacidad `1−exp(−q/800)` por OD; la superposición es cualitativa, con saturación y cuantización del framebuffer. En f=1 se agrega la carga de enlaces coincidentes sobre su geometría completa. Nodos: área proporcional a viajes iniciados, con radio mínimo1,8px para valores positivos pequeños y1,6px para cero; la escala superior fija corresponde a13px. No confundir tamaño mínimo con volumen observado.
 
@@ -61,13 +61,25 @@ La convergencia se compara desde la imagen inicial; se retiró la espera mínima
 
 ## Estado de la auditoría de fidelidad
 
-La equivalencia completa con el artículo no está validada. Los tests actuales verifican datos y componentes. El NMI se calcula sobre curvas completas, mientras la pantalla combina curvas atenuadas por retención y enlaces SVG completos; ambas imágenes deben unificarse antes de tratar esa convergencia como validación del resultado visible. El anclaje directo de muestras y la composición SVG son extensiones propias. Los tiempos de caché, preparación y solver no son intercambiables.
+La equivalencia completa con el artículo no está validada. Los tests actuales verifican datos y componentes. En el respaldo CPU, el NMI se calcula sobre curvas completas y su pantalla combina curvas atenuadas con enlaces SVG; esa limitación permanece en dicho respaldo. El backend WebGPU usa un rasterizador óptico compartido para dibujo y NMI, a resoluciones diferentes y sin el resaltado de selección en la medición. El anclaje directo de muestras y la composición SVG son extensiones propias. Los tiempos de caché, preparación y solver no son intercambiables.
 
 
-## Avance WebGPU incluido en esta rama
+## WebGPU activo: integración del 28 de octubre
 
-Los módulos `raeb-webgpu.mjs` y `raeb-gpu-shaders.mjs`, presentes en ambas copias de la aplicación, son trabajo en desarrollo. Todavía no están importados por `raeb-overlay.mjs`: la interfaz publicada en esta revisión continúa calculando el agrupamiento en un worker de CPU y dibujando las curvas con WebGL2. No se declara una aceleración WebGPU activa.
+La aplicación intenta WebGPU al iniciar. El worker conserva la descarga/decodificación, la asignación a caminos ya preparados, la jerarquía y sus semillas. La GPU realiza splatting, convolución radial Epanechnikov, refuerzo de la guía, advección, suavizado, rasterización y cálculo de NMI. Se conservan D3 para cámara, nodos, selección, dispersión y reloj. No existe reproducción temporal automática.
 
-El avance incluye kernels de densidad, advección, suavizado y raster óptico, además de gestión de buffers y estadísticas en GPU. Quedan pendientes su integración con el worker y el overlay, compilación WGSL en el navegador, comparación numérica CPU/GPU y medición con el conjunto completo. La comprobación previa de disponibilidad WebGPU del equipo no valida estos kernels. La unificación del raster visible y el utilizado para NMI sigue pendiente en la aplicación activa.
+`raeb-overlay.mjs` coordina el backend GPU y `raeb-cpu-overlay.mjs` conserva el respaldo CPU/WebGL2. Si falla la inicialización o se informa un error/pérdida de dispositivo, vuelve al respaldo. `compute=cpu` permite probarlo explícitamente en la URL inicial. El indicador visible muestra WebGPU cuando está activo.
 
-Esta rama incluye las 672 matrices OD procesadas, el grafo de referencia, los agregados y scripts reproducibles para que otra copia pueda ejecutar la interfaz sin descargar nuevamente los originales. Las descargas crudas permanecen excluidas de Git.
+Los puntos permanecen en buffers GPU; durante el solver se leen únicamente 16 bytes de estadísticas por iteración. Las lecturas completas de `readBuffer` están reservadas al test pequeño. La densidad y opacidad se acumulan en punto fijo con dos enteros de 32 bits y escala 65536: evita requerir atómicos de coma flotante, con cuantización explícita de 1/65536. Cada buffer respeta el límite del dispositivo. Se guardan dos poses finales por cohorte en GPU.
+
+La estabilidad GPU compara imágenes de curvas atenuadas más enlaces GTFS retenidos usando el mismo algoritmo de raster que dibuja el mapa. El análisis usa el raster reducido del solver y omite la selección; el dibujo usa la resolución de pantalla y la cámara. Esta corrección cambia el criterio respecto al respaldo CPU anterior: sus tiempos no son un benchmark de algoritmos numéricamente idénticos. La adaptación y el anclaje adicionales respecto al paper siguen vigentes.
+
+### Comprobaciones realizadas
+
+- `tests/webgpu.html`, servido por HTTP, compila todos los pipelines y compara una iteración con CPU en un fixture determinista: f=0/b=1, f=0,6/b=0,65, f=1/b=1 y f=0/b=0. Máximo error observado: 0,001526 píxeles CSS; extremos fijos y coincidencia exacta de los dos casos sin movimiento. Recalcula NMI en CPU sobre las imágenes GPU para comprobar el histograma y la reducción, con tolerancia 0,0001. No constituye paridad exhaustiva del dataset completo.
+- Navegador del equipo Apple M2 Pro: escena 2024/lunes/08h, 143.855 relaciones, 32 muestras por relación, f=0/b=1: 37 iteraciones, NMI=0,806786, solver 1.059,9 ms y carga/preparación/solver 3.238,3 ms en una ejecución. Antes se observó 997,4 ms de solver. f=0,91/b=1: 42,5 ms, una iteración. Son mediciones puntuales de tiempo de pared; no garantizan latencia universal.
+- Cambio manual a 09h, selección de Kew Gardens-Union Tpke, zoom y cambios rápidos de parámetros: comprobación de interfaz con backend GPU activo. Respaldo `compute=cpu` completó la misma cohorte de 08h. Las pruebas del núcleo y de la dispersión siguen pasando.
+
+### Límites pendientes
+
+Falta una auditoría numérica de múltiples iteraciones y de todas las cohortes, pruebas de pérdida real del dispositivo y de otros navegadores/equipos, y un benchmark con criterio de parada idéntico. Preparar una cohorte o un nivel de jerarquía por primera vez todavía cuesta CPU; no se promete una transición instantánea de primera carga. No se modificaron OD ni caminos de referencia.

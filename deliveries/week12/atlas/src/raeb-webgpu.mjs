@@ -1,5 +1,5 @@
-import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs';
-const ENTRIES={initialize:[0,1,3,4,7,8],splat:[0,1,8,9],decodeDensity:[0,9,10],convolve:[0,10,11],maximum:[0,11,13],maximumFinal:[13,14],boost:[0,11,12,14],advect:[0,1,2,3,4,5,6,11],smooth:[0,1,2,3,4,5,6],rasterCurves:[0,1,6,7,15],rasterRails:[0,15,23,24],rasterGuide:[0,12,23,24],image:[0,15,17],histogram:[0,16,17,18,19,20],mutualInformation:[0,18,19,20,21],mutualInformationFinal:[21,22]};
+import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=gpu4';
+const ENTRIES={initialize:[0,1,3,4,7,8],splat:[0,1,8,9],decodeDensity:[0,9,10],convolve:[0,10,11],maximum:[0,11,13],maximumFinal:[13,14],boost:[0,11,12,14],advect:[0,1,2,3,4,5,6,11],smoothPoints:[0,1,2,3,4,5,6],rasterCurves:[0,1,6,7,15],rasterRails:[0,15,23,24],rasterGuide:[0,12,23,24],image:[0,15,17],histogram:[0,16,17,18,19,20],mutualInformation:[0,18,19,20,21],mutualInformationFinal:[21,22]};
 export class RaebWebGPU{
  constructor(){
   this.canvas=document.createElement('canvas');this.canvas.className='raeb-canvas';this.canvas.setAttribute('aria-hidden','true');this.canvas.style.cssText='display:block;pointer-events:none;width:100%;height:100%';
@@ -92,14 +92,14 @@ export class RaebWebGPU{
   let e=this.device.createCommandEncoder();let resources=this.resources();this.pass(e,'initialize',resources,Math.ceil(this.count/256));e.clearBuffer(this.buffers.get(12));this.pass(e,'rasterGuide',resources,Math.ceil(this.linkCount/64));
   this.raster(e,resources,{image:true});this.device.queue.submit([e.finish()]);await this.device.queue.onSubmittedWorkDone();
   // Initial image becomes the previous image. The same rasterizer draws the map.
-  [this.buffers.get(16),this.buffers.get(17)];let prev=this.buffers.get(16);this.buffers.set(16,this.buffers.get(17));this.buffers.set(17,prev);this.schedule();
+  let prev=this.buffers.get(16);this.buffers.set(16,this.buffers.get(17));this.buffers.set(17,prev);this.schedule();
   if(strength>0&&fidelity<1&&this.count){
    for(let iteration=0;iteration<maxIterations;iteration++){
     if(cancelled()||generation!==this.generation)return null;
     this.device.queue.writeBuffer(this.uniformCompute,0,this.params({fidelity,strength,radius,analysis:true}));e=this.device.createCommandEncoder();resources=this.resources();
     e.clearBuffer(this.buffers.get(9));this.pass(e,'splat',resources,Math.ceil(this.count*this.samples/256));this.pass(e,'decodeDensity',resources,Math.ceil(this.scene.width*this.scene.height/256));
     this.pass(e,'convolve',resources,Math.ceil(this.scene.width/8),Math.ceil(this.scene.height/8));this.pass(e,'maximum',resources,Math.ceil(this.scene.width*this.scene.height/256));this.pass(e,'maximumFinal',resources,1);this.pass(e,'boost',resources,Math.ceil(this.scene.width*this.scene.height/256));
-    this.pass(e,'advect',resources,Math.ceil(this.count*this.samples/256));this.pass(e,'smooth',resources,Math.ceil(this.count*this.samples/256));
+    this.pass(e,'advect',resources,Math.ceil(this.count*this.samples/256));this.pass(e,'smoothPoints',resources,Math.ceil(this.count*this.samples/256));
     this.raster(e,resources,{image:true});for(const binding of [18,19,20])e.clearBuffer(this.buffers.get(binding));
     this.pass(e,'histogram',resources,Math.ceil(this.scene.width*this.scene.height/256));this.pass(e,'mutualInformation',resources,256);this.pass(e,'mutualInformationFinal',resources,1);
     e.copyBufferToBuffer(this.buffers.get(22),0,this.statsRead,0,16);this.device.queue.submit([e.finish()]);
@@ -116,7 +116,11 @@ export class RaebWebGPU{
  }
  schedule(){if(!this.pending)this.pending=requestAnimationFrame(()=>{this.pending=0;this.draw().catch(e=>this.onError?.(e));});}
  async draw(){
-  if(!this.device||!this.context||!this.scene||!this.count||this.disposed)return;
+  if(!this.device||!this.context||this.disposed)return;
+  if(!this.count){
+   const e=this.device.createCommandEncoder();const pass=e.beginRenderPass({colorAttachments:[{view:this.context.getCurrentTexture().createView(),clearValue:{r:0,g:0,b:0,a:0},loadOp:'clear',storeOp:'store'}]});pass.end();this.device.queue.submit([e.finish()]);return;
+  }
+  if(!this.scene)return;
   if(this.drawing){this.redraw=true;return;}this.drawing=true;
   try{
    const size=this.canvas.width*this.canvas.height*16;

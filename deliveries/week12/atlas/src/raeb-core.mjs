@@ -196,7 +196,7 @@ export function makeScene(nodes,links,paths,weights,width,height,samples=32){
     const result=new Float32Array(points.length);
     for(let i=0;i<result.length;i+=2){result[i]=(points[i]-1)/sx;result[i+1]=(points[i+1]-1)/sy;}return result;
   }
-  return {nodeCount:n,width:gw,height:gh,samples,active,metadata,kernel,routes,seed,seedAt,guide,retention,sampleLevels,css,weights:active.map(p=>weights[p]),scale:Math.max(1/sx,1/sy)};
+  return {gridToCss:[1/sx,1/sy],hierarchy,nodeCount:n,width:gw,height:gh,samples,active,metadata,kernel,routes,seed,seedAt,guide,retention,sampleLevels,css,weights:active.map(p=>weights[p]),scale:Math.max(1/sx,1/sy)};
 }
 
 export async function bundle(scene,fidelity,strength,{cancelled=()=>false,progress=()=>{},maxIterations=48}={}){

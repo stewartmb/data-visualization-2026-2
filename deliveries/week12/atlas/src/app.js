@@ -1,9 +1,9 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=20261028-review7';
+import {renderMap} from './map-view.js?v=20261028-gpu5';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=20261014-9';
-import {renderInspector} from './inspector.js?v=20261028-review7';
+import {renderInspector} from './inspector.js?v=20261028-gpu5-hideclosure-clocklegend';
 import {renderProject} from './project-view.js?v=20261028-2';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};

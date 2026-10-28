@@ -1,0 +1,23 @@
+<!doctype html><html><meta charset="utf-8"><body><pre id="result">Probando WebGPU…</pre><script type="module">
+import {RaebWebGPU} from '../atlas/src/raeb-webgpu.mjs?v=gpu5';
+import {makeScene,bundle,normalizedMI} from '../atlas/src/raeb-core.mjs?v=gpu4';
+const out=document.querySelector('#result'),results=[],errors=[];function assert(c,m){if(!c)throw Error(m);}
+try {
+ const gpu=new RaebWebGPU();document.body.append(gpu.canvas);await gpu.ready;gpu.resize(200,200);
+ gpu.onError=e=>{errors.push(e.message);out.textContent=JSON.stringify({status:'FAIL',error:e.message,results});};
+ const nodes=[[20,20],[180,20],[180,180]],links=[{len:160,reference_flow:20,points:[nodes[0],[100,100],nodes[1]]},{len:160,reference_flow:10,points:[nodes[1],nodes[2]]}],paths=[[],[0],[0,2],[1],[],[2],[3,1],[3],[]],weights=new Float32Array([0,20,10,30,0,40,50,60,0]);
+ const scene=makeScene(nodes,links,paths,weights,200,200,16),ref=scene.seed(5),vertices=[],railInfo=new Float32Array(16);
+ scene.routes.forEach((r,i)=>{railInfo.set([vertices.length/2,r.length,scene.hierarchy.level[i],i===0?110:160,0,0,0,0],8*i);r.forEach(p=>vertices.push(...p));});
+ await gpu.setScene({grid:{width:scene.width,height:scene.height,gridToCss:scene.gridToCss,kernel:scene.kernel},count:scene.active.length,samples:scene.samples,free:scene.seed(0).slice(),reference:ref.slice(),metadata:scene.metadata.slice(),retention:scene.sampleLevels.slice(),railInfo,railVertices:new Float32Array(vertices)});
+ for(let l=1;l<5;l++)gpu.setLevel(l,scene.seed(l));
+ for(const [f,b] of [[0,1],[.6,.65],[1,1],[0,0]]){
+  const stats=await gpu.solve(f,b,{maxIterations:1}),points=await gpu.readBuffer(1),css=scene.css(points),cpu=await bundle(scene,f,b,{maxIterations:1});
+  let maxError=0;for(let i=0;i<css.length;i++){assert(Number.isFinite(css[i]),'nonfinite GPU point');maxError=Math.max(maxError,Math.abs(css[i]-cpu.points[i]));}
+  assert(maxError<.02,'CPU/GPU point error '+maxError+' for '+f);
+  for(let c=0;c<scene.active.length;c++)for(const j of [0,scene.samples-1])for(let axis=0;axis<2;axis++){const k=(c*scene.samples+j)*2+axis;assert(Math.abs(points[k]-ref[k])<.0001,'endpoint moved');}
+  if(f<1&&b>0){const a=await gpu.readBuffer(16,Uint32Array),bImage=await gpu.readBuffer(17,Uint32Array),expected=normalizedMI(a,bImage);assert(Math.abs(expected-stats.nmi)<.0001,'GPU NMI error');}
+  results.push({fidelity:f,bundling:b,maxPointErrorCssPx:maxError,stats});out.textContent=JSON.stringify({status:'RUNNING',results});
+ }
+ await gpu.device.queue.onSubmittedWorkDone();assert(errors.length===0,errors.join('; '));out.textContent=JSON.stringify({status:'PASS',results});gpu.dispose();
+} catch(e){out.textContent=JSON.stringify({status:'FAIL',error:e.stack,results});}
+</script></body></html>
