@@ -1,0 +1,36 @@
+{
+  "result": "PASS",
+  "months": 72,
+  "calendar_dates": 2192,
+  "records": 141836156,
+  "years": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "original_fields": 12,
+  "published_fingerprint_rows_reconciled": 350951,
+  "atlas_universe_hour_groups": 350950,
+  "published_input_excluded_groups": [
+    {
+      "station_complex_id": "502",
+      "year": 2023,
+      "dow": 5,
+      "hour": 1,
+      "ridership": 2.0
+    }
+  ],
+  "checks": [
+    "all 72 official monthly row counts and sums",
+    "all calendar dates represented",
+    "original columns retained",
+    "client monthly sums and coverage",
+    "published Jan-Feb fingerprint input reproduced exactly",
+    "source/data hashes",
+    "daily/monthly/fare/hour cubes conserve source totals"
+  ],
+  "ui_scope": "This validates the complete data layer; the existing Atlas fingerprint still uses Jan-Feb 2020\u20132024."
+}

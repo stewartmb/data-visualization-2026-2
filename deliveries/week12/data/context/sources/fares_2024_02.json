@@ -1,0 +1,40 @@
+[{"borough":"Bronx","payment_method":"metrocard","fare_class_category":"Metrocard - Fair Fare","ridership":"421890.0"}
+,{"borough":"Bronx","payment_method":"metrocard","fare_class_category":"Metrocard - Full Fare","ridership":"1164523.0"}
+,{"borough":"Bronx","payment_method":"metrocard","fare_class_category":"Metrocard - Other","ridership":"414114.0"}
+,{"borough":"Bronx","payment_method":"metrocard","fare_class_category":"Metrocard - Seniors & Disability","ridership":"207970.0"}
+,{"borough":"Bronx","payment_method":"metrocard","fare_class_category":"Metrocard - Students","ridership":"563874.0"}
+,{"borough":"Bronx","payment_method":"metrocard","fare_class_category":"Metrocard - Unlimited 30-Day","ridership":"567372.0"}
+,{"borough":"Bronx","payment_method":"metrocard","fare_class_category":"Metrocard - Unlimited 7-Day","ridership":"777235.0"}
+,{"borough":"Bronx","payment_method":"omny","fare_class_category":"OMNY - Full Fare","ridership":"2045128.0"}
+,{"borough":"Bronx","payment_method":"omny","fare_class_category":"OMNY - Other","ridership":"1413.0"}
+,{"borough":"Bronx","payment_method":"omny","fare_class_category":"OMNY - Seniors & Disability","ridership":"7119.0"}
+,{"borough":"Brooklyn","payment_method":"metrocard","fare_class_category":"Metrocard - Fair Fare","ridership":"881694.0"}
+,{"borough":"Brooklyn","payment_method":"metrocard","fare_class_category":"Metrocard - Full Fare","ridership":"3043210.0"}
+,{"borough":"Brooklyn","payment_method":"metrocard","fare_class_category":"Metrocard - Other","ridership":"1038048.0"}
+,{"borough":"Brooklyn","payment_method":"metrocard","fare_class_category":"Metrocard - Seniors & Disability","ridership":"756989.0"}
+,{"borough":"Brooklyn","payment_method":"metrocard","fare_class_category":"Metrocard - Students","ridership":"1432714.0"}
+,{"borough":"Brooklyn","payment_method":"metrocard","fare_class_category":"Metrocard - Unlimited 30-Day","ridership":"1977441.0"}
+,{"borough":"Brooklyn","payment_method":"metrocard","fare_class_category":"Metrocard - Unlimited 7-Day","ridership":"1540071.0"}
+,{"borough":"Brooklyn","payment_method":"omny","fare_class_category":"OMNY - Full Fare","ridership":"10036016.0"}
+,{"borough":"Brooklyn","payment_method":"omny","fare_class_category":"OMNY - Other","ridership":"2449.0"}
+,{"borough":"Brooklyn","payment_method":"omny","fare_class_category":"OMNY - Seniors & Disability","ridership":"43949.0"}
+,{"borough":"Manhattan","payment_method":"metrocard","fare_class_category":"Metrocard - Fair Fare","ridership":"1366202.0"}
+,{"borough":"Manhattan","payment_method":"metrocard","fare_class_category":"Metrocard - Full Fare","ridership":"7366793.0"}
+,{"borough":"Manhattan","payment_method":"metrocard","fare_class_category":"Metrocard - Other","ridership":"2117046.0"}
+,{"borough":"Manhattan","payment_method":"metrocard","fare_class_category":"Metrocard - Seniors & Disability","ridership":"1692850.0"}
+,{"borough":"Manhattan","payment_method":"metrocard","fare_class_category":"Metrocard - Students","ridership":"1609860.0"}
+,{"borough":"Manhattan","payment_method":"metrocard","fare_class_category":"Metrocard - Unlimited 30-Day","ridership":"4130864.0"}
+,{"borough":"Manhattan","payment_method":"metrocard","fare_class_category":"Metrocard - Unlimited 7-Day","ridership":"3757728.0"}
+,{"borough":"Manhattan","payment_method":"omny","fare_class_category":"OMNY - Full Fare","ridership":"28635944.0"}
+,{"borough":"Manhattan","payment_method":"omny","fare_class_category":"OMNY - Other","ridership":"6641.0"}
+,{"borough":"Manhattan","payment_method":"omny","fare_class_category":"OMNY - Seniors & Disability","ridership":"214132.0"}
+,{"borough":"Queens","payment_method":"metrocard","fare_class_category":"Metrocard - Fair Fare","ridership":"480892.0"}
+,{"borough":"Queens","payment_method":"metrocard","fare_class_category":"Metrocard - Full Fare","ridership":"2389311.0"}
+,{"borough":"Queens","payment_method":"metrocard","fare_class_category":"Metrocard - Other","ridership":"619515.0"}
+,{"borough":"Queens","payment_method":"metrocard","fare_class_category":"Metrocard - Seniors & Disability","ridership":"552779.0"}
+,{"borough":"Queens","payment_method":"metrocard","fare_class_category":"Metrocard - Students","ridership":"833204.0"}
+,{"borough":"Queens","payment_method":"metrocard","fare_class_category":"Metrocard - Unlimited 30-Day","ridership":"1457442.0"}
+,{"borough":"Queens","payment_method":"metrocard","fare_class_category":"Metrocard - Unlimited 7-Day","ridership":"1515187.0"}
+,{"borough":"Queens","payment_method":"omny","fare_class_category":"OMNY - Full Fare","ridership":"5574557.0"}
+,{"borough":"Queens","payment_method":"omny","fare_class_category":"OMNY - Other","ridership":"3683.0"}
+,{"borough":"Queens","payment_method":"omny","fare_class_category":"OMNY - Seniors & Disability","ridership":"27844.0"}]

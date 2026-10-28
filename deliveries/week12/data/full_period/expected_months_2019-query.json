@@ -1,0 +1,11 @@
+{
+  "url": "https://data.ny.gov/resource/t69i-h2me.json?%24select=date_extract_y%28transit_timestamp%29+as+year%2Cdate_extract_m%28transit_timestamp%29+as+month%2Ccount%28%2A%29+as+rows%2Csum%28ridership%29+as+ridership%2Csum%28transfers%29+as+transfers&%24where=transit_timestamp+%3E%3D+%272019-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-01-01T00%3A00%3A00%27&%24group=date_extract_y%28transit_timestamp%29%2Cdate_extract_m%28transit_timestamp%29&%24order=year%2Cmonth&%24limit=1000",
+  "dataset": "t69i-h2me",
+  "query": {
+    "$select": "date_extract_y(transit_timestamp) as year,date_extract_m(transit_timestamp) as month,count(*) as rows,sum(ridership) as ridership,sum(transfers) as transfers",
+    "$where": "transit_timestamp >= '2019-01-01T00:00:00' AND transit_timestamp < '2020-01-01T00:00:00'",
+    "$group": "date_extract_y(transit_timestamp),date_extract_m(transit_timestamp)",
+    "$order": "year,month",
+    "$limit": "1000"
+  }
+}

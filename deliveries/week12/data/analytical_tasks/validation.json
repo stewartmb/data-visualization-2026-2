@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "built_at_utc": "2026-10-28T15:29:53.803831+00:00",
+  "method": "Representative weeks; aggregate quantities before normalization. OD hour denotes starting cohort. Fixed-demand distance-only graph removal examples, not operational predictions.",
+  "source_sha256": {
+    "atlas/data/historical_contrast.json": "01a2f024ec0ef08fbe2661edc32fbad55cd0b8e9716357f8fe4011ea09ce8e75",
+    "atlas/data/flows.json": "ab141b8f6c88620ba03a2a02edbadaaa68bb3dab54c9dc25901d6f53e89701ab",
+    "atlas/data/raeb/manifest.json": "cd1378387c0625f0e1ed0e243db5fcbb6d0f6f1086089f94772b69fe66960aac"
+  },
+  "inputs": "All 672 dense float32 OD frames verified against the RAEB manifest; small float32 rounding retained.",
+  "checks": [
+    "territorial OD conservation",
+    "external origins equal external destinations across partition",
+    "no negative/non-finite OD",
+    "no shortened shortest distance after removing links",
+    "scenario connected + disconnected demand conservation"
+  ],
+  "row_counts": {
+    "T1_territory.csv": 804,
+    "T3_windows.csv": 5628,
+    "T2_territorial_od.csv": 64,
+    "T5_external_balance.csv": 2688,
+    "T4_corridor_loads.csv": 1098,
+    "T6_reference_scenarios.csv": 6
+  },
+  "scenarios": "Six illustrative link removals, not exhaustive ranking of network vulnerability.",
+  "artifacts": {
+    "T1_territory.csv": "2ffca67a3dcd05073dd3f48ab44213d2d849f9685d652cc803218c57a229dca2",
+    "T3_windows.csv": "197fc6faaeb605e641e9352b70a05abfd040167da15d549da461618d419edfc9",
+    "T2_territorial_od.csv": "ebbb7228d32a572d99d4db044d0cabd1f0a67e06bb229073061116a4d7b56c0e",
+    "T5_external_balance.csv": "c85c0cc5d10797395e1aca264254764696dd39f2c92dc35fb2f6e2ac75cf3d95",
+    "T4_corridor_loads.csv": "e1ad99a61645dcce5bdd393c55bea0ee9355ea97223e9e78acf1bee82e675dd9",
+    "T6_reference_scenarios.csv": "97dc1801bc27f06db08fb2c5a0870bf36e4a27ee6b8a57dfa15e98b82c8b6b61"
+  },
+  "ui_status": "Evidence/preparation only. Does not declare T1-T6 fully implemented in the interface."
+}

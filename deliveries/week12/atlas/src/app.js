@@ -1,14 +1,24 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=20261028-gpu5';
+import {renderMap} from './map-view.js?v=20261028-controls2';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=20261014-9';
-import {renderInspector} from './inspector.js?v=20261028-gpu5-hideclosure-clocklegend';
-import {renderProject} from './project-view.js?v=20261028-2';
+import {renderInspector} from './inspector.js?v=20261028-release1';
+import {renderProject} from './project-view.js?v=20261028-release1';
+
+import {normalizeContrastBase,inspectorContrast,contrastMeasures} from './contrast-model.mjs';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
 const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia',project:'Proyecto'};
-let data,geo,lineas,flows,toastTimer;
+let data,geo,lineas,flows,toastTimer,historicalProfiles,historicalPromise;
+async function loadHistoricalProfiles(){
+  if(historicalProfiles)return historicalProfiles;
+  historicalPromise??=d3.json('data/historical_contrast.json').then(value=>{
+    if(value?.meta?.status!=='PASS'||![2019,2020,2024].every(y=>value.meta.years.includes(y)))throw Error('Los perfiles históricos no están validados.');
+    historicalProfiles=value;return value;
+  }).catch(error=>{historicalPromise=null;throw error;});
+  return historicalPromise;
+}
 function hydrate(){
   const p=new URLSearchParams(location.search);
   state.view='map';
@@ -26,6 +36,7 @@ function hydrate(){
   if(p.has('hour')&&Number.isInteger(+p.get('hour')))state.flowHour=Math.max(0,Math.min(23,+p.get('hour')));
   if(p.has('day')&&Number.isInteger(+p.get('day')))state.flowDay=Math.max(0,Math.min(6,+p.get('day')));
   if(p.has('base')&&[2021,2022,2023].includes(+p.get('base')))setBase(+p.get('base'));
+  state.contrastBase=normalizeContrastBase(p.has('contrastBase')?+p.get('contrastBase'):2019,state.year,BASE);
   if(p.has('fidelity')&&Number.isFinite(+p.get('fidelity')))state.fidelity=Math.max(0,Math.min(1,+p.get('fidelity')));
   if(p.has('bundling')&&Number.isFinite(+p.get('bundling')))state.bundling=Math.max(0,Math.min(1,+p.get('bundling')));
 }
@@ -40,11 +51,20 @@ function updateURL(){
   if(state.tvMax<100)p.set('tvMax',state.tvMax);
   for(const [key,range] of Object.entries(state.ranges))if(range){p.set(key+'Min',range[0]);p.set(key+'Max',range[1]);}
   if(state.pins.length)p.set('pins',state.pins.join(','));
-  for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus','layer','flowShow'])p.set(key,state[key]);p.set('hour',state.flowHour);p.set('day',state.flowDay);p.set('base',BASE);p.set('fidelity',state.fidelity);p.set('bundling',state.bundling);
+  for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus','layer','flowShow'])p.set(key,state[key]);p.set('hour',state.flowHour);p.set('day',state.flowDay);p.set('base',BASE);p.set('fidelity',state.fidelity);p.set('bundling',state.bundling);p.set('contrastBase',state.contrastBase??BASE);
   history.replaceState(null,'',`?${p}`);
 }
 const app={
   syncURL:updateURL,
+  get historicalProfiles(){return historicalProfiles;},
+  async setContrastBase(year){
+    if(normalizeContrastBase(year,state.year,BASE)!==year)return;
+    if(year<2021)await loadHistoricalProfiles();
+    state.contrastBase=year;
+    // Re-render only the right column: no camera, map metric, OD frame, node
+    // sizes, year, or bundling job is changed by a historical contrast.
+    renderInspector(app);updateURL();
+  },
   get data(){return data;},get geo(){return geo;},get lineas(){return lineas;},get flows(){return flows;},state,
   station:id=>data.stations.find(s=>s.id===id),
   filtered(){
@@ -106,21 +126,23 @@ function render(){
 }
 
 function exportCSV(){
-  const columns=['complex_id','name','borough','baseline','target','change_tv_pp','delta_am_pp','delta_weekend_pp','volume_index_pct','observed_cells_baseline','observed_cells_target','retrieved_at_utc'];
+  const contrast=inspectorContrast(app,normalizeContrastBase(state.contrastBase??BASE,state.year,BASE),state.year);
+  const contrastBase=contrast.contrast.base;
+  const columns=['measure_source','complex_id','name','borough','baseline','target','change_tv_pp','delta_am_pp','delta_weekend_pp','volume_index_pct','observed_cells_baseline','observed_cells_target','retrieved_at_utc'];
   const quote=v=>'"'+String(v).replaceAll('"','""')+'"';
-  const rows=app.filtered().map(s=>{const m=measures(s);return [s.id,s.name,s.borough,'Jan-Dec '+BASE,`Jan-Dec ${state.year}`,m.change,m.deltaAM,m.deltaWeekend,m.recovery,profile(s,BASE).observedCells,profile(s).observedCells,data.meta.retrieved].map(quote).join(',');});
+  const rows=contrast.filtered().map(s=>{const m=contrastMeasures(s,contrastBase,state.year);return [contrast.contrast.kind,s.id,s.name,s.borough,'Jan-Dec '+contrastBase,`Jan-Dec ${state.year}`,m.change,m.deltaAM,m.deltaWeekend,m.recovery,profile(s,contrastBase).observedCells,profile(s).observedCells,contrast.contrast.meta.built_at_utc||data.meta.retrieved].map(quote).join(',');});
   const blob=new Blob(['\ufeff'+columns.join(',')+'\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=`evidencia-ritmos-${state.year}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  const a=document.createElement('a');a.href=url;a.download=`evidencia-${contrast.contrast.kind}-${contrastBase}-${state.year}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 hydrate();
-Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json('data/lineas.geojson').catch(()=>null),d3.json('data/flows.json')]).then(([a,g,l,f])=>{
+Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json('data/lineas.geojson').catch(()=>null),d3.json('data/flows.json')]).then(async([a,g,l,f])=>{
   if(!a.stations?.length||a.stations.some(s=>!s.profiles[String(BASE)]||!s.profiles['2024']||Object.values(s.profiles).filter(Boolean).some(p=>p.p.length!==168||p.p.some(v=>!Number.isFinite(v)||v<0))))throw Error('Los perfiles no cumplen la estructura esperada.');
   if(!f?.starts||!f?.flows||!f?.meta?.years?.includes(BASE)||!f.meta.years.includes(state.year))throw Error('Faltan los agregados OD para esta comparación. No se usarán datos de entradas como reemplazo.');
   data=a;geo=g;lineas=l;flows=f;
   // Métricas exclusivamente desde el OD: los perfiles de 168 celdas de cada complejo se derivan de los
-  // viajes iniciados (starts[y][nodo][dow][hora], semana representativa). Las entradas por torniquete
-  // quedan fuera de esta versión.
+  // viajes iniciados (starts[y][nodo][dow][hora], semana representativa). El contraste histórico
+  // utiliza perfiles separados de entradas, con la misma fuente para ambos años.
   if(f&&f.starts){
     const ni=new Map(f.nodes.map((n,i)=>[n.id,i]));
     for(const s of data.stations){
@@ -138,6 +160,7 @@ Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json
   }
   state.pins=state.pins.filter(id=>app.station(id));
   if(!app.station(state.selected))state.selected=null;
+  if(state.contrastBase<2021)await loadHistoricalProfiles();
   document.querySelector('#loading').hidden=true;
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>app.set({view:b.dataset.view})));
   document.querySelector('#year').addEventListener('change',e=>{const y=+e.target.value;if(y<=BASE)setBase(y-1);app.set({year:y});});

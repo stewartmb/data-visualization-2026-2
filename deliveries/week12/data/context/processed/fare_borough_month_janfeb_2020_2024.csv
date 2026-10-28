@@ -1,0 +1,369 @@
+year,month,borough,payment_method,fare_class_category,ridership,transit_mode
+2020,2020-01,Bronx,metrocard,Metrocard - Fair Fare,323961,subway
+2020,2020-01,Bronx,metrocard,Metrocard - Full Fare,3802676,subway
+2020,2020-01,Bronx,metrocard,Metrocard - Other,910143,subway
+2020,2020-01,Bronx,metrocard,Metrocard - Seniors & Disability,296365,subway
+2020,2020-01,Bronx,metrocard,Metrocard - Students,976984,subway
+2020,2020-01,Bronx,metrocard,Metrocard - Unlimited 30-Day,1776656,subway
+2020,2020-01,Bronx,metrocard,Metrocard - Unlimited 7-Day,3143589,subway
+2020,2020-01,Bronx,omny,OMNY - Full Fare,51248,subway
+2020,2020-01,Brooklyn,metrocard,Metrocard - Fair Fare,459282,subway
+2020,2020-01,Brooklyn,metrocard,Metrocard - Full Fare,10678445,subway
+2020,2020-01,Brooklyn,metrocard,Metrocard - Other,2688546,subway
+2020,2020-01,Brooklyn,metrocard,Metrocard - Seniors & Disability,933395,subway
+2020,2020-01,Brooklyn,metrocard,Metrocard - Students,2003793,subway
+2020,2020-01,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,7943995,subway
+2020,2020-01,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,5915231,subway
+2020,2020-01,Brooklyn,omny,OMNY - Full Fare,77981,subway
+2020,2020-01,Manhattan,metrocard,Metrocard - Fair Fare,687718,subway
+2020,2020-01,Manhattan,metrocard,Metrocard - Full Fare,30316418,subway
+2020,2020-01,Manhattan,metrocard,Metrocard - Other,7421547,subway
+2020,2020-01,Manhattan,metrocard,Metrocard - Seniors & Disability,2466005,subway
+2020,2020-01,Manhattan,metrocard,Metrocard - Students,2139774,subway
+2020,2020-01,Manhattan,metrocard,Metrocard - Unlimited 30-Day,19471298,subway
+2020,2020-01,Manhattan,metrocard,Metrocard - Unlimited 7-Day,12539533,subway
+2020,2020-01,Manhattan,omny,OMNY - Full Fare,1959655,subway
+2020,2020-01,Queens,metrocard,Metrocard - Fair Fare,201626,subway
+2020,2020-01,Queens,metrocard,Metrocard - Full Fare,7202126,subway
+2020,2020-01,Queens,metrocard,Metrocard - Other,1506562,subway
+2020,2020-01,Queens,metrocard,Metrocard - Seniors & Disability,638604,subway
+2020,2020-01,Queens,metrocard,Metrocard - Students,1122894,subway
+2020,2020-01,Queens,metrocard,Metrocard - Unlimited 30-Day,4843630,subway
+2020,2020-01,Queens,metrocard,Metrocard - Unlimited 7-Day,4055409,subway
+2020,2020-01,Queens,omny,OMNY - Full Fare,8274,subway
+2020,2020-02,Bronx,metrocard,Metrocard - Fair Fare,363541,subway
+2020,2020-02,Bronx,metrocard,Metrocard - Full Fare,3445908,subway
+2020,2020-02,Bronx,metrocard,Metrocard - Other,966358,subway
+2020,2020-02,Bronx,metrocard,Metrocard - Seniors & Disability,282609,subway
+2020,2020-02,Bronx,metrocard,Metrocard - Students,864197,subway
+2020,2020-02,Bronx,metrocard,Metrocard - Unlimited 30-Day,1704120,subway
+2020,2020-02,Bronx,metrocard,Metrocard - Unlimited 7-Day,3023957,subway
+2020,2020-02,Bronx,omny,OMNY - Full Fare,96990,subway
+2020,2020-02,Brooklyn,metrocard,Metrocard - Fair Fare,519242,subway
+2020,2020-02,Brooklyn,metrocard,Metrocard - Full Fare,9751806,subway
+2020,2020-02,Brooklyn,metrocard,Metrocard - Other,2600614,subway
+2020,2020-02,Brooklyn,metrocard,Metrocard - Seniors & Disability,868917,subway
+2020,2020-02,Brooklyn,metrocard,Metrocard - Students,1787103,subway
+2020,2020-02,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,7729895,subway
+2020,2020-02,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,5681585,subway
+2020,2020-02,Brooklyn,omny,OMNY - Full Fare,122122,subway
+2020,2020-02,Manhattan,metrocard,Metrocard - Fair Fare,788621,subway
+2020,2020-02,Manhattan,metrocard,Metrocard - Full Fare,26986076,subway
+2020,2020-02,Manhattan,metrocard,Metrocard - Other,6969294,subway
+2020,2020-02,Manhattan,metrocard,Metrocard - Seniors & Disability,2304908,subway
+2020,2020-02,Manhattan,metrocard,Metrocard - Students,1901011,subway
+2020,2020-02,Manhattan,metrocard,Metrocard - Unlimited 30-Day,18999503,subway
+2020,2020-02,Manhattan,metrocard,Metrocard - Unlimited 7-Day,12018269,subway
+2020,2020-02,Manhattan,omny,OMNY - Full Fare,2950829,subway
+2020,2020-02,Queens,metrocard,Metrocard - Fair Fare,230465,subway
+2020,2020-02,Queens,metrocard,Metrocard - Full Fare,6489600,subway
+2020,2020-02,Queens,metrocard,Metrocard - Other,1446538,subway
+2020,2020-02,Queens,metrocard,Metrocard - Seniors & Disability,584269,subway
+2020,2020-02,Queens,metrocard,Metrocard - Students,980603,subway
+2020,2020-02,Queens,metrocard,Metrocard - Unlimited 30-Day,4664412,subway
+2020,2020-02,Queens,metrocard,Metrocard - Unlimited 7-Day,3909715,subway
+2020,2020-02,Queens,omny,OMNY - Full Fare,10168,subway
+2021,2021-01,Bronx,metrocard,Metrocard - Fair Fare,281866,subway
+2021,2021-01,Bronx,metrocard,Metrocard - Full Fare,1896811,subway
+2021,2021-01,Bronx,metrocard,Metrocard - Other,274511,subway
+2021,2021-01,Bronx,metrocard,Metrocard - Seniors & Disability,153927,subway
+2021,2021-01,Bronx,metrocard,Metrocard - Students,66591,subway
+2021,2021-01,Bronx,metrocard,Metrocard - Unlimited 30-Day,542819,subway
+2021,2021-01,Bronx,metrocard,Metrocard - Unlimited 7-Day,1057085,subway
+2021,2021-01,Bronx,omny,OMNY - Full Fare,471066,subway
+2021,2021-01,Brooklyn,metrocard,Metrocard - Fair Fare,424442,subway
+2021,2021-01,Brooklyn,metrocard,Metrocard - Full Fare,4617291,subway
+2021,2021-01,Brooklyn,metrocard,Metrocard - Other,619450,subway
+2021,2021-01,Brooklyn,metrocard,Metrocard - Seniors & Disability,409603,subway
+2021,2021-01,Brooklyn,metrocard,Metrocard - Students,160018,subway
+2021,2021-01,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1471495,subway
+2021,2021-01,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1727818,subway
+2021,2021-01,Brooklyn,omny,OMNY - Full Fare,1125256,subway
+2021,2021-01,Manhattan,metrocard,Metrocard - Fair Fare,599728,subway
+2021,2021-01,Manhattan,metrocard,Metrocard - Full Fare,7947856,subway
+2021,2021-01,Manhattan,metrocard,Metrocard - Other,1134664,subway
+2021,2021-01,Manhattan,metrocard,Metrocard - Seniors & Disability,751303,subway
+2021,2021-01,Manhattan,metrocard,Metrocard - Students,173680,subway
+2021,2021-01,Manhattan,metrocard,Metrocard - Unlimited 30-Day,2614545,subway
+2021,2021-01,Manhattan,metrocard,Metrocard - Unlimited 7-Day,2635976,subway
+2021,2021-01,Manhattan,omny,OMNY - Full Fare,2797403,subway
+2021,2021-01,Queens,metrocard,Metrocard - Fair Fare,205837,subway
+2021,2021-01,Queens,metrocard,Metrocard - Full Fare,3291352,subway
+2021,2021-01,Queens,metrocard,Metrocard - Other,374216,subway
+2021,2021-01,Queens,metrocard,Metrocard - Seniors & Disability,282969,subway
+2021,2021-01,Queens,metrocard,Metrocard - Students,91289,subway
+2021,2021-01,Queens,metrocard,Metrocard - Unlimited 30-Day,1041958,subway
+2021,2021-01,Queens,metrocard,Metrocard - Unlimited 7-Day,1412204,subway
+2021,2021-01,Queens,omny,OMNY - Full Fare,640523,subway
+2021,2021-02,Bronx,metrocard,Metrocard - Fair Fare,271338,subway
+2021,2021-02,Bronx,metrocard,Metrocard - Full Fare,1791317,subway
+2021,2021-02,Bronx,metrocard,Metrocard - Other,259814,subway
+2021,2021-02,Bronx,metrocard,Metrocard - Seniors & Disability,143216,subway
+2021,2021-02,Bronx,metrocard,Metrocard - Students,18254,subway
+2021,2021-02,Bronx,metrocard,Metrocard - Unlimited 30-Day,503013,subway
+2021,2021-02,Bronx,metrocard,Metrocard - Unlimited 7-Day,956820,subway
+2021,2021-02,Bronx,omny,OMNY - Full Fare,496354,subway
+2021,2021-02,Brooklyn,metrocard,Metrocard - Fair Fare,409942,subway
+2021,2021-02,Brooklyn,metrocard,Metrocard - Full Fare,4418427,subway
+2021,2021-02,Brooklyn,metrocard,Metrocard - Other,588630,subway
+2021,2021-02,Brooklyn,metrocard,Metrocard - Seniors & Disability,387739,subway
+2021,2021-02,Brooklyn,metrocard,Metrocard - Students,69136,subway
+2021,2021-02,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1367501,subway
+2021,2021-02,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1556472,subway
+2021,2021-02,Brooklyn,omny,OMNY - Full Fare,1300603,subway
+2021,2021-02,Manhattan,metrocard,Metrocard - Fair Fare,580383,subway
+2021,2021-02,Manhattan,metrocard,Metrocard - Full Fare,7508305,subway
+2021,2021-02,Manhattan,metrocard,Metrocard - Other,1069248,subway
+2021,2021-02,Manhattan,metrocard,Metrocard - Seniors & Disability,719286,subway
+2021,2021-02,Manhattan,metrocard,Metrocard - Students,85213,subway
+2021,2021-02,Manhattan,metrocard,Metrocard - Unlimited 30-Day,2468013,subway
+2021,2021-02,Manhattan,metrocard,Metrocard - Unlimited 7-Day,2399150,subway
+2021,2021-02,Manhattan,omny,OMNY - Full Fare,3026044,subway
+2021,2021-02,Queens,metrocard,Metrocard - Fair Fare,197206,subway
+2021,2021-02,Queens,metrocard,Metrocard - Full Fare,3106805,subway
+2021,2021-02,Queens,metrocard,Metrocard - Other,362705,subway
+2021,2021-02,Queens,metrocard,Metrocard - Seniors & Disability,267140,subway
+2021,2021-02,Queens,metrocard,Metrocard - Students,32159,subway
+2021,2021-02,Queens,metrocard,Metrocard - Unlimited 30-Day,970194,subway
+2021,2021-02,Queens,metrocard,Metrocard - Unlimited 7-Day,1275845,subway
+2021,2021-02,Queens,omny,OMNY - Full Fare,726983,subway
+2022,2022-01,Bronx,metrocard,Metrocard - Fair Fare,371913,subway
+2022,2022-01,Bronx,metrocard,Metrocard - Full Fare,1700428,subway
+2022,2022-01,Bronx,metrocard,Metrocard - Other,303289,subway
+2022,2022-01,Bronx,metrocard,Metrocard - Seniors & Disability,166613,subway
+2022,2022-01,Bronx,metrocard,Metrocard - Students,569219,subway
+2022,2022-01,Bronx,metrocard,Metrocard - Unlimited 30-Day,666281,subway
+2022,2022-01,Bronx,metrocard,Metrocard - Unlimited 7-Day,1105566,subway
+2022,2022-01,Bronx,omny,OMNY - Full Fare,1004822,subway
+2022,2022-01,Bronx,omny,OMNY - Other,212,subway
+2022,2022-01,Bronx,omny,OMNY - Seniors & Disability,21,subway
+2022,2022-01,Brooklyn,metrocard,Metrocard - Fair Fare,591363,subway
+2022,2022-01,Brooklyn,metrocard,Metrocard - Full Fare,4345695,subway
+2022,2022-01,Brooklyn,metrocard,Metrocard - Other,754196,subway
+2022,2022-01,Brooklyn,metrocard,Metrocard - Seniors & Disability,522966,subway
+2022,2022-01,Brooklyn,metrocard,Metrocard - Students,1363871,subway
+2022,2022-01,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2148801,subway
+2022,2022-01,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1982147,subway
+2022,2022-01,Brooklyn,omny,OMNY - Full Fare,3878231,subway
+2022,2022-01,Brooklyn,omny,OMNY - Other,884,subway
+2022,2022-01,Brooklyn,omny,OMNY - Seniors & Disability,123,subway
+2022,2022-01,Manhattan,metrocard,Metrocard - Fair Fare,908703,subway
+2022,2022-01,Manhattan,metrocard,Metrocard - Full Fare,9137511,subway
+2022,2022-01,Manhattan,metrocard,Metrocard - Other,1533423,subway
+2022,2022-01,Manhattan,metrocard,Metrocard - Seniors & Disability,1094235,subway
+2022,2022-01,Manhattan,metrocard,Metrocard - Students,1371820,subway
+2022,2022-01,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4378224,subway
+2022,2022-01,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4024665,subway
+2022,2022-01,Manhattan,omny,OMNY - Full Fare,9442186,subway
+2022,2022-01,Manhattan,omny,OMNY - Other,1897,subway
+2022,2022-01,Manhattan,omny,OMNY - Seniors & Disability,300,subway
+2022,2022-01,Queens,metrocard,Metrocard - Fair Fare,291410,subway
+2022,2022-01,Queens,metrocard,Metrocard - Full Fare,3196601,subway
+2022,2022-01,Queens,metrocard,Metrocard - Other,461750,subway
+2022,2022-01,Queens,metrocard,Metrocard - Seniors & Disability,370851,subway
+2022,2022-01,Queens,metrocard,Metrocard - Students,798946,subway
+2022,2022-01,Queens,metrocard,Metrocard - Unlimited 30-Day,1531813,subway
+2022,2022-01,Queens,metrocard,Metrocard - Unlimited 7-Day,1695270,subway
+2022,2022-01,Queens,omny,OMNY - Full Fare,2096337,subway
+2022,2022-01,Queens,omny,OMNY - Other,794,subway
+2022,2022-01,Queens,omny,OMNY - Seniors & Disability,21,subway
+2022,2022-02,Bronx,metrocard,Metrocard - Fair Fare,406548,subway
+2022,2022-02,Bronx,metrocard,Metrocard - Full Fare,1758654,subway
+2022,2022-02,Bronx,metrocard,Metrocard - Other,353534,subway
+2022,2022-02,Bronx,metrocard,Metrocard - Seniors & Disability,183268,subway
+2022,2022-02,Bronx,metrocard,Metrocard - Students,543473,subway
+2022,2022-02,Bronx,metrocard,Metrocard - Unlimited 30-Day,684280,subway
+2022,2022-02,Bronx,metrocard,Metrocard - Unlimited 7-Day,1110539,subway
+2022,2022-02,Bronx,omny,OMNY - Full Fare,1075692,subway
+2022,2022-02,Bronx,omny,OMNY - Other,434,subway
+2022,2022-02,Bronx,omny,OMNY - Seniors & Disability,5,subway
+2022,2022-02,Brooklyn,metrocard,Metrocard - Fair Fare,641779,subway
+2022,2022-02,Brooklyn,metrocard,Metrocard - Full Fare,4593325,subway
+2022,2022-02,Brooklyn,metrocard,Metrocard - Other,851766,subway
+2022,2022-02,Brooklyn,metrocard,Metrocard - Seniors & Disability,582134,subway
+2022,2022-02,Brooklyn,metrocard,Metrocard - Students,1235844,subway
+2022,2022-02,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2281826,subway
+2022,2022-02,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,2003700,subway
+2022,2022-02,Brooklyn,omny,OMNY - Full Fare,4497012,subway
+2022,2022-02,Brooklyn,omny,OMNY - Other,2314,subway
+2022,2022-02,Brooklyn,omny,OMNY - Seniors & Disability,31,subway
+2022,2022-02,Manhattan,metrocard,Metrocard - Fair Fare,1022059,subway
+2022,2022-02,Manhattan,metrocard,Metrocard - Full Fare,10351211,subway
+2022,2022-02,Manhattan,metrocard,Metrocard - Other,1796993,subway
+2022,2022-02,Manhattan,metrocard,Metrocard - Seniors & Disability,1268965,subway
+2022,2022-02,Manhattan,metrocard,Metrocard - Students,1325966,subway
+2022,2022-02,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4882808,subway
+2022,2022-02,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4139950,subway
+2022,2022-02,Manhattan,omny,OMNY - Full Fare,11547739,subway
+2022,2022-02,Manhattan,omny,OMNY - Other,6324,subway
+2022,2022-02,Manhattan,omny,OMNY - Seniors & Disability,102,subway
+2022,2022-02,Queens,metrocard,Metrocard - Fair Fare,319162,subway
+2022,2022-02,Queens,metrocard,Metrocard - Full Fare,3332755,subway
+2022,2022-02,Queens,metrocard,Metrocard - Other,528352,subway
+2022,2022-02,Queens,metrocard,Metrocard - Seniors & Disability,408940,subway
+2022,2022-02,Queens,metrocard,Metrocard - Students,719064,subway
+2022,2022-02,Queens,metrocard,Metrocard - Unlimited 30-Day,1598511,subway
+2022,2022-02,Queens,metrocard,Metrocard - Unlimited 7-Day,1687470,subway
+2022,2022-02,Queens,omny,OMNY - Full Fare,2367557,subway
+2022,2022-02,Queens,omny,OMNY - Other,1454,subway
+2022,2022-02,Queens,omny,OMNY - Seniors & Disability,12,subway
+2023,2023-01,Bronx,metrocard,Metrocard - Fair Fare,455296,subway
+2023,2023-01,Bronx,metrocard,Metrocard - Full Fare,1634172,subway
+2023,2023-01,Bronx,metrocard,Metrocard - Other,381798,subway
+2023,2023-01,Bronx,metrocard,Metrocard - Seniors & Disability,212002,subway
+2023,2023-01,Bronx,metrocard,Metrocard - Students,608503,subway
+2023,2023-01,Bronx,metrocard,Metrocard - Unlimited 30-Day,675424,subway
+2023,2023-01,Bronx,metrocard,Metrocard - Unlimited 7-Day,1018028,subway
+2023,2023-01,Bronx,omny,OMNY - Full Fare,1739695,subway
+2023,2023-01,Bronx,omny,OMNY - Other,370,subway
+2023,2023-01,Bronx,omny,OMNY - Seniors & Disability,2127,subway
+2023,2023-01,Brooklyn,metrocard,Metrocard - Fair Fare,783728,subway
+2023,2023-01,Brooklyn,metrocard,Metrocard - Full Fare,4272186,subway
+2023,2023-01,Brooklyn,metrocard,Metrocard - Other,988975,subway
+2023,2023-01,Brooklyn,metrocard,Metrocard - Seniors & Disability,729584,subway
+2023,2023-01,Brooklyn,metrocard,Metrocard - Students,1484080,subway
+2023,2023-01,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2250314,subway
+2023,2023-01,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1899265,subway
+2023,2023-01,Brooklyn,omny,OMNY - Full Fare,8178415,subway
+2023,2023-01,Brooklyn,omny,OMNY - Other,1670,subway
+2023,2023-01,Brooklyn,omny,OMNY - Seniors & Disability,12755,subway
+2023,2023-01,Manhattan,metrocard,Metrocard - Fair Fare,1213901,subway
+2023,2023-01,Manhattan,metrocard,Metrocard - Full Fare,10351542,subway
+2023,2023-01,Manhattan,metrocard,Metrocard - Other,2087073,subway
+2023,2023-01,Manhattan,metrocard,Metrocard - Seniors & Disability,1654745,subway
+2023,2023-01,Manhattan,metrocard,Metrocard - Students,1611001,subway
+2023,2023-01,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4712158,subway
+2023,2023-01,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4333477,subway
+2023,2023-01,Manhattan,omny,OMNY - Full Fare,22406285,subway
+2023,2023-01,Manhattan,omny,OMNY - Other,4016,subway
+2023,2023-01,Manhattan,omny,OMNY - Seniors & Disability,59523,subway
+2023,2023-01,Queens,metrocard,Metrocard - Fair Fare,406385,subway
+2023,2023-01,Queens,metrocard,Metrocard - Full Fare,3376047,subway
+2023,2023-01,Queens,metrocard,Metrocard - Other,586551,subway
+2023,2023-01,Queens,metrocard,Metrocard - Seniors & Disability,529446,subway
+2023,2023-01,Queens,metrocard,Metrocard - Students,889583,subway
+2023,2023-01,Queens,metrocard,Metrocard - Unlimited 30-Day,1653480,subway
+2023,2023-01,Queens,metrocard,Metrocard - Unlimited 7-Day,1770116,subway
+2023,2023-01,Queens,omny,OMNY - Full Fare,4443841,subway
+2023,2023-01,Queens,omny,OMNY - Other,1755,subway
+2023,2023-01,Queens,omny,OMNY - Seniors & Disability,6816,subway
+2023,2023-02,Bronx,metrocard,Metrocard - Fair Fare,431495,subway
+2023,2023-02,Bronx,metrocard,Metrocard - Full Fare,1514105,subway
+2023,2023-02,Bronx,metrocard,Metrocard - Other,389973,subway
+2023,2023-02,Bronx,metrocard,Metrocard - Seniors & Disability,202938,subway
+2023,2023-02,Bronx,metrocard,Metrocard - Students,554986,subway
+2023,2023-02,Bronx,metrocard,Metrocard - Unlimited 30-Day,633816,subway
+2023,2023-02,Bronx,metrocard,Metrocard - Unlimited 7-Day,953953,subway
+2023,2023-02,Bronx,omny,OMNY - Full Fare,1695409,subway
+2023,2023-02,Bronx,omny,OMNY - Other,345,subway
+2023,2023-02,Bronx,omny,OMNY - Seniors & Disability,2443,subway
+2023,2023-02,Brooklyn,metrocard,Metrocard - Fair Fare,763758,subway
+2023,2023-02,Brooklyn,metrocard,Metrocard - Full Fare,3940828,subway
+2023,2023-02,Brooklyn,metrocard,Metrocard - Other,965828,subway
+2023,2023-02,Brooklyn,metrocard,Metrocard - Seniors & Disability,695936,subway
+2023,2023-02,Brooklyn,metrocard,Metrocard - Students,1370402,subway
+2023,2023-02,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2151604,subway
+2023,2023-02,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1796343,subway
+2023,2023-02,Brooklyn,omny,OMNY - Full Fare,7978317,subway
+2023,2023-02,Brooklyn,omny,OMNY - Other,1347,subway
+2023,2023-02,Brooklyn,omny,OMNY - Seniors & Disability,14496,subway
+2023,2023-02,Manhattan,metrocard,Metrocard - Fair Fare,1189739,subway
+2023,2023-02,Manhattan,metrocard,Metrocard - Full Fare,9379246,subway
+2023,2023-02,Manhattan,metrocard,Metrocard - Other,2004088,subway
+2023,2023-02,Manhattan,metrocard,Metrocard - Seniors & Disability,1560331,subway
+2023,2023-02,Manhattan,metrocard,Metrocard - Students,1470995,subway
+2023,2023-02,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4519934,subway
+2023,2023-02,Manhattan,metrocard,Metrocard - Unlimited 7-Day,4133903,subway
+2023,2023-02,Manhattan,omny,OMNY - Full Fare,21710433,subway
+2023,2023-02,Manhattan,omny,OMNY - Other,3758,subway
+2023,2023-02,Manhattan,omny,OMNY - Seniors & Disability,67175,subway
+2023,2023-02,Queens,metrocard,Metrocard - Fair Fare,387134,subway
+2023,2023-02,Queens,metrocard,Metrocard - Full Fare,3068462,subway
+2023,2023-02,Queens,metrocard,Metrocard - Other,571751,subway
+2023,2023-02,Queens,metrocard,Metrocard - Seniors & Disability,497817,subway
+2023,2023-02,Queens,metrocard,Metrocard - Students,808633,subway
+2023,2023-02,Queens,metrocard,Metrocard - Unlimited 30-Day,1554363,subway
+2023,2023-02,Queens,metrocard,Metrocard - Unlimited 7-Day,1670588,subway
+2023,2023-02,Queens,omny,OMNY - Full Fare,4216522,subway
+2023,2023-02,Queens,omny,OMNY - Other,1703,subway
+2023,2023-02,Queens,omny,OMNY - Seniors & Disability,7962,subway
+2024,2024-01,Bronx,metrocard,Metrocard - Fair Fare,419017,subway
+2024,2024-01,Bronx,metrocard,Metrocard - Full Fare,1233011,subway
+2024,2024-01,Bronx,metrocard,Metrocard - Other,369018,subway
+2024,2024-01,Bronx,metrocard,Metrocard - Seniors & Disability,206698,subway
+2024,2024-01,Bronx,metrocard,Metrocard - Students,576435,subway
+2024,2024-01,Bronx,metrocard,Metrocard - Unlimited 30-Day,597428,subway
+2024,2024-01,Bronx,metrocard,Metrocard - Unlimited 7-Day,810981,subway
+2024,2024-01,Bronx,omny,OMNY - Full Fare,2061675,subway
+2024,2024-01,Bronx,omny,OMNY - Other,1278,subway
+2024,2024-01,Bronx,omny,OMNY - Seniors & Disability,6833,subway
+2024,2024-01,Brooklyn,metrocard,Metrocard - Fair Fare,868018,subway
+2024,2024-01,Brooklyn,metrocard,Metrocard - Full Fare,3259838,subway
+2024,2024-01,Brooklyn,metrocard,Metrocard - Other,1015968,subway
+2024,2024-01,Brooklyn,metrocard,Metrocard - Seniors & Disability,756519,subway
+2024,2024-01,Brooklyn,metrocard,Metrocard - Students,1482128,subway
+2024,2024-01,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,2065567,subway
+2024,2024-01,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1597717,subway
+2024,2024-01,Brooklyn,omny,OMNY - Full Fare,10102851,subway
+2024,2024-01,Brooklyn,omny,OMNY - Other,2583,subway
+2024,2024-01,Brooklyn,omny,OMNY - Seniors & Disability,42253,subway
+2024,2024-01,Manhattan,metrocard,Metrocard - Fair Fare,1310183,subway
+2024,2024-01,Manhattan,metrocard,Metrocard - Full Fare,7874951,subway
+2024,2024-01,Manhattan,metrocard,Metrocard - Other,2068132,subway
+2024,2024-01,Manhattan,metrocard,Metrocard - Seniors & Disability,1691070,subway
+2024,2024-01,Manhattan,metrocard,Metrocard - Students,1662957,subway
+2024,2024-01,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4251318,subway
+2024,2024-01,Manhattan,metrocard,Metrocard - Unlimited 7-Day,3841200,subway
+2024,2024-01,Manhattan,omny,OMNY - Full Fare,28426010,subway
+2024,2024-01,Manhattan,omny,OMNY - Other,7772,subway
+2024,2024-01,Manhattan,omny,OMNY - Seniors & Disability,203887,subway
+2024,2024-01,Queens,metrocard,Metrocard - Fair Fare,466645,subway
+2024,2024-01,Queens,metrocard,Metrocard - Full Fare,2527675,subway
+2024,2024-01,Queens,metrocard,Metrocard - Other,597532,subway
+2024,2024-01,Queens,metrocard,Metrocard - Seniors & Disability,546770,subway
+2024,2024-01,Queens,metrocard,Metrocard - Students,879285,subway
+2024,2024-01,Queens,metrocard,Metrocard - Unlimited 30-Day,1517941,subway
+2024,2024-01,Queens,metrocard,Metrocard - Unlimited 7-Day,1530935,subway
+2024,2024-01,Queens,omny,OMNY - Full Fare,5556214,subway
+2024,2024-01,Queens,omny,OMNY - Other,3286,subway
+2024,2024-01,Queens,omny,OMNY - Seniors & Disability,26143,subway
+2024,2024-02,Bronx,metrocard,Metrocard - Fair Fare,421890,subway
+2024,2024-02,Bronx,metrocard,Metrocard - Full Fare,1164523,subway
+2024,2024-02,Bronx,metrocard,Metrocard - Other,414114,subway
+2024,2024-02,Bronx,metrocard,Metrocard - Seniors & Disability,207970,subway
+2024,2024-02,Bronx,metrocard,Metrocard - Students,563874,subway
+2024,2024-02,Bronx,metrocard,Metrocard - Unlimited 30-Day,567372,subway
+2024,2024-02,Bronx,metrocard,Metrocard - Unlimited 7-Day,777235,subway
+2024,2024-02,Bronx,omny,OMNY - Full Fare,2045128,subway
+2024,2024-02,Bronx,omny,OMNY - Other,1413,subway
+2024,2024-02,Bronx,omny,OMNY - Seniors & Disability,7119,subway
+2024,2024-02,Brooklyn,metrocard,Metrocard - Fair Fare,881694,subway
+2024,2024-02,Brooklyn,metrocard,Metrocard - Full Fare,3043210,subway
+2024,2024-02,Brooklyn,metrocard,Metrocard - Other,1038048,subway
+2024,2024-02,Brooklyn,metrocard,Metrocard - Seniors & Disability,756989,subway
+2024,2024-02,Brooklyn,metrocard,Metrocard - Students,1432714,subway
+2024,2024-02,Brooklyn,metrocard,Metrocard - Unlimited 30-Day,1977441,subway
+2024,2024-02,Brooklyn,metrocard,Metrocard - Unlimited 7-Day,1540071,subway
+2024,2024-02,Brooklyn,omny,OMNY - Full Fare,10036016,subway
+2024,2024-02,Brooklyn,omny,OMNY - Other,2449,subway
+2024,2024-02,Brooklyn,omny,OMNY - Seniors & Disability,43949,subway
+2024,2024-02,Manhattan,metrocard,Metrocard - Fair Fare,1366202,subway
+2024,2024-02,Manhattan,metrocard,Metrocard - Full Fare,7366793,subway
+2024,2024-02,Manhattan,metrocard,Metrocard - Other,2117046,subway
+2024,2024-02,Manhattan,metrocard,Metrocard - Seniors & Disability,1692850,subway
+2024,2024-02,Manhattan,metrocard,Metrocard - Students,1609860,subway
+2024,2024-02,Manhattan,metrocard,Metrocard - Unlimited 30-Day,4130864,subway
+2024,2024-02,Manhattan,metrocard,Metrocard - Unlimited 7-Day,3757728,subway
+2024,2024-02,Manhattan,omny,OMNY - Full Fare,28635944,subway
+2024,2024-02,Manhattan,omny,OMNY - Other,6641,subway
+2024,2024-02,Manhattan,omny,OMNY - Seniors & Disability,214132,subway
+2024,2024-02,Queens,metrocard,Metrocard - Fair Fare,480892,subway
+2024,2024-02,Queens,metrocard,Metrocard - Full Fare,2389311,subway
+2024,2024-02,Queens,metrocard,Metrocard - Other,619515,subway
+2024,2024-02,Queens,metrocard,Metrocard - Seniors & Disability,552779,subway
+2024,2024-02,Queens,metrocard,Metrocard - Students,833204,subway
+2024,2024-02,Queens,metrocard,Metrocard - Unlimited 30-Day,1457442,subway
+2024,2024-02,Queens,metrocard,Metrocard - Unlimited 7-Day,1515187,subway
+2024,2024-02,Queens,omny,OMNY - Full Fare,5574557,subway
+2024,2024-02,Queens,omny,OMNY - Other,3683,subway
+2024,2024-02,Queens,omny,OMNY - Seniors & Disability,27844,subway

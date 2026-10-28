@@ -23,8 +23,8 @@ Enero–noviembre de 2021 tiene demanda estimada casi nula. La suma de los 168 p
 `atlas/src/scatter-domain.mjs` mantiene una anotación contextual verificada: complejo 301 y comparación que incluye 2021. La anotación tiene carácter de evento de servicio, no de clasificación estadística.
 
 - Los demás complejos finitos determinan ambos dominios sin recortes ni percentiles. En 2021 → 2024 son 423 puntos, con eje X 0–300 %.
-- El complejo anotado se representa en una fila visible y seleccionable debajo de la dispersión: nombre completo, índice exacto y motivo. No se coloca artificialmente en el extremo del eje.
-- El clic mantiene selección enlazada con mapa y reloj. El tooltip conserva magnitudes de ambos años, incremento y TV; la evidencia del sujeto contiene explicación y enlaces.
+- El complejo anotado no determina el dominio ni se coloca artificialmente en el extremo del eje. A solicitud del usuario se retiró la fila de aviso visible; se conserva el contexto en la evidencia bajo demanda.
+- La selección desde el mapa sigue enlazada con el reloj. La evidencia del sujeto conserva la explicación y los enlaces del cierre; los valores siguen en el modelo y la exportación.
 - Con base 2022 o 2023, la anotación de 2021 deja de afectar el dominio y el complejo vuelve al gráfico.
 - Un cociente grande por sí solo no activa esta excepción. No es una revisión exhaustiva de todos los cierres del sistema.
 

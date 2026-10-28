@@ -1,196 +1,79 @@
-# Análisis de datos y diseño de vistas
+# Semana 6 — Análisis, transformaciones y diseño revisados
 
-**DS5343 Data Visualization · UTEC · 2026-2 · Entrega Semana 6**
-Proyecto: *La forma del día — cómo cambió el ritmo horario del metro de Nueva York, 2020–2024*
+**Revisión del 28 de octubre de 2026** · Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino
 
-Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino
+## Datos y métodos
 
----
+**Entradas 2019–2024:** 72 meses, 141.836.156 registros fuente, 12 campos originales. Fuentes MTA/Open NY `t69i-h2me` (solo 2019) y `wujg-7c2s` (2020–2024). **OD estimado 2021–2024:** 48 meses, 446.399.011 registros, 16 campos; fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z` y `jsu2-fbtj`. **Red:** GTFS de referencia 2026, 424 complejos de subway, 547 enlaces ferroviarios y 2 transferencias peatonales declaradas. **Territorio:** borough y NTA 2020 según ubicación del complejo.
 
-## 1. Comprensión de los datos
+Para OD, combinar promedios mensuales ponderando las ocurrencias de cada día de semana. Para entradas, dividir la suma de cada combinación día–hora por sus ocurrencias anuales. V es la suma de las 168 cantidades de una semana representativa, p=u/V, índice=100 V_obj/V_base y TV_pp=50 Σ|p_obj−p_base|. El reloj usa 100(p_obj−p_base) en pp. TV no considera distancia entre horas ni prueba significancia o causalidad. La carga L_e suma q_OD para los caminos que recorren e; un viaje puede contribuir a varios enlaces. El balance externo es (destinos externos−orígenes externos)/(suma de ambos), indefinido sin viajes externos.
 
-El dataset es MTA Subway Hourly Ridership 2020–2024 (`wujg-7c2s`, Open NY). La unidad de registro es una combinación de hora, complejo de estación, modo, método de pago y clase tarifaria, con el conteo de entradas.
+## Preguntas y evidencia
 
-Antes de agregar nada verificamos el supuesto del que depende todo el proyecto: que `station_complex_id` sea estable a lo largo de los cinco años. Si los identificadores cambiaran, comparar una estación entre 2020 y 2024 no tendría sentido.
+1. **Redistribución territorial.** ¿Qué zonas recuperaron demanda y cuáles perdieron peso entre 2019 y 2024?
+2. **Dependencia e intercambios.** ¿Ganaron peso los viajes locales y entre boroughs o aumentó la dependencia de Manhattan entre 2021 y 2024?
+3. **Ventanas de demanda.** ¿Dónde y cuándo se desplazaron las franjas de mayor demanda?
+4. **Corredores de soporte.** ¿Qué tramos de la red de referencia sostienen los principales intercambios?
+5. **Balance externo.** ¿Qué territorios generan o atraen más viajes externos y en qué franjas cambia el balance?
+6. **Exposición a interrupciones.** ¿Qué viajes perderían conexión o requerirían mayor distancia al retirar un enlace de referencia?
 
-Consultamos cuatro ventanas de siete días por año (febrero, mayo, agosto y noviembre) y comparamos los conjuntos de identificadores.
+Las seis tablas de `data/processed/T1_*.csv` a `T6_*.csv` son muestras de hasta 24 filas de resultados reales. Las tablas completas están en `../week12/data/analytical_tasks/`. `../week12/scripts/prepare_analytical_tasks.py` verifica 672 matrices OD contra sus SHA y produce todos los resultados, con controles de conservación y de distancia en los escenarios. No se presenta el escenario como interfaz terminada.
 
-| Año | Complejos distintos |
-|---|---|
-| 2020 | 428 |
-| 2021 | 428 |
-| 2022 | 428 |
-| 2023 | 428 |
-| 2024 | 428 |
-
-**428 complejos, presentes los cinco años, sin un solo cambio de nombre.** El riesgo que habíamos marcado como principal en la propuesta no se materializó, y el análisis puede usar el conjunto completo sin filtrar.
-
-Detalle en [`docs/station_id_stability.md`](../../docs/station_id_stability.md).
-
----
-
-## 2. Transformaciones
-
-El archivo completo supera los gigabytes, así que no se descarga: se agrega del lado del servidor con consultas SoQL contra la API de Socrata.
-
-### Por qué ventanas de siete días
-
-La primera versión del pipeline agregaba por mes y expiraba. Medimos el comportamiento real de la API con `date_trunc_ymd` en el `$group`:
-
-| Rango | Resultado |
-|---|---|
-| 1 día | 0.9 s |
-| 7 días | 2.0 s |
-| 1 mes | expira a los 600 s |
-
-No es una degradación gradual: hay un precipicio entre una semana y un mes. Socrata cambia de plan de ejecución y cae a una ruta lenta. Por eso las pasadas que usan expresiones de fecha recorren el período en ventanas de siete días, y solo la pasada que agrupa por columnas crudas puede ir mensual.
-
-### Tablas producidas
-
-| Archivo | Agrupación | Filas |
+| Tarea | Evidencia preparada | Estado de interacción |
 |---|---|---|
-| `ridership_by_station_day.csv` | complejo × día | 780 446 |
-| `ridership_by_station_hourofweek_year.csv` | complejo × día de semana × hora × año | 359 442 |
-| `ridership_by_month_borough_payment_fare.csv` | mes × borough × pago × tarifa | 2 811 |
-| `station_profiles_normalized.csv` | perfiles que suman 1 por estación y año | 359 520 |
-| `prepandemia_station_hourofweek.csv` | complejo × dow × hora, ene–feb 2020 | 71 866 |
-| `stations_coords.csv` | una fila por complejo, con coordenadas | 428 |
+| T1 | CSV por borough/NTA, seis años | Contraste por complejo disponible; síntesis territorial por integrar al panel |
+| T2 | Matrices territoriales y participaciones, cuatro años | Selección de origen disponible; detalle territorial por integrar |
+| T3 | Ventanas de 3 h, 7 días y seis años | Reloj y selección horaria disponibles; detector automático por integrar |
+| T4 | Cargas de los 549 enlaces para 2021/2024 | Geometría y haces disponibles; inspección exacta por tramo pendiente |
+| T5 | Balance externo por borough/cohorte, cuatro años | CSV preparado; codificación interactiva pendiente |
+| T6 | Seis escenarios reproducibles | Cálculo preparado; escenario interactivo pendiente |
 
-### Derivaciones
 
-**Perfil normalizado.** Cada estación y año se convierte en un vector de 168 valores (24 horas × 7 días) dividido por su propio total. Así las estaciones se comparan por forma y no por tamaño, que es la distinción central del proyecto.
+## Hallazgos exploratorios
 
-**Línea base prepandemia.** La tabla por año mezcla enero y febrero de 2020 con el confinamiento posterior. Extrajimos por separado el perfil de **enero y febrero de 2020**, que es la línea base real. Esta corrección resultó decisiva, como se explica en la sección 4.
+### Demanda territorial: entradas 2024 frente a 2019
 
-**Razón pico/valle.** Por estación: el máximo del perfil laborable entre las 5 y las 11 h dividido por el mínimo entre las 10 y las 14 h. Se descartan 14 estaciones cuyo máximo cae en el borde de la ventana de búsqueda, donde el índice no es confiable.
-
-**Tasa de recuperación.** Ridership diario promedio de 2024 dividido por el ridership diario promedio de enero–febrero de 2020.
-
----
-
-## 3. Verificación de calidad
-
-Sobre los agregados:
-
-| Control | Resultado |
-|---|---|
-| Cobertura de la tabla estación × día | 99.8 % de las 781 956 combinaciones posibles |
-| Rango temporal | 2020-01-01 a 2024-12-31, los 1827 días |
-| Complejos con coordenadas | 428 de 428 |
-| Coordenadas fuera del rango de Nueva York | 0 |
-| Complejos asignados a más de un borough | 0 |
-
-**Numeración del día de la semana.** Socrata devuelve `date_extract_dow` como entero sin documentar el origen. Lo verificamos por los datos: los dos valores con menos ridership son 0 (402 M) y 6 (508 M), frente a 710–813 M del resto. Eso confirma 0 = domingo y 6 = sábado. Asumirlo sin comprobar habría invertido todo el análisis de día laborable.
-
----
-
-## 4. Hallazgos
-
-### 4.1 La recuperación se estancó cerca del 70 %
-
-![Serie mensual](figuras/f1_serie_mensual.png)
-
-De 139.0 M de entradas en enero de 2020 al fondo de 12.1 M en abril, un 8.7 % del nivel previo. La recuperación es sostenida hasta 2023 y ahí se aplana. Diciembre de 2024 llega a 105.4 M, un 75.8 % de enero de 2020, pero julio de 2024 solo alcanza el 68.7 %.
-
-### 4.2 La recuperación fue desigual entre boroughs
-
-![Boroughs](figuras/f2_boroughs.png)
-
-| Borough | ene-2020 | dic-2024 | Recuperación |
+| Borough | Índice de volumen (2019=100) | Cambio de participación del sistema | TV del perfil territorial |
 |---|---|---|---|
-| Manhattan | 77.2 M | 60.4 M | 78.3 % |
-| Queens | 19.6 M | 15.2 M | 77.8 % |
-| Brooklyn | 30.7 M | 22.7 M | 73.8 % |
-| Bronx | 11.3 M | 6.9 M | 60.9 % |
-| Staten Island | 0.3 M | 0.2 M | 58.7 % |
+| Bronx | 58.4 % | -1.44 pp | 1.88 pp |
+| Brooklyn | 72.1 % | +0.37 pp | 4.60 pp |
+| Manhattan | 71.3 % | +0.27 pp | 4.71 pp |
+| Queens | 75.0 % | +0.81 pp | 3.32 pp |
 
-El Bronx quedó 17 puntos debajo de Manhattan.
+Brooklyn tiene menos volumen que en 2019 y a la vez gana participación relativa. El Bronx conserva 58,4 % del volumen semanal representativo de 2019 y pierde 1,44 pp de participación. Son lecturas descriptivas; el borough de la estación no identifica residencia.
 
-A nivel de estación la dispersión es mayor: la mediana de recuperación es 71 %, con el percentil 10 en 56 % y el percentil 90 en 89 %.
+### Conexiones: OD 2021 frente a 2024
 
-![Mapa](figuras/f8_mapa.png)
+La cuota de viajes originados en Brooklyn con destino Manhattan pasa de **42,07 % a 46,71 %**; desde Queens, de **47,09 % a 50,30 %**; desde Bronx, de **53,53 % a 57,22 %**. En esos agregados aumenta la participación hacia Manhattan; no confirma que disminuya la cantidad de viajes locales. Fuente: `T2_territorial_od.csv`, semanas representativas y todos los meses.
 
-### 4.3 El día laborable se corrió hacia la tarde
+### Escenarios y límites
 
-![Forma del día](figuras/f3_forma_dia.png)
+Se calcularon seis retiradas ilustrativas de enlaces sobre la misma red, con OD 2024 fijo. Se informa por separado demanda desconectada y distancia adicional para la aún conectada. Son ejemplos, no un ranking exhaustivo de vulnerabilidad ni predicciones operativas. El CSV conserva los IDs de los enlaces y denominadores. No se extraen distancias de las curvas del bundling.
 
-| | pico AM | pico PM | razón AM/PM | razón pico/valle |
-|---|---|---|---|---|
-| ene–feb 2020 | 10.43 % a las 8 h | 10.28 % a las 17 h | 1.014 | 2.90 |
-| 2024 | 9.11 % a las 8 h | 9.95 % a las 17 h | 0.916 | 2.35 |
 
-Antes de la pandemia los dos picos eran prácticamente simétricos. En 2024 el de la mañana perdió peso frente al de la tarde.
+## Bocetos, alternativas y literatura
 
-![Delta por hora](figuras/f4_delta_hora.png)
+Un panel integrado: **mapa central** de conexiones con abstracción guiada por la red; **dispersión volumen × forma** arriba a la derecha; **reloj radial 7 × 24** debajo; **minimapa** para orientación. El área del nodo indica viajes iniciados; las posiciones de la dispersión separan índice de volumen y TV; el color del reloj indica cambio de participación semanal. Las barras de agrupación y fidelidad modifican la geometría, nunca los OD. No hay reproducción automática. Overview → zoom/selección → detalles bajo demanda.
 
-El cambio por hora es nítido: las 8 h pierden 1.31 puntos porcentuales, la franja de 13 a 16 h gana alrededor de medio punto por hora, y las 21–22 h también suben. El fin de semana pasó de 16.1 % a 19.2 % del ridership semanal.
+Boceto vigente exportado en `sketches/panel-actual.png`, como boceto estático basado en datos reales, con leyendas; no es captura ni resultado del solver; los bocetos anteriores se mantienen en `sketches/history/`. Se descarta dibujar 424 relojes pequeños sobre el mapa por oclusión, categorías rígidas de estación sin validación y animación como único comparador. La dispersión no es un connected scatterplot y la geometría del haz no equivale a infraestructura ni saturación.
 
-### 4.4 El pico se aplanó en nueve de cada diez estaciones
+La revisión en `referencias.md` organiza 12 artículos. RAEB informa jerarquía de rutas; KDEEB, refinamiento; Dhont, reloj; Fredriksson, TV; Brehmer–Munzner, tareas; Gleicher, comparación y Shneiderman, exploración. Se indican adaptación y límites de cada fuente.
 
-![Pico/valle](figuras/f7_pico_valle.png)
+## Limitaciones y reproducción
 
-**372 de 414 estaciones** redujeron su razón pico/valle entre la línea base y 2024.
+El OD es una estimación por hora de inicio, no salidas observadas en esa hora ni trayectorias. Los caminos se asignan por distancia sobre una red de referencia actual: no reconstruyen operación histórica, esperas o elección real de ruta. La abstracción visual no añade infraestructura. No se dispone de capacidad ni motivos de viaje para afirmar congestión, turismo, residencia o causas. 2020 completo es un año pandémico; 2019 es la referencia anual anterior. Las comparaciones usan la misma fuente en ambos extremos y suman cantidades antes de normalizar.
 
-Este resultado es el que justifica la corrección de la sección 2. Comparando 2024 contra el año 2020 completo, la razón del sistema pasaba de 2.34 a 2.35 y la conclusión habría sido que no hubo cambio. Pero el año 2020 completo ya venía aplanado por el confinamiento: usarlo como referencia enmascara el fenómeno. Contra la línea base prepandemia, la caída es de 2.90 a 2.35.
+```bash
+python3 -m http.server 8775
+# Abrir /atlas/; no requiere descargar 26 GB para ver la app.
+python3 -m pip install -r deliveries/week12/requirements-data.txt
+node deliveries/week12/tests/contrast-model.test.mjs
+node deliveries/week12/tests/raeb-core.test.mjs
+node deliveries/week12/tests/scatter-domain.test.mjs
+node deliveries/week12/tests/validate-raeb-data.mjs
+python3 deliveries/week12/scripts/prepare_analytical_tasks.py
+```
 
-### 4.5 La composición del pago se dio vuelta
+Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_od.py` y `acquire_network.py`. La preparación histórica y la del RAEB se documentan en `HistoricalContrast.md`, `ODData.md` y `RAEBImplementation.md`. Los originales grandes quedan fuera de Git; se incluyen los artefactos preparados para ejecutar la app y sus manifiestos.
 
-![Tarifas](figuras/f6_tarifas.png)
-
-OMNY pasó de 1.5 % del ridership en enero de 2020 a 65.2 % en diciembre de 2024, superando el 50 % en enero de 2024.
-
-| Clase tarifaria | 2020 | 2024 |
-|---|---|---|
-| OMNY – Full Fare | 4.4 % | 54.3 % |
-| MetroCard – Full Fare | 41.9 % | 13.4 % |
-| MetroCard – Unlimited 30-Day | 19.3 % | 7.9 % |
-| MetroCard – Fair Fare | 2.3 % | 3.5 % |
-
-El desplome de los pases ilimitados de 30 días es consistente con el aplanamiento del pico: un pase mensual solo conviene con un uso diario regular.
-
----
-
-## 5. Limitaciones
-
-**Del dataset.**
-
-1. Son entradas, no salidas. No hay pares origen–destino, así que ningún análisis de flujo de viajes es posible con esta fuente.
-2. `transfers` es un subconjunto de `ridership`, no una medida independiente.
-3. La granularidad es de complejo, no de estación individual.
-4. Son estimaciones de la MTA, no un censo.
-5. El histórico puede ajustarse por transacciones tardías.
-
-**Del análisis.**
-
-6. La transición de MetroCard a OMNY es adopción tecnológica. Una caída en MetroCard no es una caída de demanda, y cualquier lectura de la sección 4.5 debe tenerlo presente.
-7. La línea base es enero–febrero de 2020, no un promedio de 2019. Todas las tasas de recuperación deben leerse como "respecto a enero–febrero de 2020", no como "respecto a prepandemia" en general.
-8. La razón pico/valle excluye 14 estaciones por el criterio de borde de ventana.
-9. La verificación de identificadores usa cuatro ventanas por año. Un complejo que hubiera abierto y cerrado entre ventanas no sería detectado.
-
----
-
-## 6. Preguntas revisadas
-
-Las siete preguntas de la propuesta se mantienen. Una se reformula:
-
-La pregunta 2 preguntaba cómo cambió la forma del día laborable. Los datos muestran que el cambio no es la desaparición del doble pico sino su **corrimiento y aplanamiento**, y que la magnitud depende críticamente de la línea base elegida. La pregunta pasa a ser: *¿cuánto se aplanó y se corrió el día laborable respecto de la línea base prepandemia, y qué estaciones cambiaron más?*
-
----
-
-## 7. Diseño propuesto
-
-La aplicación es una página con cinco vistas enlazadas por brushing: una selección en cualquiera filtra las demás.
-
-| Vista | Preguntas | Codificación principal | Por qué |
-|---|---|---|---|
-| A · Mapa de estaciones | 5, 6 | posición = coordenadas; color = recuperación (divergente); tamaño = volumen | El atributo es espacial y la pregunta es si hay patrón geográfico. La posición se reserva al espacio, que es el canal más preciso. El color divergente hace que "por encima" y "por debajo" de la mediana se lean sin consultar la leyenda. |
-| B · Perfiles semanales | 2, 3, 4 | small multiples de 168 puntos; prepandemia superpuesto en gris | Hay que comparar 428 series. Un gráfico compartido con 428 líneas es ilegible; los small multiples resuelven ese caso (Javed et al., 2010). La superposición del perfil previo convierte la comparación temporal en una de posición dentro del mismo marco. |
-| C · Serie temporal | 1 | posición sobre eje común; línea de referencia en el nivel prepandemia | Dato temporal continuo: la posición es el canal correcto. La línea de referencia convierte una lectura de magnitud en una de brecha, que es lo que pide la pregunta. |
-| D · Dispersión pico/valle | 3, 4 | x = índice prepandemia; y = índice 2024; diagonal de referencia | La distancia a la diagonal es la magnitud del cambio y el lado es la dirección. Un gráfico de la diferencia perdería el nivel de partida, que importa. |
-| E · Composición tarifaria | 7 | áreas apiladas al 100 % | Las partes suman un todo y la pregunta es de proporción, no de volumen absoluto: ese ya lo cuenta la vista C. |
-
-**Interacciones.** Brushing temporal en C que define el rango de todas las vistas; selección por clic o lazo en A y D que filtra el resto; filtro por tipo de perfil en B; conmutador prepandemia / 2024 / diferencia en B; detalles bajo demanda en hover en todas.
-
-Los bocetos de cada vista, con títulos, ejes, leyendas, anotaciones e interacciones, están en [`sketches/`](sketches/).
-
-La revisión de las cuatro referencias que sustentan estas decisiones está en [`referencias.md`](referencias.md).
+Los hallazgos históricos del corte enero–febrero se conservan en `history/` y no se trasladan al nuevo período.

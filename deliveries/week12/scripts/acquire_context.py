@@ -12,9 +12,9 @@ from concurrent.futures import ThreadPoolExecutor
 from collections import defaultdict
 import json, csv, hashlib, time
 
-ROOT = Path(__file__).resolve().parents[2]
-OUT = ROOT / 'data/redesign'
-CACHE = ROOT / 'work/redesign-cache'
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / 'data'
+CACHE = ROOT / 'data/raw/atlas-cache'
 OUT.mkdir(parents=True, exist_ok=True)
 CACHE.mkdir(parents=True, exist_ok=True)
 

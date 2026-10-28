@@ -1,0 +1,204 @@
+{
+  "stations_input_subway": 424,
+  "stations_included": 424,
+  "excluded": [],
+  "catalog_join_matches": 424,
+  "catalog_unmatched_ids": [],
+  "scope_by_borough": {
+    "Queens": 79,
+    "Manhattan": 121,
+    "Brooklyn": 156,
+    "Bronx": 68
+  },
+  "calendar_day_counts": {
+    "2020": [
+      8,
+      8,
+      9,
+      9,
+      9,
+      9,
+      8
+    ],
+    "2021": [
+      8,
+      8,
+      8,
+      8,
+      9,
+      9,
+      9
+    ],
+    "2022": [
+      9,
+      8,
+      8,
+      8,
+      8,
+      9,
+      9
+    ],
+    "2023": [
+      9,
+      9,
+      8,
+      8,
+      8,
+      8,
+      9
+    ],
+    "2024": [
+      9,
+      9,
+      9,
+      9,
+      8,
+      8,
+      8
+    ]
+  },
+  "system_metrics": {
+    "2020": {
+      "am": 28.9319,
+      "pm": 31.049,
+      "weekend": 16.2242,
+      "daily": 4478058.5238,
+      "actualDaily": 4493443.4667,
+      "observedCells": 168,
+      "weekly": 31346409.6667
+    },
+    "2021": {
+      "am": 26.9101,
+      "pm": 28.4152,
+      "weekend": 18.6165,
+      "daily": 1380025.002,
+      "actualDaily": 1366589.9492,
+      "observedCells": 168,
+      "weekly": 9660175.0139
+    },
+    "2022": {
+      "am": 27.6995,
+      "pm": 29.3312,
+      "weekend": 17.5983,
+      "daily": 2297677.8651,
+      "actualDaily": 2269914.4068,
+      "observedCells": 168,
+      "weekly": 16083745.0556
+    },
+    "2023": {
+      "am": 27.6292,
+      "pm": 30.6826,
+      "weekend": 18.259,
+      "daily": 2968025.7996,
+      "actualDaily": 2954389.6102,
+      "observedCells": 168,
+      "weekly": 20776180.5972
+    },
+    "2024": {
+      "am": 27.216,
+      "pm": 30.707,
+      "weekend": 18.4117,
+      "daily": 3032510.254,
+      "actualDaily": 3062356.9167,
+      "observedCells": 168,
+      "weekly": 21227571.7778
+    }
+  },
+  "median_change_tv": 6.6479,
+  "top_change": [
+    {
+      "id": "224",
+      "name": "57 St (F)",
+      "change": 26.4041,
+      "deltaAM": 0.896
+    },
+    {
+      "id": "463",
+      "name": "Hunters Point Av (7)",
+      "change": 20.3493,
+      "deltaAM": -20.7406
+    },
+    {
+      "id": "118",
+      "name": "3 Av (L)",
+      "change": 18.017,
+      "deltaAM": 0.1661
+    },
+    {
+      "id": "202",
+      "name": "Beach 105 St (A,S)",
+      "change": 18.0143,
+      "deltaAM": -5.6591
+    },
+    {
+      "id": "273",
+      "name": "Queens Plaza (E,M,R)",
+      "change": 15.9414,
+      "deltaAM": -0.6728
+    },
+    {
+      "id": "122",
+      "name": "Graham Av (L)",
+      "change": 15.9018,
+      "deltaAM": -10.3926
+    },
+    {
+      "id": "124",
+      "name": "Montrose Av (L)",
+      "change": 15.8489,
+      "deltaAM": -7.5494
+    },
+    {
+      "id": "449",
+      "name": "111 St (7)",
+      "change": 15.6536,
+      "deltaAM": 4.31
+    },
+    {
+      "id": "126",
+      "name": "Jefferson St (L)",
+      "change": 14.9659,
+      "deltaAM": -7.3481
+    },
+    {
+      "id": "120",
+      "name": "Bedford Av (L)",
+      "change": 14.5971,
+      "deltaAM": -9.2429
+    }
+  ],
+  "stations_lower_am_share": 316,
+  "stations_higher_weekend_share": 283,
+  "cells_not_observed": {
+    "2020": 11,
+    "2021": 4986,
+    "2022": 186,
+    "2023": 3,
+    "2024": 24
+  },
+  "source_hashes": {
+    "jan_feb_hourly_2020_2024.csv": {
+      "bytes": 6228951,
+      "sha256": "c2ba5a3272f4484cd23ce62ee099a339beff8cb7669b5a36c954e2e8e521a934",
+      "derivation": "Derivado del dataset completo (120 855 567 registros, scripts/acquisition/download_full.py) con DuckDB (scripts/preprocessing/build_from_full.py): enero-febrero de 2020-2024, transit_mode=subway, complejo x dia de la semana x hora. Verificado fila por fila contra el snapshot obtenido por API el 2026-10-14 (sha256 dea5f6b82dc07ae6a23b22f50d4ef41c5f10d67573b17e05808fdd8af8af5284): mismas 350 951 filas y mismos valores; solo cambia el orden.",
+      "derived_at_utc": "2026-10-27T05:24:00+00:00"
+    },
+    "station_catalog.json": {
+      "bytes": 169770,
+      "sha256": "a8bf65e5734003c60b9ee750a9acdaf0bf0343bbfb300ae064098e7df76ec40c"
+    },
+    "context_events.json": {
+      "bytes": 2076,
+      "sha256": "241225d91da7be3a3b1e346e17677345f1474c9560f1f8d305401d0c207147aa"
+    },
+    "boroughs_raw.json": {
+      "bytes": 3167385,
+      "sha256": "361ac589847bee86f45179afddef98304ca05f7b04650924873b58d09f8be39f"
+    }
+  },
+  "artifact_scope": "Only atlas.json and boroughs.geojson are produced here; enriched and full-period files have independent audits.",
+  "artifact_hashes": {
+    "atlas.json": "fa80a3e3245565375b5043967121000f12d4a896327f6d50bd4a9b604dff1d32",
+    "boroughs.geojson": "82956ae45dd73ddc8b15adf2e24cf352b89321b1598603126d5e9e4fffd2cdb7"
+  }
+}

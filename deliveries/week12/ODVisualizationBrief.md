@@ -4,11 +4,11 @@ Trabaja en la raíz del repositorio `stewartmb/data-visualization-2026-2`. Todas
 
 ## 1. Objetivo y límites
 
-Construye **un único panel integrado para explorar los ritmos y las conexiones estimadas del subway de Nueva York**. El mapa es el overview central; a su derecha conviven una dispersión volumen × forma arriba y un reloj semanal abajo. Las tres vistas comparten selección y comparación temporal. No conviertas cada tarea en una pestaña o un formulario de filtros.
+Construye **un único panel integrado para explorar los ritmos y las conexiones estimadas del subway de Nueva York**. El mapa es el overview central; a su derecha conviven una dispersión volumen × forma arriba y un reloj semanal abajo. Las tres vistas comparten selección y año objetivo. La base del contraste de la columna derecha puede elegirse de forma independiente del mapa. No conviertas cada tarea en una pestaña o un formulario de filtros.
 
-Usa exclusivamente **OD MTA 2021–2024** para las magnitudes y métricas analíticas, y una red ferroviaria con geometrías para asignar caminos plausibles. El mapa base y los contornos son contexto, sin métricas territoriales externas. No incorpores la base de entradas 2019–2024, tarifas, turismo ni indicadores socioeconómicos en esta versión.
+El overview usa **OD MTA 2021–2024** y una red ferroviaria con geometrías para asignar caminos plausibles. Por indicación del usuario, la columna derecha admite 2019 y 2020 como base histórica: en ese caso ambos años de la dispersión y el reloj se calculan con la serie de entradas estimadas MTA 2019–2024. No se mezclan entradas de un año con OD de otro; 2019/2020 no modifican el mapa. Ver `HistoricalContrast.md`. El mapa base y los contornos son contexto, sin métricas territoriales externas. No incorporar tarifas, turismo ni indicadores socioeconómicos en esta versión.
 
-Las imágenes adjuntas son referencias de composición: mapa dominante, dispersión, reloj y minimapa. No copies sus cifras, etiquetas de años ni controles heredados. En particular, elimina cualquier dependencia de “Base 2020”, “enero–febrero” o “recuperación prepandemia”. Si las imágenes no están disponibles, esta especificación define el resultado.
+Las imágenes adjuntas son referencias de composición: mapa dominante, dispersión, reloj y minimapa. No copies sus cifras, etiquetas de años ni controles heredados. En particular, no heredes “Base 2020” como base fija del mapa, ni “enero–febrero” como cobertura. El contraste histórico de la derecha permite 2019/2020 explícitamente; solo 2019 se interpreta como año anterior a la pandemia. Si las imágenes no están disponibles, esta especificación define el resultado.
 
 Referencias a consultar:
 
@@ -22,8 +22,8 @@ Implementa los componentes de RAEB, no una simplificación Douglas–Peucker ni 
 
 ## 2. Decisiones iniciales explícitas
 
-- Comparación inicial: **2021 → 2024**, los doce meses de cada año. Se interpreta como cambio desde un año pandémico, no como recuperación respecto a una normalidad anterior al COVID.
-- Años comparables: dos selectores compactos, con base anterior al año objetivo, entre 2021 y 2024. No agregues un selector por cada vista.
+- Comparación inicial del mapa: **2021 → 2024**, los doce meses de cada año. La columna derecha abre con **2019 → 2024**, entradas equivalentes en ambos años. Se interpreta como cambio desde un año pandémico, no como recuperación respecto a una normalidad anterior al COVID.
+- El mapa conserva su ámbito OD 2021–2024. La columna derecha tiene un único selector compartido por dispersión y reloj para la base de contraste (2019–2023, anterior al objetivo); cambiarlo no redibuja el mapa. El año objetivo sigue al del mapa. Las fuentes equivalentes para cada comparación se explican en `HistoricalContrast.md`.
 - Dispersión: **un solo diagrama bivariado**, como la imagen; no una matriz SPLOM con muchas variables.
 - Hora inicial: **lunes, 08:00–09:00**, como hora de inicio del viaje. Reloj y barra horaria permiten cambiarla.
 - Mapa: magnitud absoluta del año objetivo. Dispersión y reloj: comparación entre los dos años. Títulos y leyendas deben indicar esta diferencia de escala temporal.
@@ -139,7 +139,7 @@ Diseña para escritorio como la referencia: aproximadamente **70 % mapa / 30 % c
 
 **Overview → zoom/selección → detalles bajo demanda.** El estado inicial ya debe mostrar conexiones principales, distribución de complejos y patrón semanal sin exigir filtros.
 
-En una esquina inferior del mapa coloca un **minimapa geográfico fijo de contexto**, independiente del zoom principal: contornos grises, red/nodos simplificados y rectángulo de la extensión visible. El rectángulo se deriva de los límites reales de la cámara; no es decorativo. Actualízalo al mover o ampliar, permite arrastrarlo y ofrece “Ver toda la red”. No resetees selección al recentrar.
+En una esquina inferior del mapa coloca un **minimapa geográfico fijo de contexto**, independiente del zoom principal: contornos grises, red/nodos simplificados y rectángulo de la extensión visible. El rectángulo se deriva de los límites reales de la cámara; no es decorativo. Actualízalo al mover o ampliar, permite arrastrarlo y ofrece “Ver toda la red”. El control explícito “Vista general” limpia la selección y recupera la extensión completa; mover o ampliar el mapa conserva la selección. Clic de fondo o Escape permiten limpiar la selección manteniendo la cámara.
 
 Controles visibles: pareja de años, selección manual de hora, dos barras del bundling, zoom/recentrar y búsqueda discreta. No añadir reproducción automática ni un botón de reproducción. Días se eligen en el reloj; grupos se construyen por selección directa. La búsqueda complementa la exploración, no la habilita. No añadas menús de borough, tarifas, categorías, modos de red o métricas sin necesidad comprobada.
 
@@ -147,17 +147,18 @@ Al alejar: simplificación de geometría, jerarquía de etiquetas y agrupación 
 
 El detalle debe aparecer junto al elemento o en una franja compacta de la columna existente, sin un cuarto panel permanente. Leyendas visibles para magnitudes; explicaciones breves también accesibles por teclado y toque. No dependas exclusivamente de hover.
 
-## 9. Tareas que debe resolver y su valor
+## 9. Tareas y valor para la audiencia
 
-Valida el diseño con estas tareas distintas, siguiendo la separación de Munzner entre propósito, datos y medios:
+El contrato analítico vigente está en [AnalyticalTasks.md](AnalyticalTasks.md), revisión del 28 de octubre. Sustituye la lista anterior; distingue datos disponibles, funciones existentes y desarrollo pendiente.
 
-1. **Explorar/resumir la distribución espacial de demanda asignada:** localizar los corredores que concentran conexiones en distintas horas. Sirve para priorizar dónde investigar la demanda; no prueba insuficiencia de capacidad.
-2. **Localizar/identificar las conexiones de un origen conocido:** seguir hacia dónde se dirigen sus viajes y por qué tramos los asigna el modelo. Sirve para reconocer dependencia y conectividad modelada.
-3. **Comparar volumen y forma entre complejos:** encontrar lugares con volumen semejante pero semanas distintas, o mayor volumen con patrón estable. Sirve para distinguir expansión de demanda y redistribución horaria.
-4. **Identificar cuándo ocurre un cambio:** pasar de un caso de la dispersión a las celdas del reloj y sus conexiones en el mapa. Sirve para localizar franjas concretas que merecen estudio.
-5. **Verificar una lectura:** consultar fuente, cobertura, año de red y límites del modelo. Sirve para decidir qué conclusiones son defendibles.
+1. Redistribución territorial de demanda, con entradas 2019–2024.
+2. Dependencia de Manhattan e intercambios locales/interterritoriales, con OD 2021–2024.
+3. Desplazamiento de ventanas de demanda, con cantidades y peso semanal.
+4. Corredores que sostienen intercambios, con carga asignada por tramo.
+5. Balance externo entre viajes originados y destinados a cada territorio, por cohorte de inicio.
+6. Exposición ante la retirada de un enlace de referencia: desconexión y distancia adicional; extensión contrafactual no implementada.
 
-Zoom, bundling y selección son medios de interacción, no nuevas tareas del dominio. No describas estas vistas como predicción o evaluación de congestión.
+No declarar que el panel actual resuelve íntegramente las seis: agregados territoriales, balances y escenarios requieren cálculo, validación y diseño adicional. La selección enlazada, trazabilidad y barras son medios transversales. Los papers de [Semana 6](../week06/referencias.md) informan técnicas puntuales; no validan automáticamente cada nueva métrica ni una predicción operacional.
 
 ## 10. Ingeniería, entrega y aceptación
 
@@ -169,7 +170,7 @@ Antes de declarar terminado, comprueba:
 
 - Conteos/cobertura OD contrastados con fuente; datos incompletos distinguidos de cero.
 - Balance de demanda: asignada + no asignable + origen=destino coincide con la demanda de entrada de cada cohorte, sin doble conteo entre esas categorías.
-- Volúmenes y métricas no cambian al mover b/f, hacer zoom o cambiar la hora.
+- La matriz OD y la asignación no cambian al mover b/f o hacer zoom. Elegir otra hora cambia la cohorte y las cantidades del mapa; los índices semanales de la dispersión permanecen fijos.
 - Casos conocidos de puente/túnel, líneas paralelas, express y cruce sin transbordo; prueba combinaciones extremas e intermedias de ambas barras. Cero enlaces topológicos inventados.
 - f=0 permite geometría libre; f=1 usa las geometrías completas de referencia. En todos los valores, conservar los extremos OD y la demanda. Un cruce de curvas no añade una conexión al grafo.
 - TV=0 para perfiles proporcionales con volúmenes distintos; faltantes y denominadores cero tratados correctamente.

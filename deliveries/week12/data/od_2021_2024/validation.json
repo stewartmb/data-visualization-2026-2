@@ -1,0 +1,491 @@
+{
+  "status": "PASS",
+  "acquisition_sha256": "00e0d6121a89d14b33d2ffe5d54a28999003212853dc8464530fd743ab002d72",
+  "months": {
+    "2021-01": {
+      "rows": 6977158,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-01.parquet",
+      "parquet_sha256": "8144bef74887bb2a6d35fbd7ebd48b335bc7b2239c74a7cc2b0dcf9afa1b47e5",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+1",
+      "official_control_file": "data/od_2021_2024/controls/2021-01.json",
+      "official_control_sha256": "b80141b69296ad4c6c313b1877694388d61253cdff2548c286b673c0c638b163",
+      "checked_at_utc": "2026-10-28T07:18:06.856275+00:00"
+    },
+    "2021-02": {
+      "rows": 7004705,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-02.parquet",
+      "parquet_sha256": "fd493295a52d8bcee7629cae390205278dc58a7f91c365275b39f805590b4f7b",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+2",
+      "official_control_file": "data/od_2021_2024/controls/2021-02.json",
+      "official_control_sha256": "5b1f6686e2941e51efe3677036f027d529221e33bee6eded77e95b20e7e2361c",
+      "checked_at_utc": "2026-10-28T07:18:16.213124+00:00"
+    },
+    "2021-03": {
+      "rows": 7827629,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-03.parquet",
+      "parquet_sha256": "bdf4f5070710daac4e2af7648fcaae84e446061f3b7c87d0b66e716c12c93893",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+3",
+      "official_control_file": "data/od_2021_2024/controls/2021-03.json",
+      "official_control_sha256": "abb949a3d57760805185f2338e9b4c9f34fe6cdc35360a22a7c809b31f290a8b",
+      "checked_at_utc": "2026-10-28T07:18:26.905791+00:00"
+    },
+    "2021-04": {
+      "rows": 8090811,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-04.parquet",
+      "parquet_sha256": "01d306f0bc6caada6624c090a0df62eef22dfb869775bf3d672d1cf0dce8730e",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+4",
+      "official_control_file": "data/od_2021_2024/controls/2021-04.json",
+      "official_control_sha256": "ba1314ab913037757bb1e9742bbadef75f859a6efb9b077629c99fcae055bc62",
+      "checked_at_utc": "2026-10-28T07:18:40.610527+00:00"
+    },
+    "2021-05": {
+      "rows": 8583342,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-05.parquet",
+      "parquet_sha256": "ad3211c32abeeda4ea8d4a5c7bd44d98c4f1abed452d4e139bab3bb2feeb2e30",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+5",
+      "official_control_file": "data/od_2021_2024/controls/2021-05.json",
+      "official_control_sha256": "ee8bc6f7502275972dd7019876dcacf2ce75dd49fe0d88058db86e2789594b9f",
+      "checked_at_utc": "2026-10-28T07:18:54.309818+00:00"
+    },
+    "2021-06": {
+      "rows": 9070242,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-06.parquet",
+      "parquet_sha256": "c99a8fea4da2c11ba3d3a0ea8c0a8d8ee7bb519a16b6310176afa1283e770e4a",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+6",
+      "official_control_file": "data/od_2021_2024/controls/2021-06.json",
+      "official_control_sha256": "6116362d52b65d407715cbb3b9125ac880ac19ce52ad2927c33048cd2e460f72",
+      "checked_at_utc": "2026-10-28T07:19:06.612491+00:00"
+    },
+    "2021-07": {
+      "rows": 8944803,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-07.parquet",
+      "parquet_sha256": "6c70be797e79747c0326214dd8b73ed48631299e550252cd1c6c13acd2de9113",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+7",
+      "official_control_file": "data/od_2021_2024/controls/2021-07.json",
+      "official_control_sha256": "c8ebb14cd63f3f68d56ef1acf1fc81c285322d500dfbe79dd10b7ae57b2eeb62",
+      "checked_at_utc": "2026-10-28T07:19:18.443545+00:00"
+    },
+    "2021-08": {
+      "rows": 8956193,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-08.parquet",
+      "parquet_sha256": "4ee357d67400ae6d7d73f8ab74739eb619002565516019636852d52fd89f9198",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+8",
+      "official_control_file": "data/od_2021_2024/controls/2021-08.json",
+      "official_control_sha256": "7a6de12e18976062b3762d7a3917f552c662ff76daae66a4e0fabd66220320cb",
+      "checked_at_utc": "2026-10-28T07:19:30.618922+00:00"
+    },
+    "2021-09": {
+      "rows": 9153812,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-09.parquet",
+      "parquet_sha256": "307c0a340457c4da3ae92dd3256095ff414446c9e67d6b387ab6721246edf6bc",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+9",
+      "official_control_file": "data/od_2021_2024/controls/2021-09.json",
+      "official_control_sha256": "3c102e57f74629d56cc56e980721d2c51d79a74e0a2fa738aa5bea15cc434bf6",
+      "checked_at_utc": "2026-10-28T07:19:43.377546+00:00"
+    },
+    "2021-10": {
+      "rows": 9448850,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-10.parquet",
+      "parquet_sha256": "8b27274984322ef40ba33cb81254163636d08ce7f9acc95eafc4af14d57025a0",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+10",
+      "official_control_file": "data/od_2021_2024/controls/2021-10.json",
+      "official_control_sha256": "5c6967faac6f8ecd4f79e8cb3bbd50a997956e226c2ffcf33df48bd9c3937abd",
+      "checked_at_utc": "2026-10-28T07:19:55.977051+00:00"
+    },
+    "2021-11": {
+      "rows": 9265082,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-11.parquet",
+      "parquet_sha256": "f657760121f8902bccc6151b3232bad64f9cd2afb3e9ffc14c02855838cad1a0",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+11",
+      "official_control_file": "data/od_2021_2024/controls/2021-11.json",
+      "official_control_sha256": "dd36be027c44e453e9f67ab77add568d544eff2780204bcb25e6562cfc7ac324",
+      "checked_at_utc": "2026-10-28T07:20:08.533402+00:00"
+    },
+    "2021-12": {
+      "rows": 9144355,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2021-12.parquet",
+      "parquet_sha256": "f8c2b1cc9e4f2e040100c7ec04f16d8ebc36c1ec5be19c4d5c244b30e3507dc1",
+      "official_control_url": "https://data.ny.gov/resource/rapa-97zv.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2021+AND+month+%3D+12",
+      "official_control_file": "data/od_2021_2024/controls/2021-12.json",
+      "official_control_sha256": "ae11cfaef3c363cdc6f5c91de6eeec2a3b2913b0f23b4845d01124811072e91a",
+      "checked_at_utc": "2026-10-28T07:20:20.827886+00:00"
+    },
+    "2022-01": {
+      "rows": 8400249,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-01.parquet",
+      "parquet_sha256": "7b810f656a672410dc8b68cb69e7877120cf068c18667917d099f8185b01762e",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+1",
+      "official_control_file": "data/od_2021_2024/controls/2022-01.json",
+      "official_control_sha256": "0b7e2224e6f758817138ad3e930bf4564b328d4e5248451fb86a202e7695edbc",
+      "checked_at_utc": "2026-10-28T07:20:32.304523+00:00"
+    },
+    "2022-02": {
+      "rows": 8663217,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-02.parquet",
+      "parquet_sha256": "203fd12a13e730bc525c88cddff1404555b7456fec4bc01abc8a38efe62091f2",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+2",
+      "official_control_file": "data/od_2021_2024/controls/2022-02.json",
+      "official_control_sha256": "b5406ed1685b61ab0fcd990ba8c8f2349e6d5515af3370226241d32f282ff851",
+      "checked_at_utc": "2026-10-28T07:20:44.148834+00:00"
+    },
+    "2022-03": {
+      "rows": 9265654,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-03.parquet",
+      "parquet_sha256": "430c3303eea5378e0bd3c91cd3d360b99c4e337133f7f7ef8befb1ebb2ddc9e5",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+3",
+      "official_control_file": "data/od_2021_2024/controls/2022-03.json",
+      "official_control_sha256": "aff1cca4bb6a93b3ed3f0fa11c3ab4f1ab6649fdffd7f8fc5507134f96113620",
+      "checked_at_utc": "2026-10-28T07:20:53.266910+00:00"
+    },
+    "2022-04": {
+      "rows": 9294221,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-04.parquet",
+      "parquet_sha256": "4dfd46b0568b3545f7bcc698071ada9ea6eb4c31ea3744950cc39c53bcf3bdc6",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+4",
+      "official_control_file": "data/od_2021_2024/controls/2022-04.json",
+      "official_control_sha256": "cba5611afaacf30b95970cec6931c222c0708b388652c6fdd03a80d59ec1cb9a",
+      "checked_at_utc": "2026-10-28T07:21:01.987226+00:00"
+    },
+    "2022-05": {
+      "rows": 9596936,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-05.parquet",
+      "parquet_sha256": "24139816198a3fbb0d143313a1624875cb602a4818add871e3d723a39fdd187b",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+5",
+      "official_control_file": "data/od_2021_2024/controls/2022-05.json",
+      "official_control_sha256": "53e4a6fef3309d0cfc8427e501c82196a5c1b0e2332b62d1279f42c9b771a7c3",
+      "checked_at_utc": "2026-10-28T07:21:15.134063+00:00"
+    },
+    "2022-06": {
+      "rows": 9742209,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-06.parquet",
+      "parquet_sha256": "e37b7f1cf6098359b4fd30fdbd72d84477154aed8ee638a1f3bdae3b985a0e4a",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+6",
+      "official_control_file": "data/od_2021_2024/controls/2022-06.json",
+      "official_control_sha256": "1bdc178ec469e88c9a733370ceacded0ca93de221ea60473de0e47063f874c41",
+      "checked_at_utc": "2026-10-28T07:21:28.081411+00:00"
+    },
+    "2022-07": {
+      "rows": 9340736,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-07.parquet",
+      "parquet_sha256": "0cd996208747bce004aacd1ca01827a466403ed6e5784dcbe35296b08ca0ee4d",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+7",
+      "official_control_file": "data/od_2021_2024/controls/2022-07.json",
+      "official_control_sha256": "57ed1973172ca212619616fe1964de4a0cae1726232b3da1c85fcc6de5afd1a6",
+      "checked_at_utc": "2026-10-28T07:21:40.404734+00:00"
+    },
+    "2022-08": {
+      "rows": 9325641,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-08.parquet",
+      "parquet_sha256": "8e2cacbbacb73a82a7f8a60402d4f22fd1ee6a71ba7358fe6232fceefb7320b3",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+8",
+      "official_control_file": "data/od_2021_2024/controls/2022-08.json",
+      "official_control_sha256": "b2b6b059b3001341167ecd95e05d85ac90c086b9e747d63719121fcd5b43a605",
+      "checked_at_utc": "2026-10-28T07:21:52.767427+00:00"
+    },
+    "2022-09": {
+      "rows": 9563515,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-09.parquet",
+      "parquet_sha256": "b23709e1d2606b5be17e6d63c82a6d88c42148882066b0f26b42a0ecf9397e72",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+9",
+      "official_control_file": "data/od_2021_2024/controls/2022-09.json",
+      "official_control_sha256": "298e38ba2035f023c36b0765e9f9dcbdb09b86836deda1c90345322ad0080107",
+      "checked_at_utc": "2026-10-28T07:22:08.791019+00:00"
+    },
+    "2022-10": {
+      "rows": 9708987,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-10.parquet",
+      "parquet_sha256": "afb3477940f43d40c29a19903572160af6167360fad97620944e343b1a4d6feb",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+10",
+      "official_control_file": "data/od_2021_2024/controls/2022-10.json",
+      "official_control_sha256": "20839114e43185ad0b37e13612bf1cf6ae55573c665f47d1ab54cd234b3e0b20",
+      "checked_at_utc": "2026-10-28T07:22:21.340087+00:00"
+    },
+    "2022-11": {
+      "rows": 9475256,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-11.parquet",
+      "parquet_sha256": "851601fe6c360b42c38f78e8ab7e1c64e0ff0bc0b59811cf8df2a3d82e4879d9",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+11",
+      "official_control_file": "data/od_2021_2024/controls/2022-11.json",
+      "official_control_sha256": "d1625c30ba1420e4a0a123c9dd4f4ec3671bf9658f6b23e6c7004dbcb0300742",
+      "checked_at_utc": "2026-10-28T07:22:33.970974+00:00"
+    },
+    "2022-12": {
+      "rows": 9544443,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2022-12.parquet",
+      "parquet_sha256": "c2ba0019769487e0075037ab110ba2183f8a8830935241dd4f2d5b5697d13805",
+      "official_control_url": "https://data.ny.gov/resource/nqnz-e9z9.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2022+AND+month+%3D+12",
+      "official_control_file": "data/od_2021_2024/controls/2022-12.json",
+      "official_control_sha256": "59ed3e708ec937ea710e2428bbdc01581af24559b1358c5ff7a8d943b385d8b5",
+      "checked_at_utc": "2026-10-28T07:22:46.497612+00:00"
+    },
+    "2023-01": {
+      "rows": 9375790,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-01.parquet",
+      "parquet_sha256": "f96d05e60e7ea6ddfe5bad2ce4e90a314e4513c8bdb4350d691ea7dd11ff1277",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+1",
+      "official_control_file": "data/od_2021_2024/controls/2023-01.json",
+      "official_control_sha256": "72c7ac97099ed9435c3472f1086ec318ccbb850cf75e280adf02d3415d7bc1e0",
+      "checked_at_utc": "2026-10-28T07:22:59.168793+00:00"
+    },
+    "2023-02": {
+      "rows": 9212543,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-02.parquet",
+      "parquet_sha256": "4e5f9cb4529400e336b9ddf5d2328f138f411ec623c9eb520a4171d3a90fbfd5",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+2",
+      "official_control_file": "data/od_2021_2024/controls/2023-02.json",
+      "official_control_sha256": "af983981a7043067d6325566f9c62e61b786122ea6c1591fdb08c9bb880b389d",
+      "checked_at_utc": "2026-10-28T07:23:11.323142+00:00"
+    },
+    "2023-03": {
+      "rows": 9727533,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-03.parquet",
+      "parquet_sha256": "cc260991133e9bd54aa80345242f5cf2017f7109f504a2566f18f2e507dce263",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+3",
+      "official_control_file": "data/od_2021_2024/controls/2023-03.json",
+      "official_control_sha256": "ddec2e422b003636514efee5b62df274cda1bf48dda99c275bd7595a3fbbab23",
+      "checked_at_utc": "2026-10-28T07:23:24.246368+00:00"
+    },
+    "2023-04": {
+      "rows": 9682802,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-04.parquet",
+      "parquet_sha256": "667ff0a4f90a40aca2c5ae9adcd8930410a9cb53f3ed11b0dd5e723cebaa842b",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+4",
+      "official_control_file": "data/od_2021_2024/controls/2023-04.json",
+      "official_control_sha256": "f7a525c9e61ae6f3362aeeb8076a69677d0f26b154655cff4b7cea26de2af07f",
+      "checked_at_utc": "2026-10-28T07:23:37.039958+00:00"
+    },
+    "2023-05": {
+      "rows": 10000943,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-05.parquet",
+      "parquet_sha256": "33935e4a621e56f01cce7fd893f26c2477e1ab968cd3fdb012ee4c8f92742d86",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+5",
+      "official_control_file": "data/od_2021_2024/controls/2023-05.json",
+      "official_control_sha256": "bbdbdcdd6ceec329026ec4a030dee6c1de68098c4c6bdc92a3453e8697854817",
+      "checked_at_utc": "2026-10-28T07:23:49.964265+00:00"
+    },
+    "2023-06": {
+      "rows": 9941687,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-06.parquet",
+      "parquet_sha256": "b6b9493ac2fb5f297c8e2a13d449c4c8940635c7b19e900b6031d625b694aa0b",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+6",
+      "official_control_file": "data/od_2021_2024/controls/2023-06.json",
+      "official_control_sha256": "5375904c017f0eff1f17c1413e6d15355e622830b01504590f44d569c5d6c157",
+      "checked_at_utc": "2026-10-28T07:24:03.255003+00:00"
+    },
+    "2023-07": {
+      "rows": 9577156,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-07.parquet",
+      "parquet_sha256": "6609cc0ec478c6d1a9ef961b9df98fdd07137ccea6794d9bb852736f9a2e22ff",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+7",
+      "official_control_file": "data/od_2021_2024/controls/2023-07.json",
+      "official_control_sha256": "38df4a220766956c48d20099c7c85fdb56fb9023a823f55cb7af20f224a5fa43",
+      "checked_at_utc": "2026-10-28T07:24:16.401004+00:00"
+    },
+    "2023-08": {
+      "rows": 9599503,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-08.parquet",
+      "parquet_sha256": "fb66f9f5d5ea16bb6f0a1a00aef3c98b76b779e1dbd841a6fc1db433a98badd0",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+8",
+      "official_control_file": "data/od_2021_2024/controls/2023-08.json",
+      "official_control_sha256": "484f5b153d8a2ce314319f0a05f65c7a1085f8a9a89e6e0fc6fba99add50b703",
+      "checked_at_utc": "2026-10-28T07:24:31.313336+00:00"
+    },
+    "2023-09": {
+      "rows": 9686365,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-09.parquet",
+      "parquet_sha256": "66ae1c425ac37d2167240674c37bc919524b04d020f808577501857d4b0ee4b9",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+9",
+      "official_control_file": "data/od_2021_2024/controls/2023-09.json",
+      "official_control_sha256": "8a3a319f1ea130b8f3146d0095ca5d0dbd3fe2b29072f28c7f8b0a852be4666a",
+      "checked_at_utc": "2026-10-28T07:24:44.112357+00:00"
+    },
+    "2023-10": {
+      "rows": 9755714,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-10.parquet",
+      "parquet_sha256": "7b8d86415346326f72b6d386df54ebd0e120eb0e0d54f7bab964490be305ca97",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+10",
+      "official_control_file": "data/od_2021_2024/controls/2023-10.json",
+      "official_control_sha256": "e34f558df8afb8686c92a75ae7cf4138fb5bcf17064fbc3b9e499f6a6bf4aef1",
+      "checked_at_utc": "2026-10-28T07:25:01.499408+00:00"
+    },
+    "2023-11": {
+      "rows": 9527124,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-11.parquet",
+      "parquet_sha256": "92719f177e7ddb5d26b320b770d8cfd989a0734754763caabaf2e0afaf18c163",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+11",
+      "official_control_file": "data/od_2021_2024/controls/2023-11.json",
+      "official_control_sha256": "4b14518276832b964a03fbb38052abaefb96edbc13cb06fc6f3a9f2320a2a341",
+      "checked_at_utc": "2026-10-28T07:25:14.215783+00:00"
+    },
+    "2023-12": {
+      "rows": 9644736,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2023-12.parquet",
+      "parquet_sha256": "dae85b9357933ae81a025d1cf65f4eaed8106bd9a1f144d1e1c91583b0666d98",
+      "official_control_url": "https://data.ny.gov/resource/uhf3-t34z.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2023+AND+month+%3D+12",
+      "official_control_file": "data/od_2021_2024/controls/2023-12.json",
+      "official_control_sha256": "a8d052a68da0b527df2154ee256502d7b45d52fbbedfafdaef6bc9d8d9ac84b0",
+      "checked_at_utc": "2026-10-28T07:25:27.227522+00:00"
+    },
+    "2024-01": {
+      "rows": 9169125,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-01.parquet",
+      "parquet_sha256": "16798f67315a3ee8d9be9f9fbfdf6cf770401193469fc7a454b6cded00ad3c68",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+1",
+      "official_control_file": "data/od_2021_2024/controls/2024-01.json",
+      "official_control_sha256": "df14383e03934d92a5dc08fe9a312f3c903ba63942e9bcc97e1b94f5daacccd1",
+      "checked_at_utc": "2026-10-28T07:25:40.265301+00:00"
+    },
+    "2024-02": {
+      "rows": 9233237,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-02.parquet",
+      "parquet_sha256": "77f2cba8099c6a512b43466e8b25daf92d07b94f864578756367dbd6861c766a",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+2",
+      "official_control_file": "data/od_2021_2024/controls/2024-02.json",
+      "official_control_sha256": "c319169052046036dbbc0ad0d0e26133f3cc36f9b43bb8acfcdc1c0c292bfd10",
+      "checked_at_utc": "2026-10-28T07:25:55.942788+00:00"
+    },
+    "2024-03": {
+      "rows": 9804968,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-03.parquet",
+      "parquet_sha256": "6114205ac454b39d694f2f5089dbd47dfb20aad549ceda5e0e717ef5ae428d48",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+3",
+      "official_control_file": "data/od_2021_2024/controls/2024-03.json",
+      "official_control_sha256": "9418960dae82467644c8b1b7c2813e7d8b5d947f61ecce3761d5bf4062fa9005",
+      "checked_at_utc": "2026-10-28T07:26:09.689950+00:00"
+    },
+    "2024-04": {
+      "rows": 9661953,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-04.parquet",
+      "parquet_sha256": "46d6d584428b409c511994c558601711162cf0f49f2db8f6f19b059234ee139e",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+4",
+      "official_control_file": "data/od_2021_2024/controls/2024-04.json",
+      "official_control_sha256": "e518413a45061d476ea26c110a76dfb9861a9e805c5df0df9a279db1556e569a",
+      "checked_at_utc": "2026-10-28T07:26:22.916306+00:00"
+    },
+    "2024-05": {
+      "rows": 9920133,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-05.parquet",
+      "parquet_sha256": "6a282b9f11a3c125d01da30225431e3795cb1dfc7bb5f6ef61184d50c9109da9",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+5",
+      "official_control_file": "data/od_2021_2024/controls/2024-05.json",
+      "official_control_sha256": "240068b29304d20b4bcfb13d7ba2ef219629c0e2c40717575c2da10762f3f2e4",
+      "checked_at_utc": "2026-10-28T07:26:36.858417+00:00"
+    },
+    "2024-06": {
+      "rows": 9929613,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-06.parquet",
+      "parquet_sha256": "544f73f125e27b763ed77c7d6caf2ec471287ff9f6009c50b2e162cd51fcc228",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+6",
+      "official_control_file": "data/od_2021_2024/controls/2024-06.json",
+      "official_control_sha256": "4214bec1d1271abdcbd83fc18c596ae36c86be07af68d61458eceefbeaeb0771",
+      "checked_at_utc": "2026-10-28T07:26:50.411479+00:00"
+    },
+    "2024-07": {
+      "rows": 9174917,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-07.parquet",
+      "parquet_sha256": "af1f4aeda3f0bd5b3da9be5c00a443a85ac6f1f8fb0cb335238ec10e3d74524d",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+7",
+      "official_control_file": "data/od_2021_2024/controls/2024-07.json",
+      "official_control_sha256": "1a2204aac786ccaf860ed1e5ac2842c20006dd13fe2f7146a8570e51ef2a5e0e",
+      "checked_at_utc": "2026-10-28T07:27:02.884838+00:00"
+    },
+    "2024-08": {
+      "rows": 9400568,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-08.parquet",
+      "parquet_sha256": "334d484c8674ef634b4a9f50cc76470699ce3dc0f92b589e7418d2f5bff40ce9",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+8",
+      "official_control_file": "data/od_2021_2024/controls/2024-08.json",
+      "official_control_sha256": "f4dccf6d678cf2970c4bafc9557f049bcd0bd48cca9a2375a09d74a6e5283314",
+      "checked_at_utc": "2026-10-28T07:27:17.969785+00:00"
+    },
+    "2024-09": {
+      "rows": 9982258,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-09.parquet",
+      "parquet_sha256": "89b2bf64cc64228285689c4e4ae38ce4415264d1aa41852b4c31d6388efb08ea",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+9",
+      "official_control_file": "data/od_2021_2024/controls/2024-09.json",
+      "official_control_sha256": "6ad33fb5c900a6a9c93cda7534e3aa76e2200d1fcf8920fc0613dd012c6e6994",
+      "checked_at_utc": "2026-10-28T07:27:35.012403+00:00"
+    },
+    "2024-10": {
+      "rows": 10123524,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-10.parquet",
+      "parquet_sha256": "6f639575f55f2910dbf7e5aff45127ea28a4c6c99a7dfe28e2b2fba040fa197f",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+10",
+      "official_control_file": "data/od_2021_2024/controls/2024-10.json",
+      "official_control_sha256": "f06f4bfe457706f09014f79d31639ea310165fc88885d9d0855b682d172c3e9f",
+      "checked_at_utc": "2026-10-28T07:27:48.718358+00:00"
+    },
+    "2024-11": {
+      "rows": 10007887,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-11.parquet",
+      "parquet_sha256": "89a0db99559b352733b65544f6dc9dc3ecf1bd3b5b03f0f18497d2cc0214662b",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+11",
+      "official_control_file": "data/od_2021_2024/controls/2024-11.json",
+      "official_control_sha256": "568ecf5734a0b77df49d7c2b08b87363dd27d4c329b45a6bb7e182be1f0fce36",
+      "checked_at_utc": "2026-10-28T07:28:02.848984+00:00"
+    },
+    "2024-12": {
+      "rows": 9870886,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2021_2024/parquet/2024-12.parquet",
+      "parquet_sha256": "0346aa19025838e24fedbca5cfc74566260e2526b947a07f6c0fb04db6a723da",
+      "official_control_url": "https://data.ny.gov/resource/jsu2-fbtj.json?%24select=count%28%2A%29+as+rows%2Csum%28estimated_average_ridership%29+as+sum_average&%24where=year+%3D+2024+AND+month+%3D+12",
+      "official_control_file": "data/od_2021_2024/controls/2024-12.json",
+      "official_control_sha256": "c1c4a6e0b9b89ce58df69eadc7fc991af1384749782949136acf2be65fdfdd9a",
+      "checked_at_utc": "2026-10-28T07:28:16.374118+00:00"
+    }
+  },
+  "meaning": "Checksums of estimated averages are controls, not monthly trip totals.",
+  "started_at_utc": "2026-10-28T07:17:56.718701+00:00",
+  "months_validated": 48,
+  "records": 446399011,
+  "finished_at_utc": "2026-10-28T07:28:16.375526+00:00"
+}

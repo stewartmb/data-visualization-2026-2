@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "period": "Jan-Feb 2020–2024 for ridership; NTA2020 boundaries; GTFS snapshot acquired now",
+  "downloads": {
+    "metadata_wujg-7c2s.json": {
+      "url": "https://data.ny.gov/api/views/wujg-7c2s.json",
+      "resolved_url": "https://data.ny.gov/api/views/wujg-7c2s.json",
+      "retrieved_at_utc": "2026-10-28T01:26:26.991261+00:00",
+      "sha256": "97a323d09adac144180074e67f0108405e1858fbd6c7f7ffb04c179bc3a1f903",
+      "bytes": 12353,
+      "file": "data/context/sources/metadata_wujg-7c2s.json",
+      "etag": null,
+      "last_modified": null
+    },
+    "metadata_9nt8-h7nd.json": {
+      "url": "https://data.cityofnewyork.us/api/views/9nt8-h7nd.json",
+      "resolved_url": "https://data.cityofnewyork.us/api/views/9nt8-h7nd.json",
+      "retrieved_at_utc": "2026-10-28T01:26:28.013194+00:00",
+      "sha256": "4696a95441fc61d46ea7be06d7387928af10fe602b7746428513789a94978caa",
+      "bytes": 21824,
+      "file": "data/context/sources/metadata_9nt8-h7nd.json",
+      "etag": null,
+      "last_modified": null
+    },
+    "fares_2021_01.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-02-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-02-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:28:44.713110+00:00",
+      "sha256": "cd624c9aaa160519904f2d6264251119a08d51e7f013fa4346f8c466ad3a6cf4",
+      "bytes": 3921,
+      "file": "data/context/sources/fares_2021_01.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2NzJSYm8zdjI3UVd1WFh6Tm1sU3NPd2pWenhvQQ---gzig5DGBHA7nGOwsT-FreNNZaGLIto--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 32,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "borough,payment_method,fare_class_category,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2021-01-01T00:00:00' AND transit_timestamp < '2021-02-01T00:00:00'",
+        "$group": "borough,payment_method,fare_class_category",
+        "$order": "borough,payment_method,fare_class_category",
+        "$limit": "50000"
+      }
+    },
+    "fares_2020_01.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-02-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-02-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:28:44.814485+00:00",
+      "sha256": "31edffe911a236db4b53feac386aca5fb5037da0ec88fece317abfbd2ff9c2b4",
+      "bytes": 3929,
+      "file": "data/context/sources/fares_2020_01.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2N3p6LWVEYkdES3E0MzM4S3VPdmVKQ3N0MmRZaw---gzirXPNOu2Z4RksUpjm4bfiLx1PizY--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 32,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "borough,payment_method,fare_class_category,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2020-01-01T00:00:00' AND transit_timestamp < '2020-02-01T00:00:00'",
+        "$group": "borough,payment_method,fare_class_category",
+        "$order": "borough,payment_method,fare_class_category",
+        "$limit": "50000"
+      }
+    },
+    "fares_2022_01.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-02-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-02-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:28:45.097664+00:00",
+      "sha256": "6bfe06ab15b9dc5b5304a32876ad6d7665e43e980e60842ec8b19632e39e09d3",
+      "bytes": 4819,
+      "file": "data/context/sources/fares_2022_01.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2N3VNRTRaV1I0TkZPVC1vOHhNNFJkSmlrR1RsOA---gzimg9sXcHOS8K2Yn1DbJxQEv9Amy3--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 40,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "borough,payment_method,fare_class_category,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2022-01-01T00:00:00' AND transit_timestamp < '2022-02-01T00:00:00'",
+        "$group": "borough,payment_method,fare_class_category",
+        "$order": "borough,payment_method,fare_class_category",
+        "$limit": "50000"
+      }
+    },
+    "fares_2021_02.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-03-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272021-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-03-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:28:47.200322+00:00",
+      "sha256": "2faf69d46a6f31dcd71ed1094f4b6c9e456240758b9d51e3840173809a1a8cb5",
+      "bytes": 3917,
+      "file": "data/context/sources/fares_2021_02.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2N3p2WUZxa082LXBBM2dyV2tGaUNvRUJaZGtOZw---gzipIBb75P6zmPZSMOOfPxim9N7xwK--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 32,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "borough,payment_method,fare_class_category,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2021-02-01T00:00:00' AND transit_timestamp < '2021-03-01T00:00:00'",
+        "$group": "borough,payment_method,fare_class_category",
+        "$order": "borough,payment_method,fare_class_category",
+        "$limit": "50000"
+      }
+    },
+    "fares_2020_02.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-03-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272020-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272020-03-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:28:48.607321+00:00",
+      "sha256": "dc1f00c798534b7e7ea701c8e54a920d719a3969f042df931add3e7e9333d417",
+      "bytes": 3929,
+      "file": "data/context/sources/fares_2020_02.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2N1pJWXlJZXJSSTVzSWlFZjk5anhOR3BibVgzTQ---gzihVP2tpF6ILSW3xbm9oyBKrWFQzm--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 32,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "borough,payment_method,fare_class_category,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2020-02-01T00:00:00' AND transit_timestamp < '2020-03-01T00:00:00'",
+        "$group": "borough,payment_method,fare_class_category",
+        "$order": "borough,payment_method,fare_class_category",
+        "$limit": "50000"
+      }
+    },
+    "fares_2022_02.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-03-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272022-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-03-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:28:48.047047+00:00",
+      "sha256": "8f1578e63a697adca4795266af96318d3bfb5223ae388f0e8cc7b7888caf97ac",
+      "bytes": 4822,
+      "file": "data/context/sources/fares_2022_02.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2Ny1RaUk4VFhSWV9WMW4yWWpRNXh1YVhMV0Rxaw---gzirkfpnZ3BX8EjU0KD2NM0Dx1vv_X--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 40,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "borough,payment_method,fare_class_category,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2022-02-01T00:00:00' AND transit_timestamp < '2022-03-01T00:00:00'",
+        "$group": "borough,payment_method,fare_class_category",
+        "$order": "borough,payment_method,fare_class_category",
+        "$limit": "50000"
+      }
+    },
+    "fares_2023_01.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-02-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-02-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:28:50.195408+00:00",
+      "sha256": "ded2dbbeb08fddfd07dcc4029aea35841968fba0f8c7f52a4ca0a61bbb6061b3",
+      "bytes": 4832,
+      "file": "data/context/sources/fares_2023_01.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2N0xLeDdQaS13YThjQWxYcmZUckp0Yk5pSWZsVQ---gzisanJxD_Z_QFq78T6pTTMuYoAHVL--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 40,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "borough,payment_method,fare_class_category,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2023-01-01T00:00:00' AND transit_timestamp < '2023-02-01T00:00:00'",
+        "$group": "borough,payment_method,fare_class_category",
+        "$order": "borough,payment_method,fare_class_category",
+        "$limit": "50000"
+      }
+    },
+    "fares_2024_01.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-02-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-02-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:28:50.740996+00:00",
+      "sha256": "d23be8a91555c6f22373996b76c01a5b5504adc4bf50df19ba9204602559ff8c",
+      "bytes": 4835,
+      "file": "data/context/sources/fares_2024_01.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2N1RmWk5zWlNUNXJXMzl6RG9GMHJHNEtlV2xJVQ---gzitFVH2E7hbfFOIRCj3esyMwsrjK5--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 40,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "borough,payment_method,fare_class_category,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2024-01-01T00:00:00' AND transit_timestamp < '2024-02-01T00:00:00'",
+        "$group": "borough,payment_method,fare_class_category",
+        "$order": "borough,payment_method,fare_class_category",
+        "$limit": "50000"
+      }
+    },
+    "fares_2023_02.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-03-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-03-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:28:52.546888+00:00",
+      "sha256": "bdbb6d28fff6ed8e77109c2359e256555a891307a009b36549cfadcb68f60d74",
+      "bytes": 4938,
+      "file": "data/context/sources/fares_2023_02.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2N2dFWnBIc0hrQjVUV1UzdEVBSDZNbU5NbU5CWQ---gziu-YvTUS2V-PZERJUesIn3dBQmUa--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 41,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "borough,payment_method,fare_class_category,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2023-02-01T00:00:00' AND transit_timestamp < '2023-03-01T00:00:00'",
+        "$group": "borough,payment_method,fare_class_category",
+        "$order": "borough,payment_method,fare_class_category",
+        "$limit": "50000"
+      }
+    },
+    "fares_2024_02.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-03-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=borough%2Cpayment_method%2Cfare_class_category%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272024-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-03-01T00%3A00%3A00%27&%24group=borough%2Cpayment_method%2Cfare_class_category&%24order=borough%2Cpayment_method%2Cfare_class_category&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:28:53.556541+00:00",
+      "sha256": "4a8d800cef074184b40814452a8d9845a85e8c4a0a2c0ca2381a6629f28cdefc",
+      "bytes": 4835,
+      "file": "data/context/sources/fares_2024_02.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2N25mMklNQ3I0VFlYZ2FManFUV1duMmdsNnVUTQ---gzivkHIBmcATUBqoBEbtb39A8rCWgD--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 40,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "borough,payment_method,fare_class_category,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2024-02-01T00:00:00' AND transit_timestamp < '2024-03-01T00:00:00'",
+        "$group": "borough,payment_method,fare_class_category",
+        "$order": "borough,payment_method,fare_class_category",
+        "$limit": "50000"
+      }
+    },
+    "scope_exclusions_2023.json": {
+      "url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cstation_complex%2Cborough%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-03-01T00%3A00%3A00%27+AND+borough+not+in+%28%27Manhattan%27%2C%27Brooklyn%27%2C%27Queens%27%2C%27Bronx%27%29&%24group=station_complex_id%2Cstation_complex%2Cborough&%24order=station_complex_id%2Cborough&%24limit=50000",
+      "resolved_url": "https://data.ny.gov/resource/wujg-7c2s.json?%24select=station_complex_id%2Cstation_complex%2Cborough%2Csum%28ridership%29+as+ridership&%24where=transit_mode%3D%27subway%27+AND+transit_timestamp+%3E%3D+%272023-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-03-01T00%3A00%3A00%27+AND+borough+not+in+%28%27Manhattan%27%2C%27Brooklyn%27%2C%27Queens%27%2C%27Bronx%27%29&%24group=station_complex_id%2Cstation_complex%2Cborough&%24order=station_complex_id%2Cborough&%24limit=50000",
+      "retrieved_at_utc": "2026-10-28T01:32:20.795554+00:00",
+      "sha256": "f250ffbe5e84caa999170f6d4ed8fa001356d741d2a069b42af93623c7b1c4ba",
+      "bytes": 115,
+      "file": "data/context/sources/scope_exclusions_2023.json",
+      "etag": "W/\"aW5kaWEuMTkzODdfNl82OTg2N3BCOW9hLXBzSGpBZTM4MlVneDFyTTMtaF9OYw---gzijDZDaUJIBqphW8ebUwoDVObx-hJ--gzip--gzip\"",
+      "last_modified": "Wed, 15 Oct 2025 22:48:20 GMT",
+      "rows": 1,
+      "dataset": "wujg-7c2s",
+      "query": {
+        "$select": "station_complex_id,station_complex,borough,sum(ridership) as ridership",
+        "$where": "transit_mode='subway' AND transit_timestamp >= '2023-01-01T00:00:00' AND transit_timestamp < '2023-03-01T00:00:00' AND borough not in ('Manhattan','Brooklyn','Queens','Bronx')",
+        "$group": "station_complex_id,station_complex,borough",
+        "$order": "station_complex_id,borough",
+        "$limit": "50000"
+      }
+    },
+    "nta2020.json": {
+      "url": "https://data.cityofnewyork.us/resource/9nt8-h7nd.json?%24order=nta2020&%24limit=5000",
+      "resolved_url": "https://data.cityofnewyork.us/resource/9nt8-h7nd.json?%24order=nta2020&%24limit=5000",
+      "retrieved_at_utc": "2026-10-28T01:28:55.378863+00:00",
+      "sha256": "75e0ad657c525864fed674c171768cbc3ff8c8f4b3d8c4954cbb6193955f96bb",
+      "bytes": 4581051,
+      "file": "data/context/sources/nta2020.json",
+      "etag": "W/\"aG90ZWwuNjIyNzFfMV8zNGkzb3RsZFpfYl8xSDgtX25UY1R0N0ZzdjVMYw---gzioR-rnOMqCoLP8lsuDwhJuUqyUEa--gzip--gzip\"",
+      "last_modified": "Thu, 28 May 2026 15:11:18 GMT",
+      "rows": 262,
+      "dataset": "9nt8-h7nd",
+      "query": {
+        "$order": "nta2020",
+        "$limit": "5000"
+      }
+    },
+    "gtfs_subway.zip": {
+      "url": "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip",
+      "resolved_url": "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip",
+      "retrieved_at_utc": "2026-10-28T01:28:56.773372+00:00",
+      "sha256": "2c9e69b82ac596a2fe660b56656509570cfba3c2e4c50be75eaf624eee1bc6f8",
+      "bytes": 5615228,
+      "file": "data/raw/enrichments/gtfs_subway.zip",
+      "etag": "\"bd592a3af7495b744609857b038370b5\"",
+      "last_modified": "Thu, 27 Aug 2026 13:39:18 GMT"
+    }
+  },
+  "source_files": {
+    "transfers_2022.json": {
+      "sha256": "d356bb407211629e44d62ef18440b6e854f066b10207199492bad577f34cbdd0",
+      "bytes": 385974,
+      "file": "data/context/sources/transfers_2022.json"
+    },
+    "fares_2024.json": {
+      "sha256": "97b4b2cf2fd2b2de165eb085499a6dd404a3f59d82409cb350030d88565d3806",
+      "bytes": 13911,
+      "file": "data/context/sources/fares_2024.json"
+    },
+    "fares_2020_01.json": {
+      "sha256": "31edffe911a236db4b53feac386aca5fb5037da0ec88fece317abfbd2ff9c2b4",
+      "bytes": 3929,
+      "file": "data/context/sources/fares_2020_01.json"
+    },
+    "fares_2024_02.json": {
+      "sha256": "4a8d800cef074184b40814452a8d9845a85e8c4a0a2c0ca2381a6629f28cdefc",
+      "bytes": 4835,
+      "file": "data/context/sources/fares_2024_02.json"
+    },
+    "fares_2021_01.json": {
+      "sha256": "cd624c9aaa160519904f2d6264251119a08d51e7f013fa4346f8c466ad3a6cf4",
+      "bytes": 3921,
+      "file": "data/context/sources/fares_2021_01.json"
+    },
+    "transfers_2023.json": {
+      "sha256": "b068a6ecd59c31eba05d6cd53a4c6cc89b0e155496e1809e0f34922c7ac21c9f",
+      "bytes": 387076,
+      "file": "data/context/sources/transfers_2023.json"
+    },
+    "transfers_2024.json": {
+      "sha256": "1a1227b18f5ff5c50d975991928301cd29433273318b77db8750f9972a5686df",
+      "bytes": 386974,
+      "file": "data/context/sources/transfers_2024.json"
+    },
+    "fares_2022.json": {
+      "sha256": "d4ab5a46c03cafba1ae356580d01a027ab8c01eba06986aa3309f000dd4bcbd9",
+      "bytes": 13882,
+      "file": "data/context/sources/fares_2022.json"
+    },
+    "fares_2023_01.json": {
+      "sha256": "ded2dbbeb08fddfd07dcc4029aea35841968fba0f8c7f52a4ca0a61bbb6061b3",
+      "bytes": 4832,
+      "file": "data/context/sources/fares_2023_01.json"
+    },
+    "scope_exclusions_2023.json": {
+      "sha256": "f250ffbe5e84caa999170f6d4ed8fa001356d741d2a069b42af93623c7b1c4ba",
+      "bytes": 115,
+      "file": "data/context/sources/scope_exclusions_2023.json"
+    },
+    "fares_2022_01.json": {
+      "sha256": "6bfe06ab15b9dc5b5304a32876ad6d7665e43e980e60842ec8b19632e39e09d3",
+      "bytes": 4819,
+      "file": "data/context/sources/fares_2022_01.json"
+    },
+    "fares_2023.json": {
+      "sha256": "d51581ee07c80d96f17c549f2431769a331352b7aa044340fc19c4dcb736ff7b",
+      "bytes": 14064,
+      "file": "data/context/sources/fares_2023.json"
+    },
+    "metadata_wujg-7c2s.json": {
+      "sha256": "97a323d09adac144180074e67f0108405e1858fbd6c7f7ffb04c179bc3a1f903",
+      "bytes": 12353,
+      "file": "data/context/sources/metadata_wujg-7c2s.json"
+    },
+    "nta2020.json": {
+      "sha256": "75e0ad657c525864fed674c171768cbc3ff8c8f4b3d8c4954cbb6193955f96bb",
+      "bytes": 4581051,
+      "file": "data/context/sources/nta2020.json"
+    },
+    "gtfs_patterns.json": {
+      "sha256": "653b823baf0199b18e070093b12c820f825d2ff1b625e5d1b8b5dbb92fbb3bf5",
+      "bytes": 521304,
+      "file": "data/context/sources/gtfs_patterns.json"
+    },
+    "fares_2022_02.json": {
+      "sha256": "8f1578e63a697adca4795266af96318d3bfb5223ae388f0e8cc7b7888caf97ac",
+      "bytes": 4822,
+      "file": "data/context/sources/fares_2022_02.json"
+    },
+    "fares_2020.json": {
+      "sha256": "d9919a31a05d3d534a8f33f9ca73b61adc102739fee180938ae09c8661f5df86",
+      "bytes": 11251,
+      "file": "data/context/sources/fares_2020.json"
+    },
+    "fares_2021.json": {
+      "sha256": "8a09c03dbeddc6b09ed216532badf02792f9415112a0878db2922ced41456b30",
+      "bytes": 11231,
+      "file": "data/context/sources/fares_2021.json"
+    },
+    "fares_2023_02.json": {
+      "sha256": "bdbb6d28fff6ed8e77109c2359e256555a891307a009b36549cfadcb68f60d74",
+      "bytes": 4938,
+      "file": "data/context/sources/fares_2023_02.json"
+    },
+    "fares_2024_01.json": {
+      "sha256": "d23be8a91555c6f22373996b76c01a5b5504adc4bf50df19ba9204602559ff8c",
+      "bytes": 4835,
+      "file": "data/context/sources/fares_2024_01.json"
+    },
+    "fares_2021_02.json": {
+      "sha256": "2faf69d46a6f31dcd71ed1094f4b6c9e456240758b9d51e3840173809a1a8cb5",
+      "bytes": 3917,
+      "file": "data/context/sources/fares_2021_02.json"
+    },
+    "transfers_2020.json": {
+      "sha256": "f4726385675f9bc40fa684933e5d86a18d42a0265f0e561b352621aca588074e",
+      "bytes": 387727,
+      "file": "data/context/sources/transfers_2020.json"
+    },
+    "transfers_2021.json": {
+      "sha256": "c86ddc92f2eef4a73d8e29aef089bc8c3cc4adb05a73b560396c9baccd66c1db",
+      "bytes": 384730,
+      "file": "data/context/sources/transfers_2021.json"
+    },
+    "metadata_9nt8-h7nd.json": {
+      "sha256": "4696a95441fc61d46ea7be06d7387928af10fe602b7746428513789a94978caa",
+      "bytes": 21824,
+      "file": "data/context/sources/metadata_9nt8-h7nd.json"
+    },
+    "fares_2020_02.json": {
+      "sha256": "dc1f00c798534b7e7ea701c8e54a920d719a3969f042df931add3e7e9333d417",
+      "bytes": 3929,
+      "file": "data/context/sources/fares_2020_02.json"
+    }
+  },
+  "local_inputs": {
+    "daily_entries_and_transfers": {
+      "file": "/Users/stewart/Utec/visualizacion_datos/data-visualization-2026-2/data/processed/full/ridership_by_station_day.csv",
+      "sha256": "830d6ffbb0945b4208677d982f37c2ccd49749804afc7f2ce8007f836bd04c44",
+      "source": "https://data.ny.gov/d/wujg-7c2s",
+      "extracted_at_utc": "2026-10-28T01:28:41.937081+00:00",
+      "operation": "Jan-Feb 2020-2024, sum counts by complex/year/weekday, count unique recorded dates. Mode restricted later by the 424-complex Atlas universe.",
+      "reproduction": "download_full.py -> build_from_full.py -> ridership_by_station_day.csv"
+    }
+  },
+  "gtfs_landing": "https://www.mta.info/developers",
+  "reproduction": "Cached inputs reproduce this snapshot. --refresh obtains a new release; compare hashes and validation before replacing results."
+}

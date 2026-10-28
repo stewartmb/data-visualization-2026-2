@@ -1,0 +1,69 @@
+{
+  "stations": 424,
+  "nta_unique_matches": 424,
+  "unmatched_territories": [],
+  "occupied_ntas": 130,
+  "transfer_rows": 2120,
+  "excluded_transfer_source_groups": {
+    "2020": 28,
+    "2021": 28,
+    "2022": 28,
+    "2023": 28,
+    "2024": 28
+  },
+  "fare_rows": 368,
+  "excluded_fare_rows": [
+    {
+      "year": 2023,
+      "month": "2023-02",
+      "borough": "Staten Island",
+      "payment_method": "omny",
+      "fare_class_category": "OMNY - Other",
+      "ridership": 2,
+      "reason": "Outside four-borough Atlas scope; source transit_mode is subway. See scope_exclusions source query."
+    }
+  ],
+  "graph_nodes": 424,
+  "graph_service_edges": 2040,
+  "graph_declared_transfer_edges": 4,
+  "graph_unmatched_stops": [],
+  "graph_atlas_complexes_not_in_feed": [],
+  "artifacts": {
+    "atlas/data/enrichment_sources.json": {
+      "sha256": "3ae37235b42331ae4b2a8c9e87b000144615bef74869062aa25b84a391606042",
+      "bytes": 27830
+    },
+    "atlas/data/enrichments.json": {
+      "sha256": "5ba7567a79e844dbb7a49abe58184bda282e2fe342f6e7dfab13842fcbcbbcb4",
+      "bytes": 1100875
+    },
+    "atlas/data/network_current.json": {
+      "sha256": "4ad20971f5816624c7861082738adaabec644409e66d760a77e40570894d4ac0",
+      "bytes": 452934
+    },
+    "data/context/processed/fare_borough_month_janfeb_2020_2024.csv": {
+      "sha256": "85bc405702e82aaaff98185f591058a87f99a2d32f1f8f9f1e8f706a05cef5bd",
+      "bytes": 24864
+    },
+    "data/context/processed/fare_scope_exclusions.csv": {
+      "sha256": "932ae36e505d46e4d7479c6eb2e2beb3eded47b2567e6013ebf42896ad21d346",
+      "bytes": 218
+    },
+    "data/context/processed/free_transfers_janfeb_2020_2024.csv": {
+      "sha256": "ebf5c48a5f02ab3acf7d7f214462ea428de5bf8b394338ddbdbf071f46116ab1",
+      "bytes": 210685
+    },
+    "data/context/processed/network_current.json": {
+      "sha256": "4ad20971f5816624c7861082738adaabec644409e66d760a77e40570894d4ac0",
+      "bytes": 452934
+    },
+    "data/context/processed/nta_janfeb_entries.csv": {
+      "sha256": "e71a540a39fcc0b2e24bdfbbccf572a2097e34c9a4faec53a654b8da2591fcdd",
+      "bytes": 29261
+    },
+    "data/context/processed/station_nta2020.csv": {
+      "sha256": "12720756288db08ca647cc18ba3dabca2f23d000e00de101148311eb8a9d1251",
+      "bytes": 26595
+    }
+  }
+}

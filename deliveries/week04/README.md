@@ -1,138 +1,15 @@
-# MTA Subway Hourly Ridership: 2020–2024
+# Semana 4 — Paquete de datos actualizado
 
-**Entrega Semana 4 — Selección y documentación del dataset**
-DS5343 Data Visualization · UTEC · 2026-2
+Revisión del 28 de octubre de 2026; selección y entrega de datos según §4.1. Las versiones previas están en `history/`. Este documento registra el alcance actual sin afirmar que fuera el disponible en septiembre.
 
-Acervo Correa, Renzo Alfonso · Maquera Bobadilla, Diva Stewart · Condori Palomino, José Eduardo
+**Entradas 2019–2024:** 72 meses, 141.836.156 registros fuente, 12 campos originales. Fuentes MTA/Open NY `t69i-h2me` (solo 2019) y `wujg-7c2s` (2020–2024). **OD estimado 2021–2024:** 48 meses, 446.399.011 registros, 16 campos; fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z` y `jsu2-fbtj`. **Red:** GTFS de referencia 2026, 424 complejos de subway, 547 enlaces ferroviarios y 2 transferencias peatonales declaradas. **Territorio:** borough y NTA 2020 según ubicación del complejo.
 
----
+Organización: Metropolitan Transportation Authority (MTA), distribuida por Open NY; territorio NYC DCP. Las fuentes son agregadas y públicas; aplicar los términos de Open NY y de cada catálogo. No se publica información de pasajeros identificables. La red deriva de un snapshot GTFS oficial, no de conexiones añadidas por proximidad. Fechas y SHA por archivo en los manifiestos de Semana 12.
 
-## 1. Qué es
+## Acceso, muestra y diccionario
 
-| | |
-|---|---|
-| **Dataset** | MTA Subway Hourly Ridership: 2020–2024 |
-| **ID** | `wujg-7c2s` (Open NY / Socrata) |
-| **Fuente** | [data.ny.gov](https://data.ny.gov/Transportation/MTA-Subway-Hourly-Ridership-2020-2024/wujg-7c2s/about_data) |
-| **Publicador** | Metropolitan Transportation Authority (MTA) |
-| **Cobertura** | Nueva York · 2020–2024 · granularidad horaria |
-| **Volumen** | varios GB; se trabaja con una muestra estratificada de 10,000 filas |
-| **Acceso** | 2 de septiembre de 2026 |
-| **Licencia** | Sin licencia específica declarada; sin limitaciones de uso según MTA + [Términos OPEN-NY](https://data.ny.gov/api/views/77gx-ii52/files/ef0c1840-ad54-4240-92fd-6397c49fde46?filename=OPEN-NY_20Terms_20of_20Use.pdf) |
+`data/sample.csv` es una muestra procesada de demanda territorial; `data/od_sample.csv` contiene relaciones agregadas reales; `data/network_sample.csv` contiene enlaces de referencia. No son registros individuales. `data_dictionary.csv` identifica sus campos y unidades. Los 12/16 campos originales se describen en los diccionarios oficiales y metadatos de `../week12/data/full_period/` y `../week12/data/od_2021_2024/`.
 
-Cada fila = hora × complejo de estación × modo × método de pago × clase tarifaria.
+El OD es una estimación por hora de inicio, no salidas observadas en esa hora ni trayectorias. Los caminos se asignan por distancia sobre una red de referencia actual: no reconstruyen operación histórica, esperas o elección real de ruta. La abstracción visual no añade infraestructura. No se dispone de capacidad ni motivos de viaje para afirmar congestión, turismo, residencia o causas. 2020 completo es un año pandémico; 2019 es la referencia anual anterior. Las comparaciones usan la misma fuente en ambos extremos y suman cantidades antes de normalizar.
 
----
-
-## 2. Qué datos tenemos
-
-**12 campos originales**
-
-| Tipo | Campos |
-|---|---|
-| Temporal (1) | `transit_timestamp` |
-| Identificador (1) | `station_complex_id` |
-| Categórico (5) | `transit_mode` · `station_complex` · `borough` · `payment_method` · `fare_class_category` |
-| Numérico (2) | `ridership` · `transfers` |
-| Geográfico (2) | `latitude` · `longitude` |
-| Geometría (1) | `georeference` |
-
-**+3 campos** `computed_region` generados por la plataforma (condado, municipio, ZIP) — no solicitados en la muestra.
-
-📄 [`docs/data_dictionary.csv`](docs/data_dictionary.csv)
-
----
-
-## 3. De dónde salen
-
-Torniquetes: *swipes* de MetroCard y *taps* de OMNY (provistos por Cubic).
-La MTA limpia, deduplica y retira transacciones de agencias asociadas antes de publicar.
-
-> **No es data sintética. Es observacional.**
-
----
-
-## 4. Cómo la obtenemos
-
-El archivo completo no se sube al repositorio por su tamaño.
-
-```bash
-# Muestra de 10,000 filas
-python3 scripts/acquisition/download_mta.py --mode sample
-
-# Universo completo (streaming a data/raw/, excluido de Git)
-python3 scripts/acquisition/download_mta.py --mode full
-```
-
-**Diseño muestral** — 2,000 filas/año · 500 por año-trimestre · cuota modal 88% subway / 6% SIR / 6% tram
-
-✅ Determinista: dos ejecuciones producen archivos idénticos.
-
-📄 [`scripts/acquisition/download_mta.py`](scripts/acquisition/download_mta.py) · [`docs/acquisition.md`](docs/acquisition.md)
-
----
-
-## 5. Cómo está organizado
-
-```text
-├── data/sample/     → muestra de 10,000 filas
-├── docs/            → diccionario · adquisición · calidad · referencias
-└── scripts/         → adquisición · verificación
-```
-
----
-
-## 6. Documentación
-
-| Archivo | Contenido |
-|---|---|
-| [`data_dictionary.csv`](docs/data_dictionary.csv) | Una fila por campo: tipo, unidad, valores posibles, faltantes |
-| [`acquisition.md`](docs/acquisition.md) | Procedencia, método, acceso por API, condiciones de uso |
-| [`data_quality.md`](docs/data_quality.md) | Informe de la evaluación inicial |
-| [`data_quality_metrics.csv`](docs/data_quality_metrics.csv) | 33 indicadores auditables |
-| [`references.md`](docs/references.md) | Enlaces oficiales MTA y Open NY |
-
----
-
-## 7. Qué encontramos
-
-**33 controles de calidad** → [`docs/data_quality_metrics.csv`](docs/data_quality_metrics.csv)
-
-| Control | Resultado |
-|---|---|
-| Valores faltantes | 0 |
-| Duplicados en clave compuesta | 0 |
-| Ridership / transfers negativos | 0 |
-| `transfers` > `ridership` | 0 |
-| Coordenadas fuera de rango NY | 0 |
-
-**Alcance real de la muestra**
-
-| | |
-|---|---|
-| Filas | 10,000 · 12 campos |
-| Años | 2,000 por año (2020–2024) |
-| Días distintos | **28** |
-| Complejos | **92** de más de 400 |
-| Boroughs | Manhattan · Brooklyn · Queens · Staten Island — **sin Bronx** |
-| Modos | subway 8,800 · SIR 600 · tram 600 |
-| Pago | metrocard 8,539 · omny 1,461 |
-
-> ⚠️ Muestra **estratificada, no aleatoria**. Sirve para validar estructura y tipos. **No** para estimar totales ni comparar boroughs. La ausencia del Bronx es consecuencia del diseño muestral, no del dataset.
-
----
-
-## 8. Limitaciones
-
-1. **Entradas, no salidas** — no hay pares origen–destino
-2. **Complejo, no estación individual**
-3. **`transfers` ⊂ `ridership`** — sumarlas duplica el conteo
-4. Son estimaciones de la MTA, no un censo
-5. El histórico puede ajustarse por transacciones tardías
-
----
-
-## Acknowledgments
-
-Datos: MTA vía Open NY · Plataforma: Socrata (API SODA)
-Parte del código y la documentación se elaboró con asistencia de IA, revisada y validada por el equipo.
+Adquisición y reproducción: [acquisition.md](acquisition.md). Utilidad potencial: estudiar intensidad, distribución temporal, relaciones territoriales y dependencia modelada de la red; no deducir frecuencias óptimas.

@@ -1,0 +1,586 @@
+{
+  "territories_2024": [
+    {
+      "year": 2024,
+      "baseline": 2019,
+      "territory_level": "borough",
+      "territory": "Bronx",
+      "complexes": 68,
+      "weekly_entries": 1549927.063134978,
+      "volume_index_2019_100": 58.39766729978637,
+      "delta_weekly_entries": -1104163.6476777946,
+      "system_share_pct": 6.722810994465399,
+      "delta_system_share_pp": -1.4448335022287748,
+      "tv_vs2019_pp": 1.8759484370260857
+    },
+    {
+      "year": 2024,
+      "baseline": 2019,
+      "territory_level": "borough",
+      "territory": "Brooklyn",
+      "complexes": 156,
+      "weekly_entries": 5116089.413642961,
+      "volume_index_2019_100": 72.14870418423273,
+      "delta_weekly_entries": -1974944.9597242381,
+      "system_share_pct": 22.19104561548754,
+      "delta_system_share_pp": 0.3692413947246148,
+      "tv_vs2019_pp": 4.603761859948506
+    },
+    {
+      "year": 2024,
+      "baseline": 2019,
+      "territory_level": "borough",
+      "territory": "Manhattan",
+      "complexes": 121,
+      "weekly_entries": 12955561.888969522,
+      "volume_index_2019_100": 71.2857008506656,
+      "delta_weekly_entries": -5218576.450653121,
+      "system_share_pct": 56.19476940448529,
+      "delta_system_share_pp": 0.2660476064574646,
+      "tv_vs2019_pp": 4.712282497828539
+    },
+    {
+      "year": 2024,
+      "baseline": 2019,
+      "territory_level": "borough",
+      "territory": "Queens",
+      "complexes": 79,
+      "weekly_entries": 3433168.5907111755,
+      "volume_index_2019_100": 75.02691926117703,
+      "delta_weekly_entries": -1142747.1266328013,
+      "system_share_pct": 14.89137398556177,
+      "delta_system_share_pp": 0.8095445010466829,
+      "tv_vs2019_pp": 3.318269365822947
+    }
+  ],
+  "od_relations": [
+    {
+      "year": 2021,
+      "origin_borough": "Bronx",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 455022.31979256216,
+      "destination_share_pct": 32.54012598036509
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Bronx",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 117782.3058263436,
+      "destination_share_pct": 8.422995758964875
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Bronx",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 748499.1344625903,
+      "destination_share_pct": 53.527607486838384
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Bronx",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 77038.45920531731,
+      "destination_share_pct": 5.509270773831651
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 115214.15792698879,
+      "destination_share_pct": 3.2724032881380953
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 1621418.1117727607,
+      "destination_share_pct": 46.05279469016485
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 1481124.9184666174,
+      "destination_share_pct": 42.068076879968764
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 303023.95591268037,
+      "destination_share_pct": 8.606725141728292
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 707188.3598192567,
+      "destination_share_pct": 9.679339260919212
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 1409162.6389901424,
+      "destination_share_pct": 19.287313015281903
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 4119772.052375096,
+      "destination_share_pct": 56.38762405928694
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 1070040.528333406,
+      "destination_share_pct": 14.645723664511943
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Queens",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 74945.80156023148,
+      "destination_share_pct": 3.1598214511980447
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Queens",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 306917.0733893495,
+      "destination_share_pct": 12.94005977713364
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Queens",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 1116859.9895181116,
+      "destination_share_pct": 47.08840361161456
+    },
+    {
+      "year": 2021,
+      "origin_borough": "Queens",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 873113.7319265697,
+      "destination_share_pct": 36.81171516005376
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Bronx",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 482662.6043731747,
+      "destination_share_pct": 30.828391882137588
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Bronx",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 123623.01967019867,
+      "destination_share_pct": 7.895989582610183
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Bronx",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 876458.7976424247,
+      "destination_share_pct": 55.98075143475833
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Bronx",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 82898.7238226654,
+      "destination_share_pct": 5.294867100493895
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 119705.05015641265,
+      "destination_share_pct": 2.680047060039106
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 1986443.7708907174,
+      "destination_share_pct": 44.47400323672532
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 2016075.868484566,
+      "destination_share_pct": 45.13742901479749
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 344303.22862605285,
+      "destination_share_pct": 7.7085206884380835
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 822174.4748109104,
+      "destination_share_pct": 7.831227509012047
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 1918363.6446202984,
+      "destination_share_pct": 18.272450199204034
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 6328777.464886552,
+      "destination_share_pct": 60.28172571622798
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 1429351.1172276298,
+      "destination_share_pct": 13.614596575555932
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Queens",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 80434.0296662394,
+      "destination_share_pct": 2.69193482198084
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Queens",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 350604.1817757655,
+      "destination_share_pct": 11.733884396574332
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Queens",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 1494494.880214177,
+      "destination_share_pct": 50.017173403028416
+    },
+    {
+      "year": 2022,
+      "origin_borough": "Queens",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 1062430.3987470744,
+      "destination_share_pct": 35.557007378416415
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Bronx",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 471663.3753008675,
+      "destination_share_pct": 29.58307034997143
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Bronx",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 127939.16752651613,
+      "destination_share_pct": 8.024437748721564
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Bronx",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 906233.8028460089,
+      "destination_share_pct": 56.83964400673344
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Bronx",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 88532.8990366077,
+      "destination_share_pct": 5.552847894573565
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 123227.26107859705,
+      "destination_share_pct": 2.4569245501640373
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 2201609.597959265,
+      "destination_share_pct": 43.89603910495743
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 2311417.78094613,
+      "destination_share_pct": 46.08541196148188
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 379253.91807774175,
+      "destination_share_pct": 7.561624383396649
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 845736.6585549135,
+      "destination_share_pct": 6.879275813307173
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 2211021.194253253,
+      "destination_share_pct": 17.984587129432498
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 7640685.373759912,
+      "destination_share_pct": 62.14982117318684
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 1596534.8244199688,
+      "destination_share_pct": 12.986315884073484
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Queens",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 85754.19621255994,
+      "destination_share_pct": 2.566499709948038
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Queens",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 389441.31978435256,
+      "destination_share_pct": 11.655418374989452
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Queens",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 1672823.6705159862,
+      "destination_share_pct": 50.0652056085003
+    },
+    {
+      "year": 2023,
+      "origin_borough": "Queens",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 1193270.7376654344,
+      "destination_share_pct": 35.71287630656221
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Bronx",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 449101.700101736,
+      "destination_share_pct": 29.085966956039787
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Bronx",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 125586.91706287488,
+      "destination_share_pct": 8.133607418930294
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Bronx",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 883451.3621978322,
+      "destination_share_pct": 57.216521608209234
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Bronx",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 85909.42693889607,
+      "destination_share_pct": 5.56390401682068
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 120919.86612663325,
+      "destination_share_pct": 2.3768234012520786
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 2208864.51948632,
+      "destination_share_pct": 43.41785223788099
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 2376341.3797511486,
+      "destination_share_pct": 46.70980858382002
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 381331.13458623923,
+      "destination_share_pct": 7.495515777046905
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 830897.9223628575,
+      "destination_share_pct": 6.461033393260601
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 2286260.1769769453,
+      "destination_share_pct": 17.777879751008815
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 8107004.328855424,
+      "destination_share_pct": 63.039784163967006
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 1635977.3016126016,
+      "destination_share_pct": 12.721302691763587
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Queens",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 83191.3972838996,
+      "destination_share_pct": 2.4352078610352064
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Queens",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 394746.62337830756,
+      "destination_share_pct": 11.555162093112257
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Queens",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 1718399.4572704649,
+      "destination_share_pct": 50.301593714829266
+    },
+    {
+      "year": 2024,
+      "origin_borough": "Queens",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 1219855.3906520633,
+      "destination_share_pct": 35.70803633102327
+    }
+  ],
+  "scenarios": [
+    {
+      "year": 2024,
+      "link_removed": 322,
+      "origin": "606",
+      "destination": "612",
+      "removed_directions": "0;1",
+      "eligible_weekly_estimated_od": 22907838.904644243,
+      "disconnected_weekly_estimated_od": 0.0,
+      "disconnected_share_pct": 0.0,
+      "additional_km_weighted_connected": 0.04173283279623081,
+      "still_connected_weekly_estimated_od": 22907838.904644243,
+      "detoured_weekly_estimated_od": 2505636.9121025736
+    },
+    {
+      "year": 2024,
+      "link_removed": 278,
+      "origin": "231",
+      "destination": "26",
+      "removed_directions": "0;1",
+      "eligible_weekly_estimated_od": 22907838.904644243,
+      "disconnected_weekly_estimated_od": 0.0,
+      "disconnected_share_pct": 0.0,
+      "additional_km_weighted_connected": 0.005235174474970957,
+      "still_connected_weekly_estimated_od": 22907838.904644243,
+      "detoured_weekly_estimated_od": 1922885.5610741228
+    },
+    {
+      "year": 2024,
+      "link_removed": 141,
+      "origin": "392",
+      "destination": "603",
+      "removed_directions": "0;1",
+      "eligible_weekly_estimated_od": 22907838.904644243,
+      "disconnected_weekly_estimated_od": 0.0,
+      "disconnected_share_pct": 0.0,
+      "additional_km_weighted_connected": 6.837667541821677e-18,
+      "still_connected_weekly_estimated_od": 22907838.904644243,
+      "detoured_weekly_estimated_od": 0.0
+    },
+    {
+      "year": 2024,
+      "link_removed": 126,
+      "origin": "407",
+      "destination": "602",
+      "removed_directions": "0;1",
+      "eligible_weekly_estimated_od": 22907838.904644243,
+      "disconnected_weekly_estimated_od": 0.0,
+      "disconnected_share_pct": 0.0,
+      "additional_km_weighted_connected": 0.07749877955341344,
+      "still_connected_weekly_estimated_od": 22907838.904644243,
+      "detoured_weekly_estimated_od": 4650084.989836109
+    },
+    {
+      "year": 2024,
+      "link_removed": 125,
+      "origin": "407",
+      "destination": "619",
+      "removed_directions": "0;1",
+      "eligible_weekly_estimated_od": 22907838.904644243,
+      "disconnected_weekly_estimated_od": 0.0,
+      "disconnected_share_pct": 0.0,
+      "additional_km_weighted_connected": 0.06893679970474578,
+      "still_connected_weekly_estimated_od": 22907838.904644243,
+      "detoured_weekly_estimated_od": 4573471.713941253
+    },
+    {
+      "year": 2024,
+      "link_removed": 182,
+      "origin": "447",
+      "destination": "448",
+      "removed_directions": "0;1",
+      "eligible_weekly_estimated_od": 22907838.904644243,
+      "disconnected_weekly_estimated_od": 547461.288727059,
+      "disconnected_share_pct": 2.3898425818599107,
+      "additional_km_weighted_connected": 0.0,
+      "still_connected_weekly_estimated_od": 22360377.615917187,
+      "detoured_weekly_estimated_od": 0.0
+    }
+  ]
+}

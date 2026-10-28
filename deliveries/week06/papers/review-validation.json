@@ -1,0 +1,22 @@
+{
+  "checked_at_utc": "2026-10-28T13:59:16.025199+00:00",
+  "scope": "Literature files and current task documentation, not validation of proposed analyses or user effectiveness.",
+  "pdf_count": 12,
+  "pdf_parse_pages_bytes_sha256": "PASS",
+  "current_markdown_link_targets": "PASS",
+  "task_specifications": 6,
+  "acquisition_script": "Executed successfully for eight new PDFs; syntax checked.",
+  "reviewed_core_figures": [
+    "RAEB Fig.4 / PDF p5",
+    "KDEEB algorithm / PDF p2",
+    "Dhont Fig.2 / PDF p7",
+    "Brehmer-Munzner typology / PDF p2 and text Fig.1",
+    "Gleicher Fig.1 / PDF p4"
+  ],
+  "not_updated": [
+    "PresentationWeek06.pptx",
+    "existing EDA numerical results",
+    "application code",
+    "Week12 report/PPTX/paper"
+  ]
+}

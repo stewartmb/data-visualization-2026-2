@@ -26,5 +26,93 @@
     "bytes": 6787648,
     "pages": 16,
     "sha256": "f2ece6b3f2832465c6286c3ca00d3b42e565218f837fdfa6340a1ee2fc1ed451"
+  },
+  "zeng_2019_raeb.pdf": {
+    "source_url": "https://zeng-wei.com/publication/papers/2019_RAEB.pdf",
+    "resolved_url": "https://zeng-wei.com/publication/papers/2019_RAEB.pdf",
+    "title": "Route-Aware Edge Bundling for Visualizing Origin-Destination Trails in Urban Traffic",
+    "doi": "10.1111/cgf.13712",
+    "retrieved_at_utc": "2026-10-28T13:49:31.168485+00:00",
+    "bytes": 2862368,
+    "pages": 13,
+    "sha256": "c642bb5463659024f7880953ad60c44100fa5bc56cc6ada4c52c56568d8df0be",
+    "redistribution": "Author/institutional copy; no open redistribution licence asserted. Local consultation copy."
+  },
+  "brehmer_munzner_2013_tasks.pdf": {
+    "source_url": "https://www.cs.ubc.ca/labs/imager/tr/2013/MultiLevelTaskTypology/brehmer_infovis13-corrections.pdf",
+    "resolved_url": "https://www.cs.ubc.ca/labs/imager/tr/2013/MultiLevelTaskTypology/brehmer_infovis13-corrections.pdf",
+    "title": "A Multi-Level Typology of Abstract Visualization Tasks",
+    "doi": "10.1109/TVCG.2013.124",
+    "retrieved_at_utc": "2026-10-28T13:49:31.815905+00:00",
+    "bytes": 222471,
+    "pages": 10,
+    "sha256": "97ad84ab5a5b8b2e30db6f4e521d34c9c936e2f6711170e62d45f5f811a033f9",
+    "redistribution": "Author/institutional copy; no open redistribution licence asserted. Local consultation copy."
+  },
+  "gleicher_2011_visual_comparison.pdf": {
+    "source_url": "https://graphics.cs.wisc.edu/Papers/2011/GAWJHR11/paper.pdf",
+    "resolved_url": "https://graphics.cs.wisc.edu/Papers/2011/GAWJHR11/paper.pdf",
+    "title": "Visual Comparison for Information Visualization",
+    "doi": "10.1177/1473871611416549",
+    "retrieved_at_utc": "2026-10-28T13:49:32.316013+00:00",
+    "bytes": 9102701,
+    "pages": 29,
+    "sha256": "9e154c9e9385671d8f3517e5d141b6083b34d1869aa6a9a4e76006f241e9f753",
+    "redistribution": "Author/institutional copy; no open redistribution licence asserted. Local consultation copy."
+  },
+  "hochheiser_2004_timesearcher.pdf": {
+    "source_url": "https://www.cs.umd.edu/users/ben/papers/Hochheiser2004Dynamic.pdf",
+    "resolved_url": "https://www.cs.umd.edu/users/ben/papers/Hochheiser2004Dynamic.pdf",
+    "title": "Dynamic Query Tools for Time Series Data Sets: Timebox Widgets for Interactive Exploration",
+    "doi": "10.1057/palgrave.ivs.9500061",
+    "retrieved_at_utc": "2026-10-28T13:49:35.043770+00:00",
+    "bytes": 482104,
+    "pages": 18,
+    "sha256": "33a2aeb5d922749507a539c6b5403eddb02df055e2aa5dc50f583993267fa157",
+    "redistribution": "Author/institutional copy; no open redistribution licence asserted. Local consultation copy."
+  },
+  "shneiderman_1996_eyes.pdf": {
+    "source_url": "https://www.cs.umd.edu/users/ben/papers/Shneiderman1996eyes.pdf",
+    "resolved_url": "https://www.cs.umd.edu/users/ben/papers/Shneiderman1996eyes.pdf",
+    "title": "The Eyes Have It: A Task by Data Type Taxonomy for Information Visualizations",
+    "doi": "10.1109/VL.1996.545307",
+    "retrieved_at_utc": "2026-10-28T13:49:35.142444+00:00",
+    "bytes": 893228,
+    "pages": 8,
+    "sha256": "1a1b3b88ccfb8aabc0796c080127c486fcf05bcab7fa1cb63bdce66993b62e04",
+    "redistribution": "Author/institutional copy; no open redistribution licence asserted. Local consultation copy."
+  },
+  "hurter_2012_kdeeb.pdf": {
+    "source_url": "https://webspace.science.uu.nl/~telea001/uploads/PAPERS/EuroVis12/kdeeb.pdf",
+    "resolved_url": "https://webspace.science.uu.nl/~telea001/uploads/PAPERS/EuroVis12/kdeeb.pdf",
+    "title": "Graph Bundling by Kernel Density Estimation",
+    "doi": "10.1111/j.1467-8659.2012.03079.x",
+    "retrieved_at_utc": "2026-10-28T13:49:36.118675+00:00",
+    "bytes": 11109012,
+    "pages": 10,
+    "sha256": "0fcd63a1d2d8f7a7809d96e2139bf8206f26b28d03ea3b1fd002cde678f42de8",
+    "redistribution": "Author/institutional copy; no open redistribution licence asserted. Local consultation copy."
+  },
+  "van_wijk_1999_calendar.pdf": {
+    "source_url": "https://vanwijk.win.tue.nl/clv.pdf",
+    "resolved_url": "https://vanwijk.win.tue.nl/clv.pdf",
+    "title": "Cluster and Calendar Based Visualization of Time Series Data",
+    "doi": "10.1109/INFVIS.1999.801851",
+    "retrieved_at_utc": "2026-10-28T13:49:36.294560+00:00",
+    "bytes": 338288,
+    "pages": 6,
+    "sha256": "5e4ea7f09429897049fb915c2232b4e349e27f7fb2a3f323b76bbd43fc732d87",
+    "redistribution": "Author/institutional copy; no open redistribution licence asserted. Local consultation copy."
+  },
+  "haroz_2016_connected_scatterplot.pdf": {
+    "source_url": "https://media.eagereyes.org/papers/2016/Haroz-TVCG-2016.pdf",
+    "resolved_url": "https://media.eagereyes.org/papers/2016/Haroz-TVCG-2016.pdf",
+    "title": "The Connected Scatterplot for Presenting Paired Time Series",
+    "doi": "10.1109/TVCG.2015.2502587",
+    "retrieved_at_utc": "2026-10-28T13:49:39.335033+00:00",
+    "bytes": 2727982,
+    "pages": 11,
+    "sha256": "d71e0e3d130a6c43452f97f751c336f8f0affc5b52bc705be723be6b3bc9217c",
+    "redistribution": "Author/institutional copy; no open redistribution licence asserted. Local consultation copy."
   }
 }

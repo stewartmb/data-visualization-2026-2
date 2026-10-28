@@ -1,0 +1,2 @@
+year,month,borough,payment_method,fare_class_category,ridership,reason
+2023,2023-02,Staten Island,omny,OMNY - Other,2,Outside four-borough Atlas scope; source transit_mode is subway. See scope_exclusions source query.

@@ -1,0 +1,201 @@
+% Fractal · Atlas de ritmos — paper en formato de conferencia (dos columnas)
+%
+% Compila con IEEEtran si está instalado (Overleaf, TeX Live completo) y, si no,
+% con article a dos columnas con márgenes equivalentes. El contenido es el mismo.
+%
+%   latexmk -pdf paper.tex
+
+\IfFileExists{IEEEtran.cls}{\documentclass[conference]{IEEEtran}}{\documentclass[10pt,twocolumn]{article}}
+\makeatletter
+\@ifclassloaded{IEEEtran}{}{%
+  \usepackage[letterpaper,top=0.75in,bottom=1in,left=0.625in,right=0.625in,columnsep=0.2in]{geometry}
+  \usepackage{titlesec}
+  \titleformat{\section}{\normalfont\large\scshape\centering}{\thesection.}{0.6em}{}
+  \titleformat{\subsection}{\normalfont\itshape}{\thesubsection.}{0.6em}{}
+  \titlespacing{\section}{0pt}{10pt}{6pt}
+  \titlespacing{\subsection}{0pt}{6pt}{3pt}
+  \usepackage{times}
+}
+\makeatother
+\providecommand{\IEEEauthorblockN}[1]{#1\\}
+\providecommand{\IEEEauthorblockA}[1]{\small #1}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\IfFileExists{spanish.ldf}{\usepackage[spanish,es-noindentfirst]{babel}}{}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage[hidelinks]{hyperref}
+\usepackage{caption}
+\captionsetup{font=small,labelfont=bf}
+\graphicspath{{figuras/}}
+
+\title{Fractal: un atlas de los ritmos semanales del metro de Nueva York, 2020--2024}
+
+\author{
+  \IEEEauthorblockN{Renzo Alfonso Acervo Correa, Diva Stewart Maquera Bobadilla, José Eduardo Condori Palomino}
+  \IEEEauthorblockA{Universidad de Ingeniería y Tecnología (UTEC), Lima, Perú\\
+  DS5343 Data Visualization, 2026-2 \\
+  \texttt{github.com/stewartmb/data-visualization-2026-2}}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+La recuperación del metro de Nueva York tras la pandemia se reporta casi siempre con un solo número que dice cuánta demanda volvió, no a qué hora ni en qué estaciones. Presentamos Fractal, un atlas interactivo en D3.js que toma como unidad de análisis el perfil horario semanal de cada uno de los 424 complejos de subway ---168 valores ajustados por la composición del calendario y normalizados por el total--- y lo compara entre enero--febrero de 2020 y los mismos meses de 2021 a 2024, a partir de los 120\,855\,567 registros horarios del dataset completo, descargados y agregados con un pipeline reproducible. La diferencia entre perfiles se resume con la distancia de variación total (TV), el peso de la mañana laboral, el peso del fin de semana y un índice de volumen; la semejanza entre perfiles, con la distancia de Hellinger. Cuatro lentes enlazadas por una selección compartida ---un atlas de 424 $\times$ 168 celdas, un mapa sobre el plano de calles, trayectorias fechadas y una vista de evidencia--- permiten descubrir, comparar, situar y documentar cambios. Tres resultados preliminares: el sistema recuperó el 67.7\,\% de sus entradas diarias pero no su ritmo (la mañana laboral pasó de 28.9 a 27.2\,\% y el fin de semana de 16.2 a 18.4\,\%); 316 de 424 complejos tienen menos peso de mañana que en 2020, con una mediana de redistribución de 6.6\,pp; y volumen y forma son dimensiones separadas, con 21 complejos que recuperaron su volumen y cambiaron de ritmo 10\,pp o más.
+\end{abstract}
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{fig0_abstract}
+  \caption{Resumen gráfico: del dataset crudo a la aplicación. El dataset completo se descarga una vez (reanudable, con huella SHA-256), se convierte a Parquet y se agrega con DuckDB; un script sin dependencias construye los perfiles ajustados por calendario y las medidas, y una validación independiente las recalcula.}
+  \label{fig:abstract}
+\end{figure*}
+
+\section{Introducción}
+
+El metro de Nueva York programa su servicio alrededor del doble pico del día laborable. Entre 2020 y 2024 esa forma cambió; que cambió es conocido. Lo que la cifra de recuperación no dice es \emph{dónde} cambió, \emph{cuánto} del ritmo semanal se redistribuyó, y si recuperar pasajeros fue lo mismo que recuperar la forma de la semana. Una estación puede volver a su volumen de 2020 y, aun así, repartir sus entradas en horarios distintos.
+
+Este trabajo cambia la unidad de análisis. En lugar del total de entradas, usamos el \emph{perfil} semanal de cada complejo de estación: 24 horas $\times$ 7 días, ajustado por el número de lunes, martes, etc. del período y normalizado por su propio total, de modo que Times Square y una estación de barrio se comparen por su ritmo y no por su tamaño. Sobre esa unidad construimos un atlas que apoya seis tareas verificables: descubrir en qué días y horas cambió el peso relativo de las entradas; localizar los complejos que más cambiaron y los que se parecen a un ejemplo; situar esos cambios y compararlos entre boroughs; separar volumen de forma; seguir la evolución de dos medidas a lo largo de cinco temporadas; y verificar qué datos y supuestos sostienen cada lectura.
+
+La audiencia principal son analistas de transporte e investigadores urbanos que buscan casos para estudiar con más detalle; la secundaria, periodistas de datos. La herramienta apoya la selección de casos y la generación de hipótesis; no recomienda frecuencias de trenes, porque la fuente no contiene oferta, capacidad ni saturación.
+
+\textbf{Contribuciones.} (1) Una comparación de la misma temporada en cinco años, con estandarización explícita de la exposición del calendario. (2) Un conjunto de medidas acotadas y explicables ---TV, peso AM, peso de fin de semana, índice de volumen, Hellinger--- cuyas fórmulas se muestran en la interfaz. (3) Un atlas de cuatro lentes enlazadas, con detalle bajo demanda, trazabilidad por celda y exportación. (4) Un pipeline reproducible de punta a punta, desde la descarga del dataset completo hasta los artefactos del cliente, con validación independiente.
+
+\section{Trabajo relacionado}
+
+Liu et al.\ \cite{liu2020} separan, para los sistemas de transporte de Estados Unidos durante la pandemia, la caída de volumen del cambio en la curva horaria, comparando perfiles antes y durante mediante Procrustes; adoptamos esa separación como los dos ejes del análisis, con otra métrica. Fredriksson y Karlström \cite{fredriksson2025} resumen la diferencia entre dos distribuciones de reparto modal con la distancia de variación total, $\mathrm{TV}(p,q)=\tfrac12\sum|p_m-q_m|$; usamos la misma operación sobre 168 combinaciones día--hora. Van der Knaap et al.\ \cite{vanderknaap2024} normalizan matrices de demanda por su total para separar estructura de volumen y comparan con Hellinger; es exactamente lo que hace el perfil de 168 horas y la búsqueda por ejemplo. Dhont et al.\ \cite{dhont2020} organizan huellas temporales como un reloj semanal día $\times$ hora y comparan períodos por resta contra una base con color divergente; nuestra huella de 168 sectores y el modo diferencia del atlas siguen esa organización. Hsu et al.\ \cite{hsu2021} comparan el \emph{mismo período calendario} entre dos años en el metro de Taipéi; ese criterio decidió nuestra ventana.
+
+\section{Datos y método}
+\label{sec:datos}
+
+\subsection{Fuente y adquisición}
+
+\emph{MTA Subway Hourly Ridership 2020--2024} (Open NY, identificador \texttt{wujg-7c2s}): entradas estimadas por hora, complejo de estación, modo, método de pago y clase tarifaria, capturadas por torniquetes MetroCard y OMNY. El dataset completo ---120\,855\,567 registros, 1\,827 días, 15\,GB en CSV--- se descarga con la API Socrata un día por petición, con paginación y orden estable, en partes comprimidas que se pueden interrumpir y retomar; el manifiesto guarda filas por día y la huella SHA-256. Las partes se convierten a Parquet (un archivo por mes, 270\,MB) y DuckDB produce en un minuto el insumo del atlas: enero--febrero de cada año, modo \texttt{subway}, por complejo $\times$ día de la semana $\times$ hora (350\,951 filas). Esa tabla coincide celda por celda con la que en una fase anterior se pedía a la API con consultas agregadas en ventanas de siete días, y el script que construye los artefactos del cliente la reproduce con la misma huella. Se suman el catálogo oficial de complejos de la MTA (unión exacta por identificador en 424/424) y los contornos de boroughs de NYC DCP.
+
+\subsection{Universo y cobertura}
+
+424 complejos de subway en cuatro boroughs (Brooklyn 156, Manhattan 121, Queens 79, Bronx 68); los dos de Staten Island Railway y los dos del tranvía se excluyen para mantener un modo consistente. De $168\times424\times5=356\,160$ celdas posibles, 350\,951 tienen entradas positivas; las celdas sin registro por año son 11, 4\,986, 186, 3 y 24 para 2020--2024. El valor de 2021 corresponde al cierre nocturno del servicio. Una celda sin registro se representa como cero entradas registradas y se declara con un conteo visible por complejo; no equivale a demanda cero.
+
+\subsection{Exposición del calendario y perfiles}
+
+Para cada complejo $s$, año $y$, día de la semana $d$ y hora $h$, sea $A$ la suma de entradas observadas en enero--febrero y $N[y,d]$ la cantidad de veces que ese día de la semana aparece en el período (8 o 9). Definimos
+\begin{equation}
+W[s,y,d,h]=\frac{A[s,y,d,h]}{N[y,d]},\qquad P[s,y,d,h]=\frac{W[s,y,d,h]}{\sum_{d,h}W[s,y,d,h]}.
+\end{equation}
+$W$ es una semana promedio construida con un lunes promedio, un martes promedio, etc.; $P$ es la distribución de 168 valores que suma 1. Así, que un calendario tenga nueve lunes y otro ocho no altera la forma normalizada. Este ajuste es una decisión propia de estandarización y no se atribuye a las referencias.
+
+\subsection{Medidas}
+
+\textbf{Distancia de forma.} $\mathrm{TV}=50\sum_i|P_y(i)-P_{2020}(i)|$, en puntos porcentuales (0--100): cuánto del ritmo semanal se redistribuyó entre horas. No mide cuántas personas cambiaron de horario ni considera la distancia entre horas.
+\textbf{Peso AM.} $100\sum P[\text{lun--vie},06\text{--}09]/\sum P[\text{lun--vie}]$: fracción de las entradas laborables en la mañana; la franja es una elección analítica.
+\textbf{Peso de fin de semana.} $100\sum P[\text{sáb--dom}]$.
+\textbf{Índice de volumen.} $100\cdot \bar V_y/\bar V_{2020}$, con $\bar V=\sum W/7$ el promedio diario comparable; 100 es el nivel base, no capacidad ni calidad de servicio.
+\textbf{Hellinger.} $\sqrt{\tfrac12\sum(\sqrt{P_a}-\sqrt{P_b})^2}$, entre 0 y 1, para recuperar los doce perfiles más cercanos a un ejemplo; vecinos no implican misma función ni causa.
+Las estadísticas bajo las vistas son medianas de complejos; el perfil del sistema o de un grupo se pondera por entradas. Todas las fórmulas se muestran en la interfaz con ejemplo numérico y unidad.
+
+\subsection{Reproducción y validación}
+
+Sin red, \texttt{build\_atlas.py} reconstruye \texttt{atlas.json} (2\,120 perfiles), el GeoJSON simplificado y una auditoría con hashes; \texttt{validate\_atlas.py} vuelve a leer el CSV, cuenta los días a partir de fechas y recalcula las 356\,160 celdas, las medidas y la composición del sistema. Una prueba con Chromium ejecuta cambios de vista y año, filtros, selección, comparación, huella, mapa, trayectorias, brush, zoom, vecinos, exportación y restauración por URL, y comprueba ausencia de errores y disposición a 390\,px.
+
+\section{Diseño de la visualización}
+
+\subsection{Una exploración, cuatro lentes}
+
+El \emph{atlas semanal} (Fig.~\ref{fig:atlas}) es la primera pantalla: una matriz de 424 complejos $\times$ 168 horas. En modo diferencia, azul es hora que perdió peso y naranja hora que lo ganó, con escala fija $\pm0.65$\,pp y saturación declarada; los modos 2024 y 2020 muestran el peso de cada celda. Se ordena por cambio de forma, geografía, volumen, mañana, noche, fin de semana o semejanza con un ejemplo; una vista global de 424 filas y una lectura ampliada con desplazamiento virtual comparten la misma representación. La \emph{geografía} (Fig.~\ref{fig:geo}) sitúa los complejos sobre el plano de calles de la ciudad, coloreados por una de las cuatro medidas, con filtros de rango de doble tirador y una selección rectangular que forma un grupo. Las \emph{trayectorias} (Fig.~\ref{fig:paths}) siguen a cada complejo por cinco temporadas en el espacio peso AM $\times$ peso de fin de semana, con el sistema y el grupo como referencia y enfoque/contexto. La \emph{evidencia} calcula afirmaciones sobre el grupo, muestra la tabla de medidas con cobertura y fuentes, exporta CSV y recupera exploraciones guardadas. Una página de \emph{proyecto} resume la pregunta, los datos y los hallazgos para quien llega sin contexto.
+
+El detalle es bajo demanda (Fig.~\ref{fig:inspector}): un clic abre la huella del complejo en forma rectilínea ---el perfil de 24 horas de la semana entera con 2020 en gris y el año elegido en tinta, la matriz día $\times$ hora con la franja de la mañana marcada, y el peso de cada día como barras---, de modo que la forma y el peso se leen por posición en una escala común y el color queda solo para la matriz; el reloj radial de 168 sectores se conserva como alternativa; la comparación con hasta tres complejos fijados; la búsqueda de los doce vecinos por Hellinger; la serie mensual; y las fuentes y advertencias de servicio que aplican a ese complejo. La selección, el año, los filtros y el grupo se conservan entre vistas y en la URL.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=\textwidth]{fig2_atlas}
+  \caption{Atlas semanal en modo diferencia, enero--febrero 2024 frente a 2020, ordenado por cambio de forma. Cada fila es un complejo y cada columna una de las 168 horas; azul perdió peso, naranja lo ganó. Las primeras filas son los mayores cambios: 57 St (F), con obras en 63 St, y las estaciones de la línea L.}
+  \label{fig:atlas}
+\end{figure*}
+
+\subsection{Codificación}
+
+El único color de la interfaz es el dato; el cromo es azul petróleo y gris. La \emph{posición} en la matriz lleva complejo y hora; el \emph{color divergente} lleva la diferencia de peso, una polaridad real. En el mapa, la \emph{posición} lleva el lugar sobre un plano de calles recesivo (teselas de OpenStreetMap sin etiquetas, servidas con \texttt{d3-tile} sobre \texttt{d3.geoMercator}), y el \emph{color secuencial} lleva la distancia TV con escala fija por año: filtrar no cambia los colores, y los cambios mayores se dibujan encima. Todos los puntos tienen el mismo tamaño, para no confundir volumen con forma. En las trayectorias, la \emph{posición} lleva dos medidas y la línea conecta años, no viajes.
+
+\subsection{Alternativas descartadas}
+
+Comparar enero--febrero de 2020 contra todo 2024 (mezcla estaciones del año y composición del calendario); una tipología discreta residencial/mixta/laboral (promete más de lo que mide; la semejanza continua no impone tipos sin validarlos); varios gráficos por pregunta (una matriz con varios órdenes responde cuatro tareas sin que el lector reaprenda); excluir 2021 o las estaciones con obras (excluir esconde; marcar informa); contornos de boroughs sin calles (el design review pidió ubicar las estaciones en la ciudad real).
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig3_geografia}
+  \caption{Geografía: los 424 complejos coloreados por distancia TV. En uso, el plano de calles de OpenStreetMap aparece bajo los puntos y gana detalle con el zoom; aquí, sin conexión, se muestra el respaldo con los contornos de boroughs.}
+  \label{fig:geo}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig4_trayectorias}
+  \caption{Trayectorias: el sistema en el espacio peso AM $\times$ peso de fin de semana, de 2020 a 2024. La caída de 2021 y la recuperación parcial de 2022--2023 no vuelven al punto de partida.}
+  \label{fig:paths}
+\end{figure}
+
+\section{Resultados preliminares}
+
+Enero--febrero de 2024 frente a enero--febrero de 2020; las cifras se calculan desde los artefactos del cliente y se recalculan en la auditoría.
+
+\textbf{El sistema recuperó el volumen a dos tercios, no el ritmo.} El promedio diario comparable pasó de 4.48 a 3.03 millones de entradas (67.7\,\%). El peso de la mañana laboral bajó de 28.9 a 27.2\,\% y el del fin de semana subió de 16.2 a 18.4\,\%. En el espacio de las dos medidas (Fig.~\ref{fig:paths}), 2021 es el punto más alejado, 2022 y 2023 vuelven parcialmente, y 2024 queda con menos mañana y más fin de semana que 2020.
+
+\textbf{El cambio es general.} 316 de 424 complejos tienen menos peso AM que en 2020 y 283 tienen más peso de fin de semana. Con el umbral de $-2$\,pp, 204 complejos entran en la entrada al análisis ``La mañana cambia''.
+
+\textbf{La mediana del cambio de forma es 6.6\,pp.} En el complejo típico, cerca del 7\,\% del ritmo semanal se redistribuyó entre horas. Los mayores cambios son 57 St (F), 26.4\,pp, con obras en 63 St en la ventana de comparación; Hunters Point Av (7), 20.3\,pp, con $-20.7$\,pp de peso AM; y 3 Av (L), 18.0\,pp. Las estaciones de la línea L (Graham Av, Montrose Av, Jefferson St, Bedford Av) aparecen juntas entre las diez primeras.
+
+\textbf{Volumen y forma son dimensiones separadas.} 21 complejos están entre el 80 y el 120\,\% de su volumen de 2020 y, aun así, cambiaron de forma 10\,pp o más; la entrada ``Volumen $\neq$ ritmo'' los reúne.
+
+\begin{table}[t]
+  \caption{Medianas por borough, enero--febrero 2024 frente a 2020.}
+  \label{tab:boroughs}
+  \centering\footnotesize\setlength{\tabcolsep}{4pt}
+  \begin{tabular}{@{}lrrrrr@{}}
+    \toprule
+    borough & $n$ & TV (pp) & $\Delta$AM (pp) & $\Delta$fin de sem.\ (pp) & volumen \\
+    \midrule
+    Brooklyn  & 156 & 6.3 & $-3.3$ & $+0.5$ & 68.7\,\% \\
+    Manhattan & 121 & 7.4 & $-0.9$ & $+2.8$ & 68.0\,\% \\
+    Queens    & 79  & 7.6 & $-2.6$ & $+1.5$ & 68.5\,\% \\
+    Bronx     & 68  & 6.1 & $-0.2$ & $+0.2$ & 56.3\,\% \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{El cambio tiene geografía, pero más dentro de cada borough que entre boroughs} (Tabla~\ref{tab:boroughs}). Las medianas de TV van de 6.1 a 7.6\,pp, mientras que dentro de un borough los valores van de 0 a 26\,pp. El Bronx perdió más volumen que nadie (56.3\,\%) y es donde menos cambió el peso de la mañana ($-0.2$\,pp); Brooklyn es donde más cambió ($-3.3$\,pp). La asociación con el trabajo híbrido es una hipótesis consistente con el patrón, no una medición.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{fig5_inspector}
+  \caption{Detalle de Hunters Point Av (7) en modo diferencia: perfil de 24\,h (gris 2020, tinta 2024), matriz día $\times$ hora y peso de cada día. Las mañanas de lunes a viernes pierden peso (azul); las tardes y noches lo ganan (naranja).}
+  \label{fig:inspector}
+\end{figure}
+
+\section{Discusión}
+\label{sec:discusion}
+
+\textbf{Lo que se aprendió.} La decisión más consecuente no fue visual sino de ventana: comparar dos meses de invierno contra un año completo exageraba el cambio de forma y lo atribuía a estaciones estacionales. Con la misma temporada y el calendario estandarizado, el cambio es más moderado y más general. La segunda decisión fue no clasificar: la tipología discreta del prototipo se reemplazó por semejanza continua y medidas acotadas, de modo que la herramienta no afirme tipos que no puede validar. Descargar el dataset completo no cambió ningún número ---las tablas resultaron idénticas a las de la API--- pero convirtió un pipeline dependiente de consultas en uno reproducible sin red.
+
+\textbf{Limitaciones.} Son entradas, no viajes; no hay origen--destino ni oferta histórica. La línea base son dos meses de invierno de 2020: no hay 2019. Las celdas sin registro son ceros declarados, y 2021 tiene 4\,986 por el cierre nocturno. El catálogo y los contornos son actuales. No hay inferencia estadística ni causal; los umbrales de las entradas al análisis son ejemplos. El plano de calles depende de un servicio externo; sin red, el mapa vuelve a los contornos. Y la evaluación con personas está pendiente: el código funcional no demuestra que el diseño resuelva mejor las tareas.
+
+\textbf{Evaluación informal.} El design review de la Semana 10 produjo dos cambios: dar más peso a la visualización que al texto (el atlas de 424 $\times$ 168 es ahora la primera pantalla) y mostrar Nueva York como un plano de ciudad con calles (el mapa sobre teselas). Las decisiones están documentadas sugerencia por sugerencia en el repositorio.
+
+\section{Trabajo futuro y conclusión}
+
+Tres extensiones concretas. Primera, la evaluación formativa con 3--5 compañeros y una persona familiarizada con análisis de transporte, con seis ejercicios que distinguen porcentaje de diferencia, verifican una estación, comparan vecinos, separan volumen de forma, siguen una trayectoria y documentan un hallazgo; de ella depende decidir entre reloj y matriz y cómo explicar la distancia TV. Segunda, contrastar la hipótesis del trabajo híbrido con el share de trabajo desde casa del Census (ACS 2018--2022) por área de influencia de 800\,m de cada complejo. Tercera, cruzar las celdas sin registro con avisos de servicio de la MTA para separar oferta de demanda.
+
+La conclusión es una frase: el metro volvió en volumen a dos tercios de 2020, pero no volvió su ritmo; la mañana de lunes a viernes pesa menos y el fin de semana pesa más en la gran mayoría de los complejos, y ese cambio varía más dentro de cada borough que entre boroughs.
+
+\begin{thebibliography}{9}
+\bibitem{liu2020} L. Liu, H. J. Miller y J. Scheff, ``The impacts of COVID-19 pandemic on public transit demand in the United States,'' \emph{PLOS ONE}, vol. 15, no. 11, 2020. doi:10.1371/journal.pone.0242476
+\bibitem{fredriksson2025} J. Fredriksson y A. Karlström, ``A fully neural network-based travel demand and scheduling model, covering activities, destinations, and modes of transportation,'' \emph{Data Science for Transportation}, vol. 7, art. 28, 2025. doi:10.1007/s42421-025-00141-5
+\bibitem{vanderknaap2024} R. J. H. van der Knaap, M. de Bruyn, N. van Oort, D. Huisman y R. M. P. Goverde, ``Clustering railway passenger demand patterns from large-scale origin--destination data,'' \emph{J. Rail Transport Planning \& Management}, vol. 31, 2024. doi:10.1016/j.jrtpm.2024.100452
+\bibitem{dhont2020} M. Dhont, E. Tsiporkova, T. Tourwé y N. González-Deleito, ``Visual analytics for extracting trends from spatio-temporal data,'' LNCS 12588, pp. 122--137, 2020. doi:10.1007/978-3-030-65742-0\_9
+\bibitem{hsu2021} Y.-T. Hsu, Z.-Y. Wu et al., ``Investigating spatio-temporal mobility patterns and changes in metro usage under the impact of COVID-19 using Taipei Metro smart card data,'' \emph{Public Transport}, 2021.
+\bibitem{mta} Metropolitan Transportation Authority, ``MTA Subway Hourly Ridership: 2020--2024,'' Open NY, \texttt{wujg-7c2s}; ``MTA Subway Stations and Complexes,'' \texttt{5f5g-n3cz}.
+\end{thebibliography}
+
+\end{document}

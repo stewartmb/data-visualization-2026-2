@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Fractal · Atlas de ritmos</title>
-  <meta name="description" content="Explora cómo cambiaron los ritmos de entrada al metro de Nueva York, con perfiles de 168 horas y comparación del mismo período entre 2021 y 2024.">
-  <link rel="stylesheet" href="src/style.css?v=20261028-gpu5">
+  <meta name="description" content="Explora cómo cambiaron los ritmos de entrada al metro de Nueva York, con entradas 2019–2024, OD 2021–2024 y perfiles de 168 horas.">
+  <link rel="stylesheet" href="src/style.css?v=20261028-release1">
 </head>
 <body>
 <div id="loading" role="status"><span class="loading-mark">▥</span> Preparando el atlas de ritmos…</div>
@@ -14,8 +14,8 @@
 </header>
 <div class="app-shell">
   <main id="main">
-    <div class="context-bar"><span class="baseline-dot"></span> <select id="base" aria-label="Año base"><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option></select> <span class="context-divider">→</span>
-      <select id="year" aria-label="Año objetivo"><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option></select>
+    <div class="context-bar"><span class="baseline-dot"></span> <select id="base" aria-label="Año base del mapa"><option value="2021">2021</option><option value="2022">2022</option><option value="2023">2023</option></select> <span class="context-divider">→</span>
+      <select id="year" aria-label="Año del mapa y objetivo del contraste"><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option></select>
       <select id="borough" aria-label="Zona"><option value="all">Todos los boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option></select>
       <input id="search" type="search" placeholder="Buscar complejo" aria-label="Buscar complejo" autocomplete="off">
       <span class="context-divider">/</span><b id="cohort-count">—</b> <span id="cohort-note" aria-live="polite">Todo el sistema</span> <button id="reset" class="text-button">↺</button>
@@ -28,5 +28,5 @@
 <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
 <div id="toast" class="toast" role="status" hidden></div>
 <dialog id="guide"><button id="close-guide" class="close" aria-label="Cerrar">×</button><div id="guide-body"></div></dialog>
-<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=20261028-gpu5-hideclosure-clocklegend"></script>
+<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=20261028-release1"></script>
 </body></html>

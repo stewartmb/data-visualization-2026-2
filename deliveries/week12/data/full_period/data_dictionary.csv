@@ -1,0 +1,28 @@
+table,field,type,definition,unit_or_scope,missing_or_limit
+raw CSV / Parquet,transit_timestamp,timestamp,Hora de registro en tiempo local de la fuente; no incluye zona horaria en el valor,2019-01-01 a 2024-12-31,sin imputación; hora ausente no prueba servicio disponible
+raw CSV / Parquet,transit_mode,string,Etiqueta de modo tal como la publica MTA,subway / SIR / tram según fuente,no se corrigen etiquetas silenciosamente
+raw CSV / Parquet,station_complex_id,string,ID del complejo MTA; una agrupación puede contener varias estaciones y andenes,todos los IDs presentes,sin filtro fijo de 424
+raw CSV / Parquet,station_complex,string,Nombre publicado del complejo,valor original,sin imputación
+raw CSV / Parquet,borough,string,Borough reportado por la fuente,ubicación del complejo; no residencia,sin imputación
+raw CSV / Parquet,payment_method,string,Medio de pago reportado,categorías originales; no se fusionan,ausencia no prueba inexistencia del producto
+raw CSV / Parquet,fare_class_category,string,Categoría tarifaria reportada,categorías originales; no perfil demográfico,sin imputación
+raw CSV / Parquet,ridership,double,Entradas publicadas para la combinación hora/complejo/modo/pago/clase,entradas; no usuarios únicos ni OD,no se inventan ceros de registros ausentes
+raw CSV / Parquet,transfers,double,Entradas con transbordo gratuito incluidas en ridership,conteo; no se suma otra vez a ridership ni mide todos los cambios de línea,anomalías reportadas por mes en acquisition.json
+raw CSV / Parquet,latitude,double,Latitud publicada,grados decimales,NULL preservado si aparece
+raw CSV / Parquet,longitude,double,Longitud publicada,grados decimales,NULL preservado si aparece
+raw CSV / Parquet,georeference,string,Representación espacial original de la fuente,texto conservado,NULL preservado si aparece
+raw Parquet,source_dataset,string,Identificador de la fuente oficial de cada registro,t69i-h2me para 2019; wujg-7c2s para 2020–2024,derivado de la partición verificada
+processed tables,source_rows,integer,Cantidad de registros originales que contribuye al grupo,no es conteo de personas,conserva el total de registros entre agregaciones
+processed tables,recorded_dates,integer,Cantidad de fechas distintas con registros en el grupo,presencia de registros; no días de operación certificada,no se completa hasta el calendario esperado
+processed tables,month,string,Mes calendario de los registros,YYYY-MM; 72 meses,sin imputación
+ridership_by_station_day.csv,dia,date,Fecha calendario de los registros del complejo,YYYY-MM-DD,solo combinaciones observadas
+coverage_month_mode.csv,station_complexes,integer,IDs distintos observados en el mes y modo,complejos; contar por modo puede repetir un ID con etiquetas inconsistentes,sin catálogo fijo
+coverage_month_mode.csv,first_timestamp / last_timestamp,timestamp,Primer y último registro observado en mes y modo,tiempo local de la fuente,no acredita cobertura de todas las horas de cada complejo
+station_month_hourofweek.parquet,dow,integer,Día de semana calculado desde transit_timestamp,domingo=0 a sábado=6,conteos observados sin estandarización de calendario
+station_month_hourofweek.parquet,hour,integer,Hora local calculada desde transit_timestamp,0–23,sin imputación
+complex_catalog.csv,latest_reported_mode,string,Modo de la observación más reciente del ID,no es historia completa del modo,ver reported_modes para inconsistencias
+complex_catalog.csv,reported_modes,integer,Número de modos distintos reportados para el mismo ID,permite detectar etiquetas cambiantes,no se interpreta automáticamente como estación multimodal
+complex_catalog.csv,first_observed / last_observed,timestamp,Extremos de fechas con registros para el complejo,no fechas oficiales de inauguración y cierre,sin imputación
+atlas/data/full_period.json,entries / transfers,array[number|null],Sumas por complejo y mes alineadas con meta.months,72 posiciones; conserva los modos reportados para el ID,null si no hay registros; cero solo si suma observada es cero
+atlas/data/full_period.json,calendar_days,array[integer],Cantidad de días calendario por mes,denominador de la curva diaria promedio; no días operativos,sin ajuste por composición semanal
+atlas monthly chart,daily,number|null,Suma de entradas del sujeto seleccionado dividida por días calendario del mes,entradas por día calendario del mes; no semana estandarizada,hueco si ningún complejo del sujeto tiene registros

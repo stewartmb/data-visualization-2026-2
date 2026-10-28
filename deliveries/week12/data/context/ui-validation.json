@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "method": "Real browser interactions through CUA",
+  "scenarios": [
+    "Load Week 12 app",
+    "Expand context for all 424 complexes",
+    "Search and select Astoria-Ditmars (ID 1)",
+    "NTA QN0101 direct selection retains its two complexes",
+    "Queens fares remain borough totals for station and territory selection",
+    "Switch year to 2021 updates transfers and fares",
+    "Source and graph links resolve to self-contained client assets",
+    "Export CSV with 424 complexes and NTA/transfer fields"
+  ],
+  "graph_rendering": "JSON prepared and downloadable; map still uses its existing simplified traces",
+  "standalone_reproduction": "PASS in a separate folder without raw downloads or other weeks"
+}

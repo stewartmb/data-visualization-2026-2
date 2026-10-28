@@ -1,48 +1,42 @@
-# Semana 12 — Borrador refinado y crítica por pares
+# Semana 12 — Borrador refinado y crítica
 
-**DS5343 Data Visualization · UTEC · 2026-2** · entrega del 28 de octubre de 2026
-Acervo Correa, Renzo Alfonso · Maquera Bobadilla, Diva Stewart · Condori Palomino, José Eduardo
+Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino · Revisión del 28 de octubre de 2026. Requisito: §4.6 de [la guía](../../Proyecto_Final_Guia.md).
 
-**Fractal · Atlas de ritmos.** La aplicación refinada vive en [`/atlas`](../../atlas/) (raíz del repositorio) y se publica en <https://stewartmb.github.io/data-visualization-2026-2/atlas/>. Esta carpeta contiene la copia de la entrega.
-
-| Archivo | Qué es |
+| Entregable | Archivo |
 |---|---|
-| [`atlas/`](atlas/) | copia del código fuente de la aplicación (HTML, CSS, JS, D3 v7 y d3-tile vendorizados, `atlas.json`, `boroughs.geojson`) |
-| [`data/`](data/) | datos candidatos a finales: insumo del atlas (`jan_feb_hourly_2020_2024.csv`, 350 951 filas), catálogo de complejos, contexto del servicio, manifiesto de fuentes con SHA-256, y los artefactos del cliente |
-| [`scripts/`](scripts/) | reproducción de punta a punta: `download_full.py` (descarga completa del dataset), `build_from_full.py` (agregación con DuckDB), `acquire_context.py` (vía API, histórica), `build_atlas.py` (perfiles y medidas), `validate_atlas.py` (recalculo independiente), `smoke.cjs` (prueba de interfaz en Chromium) |
-| [`RefinedDraftReport.md`](RefinedDraftReport.md) · [`.pdf`](RefinedDraftReport.pdf) | narrativa, datos y método, hallazgos, diseño, feedback, limitaciones, tareas restantes con responsables |
-| [`PeerCritiqueResponse.md`](PeerCritiqueResponse.md) · [`.pdf`](PeerCritiqueResponse.pdf) | feedback del design review y la decisión sobre cada sugerencia |
-| [`PresentationWeek12.pptx`](PresentationWeek12.pptx) | presentación de la entrega |
-| [`paper/paper.tex`](paper/paper.tex) · [`paper.pdf`](paper/paper.pdf) | el paper en dos columnas: compila con IEEEtran si está instalado (Overleaf) y con `article` si no |
-| [`code/datos_nuevos.ipynb`](code/datos_nuevos.ipynb) | notebook histórico del prototipo de la Semana 10 |
+| Aplicación D3 y recursos | [atlas/](atlas/), espejo de [la raíz](../../atlas/) |
+| Datos candidatos, muestras y scripts | [data/](data/), [scripts/](scripts/), [DataSharing](DataSharing.md) |
+| Narrativa, diseño, hallazgos, límites y pendientes | [RefinedDraftReport.md](RefinedDraftReport.md) y [PDF](RefinedDraftReport.pdf) |
+| Presentación vigente | [PresentationWeek12.pptx](PresentationWeek12.pptx) |
+| Respuesta a crítica | [PeerCritiqueResponse.pdf](PeerCritiqueResponse.pdf) y [fuente](PeerCritiqueResponse.md) |
+| Fuente del artículo y borrador | [paper.tex](paper/paper.tex), [paper.pdf](paper/paper.pdf) |
+| Página y README | [Página inicial](../../index.html), este documento y [README raíz](../../README.md) |
+| Seis tareas y plan | [AnalyticalTasks](AnalyticalTasks.md), [ImplementationPlan](ImplementationPlan.md) |
 
-## Correr la aplicación
+## Datos y ejecución
 
-Desde la raíz del repositorio (la aplicación enlaza documentos de `redesign/`):
-
-```bash
-python3 -m http.server 8765
-```
-
-Abrir <http://localhost:8765/atlas/>. El plano de calles del mapa se carga de OpenStreetMap; sin conexión, el mapa muestra los contornos de boroughs.
-
-## Reproducir los datos
+**Entradas 2019–2024:** 72 meses, 141.836.156 registros fuente, 12 campos originales. Fuentes MTA/Open NY `t69i-h2me` (solo 2019) y `wujg-7c2s` (2020–2024). **OD estimado 2021–2024:** 48 meses, 446.399.011 registros, 16 campos; fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z` y `jsu2-fbtj`. **Red:** GTFS de referencia 2026, 424 complejos de subway, 547 enlaces ferroviarios y 2 transferencias peatonales declaradas. **Territorio:** borough y NTA 2020 según ubicación del complejo.
 
 ```bash
-export SOCRATA_APP_TOKEN=...                                  # token gratuito de Open NY (o en un .env)
-python3 scripts/acquisition/download_full.py --workers 4     # 120 855 567 registros, ~90 min, reanudable
-pip install duckdb
-python3 scripts/preprocessing/build_from_full.py             # tablas en data/processed/full, ~1 min
-cp data/processed/full/jan_feb_hourly_2020_2024.csv data/redesign/   # insumo del atlas (idéntico al versionado)
-python3 scripts/redesign/build_atlas.py                      # atlas/data/atlas.json + auditoría
-python3 scripts/redesign/validate_atlas.py                   # recalcula 2 120 perfiles y 356 160 celdas
+python3 -m http.server 8775
+# Abrir /atlas/; no requiere descargar 26 GB para ver la app.
+python3 -m pip install -r deliveries/week12/requirements-data.txt
+node deliveries/week12/tests/contrast-model.test.mjs
+node deliveries/week12/tests/raeb-core.test.mjs
+node deliveries/week12/tests/scatter-domain.test.mjs
+node deliveries/week12/tests/validate-raeb-data.mjs
+python3 deliveries/week12/scripts/prepare_analytical_tasks.py
 ```
 
-## Compilar el paper
+Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_od.py` y `acquire_network.py`. La preparación histórica y la del RAEB se documentan en `HistoricalContrast.md`, `ODData.md` y `RAEBImplementation.md`. Los originales grandes quedan fuera de Git; se incluyen los artefactos preparados para ejecutar la app y sus manifiestos.
 
-```bash
-cd paper
-latexmk -pdf paper.tex
-```
+Histórico 2019/2020 visible en **Base histórica**, a la derecha. Red y OD no se reconstruyen para esos años. Capturas y validaciones de la versión actual acompañan la entrega. Las copias anteriores de reporte, crítica y presentación están en `history/`. La publicación usa `main` y la raíz como fuente de GitHub Pages.
 
-En Overleaf basta subir la carpeta `paper/`; detecta `IEEEtran` y usa el formato de conferencia.
+| Tarea | Evidencia preparada | Estado de interacción |
+|---|---|---|
+| T1 | CSV por borough/NTA, seis años | Contraste por complejo disponible; síntesis territorial por integrar al panel |
+| T2 | Matrices territoriales y participaciones, cuatro años | Selección de origen disponible; detalle territorial por integrar |
+| T3 | Ventanas de 3 h, 7 días y seis años | Reloj y selección horaria disponibles; detector automático por integrar |
+| T4 | Cargas de los 549 enlaces para 2021/2024 | Geometría y haces disponibles; inspección exacta por tramo pendiente |
+| T5 | Balance externo por borough/cohorte, cuatro años | CSV preparado; codificación interactiva pendiente |
+| T6 | Seis escenarios reproducibles | Cálculo preparado; escenario interactivo pendiente |

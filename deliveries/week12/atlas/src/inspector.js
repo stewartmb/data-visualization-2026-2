@@ -1,17 +1,24 @@
-import {state,BASE,esc,fmt,signed,profile,measures,hellinger,deltaColor,shareColor,cellValue,showTooltip,hideTooltip,dayShort,relevantEvents,cohortProfile} from './model.js?v=20261028-4';
+import {state,BASE as MAP_BASE,esc,fmt,signed,profile,hellinger,deltaColor,shareColor,showTooltip,hideTooltip,dayShort,relevantEvents,cohortProfile} from './model.js?v=20261028-4';
 
 import {scatterDomain,comparisonContext} from './scatter-domain.mjs';
+import {CONTRAST_YEARS,normalizeContrastBase,inspectorContrast,contrastMeasures,contrastCell} from './contrast-model.mjs';
+let BASE=2021;
+const measures=(s,y=state.year)=>contrastMeasures(s,BASE,y);
+const cellValue=(s,i,mode=state.mode)=>contrastCell(s,i,mode,BASE,state.year);
 
 export const BOROUGH_COLOR={Manhattan:'#1d6f8d',Brooklyn:'#b08a3e',Queens:'#7a5aa6',Bronx:'#5a8a4a'};
 
 function coverageLabel(app){
-  const months=app.flows?.meta?.months_present||{};
+  const months=app.contrast?.meta?.months_present||app.flows?.meta?.months_present||{};
   const describe=y=>{const m=months[String(y)]||[];return m.length===12?'enero–diciembre':m.join(',')==='1,2'?'enero–febrero':m.length?`${m.length} meses`:'cobertura sin verificar';};
   const a=describe(BASE),b=describe(state.year);
   return a===b?`${a} · ${BASE} → ${state.year}`:`${BASE}: ${a} · ${state.year}: ${b}`;
 }
 
-export function renderInspector(app){
+export function renderInspector(mapApp){
+  BASE=normalizeContrastBase(state.contrastBase??MAP_BASE,state.year,MAP_BASE);
+  const app=inspectorContrast(mapApp,BASE,state.year);
+  state.contrastBase=BASE;
   const host=document.querySelector('#inspector'),selected=app.station(state.selected);
   const items=app.filtered(),a=cohortProfile(items,BASE),b=cohortProfile(items,state.year);
   host.hidden=false;state.clock=true;
@@ -19,14 +26,21 @@ export function renderInspector(app){
   if(!selectedValid&&(!a||!b)){host.innerHTML=`<div class="eyebrow">SIN DATOS COMPARABLES</div><h2>Amplía la selección</h2><button id="clear-empty">Ver todo el sistema</button>`;host.querySelector('#clear-empty').onclick=()=>app.set({cohort:null,query:'',borough:'all',preset:null});return;}
   const nombre=selectedValid?selected.name.replace(/ \(.*/,''):state.cohort?'Grupo seleccionado':state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:'Todo el sistema';
   const subject=selectedValid?selected:{id:'__grupo',name:nombre,profiles:{[String(BASE)]:a,[String(state.year)]:b}};
-  host.innerHTML=`<header class="linked-heading"><div class="eyebrow">${selectedValid?`COMPLEJO ${esc(selected.id)} · ${esc(selected.borough)}`:items.length+' COMPLEJOS · SELECCIÓN ACTIVA'}</div><h2 title="${esc(nombre)}">${esc(nombre)}</h2><p>${esc(coverageLabel(app))}</p>${selectedValid?'<button class="close" id="clear-subject" aria-label="Volver a todo el sistema">×</button>':''}</header>
+  host.innerHTML=`<header class="linked-heading"><div class="eyebrow">${selectedValid?`COMPLEJO ${esc(selected.id)} · ${esc(selected.borough)}`:items.length+' COMPLEJOS · SELECCIÓN ACTIVA'}</div><h2 title="${esc(nombre)}">${esc(nombre)}</h2><div class="contrast-context" style="display:flex;align-items:center;gap:7px;margin-top:5px;font-size:12px"><label for="contrast-base" style="font-weight:700">Base histórica</label><select id="contrast-base" aria-label="Año de contraste de los gráficos de la derecha" style="font:inherit;padding:2px 5px;width:auto">${CONTRAST_YEARS.filter(y=>y<state.year).map(y=>`<option value="${y}"${y===BASE?' selected':''}>${y}</option>`).join('')}</select><span>→ ${state.year}</span></div><p style="font-size:9px;margin-top:3px" id="contrast-source">${esc(app.contrast.label)} · ${esc(coverageLabel(app))}</p>${selectedValid?'<button class="close" id="clear-subject" aria-label="Volver a todo el sistema">×</button>':''}</header>
   <section id="scatter-host" aria-label="Volumen frente a forma semanal"></section>
   <section class="clock-panel" aria-label="Reloj semanal de la selección"><div class="eyebrow">03 · CUÁNDO CAMBIA</div><div id="detail-body"></div></section>
-  <details class="inline-evidence"><summary>Datos, cobertura y modelo ⓘ</summary><div><b>${esc(coverageLabel(app))}</b><p>El mapa representa viajes que comienzan en la hora activa. La dispersión y el reloj resumen la semana representativa del período disponible.</p><p>Origen–destino estimado por MTA; los recorridos son asignados por un modelo sobre una red de referencia, no trayectorias observadas. Se utilizan los doce meses completos de cada año, ponderados por la cantidad de cada día de la semana.</p><p>Volumen: viajes iniciados. Forma: redistribución de sus 168 pesos semanales; TV=0 significa mismo patrón. Un grupo se calcula sumando cantidades antes de normalizar.</p><p>La referencia GTFS corresponde a 2026; no representa el servicio histórico. Las curvas libres son abstracciones visuales, no nuevas vías. El modelo minimiza distancia, sin comprobar horarios ni compatibilidad de servicios. El balance conserva aparte 0,1333 viajes semanales representativos no mapeados en 2023.</p></div></details>`;
+  <details class="inline-evidence"><summary>Datos, cobertura y modelo ⓘ</summary><div><b>${esc(coverageLabel(app))}</b><p>El mapa representa viajes que comienzan en la hora activa. La dispersión y el reloj resumen la semana representativa del período disponible.</p><p>Origen–destino estimado por MTA; los recorridos son asignados por un modelo sobre una red de referencia, no trayectorias observadas. Se utilizan los doce meses completos de cada año, ponderados por la cantidad de cada día de la semana.</p><p>Gráficos de la derecha: ${esc(app.contrast.label)}, usando la misma fuente para ambos años. ${app.contrast.kind==='entries'?'2019 y 2020 se incorporan solo como referencia de afluencia; no hay OD reconstruido para esos años.':'Los años de contraste OD son 2021–2024.'}</p><p>Volumen: ${esc(app.contrast.unit)}. Forma: redistribución de sus 168 pesos semanales; TV=0 significa mismo patrón. Un grupo se calcula sumando cantidades antes de normalizar.</p><p>La referencia GTFS corresponde a 2026; no representa el servicio histórico. Las curvas libres son abstracciones visuales, no nuevas vías. El modelo minimiza distancia, sin comprobar horarios ni compatibilidad de servicios. El balance conserva aparte 0,1333 viajes semanales representativos no mapeados en 2023.</p></div></details>`;
   if(selectedValid){
     const context=comparisonContext(selected.id,BASE,state.year);
     if(context)host.querySelector('.inline-evidence>div').insertAdjacentHTML('afterbegin',`<p class="comparison-closure-note"><b>${context.label}</b><br>${esc(context.explanation)}<br>${context.sources.map(source=>`<a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.label)} ↗</a>`).join(' · ')}</p>`);
   }
+  host.querySelector('#contrast-base').onchange=async event=>{
+    const select=event.currentTarget,previous=BASE;
+    const source=host.querySelector('#contrast-source'),previousSource=source.textContent;
+    select.disabled=true;source.textContent='Cargando contraste…';
+    try{await mapApp.setContrastBase(+select.value);}
+    catch(error){select.value=previous;select.disabled=false;source.textContent=previousSource;mapApp.toast(error.message);}
+  };
   drawScatter(host.querySelector('#scatter-host'),app);
   drawFingerprint(host.querySelector('#detail-body'),subject,app,false);
   host.querySelector('#clear-subject')?.addEventListener('click',()=>app.set({selected:null}));
@@ -58,7 +72,8 @@ function drawTrajectory(host,profiles,app,nombre){
 }
 
 function drawFingerprint(host,s,app,conVecinos=true){
-  host.innerHTML=`<div class="clock-toolbar"><h3>El reparto de la semana</h3><div class="segmented" id="detail-mode"><button data-mode="delta" class="${state.mode==='delta'?'active':''}">Δ</button><button data-mode="current" class="${state.mode==='current'?'active':''}">${state.year}</button><button data-mode="base" class="${state.mode==='base'?'active':''}">${BASE}</button></div></div><svg class="detail-viz clock-viz" role="img" aria-label="Matriz radial de siete días y veinticuatro horas"></svg><div class="detail-legend-block"><div class="detail-legend-title">${state.mode==='delta'?`Peso horario · ${state.year} menos ${BASE}`:`Peso horario en la semana · ${state.mode==='base'?BASE:state.year}`}</div><div class="detail-legend-scale"><span>${state.mode==='delta'?'−0,65 pp':'0 %'}</span><span class="gradient ${state.mode==='delta'?'':'seq'}"></span><span>${state.mode==='delta'?'+0,65 pp':'≥1,5 %'}</span></div><p class="clock-hint">Lunes adentro · domingo afuera. Clic en una celda: día y hora del mapa.</p><details class="clock-help"><summary>Cómo leer el reloj ⓘ</summary><p>24 horas en sentido horario, medianoche arriba. Cada anillo es un día. En Δ, azul significa menor peso semanal y terracota mayor peso; el centro de la escala es cero. El color satura en los límites de la leyenda. Consulta cada celda para sus valores exactos.</p></details></div>`;
+  const unit=app.contrast?.unit||'viajes OD';
+  host.innerHTML=`<div class="clock-toolbar"><h3>El reparto de la semana</h3><div class="segmented" id="detail-mode"><button data-mode="delta" class="${state.mode==='delta'?'active':''}">Δ</button><button data-mode="current" class="${state.mode==='current'?'active':''}">${state.year}</button><button data-mode="base" class="${state.mode==='base'?'active':''}">${BASE}</button></div></div><svg class="detail-viz clock-viz" role="img" aria-label="Matriz radial de siete días y veinticuatro horas"></svg><div class="detail-legend-block"><div class="detail-legend-title">${state.mode==='delta'?`Peso horario · ${state.year} menos ${BASE}`:`Peso horario en la semana · ${state.mode==='base'?BASE:state.year}`}</div><div class="detail-legend-scale" style="display:grid;grid-template-columns:1fr 1fr;gap:3px 10px"><span class="gradient ${state.mode==='delta'?'':'seq'}" style="grid-column:1/-1;width:100%;height:9px" role="img" aria-label="${state.mode==='delta'?'Cambio del peso semanal: de −0,65 a +0,65 puntos porcentuales; cero en el centro.':'Peso semanal: de 0 a 1,5 por ciento; el color satura en 1,5 por ciento.'}" title="${state.mode==='delta'?'Escala fija: −0,65 a +0,65 pp; cero en el centro.':'Escala fija: 0 a 1,5 % del total semanal.'}"></span><span>Menor peso de ${esc(unit)}</span><span style="text-align:right">Mayor peso de ${esc(unit)}</span></div><p class="clock-hint">Lunes adentro · domingo afuera. Clic en una celda: día y hora del mapa.</p><details class="clock-help"><summary>Cómo leer el reloj ⓘ</summary><p>24 horas en sentido horario, medianoche arriba. Cada anillo es un día. En Δ, azul significa menor peso semanal y terracota mayor peso; el centro de la escala es cero. En Δ, la escala fija va de −0,65 a +0,65 pp; en cada año, de 0 a 1,5 % del total semanal. El color satura en esos límites. Consulta cada celda para sus valores exactos.</p></details></div>`;
   host.querySelectorAll('[data-clock]').forEach(btn=>btn.onclick=()=>app.set({clock:btn.dataset.clock==='true'}));
   host.querySelectorAll('[data-mode]').forEach(btn=>btn.onclick=()=>app.set({mode:btn.dataset.mode}));
   const svg=d3.select(host.querySelector('svg')).attr('viewBox',state.clock?'0 0 360 362':'0 0 404 318');
@@ -113,7 +128,7 @@ function drawFingerprint(host,s,app,conVecinos=true){
   marks.filter(i=>i===activa).attr('stroke','#102937').attr('stroke-width',1.6).raise();
   marks.on('pointerenter',(e,i)=>{
     const a=profile(s,BASE).p[i]*100,b=profile(s).p[i]*100;
-    showTooltip(`<b>${dayShort[Math.floor(i/24)]} · ${(i%24)===0?'12 am':(i%24)<12?(i%24)+' am':(i%24)===12?'12 pm':((i%24)-12)+' pm'}</b><br>${BASE}: ${fmt(Math.round(profile(s,BASE).p[i]*profile(s,BASE).weekly))} viajes · ${a.toFixed(3)} % de la semana<br>${state.year}: ${fmt(Math.round(profile(s).p[i]*profile(s).weekly))} viajes · ${b.toFixed(3)} %<br>Diferencia: ${(b-a).toFixed(3)} pp<br><small>Clic: fijar este día y hora en el mapa</small>`,e);
+    showTooltip(`<b>${dayShort[Math.floor(i/24)]} · ${(i%24)===0?'12 am':(i%24)<12?(i%24)+' am':(i%24)===12?'12 pm':((i%24)-12)+' pm'}</b><br>${BASE}: ${fmt(Math.round(profile(s,BASE).p[i]*profile(s,BASE).weekly))} ${esc(unit)} · ${a.toFixed(3)} % de la semana<br>${state.year}: ${fmt(Math.round(profile(s).p[i]*profile(s).weekly))} ${esc(unit)} · ${b.toFixed(3)} %<br>Diferencia: ${(b-a).toFixed(3)} pp<br><small>Clic: fijar este día y hora en el mapa</small>`,e);
   }).on('pointerleave',hideTooltip);
   if(!conVecinos)return;
   const neighbors=app.data.stations.filter(x=>x.id!==s.id&&profile(x)).map(x=>({s:x,d:hellinger(profile(s).p,profile(x).p)})).sort((a,b)=>a.d-b.d).slice(0,4);
@@ -191,9 +206,8 @@ function drawScatter(host,app){
   const {xMax,yMax}=domain;
   const x=d3.scaleLinear().domain([0,xMax]).range([M.l,W-M.r]),y=d3.scaleLinear().domain([0,yMax]).range([H-M.b,M.t]);
     host.innerHTML=`<div class="scatter-block"><div class="eyebrow">02 · VOLUMEN × FORMA</div><h3 class="scatter-title">Más viajes, ¿otra semana?</h3>
-  <svg class="detail-viz" viewBox="0 0 ${W} ${H}" role="img" aria-label="Volumen frente a cambio de forma; los casos afectados por cierre se indican debajo" data-x-max="${xMax}" data-y-max="${yMax}" data-plotted-count="${plotted.length}"></svg>
+  <svg class="detail-viz" viewBox="0 0 ${W} ${H}" role="img" aria-label="Volumen frente a cambio de forma" data-x-max="${xMax}" data-y-max="${yMax}" data-plotted-count="${plotted.length}"></svg>
   <div class="scatter-key"><span>100 % = volumen de ${BASE}</span><span>TV = cambio del reparto semanal</span><span>${plotted.length} puntos${contextual.size?` · ${contextual.size} con cierre documentado`:''} · ${app.data.stations.length-all.length} sin comparación válida</span></div>
-  ${domain.context.map(row=>{const s=app.station(row.id),ctx=comparisonContext(row.id,BASE,state.year);return `<button type="button" class="text-button scatter-exception" data-scatter-context="${esc(s.id)}" aria-pressed="${state.selected===s.id}" style="display:block;text-align:left;font-size:9px;line-height:1.35;padding:4px 5px;margin:2px 0 0;border-left:2px solid ${state.selected===s.id?'#102937':'#c2561f'};color:#9a512e;flex-shrink:0" title="${esc(ctx.explanation)}">⚠ ${esc(s.name)} · índice ${fmt(row.recovery)} %<br><span style="color:#60747b">${ctx.label}: ${BASE}. Valor conservado fuera del eje.</span></button>`;}).join('')}
   </div>`;
   const svg=d3.select(host.querySelector('svg'));
   svg.append('g').attr('class','chart-axis').attr('transform',`translate(0,${H-M.b})`).call(d3.axisBottom(x).ticks(5).tickFormat(v=>v+' %').tickSize(3));
@@ -208,11 +222,6 @@ function drawScatter(host,app){
     .attr('fill','#1d6f8d').attr('opacity',s=>items.has(s.id)?.55:.1).style('cursor','pointer')
     .on('pointerenter',(e,s)=>{const m=measures(s);showTooltip(`<b>${esc(s.name.replace(/ \(.*/,''))}</b><br>${esc(s.borough)}<br>volumen ${fmt(m.recovery)} % · TV ${fmt(m.change)} pp`,e);}).on('pointermove',(e,s)=>{const m=measures(s);showTooltip(`<b>${esc(s.name.replace(/ \(.*/,''))}</b><br>volumen ${fmt(m.recovery)} % · TV ${fmt(m.change)} pp`,e);}).on('pointerleave',hideTooltip)
     .on('click',(e,s)=>app.select(s.id));
-  host.querySelectorAll('[data-scatter-context]').forEach(button=>{
-    const station=app.station(button.dataset.scatterContext),m=measures(station),ctx=comparisonContext(station.id,BASE,state.year);
-    const tooltip=e=>showTooltip(`<b>${esc(station.name)}</b><br>Índice: ${fmt(m.recovery)} % (${BASE} = 100)<br>Incremento: ${signed(m.recovery-100)} % · TV ${fmt(m.change)} pp<br>Semana representativa ${BASE}: ${fmt(profile(station,BASE).weekly)} viajes<br>Semana representativa ${state.year}: ${fmt(profile(station).weekly)} viajes<br><small>${esc(ctx.explanation)}</small>`,e);
-    button.onpointerenter=tooltip;button.onpointerleave=hideTooltip;button.onclick=()=>app.select(station.id);
-  });
   const sel=app.station(state.selected);
   if(sel&&measures(sel)&&!contextual.has(sel.id)){const m=measures(sel);svg.append('circle').attr('cx',x(m.recovery)).attr('cy',y(m.change)).attr('r',6.5).attr('fill','none').attr('stroke','#102937').attr('stroke-width',1.8).style('pointer-events','none');
     svg.append('text').attr('x',x(m.recovery)+9).attr('y',y(m.change)+3).attr('font-size',9).attr('fill','#102937').attr('paint-order','stroke').attr('stroke','#fff').attr('stroke-width',3).text(sel.name.replace(/ \(.*/,''));}

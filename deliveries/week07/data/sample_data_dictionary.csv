@@ -1,0 +1,52 @@
+table,field,type,unit_or_format,meaning,missing
+sample.csv,year,number or categorical as named,valor/ID según nombre,year,blank = undefined denominator; no missing month substituted
+sample.csv,baseline,number or categorical as named,valor/ID según nombre,baseline,blank = undefined denominator; no missing month substituted
+sample.csv,territory_level,number or categorical as named,valor/ID según nombre,territory level,blank = undefined denominator; no missing month substituted
+sample.csv,territory,number or categorical as named,valor/ID según nombre,territory,blank = undefined denominator; no missing month substituted
+sample.csv,complexes,number or categorical as named,valor/ID según nombre,complexes,blank = undefined denominator; no missing month substituted
+sample.csv,weekly_entries,number or categorical as named,valor/ID según nombre,Entradas de una semana representativa; no total anual,blank = undefined denominator; no missing month substituted
+sample.csv,volume_index_2019_100,number or categorical as named,valor/ID según nombre,volume index 2019 100,blank = undefined denominator; no missing month substituted
+sample.csv,delta_weekly_entries,number or categorical as named,valor/ID según nombre,delta weekly entries,blank = undefined denominator; no missing month substituted
+sample.csv,system_share_pct,number or categorical as named,%,system share pct,blank = undefined denominator; no missing month substituted
+sample.csv,delta_system_share_pp,number or categorical as named,pp,delta system share pp,blank = undefined denominator; no missing month substituted
+sample.csv,tv_vs2019_pp,number or categorical as named,pp,50*sum(abs(p2024-p2019)),blank = undefined denominator; no missing month substituted
+od_sample.csv,year,number or categorical as named,valor/ID según nombre,year,blank = undefined denominator; no missing month substituted
+od_sample.csv,origin_borough,number or categorical as named,valor/ID según nombre,origin borough,blank = undefined denominator; no missing month substituted
+od_sample.csv,destination_borough,number or categorical as named,valor/ID según nombre,destination borough,blank = undefined denominator; no missing month substituted
+od_sample.csv,weekly_estimated_od,number or categorical as named,valor/ID según nombre,weekly estimated od,blank = undefined denominator; no missing month substituted
+od_sample.csv,destination_share_pct,number or categorical as named,%,Cuota dentro del territorio de origen,blank = undefined denominator; no missing month substituted
+network_sample.csv,link_id,number or categorical as named,valor/ID según nombre,link id,blank = undefined denominator; no missing month substituted
+network_sample.csv,a,number or categorical as named,valor/ID según nombre,a,blank = undefined denominator; no missing month substituted
+network_sample.csv,b,number or categorical as named,valor/ID según nombre,b,blank = undefined denominator; no missing month substituted
+network_sample.csv,length_m,number or categorical as named,metros,Longitud de geometría de referencia,blank = undefined denominator; no missing month substituted
+network_sample.csv,kind,number or categorical as named,valor/ID según nombre,rail o declared_walk_transfer,blank = undefined denominator; no missing month substituted
+network_sample.csv,allowed_forward,number or categorical as named,valor/ID según nombre,allowed forward,blank = undefined denominator; no missing month substituted
+network_sample.csv,allowed_reverse,number or categorical as named,valor/ID según nombre,allowed reverse,blank = undefined denominator; no missing month substituted
+hourly_entries_original,transit_timestamp,timestamp,2019-01-01 a 2024-12-31,Hora de registro en tiempo local de la fuente; no incluye zona horaria en el valor,sin imputación; hora ausente no prueba servicio disponible
+hourly_entries_original,transit_mode,string,subway / SIR / tram según fuente,Etiqueta de modo tal como la publica MTA,no se corrigen etiquetas silenciosamente
+hourly_entries_original,station_complex_id,string,todos los IDs presentes,ID del complejo MTA; una agrupación puede contener varias estaciones y andenes,sin filtro fijo de 424
+hourly_entries_original,station_complex,string,valor original,Nombre publicado del complejo,sin imputación
+hourly_entries_original,borough,string,ubicación del complejo; no residencia,Borough reportado por la fuente,sin imputación
+hourly_entries_original,payment_method,string,categorías originales; no se fusionan,Medio de pago reportado,ausencia no prueba inexistencia del producto
+hourly_entries_original,fare_class_category,string,categorías originales; no perfil demográfico,Categoría tarifaria reportada,sin imputación
+hourly_entries_original,ridership,double,entradas; no usuarios únicos ni OD,Entradas publicadas para la combinación hora/complejo/modo/pago/clase,no se inventan ceros de registros ausentes
+hourly_entries_original,transfers,double,conteo; no se suma otra vez a ridership ni mide todos los cambios de línea,Entradas con transbordo gratuito incluidas en ridership,anomalías reportadas por mes en acquisition.json
+hourly_entries_original,latitude,double,grados decimales,Latitud publicada,NULL preservado si aparece
+hourly_entries_original,longitude,double,grados decimales,Longitud publicada,NULL preservado si aparece
+hourly_entries_original,georeference,string,texto conservado,Representación espacial original de la fuente,NULL preservado si aparece
+od_original_2021_2024,year,number,published categorical/number; hour_of_day is departure cohort,The year in which the subway trips occurred.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,month,number,published categorical/number; hour_of_day is departure cohort,The month in which the subway trips occurred.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,day_of_week,text,published categorical/number; hour_of_day is departure cohort,"The day of the week on which the subway trips occurred (Monday, Tuesday, etc.).",No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,hour_of_day,number,published categorical/number; hour_of_day is departure cohort,The hour of the day in which the subway trips occurred. All trip times are rounded down to the nearest hour.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,timestamp,calendar_date,published categorical/number; hour_of_day is departure cohort," Representative datetime for the year, month, day of week, and hour of day in which the subway trips occurred. This date will be from the first full week of the month.",No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,origin_station_complex_id,number,published categorical/number; hour_of_day is departure cohort,The unique identifier for the subway station complex where the trips originated.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,origin_station_complex_name,text,published categorical/number; hour_of_day is departure cohort,The name of the subway station complex where the trips originated.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,origin_latitude,number,published categorical/number; hour_of_day is departure cohort,The latitude of the subway station complex where the trips originated.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,origin_longitude,number,published categorical/number; hour_of_day is departure cohort,The longitude of the subway station complex where the trips originated.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,destination_station_complex_id,number,published categorical/number; hour_of_day is departure cohort,The unique identifier for the subway station complex where the trips are inferred to have ended.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,destination_station_complex_name,text,published categorical/number; hour_of_day is departure cohort,The name of the subway station complex where the trips are inferred to have ended.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,destination_latitude,number,published categorical/number; hour_of_day is departure cohort,The latitude of the subway station complex where the trips are inferred to have ended.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,destination_longitude,number,published categorical/number; hour_of_day is departure cohort,The longitude of the subway station complex where the trips are inferred to have ended.,No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,estimated_average_ridership,number,published categorical/number; hour_of_day is departure cohort,"The estimated ridership for an origin-destination pair and hour of day, averaged by day of week over the calendar month.",No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,origin_point,point,published categorical/number; hour_of_day is departure cohort,"Open Data platform-generated geocoding information from supplied address components. Point-type location is the centroid of the address components provided and does not reflect a specific address if the street address component is not provided. Point-type location is supplied in ""POINT (<geocoded longitude> <geocoded latitude>)"" format.",No missing month substituted; sparse zeros per documented convention
+od_original_2021_2024,destination_point,point,published categorical/number; hour_of_day is departure cohort,"Open Data platform-generated geocoding information from supplied address components. Point-type location is the centroid of the address components provided and does not reflect a specific address if the street address component is not provided. Point-type location is supplied in ""POINT (<geocoded longitude> <geocoded latitude>)"" format.",No missing month substituted; sparse zeros per documented convention

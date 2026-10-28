@@ -190,7 +190,7 @@ def main() -> None:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--desde", type=date.fromisoformat, default=FECHA_INI)
     p.add_argument("--hasta", type=date.fromisoformat, default=FECHA_FIN, help="exclusivo")
-    p.add_argument("--salida", type=Path, default=Path("data/raw"))
+    p.add_argument("--salida", type=Path, default=Path(__file__).resolve().parents[1] / "data/raw")
     p.add_argument("--workers", type=int, default=2)
     p.add_argument("--timeout", type=int, default=300)
     p.add_argument("--merge", action="store_true", help="unir todas las partes en un CSV")

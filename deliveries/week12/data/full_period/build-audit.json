@@ -1,0 +1,102 @@
+{
+  "status": "COMPLETE",
+  "period": "2019-01-01 through 2024-12-31",
+  "months": 72,
+  "rows": 141836156,
+  "original_fields_retained": [
+    "transit_timestamp",
+    "transit_mode",
+    "station_complex_id",
+    "station_complex",
+    "borough",
+    "payment_method",
+    "fare_class_category",
+    "ridership",
+    "transfers",
+    "latitude",
+    "longitude",
+    "georeference"
+  ],
+  "years": [
+    {
+      "year": 2019,
+      "rows": 20980589,
+      "ridership": 1701460590.0,
+      "transfers": 56556775.0,
+      "recorded_dates": 365
+    },
+    {
+      "year": 2020,
+      "rows": 20339851,
+      "ridership": 643310841.0,
+      "transfers": 21646280.0,
+      "recorded_dates": 366
+    },
+    {
+      "year": 2021,
+      "rows": 23281980,
+      "ridership": 763914510.0,
+      "transfers": 34936651.0,
+      "recorded_dates": 365
+    },
+    {
+      "year": 2022,
+      "rows": 24635810,
+      "ridership": 1020579704.0,
+      "transfers": 42638743.0,
+      "recorded_dates": 365
+    },
+    {
+      "year": 2023,
+      "rows": 25585413,
+      "ridership": 1163346962.0,
+      "transfers": 49398406.0,
+      "recorded_dates": 365
+    },
+    {
+      "year": 2024,
+      "rows": 27012513,
+      "ridership": 1211512903.0,
+      "transfers": 49281662.0,
+      "recorded_dates": 366
+    }
+  ],
+  "no_station_id_filter": true,
+  "no_month_filter": true,
+  "raw_parquet_location": "data/raw/full_period/parquet (excluded from Git)",
+  "acquisition_sha256": "98363d129a73eaa0dc0dbd893f1e3a26c5e3345dd6e5535d4c9f356e37fa1d9f",
+  "artifacts": {
+    "data/full_period/processed/complex_catalog.csv": {
+      "sha256": "a57f15a41ec40edaa7060b1a0b0cf5c95a4ea3284b5d16661eea328aa4173adc",
+      "bytes": 42979
+    },
+    "data/full_period/processed/coverage_month_mode.csv": {
+      "sha256": "4fb2d96d8662f6f200d05e16677d04e58d6024646f91911e943b6bfa03f69d32",
+      "bytes": 20468
+    },
+    "data/full_period/processed/ridership_by_station_day.csv": {
+      "sha256": "4505c5eb35560531e8fd6964c70bb652ca111b0c0313454037f23c60e21d4513",
+      "bytes": 29112129
+    },
+    "data/full_period/processed/ridership_by_station_month.csv": {
+      "sha256": "26d416ba15636f283b7e651a786428e0ed2fb169d218da7db874587663ece53c",
+      "bytes": 1300031
+    },
+    "data/full_period/processed/ridership_month_borough_payment_fare.csv": {
+      "sha256": "1701894fdb6f7f5eda04c12a79e19e6c3e2309fe5f4039d5d18ebdcd8d661db1",
+      "bytes": 302823
+    },
+    "data/full_period/processed/sample_original_12_fields.csv": {
+      "sha256": "c102d0d086558a93e2a9be23f090c4a3106ad46744f68fbbef83129a0983359a",
+      "bytes": 294037
+    },
+    "data/full_period/processed/station_month_hourofweek.parquet": {
+      "sha256": "631cfc26f8e7210879cc1b008c98483403ee485a0abb5dbe04f88221dd38ffaa",
+      "bytes": 17668435
+    }
+  },
+  "client_artifact": {
+    "file": "atlas/data/full_period.json",
+    "sha256": "ba81681d172b2933c78372c17e1e8d42469d2a6766b400706526a2dff46c75d3"
+  }
+}

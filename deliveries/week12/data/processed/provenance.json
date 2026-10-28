@@ -1,0 +1,11 @@
+{
+  "station_monthly_entries.csv": {
+    "derived_from": "deliveries/week06/data/processed/ridership_by_station_day.csv",
+    "source_sha256": "7ce98ed98fcc71875b5a4a784b7e0e3f2e235ccd7505169205fcb305007bdb5e",
+    "operation": "sum(ridership) by complex and calendar month; preserves the current Atlas monthly context exactly"
+  },
+  "stations_coords.csv": {
+    "source": "deliveries/week06/data/processed/stations_coords.csv",
+    "operation": "exact byte copy"
+  }
+}

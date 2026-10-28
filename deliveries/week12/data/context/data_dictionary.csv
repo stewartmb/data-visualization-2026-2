@@ -1,0 +1,28 @@
+table,field,description,type,unit_or_scope,missing
+station_nta2020.csv,station_complex_id,Identificador del complejo MTA,string,424 complejos subway,no admitido
+station_nta2020.csv,nta2020,Código del territorio que contiene la coordenada del complejo,string,NTA2020,vacío si ambiguo o sin unión
+station_nta2020.csv,ntaname,Nombre oficial del NTA,string,territorio,vacío si sin unión
+station_nta2020.csv,matches,Número de polígonos interiores coincidentes,integer,conteo,se exige 1
+station_nta2020.csv,boundary_matches,Polígonos en cuyo borde cae el punto,string,códigos separados por punto y coma,vacío si ninguno
+free_transfers_janfeb_2020_2024.csv,year,Año de enero–febrero,integer,2020–2024,no admitido
+free_transfers_janfeb_2020_2024.csv,ridership,Suma de entradas observadas del período,integer,entradas,no se imputa demanda
+free_transfers_janfeb_2020_2024.csv,free_transfers,Entradas con transbordo gratuito incluidas en ridership,integer,entradas,no se suma de nuevo a ridership
+free_transfers_janfeb_2020_2024.csv,calendar_standardized_weekly_entries,Suma de promedios de entradas por día de semana,float,entradas por semana comparable,0 si sin registros
+free_transfers_janfeb_2020_2024.csv,calendar_standardized_weekly_free_transfers,Suma de promedios de transbordos por día de semana,float,transbordos por semana comparable,0 si sin registros
+free_transfers_janfeb_2020_2024.csv,free_transfer_share_pct,100 por transbordos semanales dividido entre entradas semanales,float,porcentaje,null si denominador cero
+free_transfers_janfeb_2020_2024.csv,observed_days,Fechas distintas con registros en tabla diaria,integer,días,no certifica servicio disponible
+free_transfers_janfeb_2020_2024.csv,calendar_days,Fechas del período enero–febrero,integer,59 o 60,no admitido
+fare_borough_month_janfeb_2020_2024.csv,month,Mes observado,string,YYYY-MM enero o febrero,no admitido
+fare_borough_month_janfeb_2020_2024.csv,borough,Borough completo de los registros,string,cuatro boroughs del Atlas,no asignable a estación o NTA
+fare_borough_month_janfeb_2020_2024.csv,payment_method,Sistema de validación registrado,string,MetroCard u OMNY,no equivale a producto tarifario
+fare_borough_month_janfeb_2020_2024.csv,fare_class_category,Categoría original conservada,string,clase registrada,ausencia no equivale a población inexistente
+fare_borough_month_janfeb_2020_2024.csv,ridership,Total observado de validaciones de la categoría,integer,entradas sin ajuste de calendario,no inferir personas únicas
+fare_scope_exclusions.csv,ridership,Conteos descargados fuera del territorio del Atlas,integer,entradas excluidas,se conservan para auditoría
+nta_janfeb_entries.csv,weekly_entries,Suma de entradas estandarizadas de complejos del NTA,float,semana comparable,no representa toda la movilidad del territorio
+nta_janfeb_entries.csv,comparable_daily_entries,weekly_entries dividido entre siete,float,entradas por día comparable,no es promedio observado sin ajuste
+network_current.json,nodes,Nodos agregados a complejo,array,424 complejos,no admitido
+network_current.json,service_edges,Enlaces dirigidos entre paradas consecutivas de un servicio,array,topología programada del snapshot actual,no son flujos de pasajeros
+network_current.json,route_id,Identificador del servicio GTFS,string,línea,no inferir frecuencia
+network_current.json,direction_id,Sentido del viaje GTFS,string,código del proveedor,no implica norte geográfico
+network_current.json,service_ids,Calendarios asociados a la secuencia,array,IDs GTFS,no afirmar disponibilidad todos los días
+network_current.json,declared_transfer_edges,Reglas declaradas entre complejos distintos,array,restricciones conservadas,no es inventario de todos los intercambios

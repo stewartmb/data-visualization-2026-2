@@ -1,106 +1,22 @@
-# Adquisicion, procedencia y condiciones de uso
+# Adquisición y preparación vigentes
 
-## Identificacion
+**Entradas 2019–2024:** 72 meses, 141.836.156 registros fuente, 12 campos originales. Fuentes MTA/Open NY `t69i-h2me` (solo 2019) y `wujg-7c2s` (2020–2024). **OD estimado 2021–2024:** 48 meses, 446.399.011 registros, 16 campos; fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z` y `jsu2-fbtj`. **Red:** GTFS de referencia 2026, 424 complejos de subway, 547 enlaces ferroviarios y 2 transferencias peatonales declaradas. **Territorio:** borough y NTA 2020 según ubicación del complejo.
 
-- **Nombre:** MTA Subway Hourly Ridership: 2020-2024.
-- **Identificador Open NY:** `wujg-7c2s`.
-- **Responsable:** Metropolitan Transportation Authority (MTA).
-- **Organizaciones:** New York City Transit, Staten Island Railway y Roosevelt Island Operating Corporation.
-- **Cobertura:** ciudad de Nueva York, 2020-2024.
-- **Granularidad:** hora, modo, complejo de estacion, medio y clase de pago.
-- **Frecuencia:** `Static - Not Updated`.
-- **Contacto:** OpenData@mtahq.org.
-- **Fecha de acceso:** 2026-09-02.
-
-Ficha oficial:
-
-<https://data.ny.gov/Transportation/MTA-Subway-Hourly-Ridership-2020-2024/wujg-7c2s/about_data>
-
-Metadata API:
-
-<https://data.ny.gov/api/views/wujg-7c2s>
-
-## Metodo de recoleccion
-
-El documento metodologico de MTA explica que el dataset captura entradas registradas en torniquetes mediante swipes de MetroCard y taps de OMNY. MetroCard se agrega desde servidores locales de MTA y OMNY es proporcionado por el proveedor Cubic.
-
-Antes de la publicacion:
-
-- las transacciones son limpiadas y deduplicadas;
-- se retiran taps y swipes de agencias asociadas como PATH, Westchester Bee-Line Bus y NICE Bus;
-- las clases tarifarias detalladas se consolidan en categorias comprensibles;
-- transacciones tardias por fallas temporales de hardware se incorporan cuando llegan, por lo que el historico puede ajustarse.
-
-El overview indica que las metricas se encuentran dentro de 1% de las cifras de ridership presentadas en reuniones publicas de MTA; las diferencias se deben, entre otros factores, a conciliaciones presupuestales posteriores.
-
-## Modos de acceso reproducible
-
-### Muestra
-
-El endpoint Socrata devuelve 12 campos seleccionados explicitamente:
-
-<https://data.ny.gov/resource/wujg-7c2s.csv>
-
-El script construye 20 estratos de ano-trimestre. Dentro de cada estrato asigna 88% a subway, 6% a Staten Island Railway y 6% a tram, usando ventanas semanales y orden estable. Esto produce 10,000 filas y garantiza cobertura temporal y modal; no pretende conservar las proporciones poblacionales.
+Desde la raíz del repositorio:
 
 ```bash
-python3 scripts/acquisition/download_mta.py --mode sample
+python3 -m http.server 8775
+# Abrir /atlas/; no requiere descargar 26 GB para ver la app.
+python3 -m pip install -r deliveries/week12/requirements-data.txt
+node deliveries/week12/tests/contrast-model.test.mjs
+node deliveries/week12/tests/raeb-core.test.mjs
+node deliveries/week12/tests/scatter-domain.test.mjs
+node deliveries/week12/tests/validate-raeb-data.mjs
+python3 deliveries/week12/scripts/prepare_analytical_tasks.py
 ```
 
-### Archivo completo
+Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_od.py` y `acquire_network.py`. La preparación histórica y la del RAEB se documentan en `HistoricalContrast.md`, `ODData.md` y `RAEBImplementation.md`. Los originales grandes quedan fuera de Git; se incluyen los artefactos preparados para ejecutar la app y sus manifiestos.
 
-El modo completo utiliza el endpoint de exportacion oficial y escribe por streaming:
+Fuente 2019: https://data.ny.gov/d/t69i-h2me; 2020–2024: https://data.ny.gov/d/wujg-7c2s. OD: https://data.ny.gov/d/rapa-97zv, https://data.ny.gov/d/nqnz-e9z9, https://data.ny.gov/d/uhf3-t34z, https://data.ny.gov/d/jsu2-fbtj. Snapshot GTFS y términos en `../week12/data/network_reference/source.json`.
 
-<https://data.ny.gov/api/views/wujg-7c2s/rows.csv?accessType=DOWNLOAD>
-
-```bash
-python3 scripts/acquisition/download_mta.py --mode full
-```
-
-El script usa un archivo `.partial`, valida el encabezado, calcula SHA-256 y solo renombra el archivo cuando la descarga termina. El dataset completo se excluye de Git por su volumen.
-
-El archivo completo se guarda en `data/raw/mta_subway_hourly_2020_2024_full.csv`; la carpeta se crea al ejecutar la descarga y no se publica. Cada modo genera, junto a su CSV, un archivo local `.manifest.json` con la fuente, fecha, alcance y huella SHA-256. Estos registros técnicos se excluyen de Git; la procedencia de la entrega se documenta aquí.
-
-### Registro de adquisición y validaciones
-
-La muestra entregada se obtuvo el **2026-09-02 a las 05:46:14 UTC**, desde `https://data.ny.gov/resource/wujg-7c2s.csv`. Contiene 10,000 filas, distribuidas en 20 estratos de 500 filas. La muestra no corresponde al tamaño del universo completo.
-
-Se ejecutó la adquisición de la muestra dos veces y se verificó que produjo archivos idénticos. El modo completo se probó mediante una descarga controlada del primer MiB y la comprobación del encabezado, no mediante la descarga de todo el universo.
-
-Para repetir esa prueba limitada:
-
-```bash
-python3 scripts/acquisition/download_mta.py --mode full --max-bytes 1048576 --output work/full_test.csv
-```
-
-Para recalcular la evaluación inicial sobre la muestra:
-
-```bash
-python3 scripts/preprocessing/quality_check.py
-```
-
-Los resultados numéricos se guardan en `docs/data_quality_metrics.csv`; su interpretación y limitaciones se presentan en `docs/data_quality.md`.
-
-## Dependencias
-
-- Python 3.10 o superior.
-- Conexion HTTPS.
-- Token Socrata opcional mediante `SOCRATA_APP_TOKEN`.
-- No se requieren bibliotecas externas.
-
-Si se dispone de un token Socrata, puede establecerse en la variable de entorno `SOCRATA_APP_TOKEN`. No es obligatorio y no debe escribirse en archivos del repositorio.
-
-## Condiciones de uso
-
-La ficha del dataset declara que la licencia especifica no esta indicada. El overview oficial afirma: **no existen limitaciones sobre los datos en este momento**. Adicionalmente, los terminos de OPEN-NY conceden una licencia no exclusiva y revocable para usar el contenido de forma consistente con sus terminos.
-
-Por prudencia:
-
-- atribuir siempre a MTA y Open NY;
-- no utilizar logotipos o marcas como si formaran parte de la licencia de datos;
-- conservar los enlaces a los terminos oficiales;
-- describir las cifras como estimaciones publicadas por MTA.
-
-Terminos oficiales:
-
-<https://data.ny.gov/api/views/77gx-ii52/files/ef0c1840-ad54-4240-92fd-6397c49fde46?filename=OPEN-NY_20Terms_20of_20Use.pdf>
+La muestra se reproduce ejecutando `prepare_analytical_tasks.py` y tomando 24 filas con encabezado de las tablas T1/T2, sin fabricar valores. La red de muestra procede de `flows.json → links`. Una ausencia dentro de meses completos se maneja según el supuesto documentado; un mes ausente es error, no cero.

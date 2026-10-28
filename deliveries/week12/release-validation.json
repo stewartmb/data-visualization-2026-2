@@ -1,0 +1,70 @@
+{
+  "checked_at_utc": "2026-10-28T15:53:51.622573+00:00",
+  "status": "PASS_FOR_RELEASE",
+  "scope": "Technical checks and artifact consistency; not proof that all analytic interactions are complete.",
+  "historical_years": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "right_column_default_base": 2019,
+  "od_years": [
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "network_reference_year": 2026,
+  "tests": {
+    "contrast_model": "PASS",
+    "raeb_core": "PASS",
+    "scatter_domain": "PASS",
+    "raeb_data": "PASS:672 frames,424 nodes,549 links; SHA, paths, balances",
+    "analytical_tasks": "PASS: six CSV families, conservation and non-shortening checks",
+    "application_syntax": "PASS",
+    "active_documentation_links": "PASS"
+  },
+  "ui_checks": {
+    "2019_to_2020_switch": "PASS in in-app browser;424 map positions/radii/colors unchanged",
+    "2019_and_2020_profiles": "Both comparison years use entries; OD map unchanged",
+    "hardware_requirement": "WebGPU or WebGL2 required for all OD curves. Chrome guest in this environment reported no WebGL2; in-app browser rendered successfully."
+  },
+  "artifacts": {
+    "deliveries/week04/PresentationWeek04.pptx": {
+      "bytes": 31395,
+      "sha256": "bd0e312d9afc3ed6f9e4db9f124de2383913997a80632cca599c2abb18f229ba"
+    },
+    "deliveries/week05/PresentationWeek05.pptx": {
+      "bytes": 34502,
+      "sha256": "62e477c502eb12ad0d4bb5447bab2a4e8cb55d4e9556e31a538745a2a67bc468"
+    },
+    "deliveries/week06/PresentationWeek06.pptx": {
+      "bytes": 429694,
+      "sha256": "69e2ab4b40be7570406a7998c6b9835cf5e9634d45358c360ce42351790b9447"
+    },
+    "deliveries/week07/PresentationWeek07.pptx": {
+      "bytes": 423924,
+      "sha256": "916452e6f75c090686c6a4b7dd617e90207aa568c7299be08763c062ea6e19a2"
+    },
+    "deliveries/week10/PresentationWeek10.pptx": {
+      "bytes": 421688,
+      "sha256": "445c9f86681f543c0e3dbd1639a5ee401ff884b01b80f233458bfc579cfd6fa0"
+    },
+    "deliveries/week12/PresentationWeek12.pptx": {
+      "bytes": 435592,
+      "sha256": "32158d2410292fef8f4aa3800785492d20a3ffca2ceefd45fdba4f4fbd2086bb"
+    }
+  },
+  "not_complete": [
+    "Human evaluation",
+    "Full accessibility audit",
+    "Interactive territorial summaries and balance",
+    "Exact per-link inspector",
+    "Interactive automatic windows detector",
+    "Interactive interruption scenarios"
+  ],
+  "publication": "To be verified after push; this file does not itself certify public HTTP availability."
+}

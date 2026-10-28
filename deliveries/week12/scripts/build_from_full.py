@@ -43,7 +43,7 @@ from pathlib import Path
 
 import duckdb
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 PARTS = ROOT / "data/raw/parts"
 PARQUET = ROOT / "data/raw/parquet"          # un archivo por mes
 SALIDA = ROOT / "data/processed/full"
@@ -177,6 +177,12 @@ def agregar(con: duckdb.DuckDBPyConnection, salida: Path, t0: float) -> None:
                count(*) AS n_registros_ventana
         FROM d JOIN v ON d.ts >= v.ini AND d.ts < v.ini + INTERVAL 7 DAY
         GROUP BY ALL ORDER BY v.year, ventana_inicio, d.station_complex_id
+    """, salida, t0)
+
+    exportar(con, "station_monthly_entries.csv", """
+        SELECT station_complex_id, strftime(ts, '%Y-%m') AS month,
+               CAST(sum(ridership) AS BIGINT) AS ridership
+        FROM d GROUP BY ALL ORDER BY station_complex_id, month
     """, salida, t0)
 
     # Insumo del atlas (scripts/redesign/build_atlas.py): solo modo subway, como la consulta original.

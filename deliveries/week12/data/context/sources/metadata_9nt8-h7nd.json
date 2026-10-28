@@ -1,0 +1,811 @@
+{
+  "id" : "9nt8-h7nd",
+  "name" : "2020 Neighborhood Tabulation Areas (NTAs)",
+  "assetType" : "dataset",
+  "attribution" : "Department of City Planning (DCP)",
+  "attributionLink" : "https://www.nyc.gov/content/planning/pages/resources/datasets/neighborhood-tabulation",
+  "averageRating" : 0,
+  "category" : "City Government",
+  "createdAt" : 1631553415,
+  "description" : "2020 Neighborhood Tabulation Areas (NTAs) are medium-sized statistical geographies for reporting Decennial Census and American Community Survey (ACS). 2020 NTAs are created by aggregating 2020 census tracts and nest within Community District Tabulation Areas (CDTA). NTAs were delineated with the need for both geographic specificity and statistical reliability in mind. Consequently, each NTA contains enough population to mitigate sampling error associated with the ACS yet offers a unit of analysis that is smaller than a Community District.\n\nThough NTA boundaries and their associated names roughly correspond with many neighborhoods commonly recognized by New Yorkers, NTAs are not intended to definitively represent neighborhoods, nor are they intended to be exhaustive of all possible names and understandings of neighborhoods throughout New York City. Additionally, non-residential areas including large parks, airports, cemeteries, and other special areas are represented separately within this dataset and are assigned codes according to their type (See NTAType field).\n\nAll previously released versions of this data are available on the <a href=\"https://www.nyc.gov/content/planning/pages/resources/datasets/neighborhood-tabulation\">DCP Website: BYTES of the BIG APPLE</a>. Current version: 26b",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 9623,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 37650246,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1631553657,
+  "publicationGroup" : 18441495,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1779981079,
+  "rowsUpdatedBy" : "iqqb-gm94",
+  "tableId" : 18441495,
+  "totalTimesRated" : 0,
+  "viewCount" : 49546,
+  "viewLastModified" : 1779981077,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1632248899,
+    "reviewedAutomatically" : true,
+    "state" : "approved",
+    "submissionId" : 4021253,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1632248899,
+    "targetAudience" : "public",
+    "workflowId" : 2285,
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1632248899,
+      "failureCount" : 0,
+      "startedAt" : 1632248899,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "5fuc-pqz2",
+      "displayName" : "NYC OpenData"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 548071147,
+    "name" : "BoroCode",
+    "dataTypeName" : "number",
+    "description" : "Borough of census tract.",
+    "fieldName" : "borocode",
+    "position" : 1,
+    "renderTypeName" : "number",
+    "tableColumnId" : 139404121,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "5",
+      "null" : "0",
+      "top" : [ {
+        "item" : "4",
+        "count" : "82"
+      }, {
+        "item" : "3",
+        "count" : "69"
+      }, {
+        "item" : "2",
+        "count" : "50"
+      }, {
+        "item" : "1",
+        "count" : "38"
+      }, {
+        "item" : "5",
+        "count" : "23"
+      } ],
+      "smallest" : "1",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071148,
+    "name" : "BoroName",
+    "dataTypeName" : "text",
+    "description" : "Borough Name.",
+    "fieldName" : "boroname",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139404122,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "Staten Island",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Queens",
+        "count" : "82"
+      }, {
+        "item" : "Brooklyn",
+        "count" : "69"
+      }, {
+        "item" : "Bronx",
+        "count" : "50"
+      }, {
+        "item" : "Manhattan",
+        "count" : "38"
+      }, {
+        "item" : "Staten Island",
+        "count" : "23"
+      } ],
+      "smallest" : "Bronx",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071149,
+    "name" : "CountyFIPS",
+    "dataTypeName" : "text",
+    "description" : "The Census Bureau defined County FIPS code",
+    "fieldName" : "countyfips",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139404123,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "085",
+      "null" : "0",
+      "top" : [ {
+        "item" : "081",
+        "count" : "82"
+      }, {
+        "item" : "047",
+        "count" : "69"
+      }, {
+        "item" : "005",
+        "count" : "50"
+      }, {
+        "item" : "061",
+        "count" : "38"
+      }, {
+        "item" : "085",
+        "count" : "23"
+      } ],
+      "smallest" : "005",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071150,
+    "name" : "NTA2020",
+    "dataTypeName" : "text",
+    "description" : "2020 Neighborhood Tabulation Area Code.",
+    "fieldName" : "nta2020",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139404124,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "SI9593",
+      "null" : "0",
+      "top" : [ {
+        "item" : "BK0802",
+        "count" : "1"
+      }, {
+        "item" : "BK1893",
+        "count" : "1"
+      }, {
+        "item" : "SI9593",
+        "count" : "1"
+      }, {
+        "item" : "BK5591",
+        "count" : "1"
+      }, {
+        "item" : "BK1001",
+        "count" : "1"
+      }, {
+        "item" : "BK1704",
+        "count" : "1"
+      }, {
+        "item" : "BK0302",
+        "count" : "1"
+      }, {
+        "item" : "QN0902",
+        "count" : "1"
+      }, {
+        "item" : "QN0891",
+        "count" : "1"
+      }, {
+        "item" : "BX0904",
+        "count" : "1"
+      }, {
+        "item" : "QN0102",
+        "count" : "1"
+      }, {
+        "item" : "QN0104",
+        "count" : "1"
+      }, {
+        "item" : "SI9561",
+        "count" : "1"
+      }, {
+        "item" : "QN1301",
+        "count" : "1"
+      }, {
+        "item" : "BK1391",
+        "count" : "1"
+      }, {
+        "item" : "SI0101",
+        "count" : "1"
+      }, {
+        "item" : "QN1305",
+        "count" : "1"
+      }, {
+        "item" : "QN0161",
+        "count" : "1"
+      }, {
+        "item" : "SI0103",
+        "count" : "1"
+      }, {
+        "item" : "BX0102",
+        "count" : "1"
+      } ],
+      "smallest" : "BK0101",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071151,
+    "name" : "NTAName",
+    "dataTypeName" : "text",
+    "description" : "2020 Neighborhood Tabulation Area Name",
+    "fieldName" : "ntaname",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139404125,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "Yankee Stadium-Macombs Dam Park",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Pelham Bay-Country Club-City Island",
+        "count" : "1"
+      }, {
+        "item" : "Cypress Hills",
+        "count" : "1"
+      }, {
+        "item" : "University Heights (South)-Morris Heights",
+        "count" : "1"
+      }, {
+        "item" : "Ocean Hill",
+        "count" : "1"
+      }, {
+        "item" : "Bellerose",
+        "count" : "1"
+      }, {
+        "item" : "Norwood",
+        "count" : "1"
+      }, {
+        "item" : "Glendale",
+        "count" : "1"
+      }, {
+        "item" : "Harlem (South)",
+        "count" : "1"
+      }, {
+        "item" : "Rego Park",
+        "count" : "1"
+      }, {
+        "item" : "Grasmere-Arrochar-South Beach-Dongan Hills",
+        "count" : "1"
+      }, {
+        "item" : "Mount Eden-Claremont (West)",
+        "count" : "1"
+      }, {
+        "item" : "Jackson Heights",
+        "count" : "1"
+      }, {
+        "item" : "Calvary & Mount Zion Cemeteries",
+        "count" : "1"
+      }, {
+        "item" : "North & South Brother Islands",
+        "count" : "1"
+      }, {
+        "item" : "Bensonhurst",
+        "count" : "1"
+      }, {
+        "item" : "Park Slope",
+        "count" : "1"
+      }, {
+        "item" : "East Williamsburg",
+        "count" : "1"
+      }, {
+        "item" : "Middle Village",
+        "count" : "1"
+      }, {
+        "item" : "Astoria (East)-Woodside (North)",
+        "count" : "1"
+      }, {
+        "item" : "Highbridge Park",
+        "count" : "1"
+      } ],
+      "smallest" : "Allerton",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071152,
+    "name" : "NTAAbbrev",
+    "dataTypeName" : "text",
+    "description" : "An abbreviation of the 2020 Neighborhood Tabulation Area name.",
+    "fieldName" : "ntaabbrev",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139404126,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "YnkStdm",
+      "null" : "0",
+      "top" : [ {
+        "item" : "JmcaEstts",
+        "count" : "1"
+      }, {
+        "item" : "FtHmltn",
+        "count" : "1"
+      }, {
+        "item" : "PLG_Wngt",
+        "count" : "1"
+      }, {
+        "item" : "SoHo",
+        "count" : "1"
+      }, {
+        "item" : "SthJmca",
+        "count" : "1"
+      }, {
+        "item" : "WshHts_N",
+        "count" : "1"
+      }, {
+        "item" : "Wdsd",
+        "count" : "1"
+      }, {
+        "item" : "StyTwn",
+        "count" : "1"
+      }, {
+        "item" : "Knsngtn",
+        "count" : "1"
+      }, {
+        "item" : "BdSty_W",
+        "count" : "1"
+      }, {
+        "item" : "Hlls",
+        "count" : "1"
+      }, {
+        "item" : "OklndGrdns",
+        "count" : "1"
+      }, {
+        "item" : "UnvrsHts_S",
+        "count" : "1"
+      }, {
+        "item" : "Mrrsnia",
+        "count" : "1"
+      }, {
+        "item" : "FrstPk",
+        "count" : "1"
+      }, {
+        "item" : "Mdwd",
+        "count" : "1"
+      }, {
+        "item" : "HghbrdgPk",
+        "count" : "1"
+      }, {
+        "item" : "Sdvw_ClsPt",
+        "count" : "1"
+      }, {
+        "item" : "EstHrlm_S",
+        "count" : "1"
+      }, {
+        "item" : "Anndl_Wdrw",
+        "count" : "1"
+      } ],
+      "smallest" : "Abrndl",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071153,
+    "name" : "NTAType",
+    "dataTypeName" : "text",
+    "description" : "Type of Neighborhood Tabulation Area. One digit code assigned to an NTA to distinguish if it is residential or a non-residential area like a park, airport, cemetery, or other special area.",
+    "fieldName" : "ntatype",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139404127,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "9",
+      "null" : "0",
+      "top" : [ {
+        "item" : "0",
+        "count" : "197"
+      }, {
+        "item" : "9",
+        "count" : "40"
+      }, {
+        "item" : "7",
+        "count" : "14"
+      }, {
+        "item" : "6",
+        "count" : "8"
+      }, {
+        "item" : "8",
+        "count" : "2"
+      }, {
+        "item" : "5",
+        "count" : "1"
+      } ],
+      "smallest" : "0",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071154,
+    "name" : "CDTA2020",
+    "dataTypeName" : "text",
+    "description" : "2020 Community District Tabulation Area code.",
+    "fieldName" : "cdta2020",
+    "position" : 8,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139404128,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "SI95",
+      "null" : "0",
+      "top" : [ {
+        "item" : "QN01",
+        "count" : "9"
+      }, {
+        "item" : "QN07",
+        "count" : "9"
+      }, {
+        "item" : "QN13",
+        "count" : "8"
+      }, {
+        "item" : "SI01",
+        "count" : "8"
+      }, {
+        "item" : "QN05",
+        "count" : "8"
+      }, {
+        "item" : "QN08",
+        "count" : "7"
+      }, {
+        "item" : "QN12",
+        "count" : "6"
+      }, {
+        "item" : "BK05",
+        "count" : "6"
+      }, {
+        "item" : "BX10",
+        "count" : "6"
+      }, {
+        "item" : "BK18",
+        "count" : "6"
+      }, {
+        "item" : "SI03",
+        "count" : "6"
+      }, {
+        "item" : "BK02",
+        "count" : "5"
+      }, {
+        "item" : "BX09",
+        "count" : "5"
+      }, {
+        "item" : "BX11",
+        "count" : "5"
+      }, {
+        "item" : "QN02",
+        "count" : "5"
+      }, {
+        "item" : "MN12",
+        "count" : "5"
+      }, {
+        "item" : "MN06",
+        "count" : "5"
+      }, {
+        "item" : "BK17",
+        "count" : "5"
+      }, {
+        "item" : "QN09",
+        "count" : "5"
+      }, {
+        "item" : "BX04",
+        "count" : "5"
+      } ],
+      "smallest" : "BK01",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071155,
+    "name" : "CDTAName",
+    "dataTypeName" : "text",
+    "description" : "2020 Community District Tabulation Area name.",
+    "fieldName" : "cdtaname",
+    "position" : 9,
+    "renderTypeName" : "text",
+    "tableColumnId" : 139404129,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "SI95 Great Kills Park-Fort Wadsworth (JIA 95 Approximation)",
+      "null" : "0",
+      "top" : [ {
+        "item" : "QN07 Flushing-Murray Hill-Whitestone (CD 7 Approximation)",
+        "count" : "9"
+      }, {
+        "item" : "QN01 Astoria-Queensbridge (CD 1 Equivalent)",
+        "count" : "9"
+      }, {
+        "item" : "QN05 Ridgewood-Maspeth-Middle Village (CD 5 Approximation)",
+        "count" : "8"
+      }, {
+        "item" : "QN13 Queens Village-Bellerose-Rosedale (CD 13 Approximation)",
+        "count" : "8"
+      }, {
+        "item" : "SI01 North Shore (CD 1 Equivalent)",
+        "count" : "8"
+      }, {
+        "item" : "QN08 Fresh Meadows-Hillcrest-Briarwood (CD 8 Approximation)",
+        "count" : "7"
+      }, {
+        "item" : "BK18 Canarsie-Flatlands (CD 18 Approximation)",
+        "count" : "6"
+      }, {
+        "item" : "BX10 Co-op City-Throgs Neck (CD 10 Approximation)",
+        "count" : "6"
+      }, {
+        "item" : "BK05 East New York-Cypress Hills (CD 5 Approximation)",
+        "count" : "6"
+      }, {
+        "item" : "QN12 Jamaica-St. Albans-Hollis (CD 12 Approximation)",
+        "count" : "6"
+      }, {
+        "item" : "SI03 South Shore (CD 3 Approximation)",
+        "count" : "6"
+      }, {
+        "item" : "MN06 East Midtown-Murray Hill (CD 6 Approximation)",
+        "count" : "5"
+      }, {
+        "item" : "BX11 Pelham Parkway-Morris Park (CD 11 Approximation)",
+        "count" : "5"
+      }, {
+        "item" : "BK17 East Flatbush (CD 17 Approximation)",
+        "count" : "5"
+      }, {
+        "item" : "BK02 Downtown Brooklyn-Fort Greene (CD 2 Approximation)",
+        "count" : "5"
+      }, {
+        "item" : "QN09 Kew Gardens-Richmond Hill-Woodhaven (CD 9 Approximation)",
+        "count" : "5"
+      }, {
+        "item" : "MN12 Washington Heights-Inwood (CD 12 Equivalent)",
+        "count" : "5"
+      }, {
+        "item" : "BX04 Highbridge-Concourse (CD 4 Approximation)",
+        "count" : "5"
+      }, {
+        "item" : "BX09 Soundview-Parkchester (CD 9 Approximation)",
+        "count" : "5"
+      }, {
+        "item" : "QN02 Long Island City-Sunnyside-Woodside (CD 2 Approximation)",
+        "count" : "5"
+      } ],
+      "smallest" : "BK01 Williamsburg-Greenpoint (CD 1 Equivalent)",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071156,
+    "name" : "Shape_Length",
+    "dataTypeName" : "number",
+    "description" : "Length of feature in internal units.",
+    "fieldName" : "shape_leng",
+    "position" : 10,
+    "renderTypeName" : "number",
+    "tableColumnId" : 139404130,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "175420.883968",
+      "null" : "0",
+      "top" : [ {
+        "item" : "44220.0768236",
+        "count" : "1"
+      }, {
+        "item" : "49754.8655727",
+        "count" : "1"
+      }, {
+        "item" : "4743.12777694",
+        "count" : "1"
+      }, {
+        "item" : "67428.0398745",
+        "count" : "1"
+      }, {
+        "item" : "39415.6419363",
+        "count" : "1"
+      }, {
+        "item" : "29504.1863327",
+        "count" : "1"
+      }, {
+        "item" : "21759.7625374",
+        "count" : "1"
+      }, {
+        "item" : "21731.9596",
+        "count" : "1"
+      }, {
+        "item" : "28347.5477283",
+        "count" : "1"
+      }, {
+        "item" : "19589.1961548",
+        "count" : "1"
+      }, {
+        "item" : "35573.8352823",
+        "count" : "1"
+      }, {
+        "item" : "40597.277802",
+        "count" : "1"
+      }, {
+        "item" : "32721.0974789",
+        "count" : "1"
+      }, {
+        "item" : "26160.9870913",
+        "count" : "1"
+      }, {
+        "item" : "19197.2008558",
+        "count" : "1"
+      }, {
+        "item" : "23778.4102558",
+        "count" : "1"
+      }, {
+        "item" : "12411.821011",
+        "count" : "1"
+      }, {
+        "item" : "31945.028276",
+        "count" : "1"
+      }, {
+        "item" : "18250.2800908",
+        "count" : "1"
+      }, {
+        "item" : "26521.9177564",
+        "count" : "1"
+      } ],
+      "smallest" : "4568.61664414",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071157,
+    "name" : "Shape_Area",
+    "dataTypeName" : "number",
+    "description" : "Area of feature in internal units squared.",
+    "fieldName" : "shape_area",
+    "position" : 11,
+    "renderTypeName" : "number",
+    "tableColumnId" : 139404131,
+    "cachedContents" : {
+      "non_null" : "262",
+      "largest" : "209387288.599",
+      "null" : "0",
+      "top" : [ {
+        "item" : "23731596.6039",
+        "count" : "1"
+      }, {
+        "item" : "35321808.4385",
+        "count" : "1"
+      }, {
+        "item" : "45037527.2166",
+        "count" : "1"
+      }, {
+        "item" : "23134298.6648",
+        "count" : "1"
+      }, {
+        "item" : "39319932.3991",
+        "count" : "1"
+      }, {
+        "item" : "27833108.6261",
+        "count" : "1"
+      }, {
+        "item" : "55322161.9727",
+        "count" : "1"
+      }, {
+        "item" : "14291819.683",
+        "count" : "1"
+      }, {
+        "item" : "69920673.6052",
+        "count" : "1"
+      }, {
+        "item" : "15849140.089",
+        "count" : "1"
+      }, {
+        "item" : "46828832.15",
+        "count" : "1"
+      }, {
+        "item" : "15721129.4098",
+        "count" : "1"
+      }, {
+        "item" : "24241444.6575",
+        "count" : "1"
+      }, {
+        "item" : "33073252.5544",
+        "count" : "1"
+      }, {
+        "item" : "36906698.4269",
+        "count" : "1"
+      }, {
+        "item" : "21743687.2205",
+        "count" : "1"
+      }, {
+        "item" : "32208010.8906",
+        "count" : "1"
+      }, {
+        "item" : "10734805.1646",
+        "count" : "1"
+      }, {
+        "item" : "18754283.7973",
+        "count" : "1"
+      }, {
+        "item" : "20284899.068",
+        "count" : "1"
+      } ],
+      "smallest" : "635701.886652",
+      "count" : "262",
+      "cardinality" : "262"
+    },
+    "format" : { }
+  }, {
+    "id" : 548071146,
+    "name" : "the_geom",
+    "dataTypeName" : "multipolygon",
+    "fieldName" : "the_geom",
+    "position" : 12,
+    "renderTypeName" : "multipolygon",
+    "tableColumnId" : 139404120,
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "metadata" : {
+    "attachments" : [ {
+      "filename" : "nynta2020_metadata.pdf",
+      "assetId" : "936c7134-5866-43e2-9cb2-781568b75d7d",
+      "name" : "nynta2020_metadata.pdf"
+    } ],
+    "custom_fields" : {
+      "Update" : {
+        "Automation" : "Yes",
+        "Date Made Public" : "9/13/2021",
+        "Update Frequency" : "Quarterly",
+        "Data Change Frequency" : "Quarterly"
+      },
+      "Dataset Information" : {
+        "Agency" : "Department of City Planning (DCP)"
+      }
+    },
+    "rowLabel" : "Neighborhood Tabulation Area",
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "5fuc-pqz2",
+    "displayName" : "NYC OpenData",
+    "profileImageUrlLarge" : "/api/users/5fuc-pqz2/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/5fuc-pqz2/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/5fuc-pqz2/profile_images/TINY",
+    "screenName" : "NYC OpenData",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "5fuc-pqz2",
+    "displayName" : "NYC OpenData",
+    "profileImageUrlLarge" : "/api/users/5fuc-pqz2/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/5fuc-pqz2/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/5fuc-pqz2/profile_images/TINY",
+    "screenName" : "NYC OpenData",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "neighborhood tabulation areas", "nta", "2020", "census", "american community survey", "acs", "boundary", "boundaries", "districts", "lion", "cscl", "department of city planning", "dcp" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

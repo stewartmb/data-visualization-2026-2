@@ -5,9 +5,9 @@ from collections import defaultdict, Counter
 from datetime import date, timedelta
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT/'data/redesign'
-OLD = ROOT/'deliveries/week06/data/processed'
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT/'data'
+OLD = ROOT/'data/processed'
 OUT = ROOT/'atlas/data'
 OUT.mkdir(parents=True,exist_ok=True)
 YEARS = list(range(2021,2025))   # 2021 = año base (primer año con estimación origen-destino)
@@ -54,10 +54,10 @@ def summarize(v,y):
 
 months=[f'{y}-{m:02}' for y in YEARS for m in range(1,13)]
 monthly=defaultdict(float)
-for r in read(OLD/'ridership_by_station_day.csv'):
+for r in read(OLD/'station_monthly_entries.csv'):
     sid=r['station_complex_id']
     if sid in stations:
-        monthly[sid,r['dia'][:7]]+=float(r['ridership'])
+        monthly[sid,r['month']]+=float(r['ridership'])
 
 output=[];excluded=[]
 for sid,r in stations.items():
@@ -132,7 +132,8 @@ report={'stations_input_subway':len(stations),'stations_included':len(output),'e
     'stations_higher_weekend_share':sum(s['deltaWeekend']>0 for s in output),
     'cells_not_observed':{str(y):sum(168-s['profiles'][str(y)]['observedCells'] for s in output if s['profiles'][str(y)]) for y in YEARS},
     'source_hashes':source_manifest['files'],
-    'artifact_hashes':{p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in OUT.iterdir() if p.is_file()}}
+    'artifact_scope':'Only atlas.json and boroughs.geojson are produced here; enriched and full-period files have independent audits.',
+    'artifact_hashes':{name:hashlib.sha256((OUT/name).read_bytes()).hexdigest() for name in ['atlas.json','boroughs.geojson']}}
 (ROOT/'redesign').mkdir(exist_ok=True)
 (ROOT/'redesign/data-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps({k:v for k,v in report.items() if k not in ['source_hashes','artifact_hashes','system_metrics','top_change']},ensure_ascii=False,indent=2))

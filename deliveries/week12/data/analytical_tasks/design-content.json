@@ -1,0 +1,92 @@
+{
+  "team": "Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino",
+  "questions": [
+    [
+      "T1",
+      "Redistribución territorial",
+      "¿Qué zonas recuperaron demanda y cuáles perdieron peso entre 2019 y 2024?"
+    ],
+    [
+      "T2",
+      "Dependencia e intercambios",
+      "¿Ganaron peso los viajes locales y entre boroughs o aumentó la dependencia de Manhattan entre 2021 y 2024?"
+    ],
+    [
+      "T3",
+      "Ventanas de demanda",
+      "¿Dónde y cuándo se desplazaron las franjas de mayor demanda?"
+    ],
+    [
+      "T4",
+      "Corredores de soporte",
+      "¿Qué tramos de la red de referencia sostienen los principales intercambios?"
+    ],
+    [
+      "T5",
+      "Balance externo",
+      "¿Qué territorios generan o atraen más viajes externos y en qué franjas cambia el balance?"
+    ],
+    [
+      "T6",
+      "Exposición a interrupciones",
+      "¿Qué viajes perderían conexión o requerirían mayor distancia al retirar un enlace de referencia?"
+    ]
+  ],
+  "territories": [
+    {
+      "year": 2024,
+      "baseline": 2019,
+      "territory_level": "borough",
+      "territory": "Bronx",
+      "complexes": 68,
+      "weekly_entries": 1549927.063134978,
+      "volume_index_2019_100": 58.39766729978637,
+      "delta_weekly_entries": -1104163.6476777946,
+      "system_share_pct": 6.722810994465399,
+      "delta_system_share_pp": -1.4448335022287748,
+      "tv_vs2019_pp": 1.8759484370260857
+    },
+    {
+      "year": 2024,
+      "baseline": 2019,
+      "territory_level": "borough",
+      "territory": "Brooklyn",
+      "complexes": 156,
+      "weekly_entries": 5116089.413642961,
+      "volume_index_2019_100": 72.14870418423273,
+      "delta_weekly_entries": -1974944.9597242381,
+      "system_share_pct": 22.19104561548754,
+      "delta_system_share_pp": 0.3692413947246148,
+      "tv_vs2019_pp": 4.603761859948506
+    },
+    {
+      "year": 2024,
+      "baseline": 2019,
+      "territory_level": "borough",
+      "territory": "Manhattan",
+      "complexes": 121,
+      "weekly_entries": 12955561.888969522,
+      "volume_index_2019_100": 71.2857008506656,
+      "delta_weekly_entries": -5218576.450653121,
+      "system_share_pct": 56.19476940448529,
+      "delta_system_share_pp": 0.2660476064574646,
+      "tv_vs2019_pp": 4.712282497828539
+    },
+    {
+      "year": 2024,
+      "baseline": 2019,
+      "territory_level": "borough",
+      "territory": "Queens",
+      "complexes": 79,
+      "weekly_entries": 3433168.5907111755,
+      "volume_index_2019_100": 75.02691926117703,
+      "delta_weekly_entries": -1142747.1266328013,
+      "system_share_pct": 14.89137398556177,
+      "delta_system_share_pp": 0.8095445010466829,
+      "tv_vs2019_pp": 3.318269365822947
+    }
+  ],
+  "findings": "### Demanda territorial: entradas 2024 frente a 2019\n\n| Borough | Índice de volumen (2019=100) | Cambio de participación del sistema | TV del perfil territorial |\n|---|---|---|---|\n| Bronx | 58.4 % | -1.44 pp | 1.88 pp |\n| Brooklyn | 72.1 % | +0.37 pp | 4.60 pp |\n| Manhattan | 71.3 % | +0.27 pp | 4.71 pp |\n| Queens | 75.0 % | +0.81 pp | 3.32 pp |\n\nBrooklyn tiene menos volumen que en 2019 y a la vez gana participación relativa. El Bronx conserva 58,4 % del volumen semanal representativo de 2019 y pierde 1,44 pp de participación. Son lecturas descriptivas; el borough de la estación no identifica residencia.\n\n### Conexiones: OD 2021 frente a 2024\n\nLa cuota de viajes originados en Brooklyn con destino Manhattan pasa de **42,07 % a 46,71 %**; desde Queens, de **47,09 % a 50,30 %**; desde Bronx, de **53,53 % a 57,22 %**. En esos agregados aumenta la participación hacia Manhattan; no confirma que disminuya la cantidad de viajes locales. Fuente: `T2_territorial_od.csv`, semanas representativas y todos los meses.\n\n### Escenarios y límites\n\nSe calcularon seis retiradas ilustrativas de enlaces sobre la misma red, con OD 2024 fijo. Se informa por separado demanda desconectada y distancia adicional para la aún conectada. Son ejemplos, no un ranking exhaustivo de vulnerabilidad ni predicciones operativas. El CSV conserva los IDs de los enlaces y denominadores. No se extraen distancias de las curvas del bundling.\n",
+  "state": "| Tarea | Evidencia preparada | Estado de interacción |\n|---|---|---|\n| T1 | CSV por borough/NTA, seis años | Contraste por complejo disponible; síntesis territorial por integrar al panel |\n| T2 | Matrices territoriales y participaciones, cuatro años | Selección de origen disponible; detalle territorial por integrar |\n| T3 | Ventanas de 3 h, 7 días y seis años | Reloj y selección horaria disponibles; detector automático por integrar |\n| T4 | Cargas de los 549 enlaces para 2021/2024 | Geometría y haces disponibles; inspección exacta por tramo pendiente |\n| T5 | Balance externo por borough/cohorte, cuatro años | CSV preparado; codificación interactiva pendiente |\n| T6 | Seis escenarios reproducibles | Cálculo preparado; escenario interactivo pendiente |\n",
+  "refs": "- Zeng et al. (2019), **RAEB**, jerarquía y abstracción guiada por rutas: https://doi.org/10.1111/cgf.13712\n- Hurter et al. (2012), **KDEEB**, densidad, advección y suavizado: https://doi.org/10.1111/j.1467-8659.2012.03079.x\n- Dhont et al. (2020), reloj semanal y resta de mapas: https://doi.org/10.1007/978-3-030-65742-0_9\n- Fredriksson y Karlström (2025), TV, ecuación 11; adaptación a 168 celdas propia: https://doi.org/10.1007/s42421-025-00141-5\n- Brehmer y Munzner (2013), propósito, medios y entradas/salidas: https://doi.org/10.1109/TVCG.2013.124\n- Gleicher et al. (2011), comparación explícita: https://doi.org/10.1177/1473871611416549\n- Shneiderman (1996), recorrido de exploración: https://doi.org/10.1109/VL.1996.545307\n"
+}
