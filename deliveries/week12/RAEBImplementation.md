@@ -31,7 +31,7 @@ La barra de agrupación multiplica el radio estimado, y b=0 desactiva advección
 
 En el respaldo CPU, la guía de enlaces conservados se dibuja en SVG. El worker entrega primero una semilla del nivel elegido y después su refinamiento; no se interpola una maraña libre para simular alta fidelidad. Las curvas libres conservan WebGL. La vista previa no equivale a una solución convergida y el estado lo indica. El zoom transforma la cámara y las capas SVG: no recalcula KDE ni OD. Durante el movimiento se reduce el muestreo de dibujo a8 vértices y se recuperan32 al estabilizarse; los datos y la solución no cambian.
 
-Densidad visual: opacidad `1−exp(−q/800)` por OD; la superposición es cualitativa, con saturación y cuantización del framebuffer. En f=1 se agrega la carga de enlaces coincidentes sobre su geometría completa. Nodos: área proporcional a viajes iniciados, con radio mínimo1,8px para valores positivos pequeños y1,6px para cero; la escala superior fija corresponde a13px. No confundir tamaño mínimo con volumen observado.
+Campo óptico canónico: `τ=Σ(q/800)` por píxel de trazo; en el respaldo CPU se representa por opacidad. WebGPU representa ese campo como bandas fusionadas, descritas al final de este documento. En f=1 se agrega la carga de enlaces coincidentes sobre su geometría completa. Nodos: área proporcional a viajes iniciados, con radio mínimo1,8px para valores positivos pequeños y1,6px para cero; la escala superior fija corresponde a13px. No confundir tamaño mínimo con volumen observado.
 
 ## Reproducir
 
@@ -72,7 +72,7 @@ La aplicación intenta WebGPU al iniciar. El worker conserva la descarga/decodif
 
 Los puntos permanecen en buffers GPU; durante el solver se leen únicamente 16 bytes de estadísticas por iteración. Las lecturas completas de `readBuffer` están reservadas al test pequeño. La densidad y opacidad se acumulan en punto fijo con dos enteros de 32 bits y escala 65536: evita requerir atómicos de coma flotante, con cuantización explícita de 1/65536. Cada buffer respeta el límite del dispositivo. Se guardan dos poses finales por cohorte en GPU.
 
-La estabilidad GPU compara imágenes de curvas atenuadas más enlaces GTFS retenidos usando el mismo algoritmo de raster que dibuja el mapa. El análisis usa el raster reducido del solver y omite la selección; el dibujo usa la resolución de pantalla y la cámara. Esta corrección cambia el criterio respecto al respaldo CPU anterior: sus tiempos no son un benchmark de algoritmos numéricamente idénticos. La adaptación y el anclaje adicionales respecto al paper siguen vigentes.
+La estabilidad GPU compara imágenes canónicas de curvas atenuadas más enlaces GTFS retenidos. El mapa utiliza ese mismo campo óptico y después aplica un estilo de bandas; el NMI se mide antes de ese estilo para conservar el resultado del solver. El análisis usa el raster reducido del solver y omite la selección; el dibujo usa la resolución de pantalla y la cámara. Esta corrección cambia el criterio respecto al respaldo CPU anterior: sus tiempos no son un benchmark de algoritmos numéricamente idénticos. La adaptación y el anclaje adicionales respecto al paper siguen vigentes.
 
 ### Comprobaciones realizadas
 
@@ -83,3 +83,14 @@ La estabilidad GPU compara imágenes de curvas atenuadas más enlaces GTFS reten
 ### Límites pendientes
 
 Falta una auditoría numérica de múltiples iteraciones y de todas las cohortes, pruebas de pérdida real del dispositivo y de otros navegadores/equipos, y un benchmark con criterio de parada idéntico. Preparar una cohorte o un nivel de jerarquía por primera vez todavía cuesta CPU; no se promete una transición instantánea de primera carga. No se modificaron OD ni caminos de referencia.
+
+
+## Bandas continuas en lugar de sobredibujo de líneas
+
+Cambio de presentación en WebGPU: los centros de los trazos mantienen su geometría y pesos. La pasada final obtiene una envolvente alrededor del campo óptico acumulado, uniendo visualmente trazos próximos. Para cada píxel toma la máxima cobertura de las bandas vecinas, en lugar de acumular de nuevo sus opacidades. No es una extracción de un grafo simplificado ni una nueva asignación de rutas: la proximidad visual puede unir envolventes sin representar una conexión ferroviaria o un transbordo.
+
+Si `τ` es el peso óptico acumulado del trazo (`q/800`), el semiancho es `r = 0,5 + b × min(4; 1,25√τ)` píxeles CSS, con antialiasing. El grosor nominal máximo es 9 px. La escala es fija entre cohortes, incluye saturación y representa peso **local** acumulado, no una medición exacta de carga por corredor extraído. El naranja sigue destacando los viajes de la selección y el contexto se atenúa sin reducir su ancho por esa atenuación. Con `b=0` se conserva la representación fina anterior.
+
+El solver, los valores OD, las semillas y el NMI canónico no cambian por este estilo. Por tanto, el NMI no es una comparación de capturas finales con bandas. La leyenda del mapa indica la escala raíz y la fusión visual. El respaldo CPU conserva su dibujo anterior.
+
+Prueba reproducible: servir `tests/webgpu-bands.html` por HTTP. Comprueba que mayor peso produce mayor ancho, nueve aportes coincidentes equivalen exactamente a su suma, la opacidad central queda acotada, `b=0` conserva un píxel y la selección es naranja. Resultado observado: anchos de 5 y 9 píxeles en el fixture, 1 píxel sin agrupación y alfa central máximo 0,8196. La prueba CPU/GPU de una iteración continúa pasando. Comprobación visual adicional en la escena completa, zoom y fidelidad=1.

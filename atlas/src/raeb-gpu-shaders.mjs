@@ -188,8 +188,35 @@ struct Wide {lo:u32,hi:u32,} struct Optical {blue:Wide,orange:Wide,}
  let vertices=array<vec2f,3>(vec2f(-1,-1),vec2f(3,-1),vec2f(-1,3));return vec4f(vertices[i],0,1);
 }
 fn tau(v:Wide)->f32{return (f32(v.hi)*4294967296.0+f32(v.lo))/65536.0;}
+// One compositing decision per output pixel. Nearby centerlines form a
+// continuous envelope; opacity is never accumulated again during display.
+// Width encodes local accumulated OD weight, with a fixed square-root scale.
+fn coverage(delta:vec2f,weight:f32,pixelRatio:f32)->f32{
+ let radius=(.5+min(4.0,1.25*sqrt(max(0.0,weight)))*p.control.y)*pixelRatio;
+ let edge=clamp(radius+.5-length(delta),0.0,1.0);
+ return edge*edge*(3.0-2.0*edge)*.82*(1.0-exp(-weight/.2));
+}
 @fragment fn fragment(@builtin(position) xy:vec4f)->@location(0) vec4f{
- let index=u32(xy.y)*p.raster.x+u32(xy.x);let b=1.0-exp(-tau(optical[index].blue));let o=1.0-exp(-tau(optical[index].orange));
- let rgb=vec3f(.78,.32,.15)*o+vec3f(.055,.33,.43)*b*(1.0-o);return vec4f(rgb,o+b*(1.0-o));
+ let cell=vec2i(xy.xy);let index=u32(cell.y)*p.raster.x+u32(cell.x);
+ let blue=vec3f(.055,.33,.43);let orange=vec3f(.78,.32,.15);
+ // b=0 retains the individual thin relationships rather than widening them.
+ if(p.control.y<=0.0||p.flags.x==0u){
+  let b=1.0-exp(-tau(optical[index].blue));let o=1.0-exp(-tau(optical[index].orange));
+  return vec4f(orange*o+blue*b*(1.0-o),o+b*(1.0-o));
+ }
+ let ratio=f32(p.raster.x)/p.conversion.x;
+ let extent=i32(ceil(4.5*ratio+.5));let focused=p.raster.w>0u;
+ let dim=select(1.0,.18,focused);var b=0.0;var o=0.0;
+ for(var dy=-extent;dy<=extent;dy++){
+  let y=cell.y+dy;if(y<0||y>=i32(p.raster.y)){continue;}
+  for(var dx=-extent;dx<=extent;dx++){
+   let x=cell.x+dx;if(x<0||x>=i32(p.raster.x)){continue;}
+   let at=u32(y)*p.raster.x+u32(x);let delta=vec2f(f32(dx),f32(dy));
+   let tb=tau(optical[at].blue)/dim;let to=tau(optical[at].orange);
+   if(tb>0.0){b=max(b,coverage(delta,tb,ratio)*dim);}
+   if(to>0.0){o=max(o,coverage(delta,to,ratio));}
+  }
+ }
+ return vec4f(orange*o+blue*b*(1.0-o),o+b*(1.0-o));
 }
 `;

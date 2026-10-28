@@ -1,5 +1,5 @@
 import {state,BASE,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats,passesMetricRanges,cohortProfile} from './model.js?v=20261028-4';
-import {RaebOverlay} from './raeb-overlay.mjs?v=gpu5';
+import {RaebOverlay} from './raeb-overlay.mjs?v=bands1';
 let transform=d3.zoomIdentity;
 const names={change:'Cambio de forma · distancia TV (pp)',deltaAM:'Cambio del peso AM · puntos porcentuales',deltaWeekend:'Cambio del peso de fin de semana · puntos porcentuales',recovery:'Índice de volumen · '+BASE+' = 100 %'};
 
@@ -252,7 +252,7 @@ export function renderMap(host,app,items){
     brushLayer=svg.append('g').attr('class','map-brush').call(brush);
   };
   if(flujos){
-    host.querySelector('#map-key').innerHTML='<div class="map-key-bar" style="background:linear-gradient(90deg,#edf1f2,#0e546d)"></div><div class="map-key-words"><span>menor densidad</span><span>mayor densidad de viajes OD</span></div><div class="map-key-note">Cada relación aporta opacidad según sus viajes; la superposición revela los haces. Escala fija entre horas y años.</div>';
+    host.querySelector('#map-key').innerHTML='<svg viewBox="0 0 240 28" style="width:100%;height:28px" role="img" aria-label="Los haces se ensanchan al acumular más viajes OD"><path d="M8 14H56" stroke="#0e546d" stroke-width="1.5" stroke-linecap="round"/><path d="M88 14H144" stroke="#0e546d" stroke-width="4" stroke-linecap="round"/><path d="M176 14H232" stroke="#0e546d" stroke-width="9" stroke-linecap="round"/></svg><div class="map-key-words"><span>menos flujo</span><span>más flujo acumulado</span></div><div class="map-key-note">En WebGPU, los trazos próximos forman una banda continua. Más flujo local: mayor ancho (escala raíz, hasta 9 px). Escala fija entre horas y años. Los cruces visuales no implican transbordos.</div>';
     if(!items.length)app.toast('El grupo está vacío.');return;
   }
   const legend=host.querySelector('#map-key'),domain=color.domain(),min=domain[0],max=domain.at(-1);

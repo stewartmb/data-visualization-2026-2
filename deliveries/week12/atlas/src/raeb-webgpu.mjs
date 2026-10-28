@@ -1,4 +1,4 @@
-import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=gpu4';
+import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=bands1';
 const ENTRIES={initialize:[0,1,3,4,7,8],splat:[0,1,8,9],decodeDensity:[0,9,10],convolve:[0,10,11],maximum:[0,11,13],maximumFinal:[13,14],boost:[0,11,12,14],advect:[0,1,2,3,4,5,6,11],smoothPoints:[0,1,2,3,4,5,6],rasterCurves:[0,1,6,7,15],rasterRails:[0,15,23,24],rasterGuide:[0,12,23,24],image:[0,15,17],histogram:[0,16,17,18,19,20],mutualInformation:[0,18,19,20,21],mutualInformationFinal:[21,22]};
 export class RaebWebGPU{
  constructor(){
@@ -21,7 +21,7 @@ export class RaebWebGPU{
   this.uniformCompute=this.create(96,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST,'compute parameters');
   this.uniformDraw=this.create(96,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST,'drawing parameters');
   this.statsRead=this.create(16,GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ,'NMI readback');
-  this.canvas.dataset.renderer='WebGPU compute + optical raster';this.canvas.dataset.backend='webgpu';return this;
+  this.canvas.dataset.renderer='WebGPU compute + merged ribbons';this.canvas.dataset.bundleStyle='merged-ribbons';this.canvas.dataset.backend='webgpu';return this;
  }
  create(size,usage,label){
   if(size>this.device.limits.maxBufferSize)throw Error(`La GPU no admite el buffer ${label} (${size} bytes)`);
@@ -50,7 +50,7 @@ export class RaebWebGPU{
    const rx=this.canvas.width/this.width,ry=this.canvas.height/this.height,c=this.camera;
    f.set([c.k*s.gridToCss[0]*rx,c.k*s.gridToCss[1]*ry,(c.x-c.k*s.gridToCss[0])*rx,(c.y-c.k*s.gridToCss[1])*ry],12);
   }
-  f.set([this.width,this.height,...s.gridToCss],16);return data;
+  f.set([this.width,this.height,...s.gridToCss],16);u[20]=analysis?0:1;return data;
  }
  resources(uniform=this.uniformCompute,extra={}){return new Map([[0,uniform],...this.buffers,...Object.entries(extra).map(([k,v])=>[+k,v])]);}
  pass(encoder,key,resources,x,y=1){
@@ -110,7 +110,7 @@ export class RaebWebGPU{
    }
   }
   if(cancelled()||generation!==this.generation)return null;
-  const result={backend:'webgpu',iterations,nmi,converged:nmi>=stability||strength<=0||fidelity===1,ms:performance.now()-started,kernel:this.scene.kernel,stabilityImage:'shared optical raster: curves + retained GTFS',pointReadbacks:0};
+  const result={backend:'webgpu',iterations,nmi,converged:nmi>=stability||strength<=0||fidelity===1,ms:performance.now()-started,kernel:this.scene.kernel,stabilityImage:'canonical optical density before ribbon styling',pointReadbacks:0};
   const buffer=this.storage(this.pointBytes,'cached layout');e=this.device.createCommandEncoder();e.copyBufferToBuffer(this.buffers.get(1),0,buffer,0,this.pointBytes);this.device.queue.submit([e.finish()]);this.layouts.set(key,{buffer,stats:result});
   if(this.layouts.size>2){const oldest=this.layouts.keys().next().value;this.layouts.get(oldest).buffer.destroy();this.layouts.delete(oldest);}this.canvas.dataset.layoutStats=JSON.stringify(result);this.schedule();return result;
  }

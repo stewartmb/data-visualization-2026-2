@@ -1,5 +1,5 @@
 import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=gpu4';
-import {RaebWebGPU} from './raeb-webgpu.mjs?v=gpu5';
+import {RaebWebGPU} from './raeb-webgpu.mjs?v=bands1';
 
 // D3 retains interaction and linked panels. CPU prepares route hierarchies;
 // density, motion, convergence and flow rasterization stay on the GPU.
@@ -67,7 +67,7 @@ export class RaebOverlay extends RaebCPUOverlay{
     const r=this.renderer;r.canvas.dataset.totalLatencyMs=(performance.now()-this.parameterStarted).toFixed(1);r.canvas.dataset.layoutStats=JSON.stringify(stats);
     const kind=job.fidelity===0?'Abstracción libre':job.fidelity===1?'Caminos de referencia':'Abstracción guiada por la red';
     this.status(`WebGPU · ${kind} · ${r.count.toLocaleString('es-PE')} relaciones OD${stats.converged?'':' · refinamiento parcial'}`);
-    const el=document.querySelector('#raeb-status');if(el)el.title=`GPU: ${stats.iterations} iteraciones · NMI ${stats.nmi.toFixed(3)} · ${Math.round(stats.ms)} ms · imagen óptica compartida · ${stats.cacheHit?'caché':'cálculo'}`;
+    const el=document.querySelector('#raeb-status');if(el)el.title=`GPU: ${stats.iterations} iteraciones · NMI ${stats.nmi.toFixed(3)} · ${Math.round(stats.ms)} ms · densidad óptica antes del estilo · ${stats.cacheHit?'caché':'cálculo'}`;
    }
   }catch(error){this.fallback(error);}
  }
