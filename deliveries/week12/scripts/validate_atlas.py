@@ -12,7 +12,7 @@ sources=json.loads((ROOT/'data/redesign/sources.json').read_text())
 stations=data['stations']
 assert len(stations)==424 and len({s['id'] for s in stations})==424
 assert all(s['contextMatched'] for s in stations)
-assert len(data['meta']['months'])==60
+assert len(data['meta']['months'])==48
 assert len(sources['queries'])==45
 assert len(data['events'])==3
 assert all(e['url'].startswith(('https://www.mta.info/','https://new.mta.info/')) for e in data['events'])
@@ -25,15 +25,15 @@ for name,digest in audit['artifact_hashes'].items():
     assert hashlib.sha256((ROOT/'atlas/data'/name).read_bytes()).hexdigest()==digest,name
 
 raw=defaultdict(lambda:[0.0]*168)
-with (ROOT/'data/redesign/jan_feb_hourly_2020_2024.csv').open() as f:
+with (ROOT/'data/redesign/year_hourly_2020_2024.csv').open() as f:
     for r in csv.DictReader(f):
         key=(r['station_complex_id'],int(r['year']))
         raw[key][((int(r['dow'])+6)%7)*24+int(r['hour'])]+=float(r['ridership'])
 
 checked=0
-for y in range(2020,2025):
+for y in range(2021,2025):
     days=Counter();d=date(y,1,1)
-    while d<date(y,3,1):
+    while d<date(y+1,1,1):
         days[d.weekday()]+=1;d+=timedelta(days=1)
     assert [days[i] for i in range(7)]==data['meta']['exposures'][str(y)]
     system_raw=[0.0]*168
@@ -51,14 +51,14 @@ for y in range(2020,2025):
         assert abs(p['am']-am)<.00006
         assert abs(p['weekend']-100*sum(week[120:])/total)<.00006
         assert p['observedCells']==sum(v>0 for v in r)
-        assert len(s['series'])==60 and all(v>=0 for v in s['series'])
+        assert len(s['series'])==48 and all(v>=0 for v in s['series'])
         for i,v in enumerate(r):system_raw[i]+=v
         checked+=168
     system_week=[v/days[i//24] for i,v in enumerate(system_raw)]
     assert abs(data['system'][str(y)]['daily']-sum(system_week)/7)<.00006
 
 for s in stations:
-    a,b=s['profiles']['2020'],s['profiles']['2024']
+    a,b=s['profiles']['2021'],s['profiles']['2024']
     tv=50*sum(abs(x-y) for x,y in zip(a['p'],b['p']))
     assert 0<=tv<=100 and abs(s['change']-tv)<.00006
     assert abs(s['recovery']-100*b['daily']/a['daily'])<.001

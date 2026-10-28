@@ -185,6 +185,12 @@ def agregar(con: duckdb.DuckDBPyConnection, salida: Path, t0: float) -> None:
         FROM d WHERE month(ts) IN (1, 2) AND transit_mode = 'subway'
         GROUP BY ALL ORDER BY station_complex_id, year, dow, hour
     """, salida, t0)
+    # Version de anio completo (todos los meses): insumo actual del atlas.
+    exportar(con, "year_hourly_2020_2024.csv", """
+        SELECT station_complex_id, year(ts) AS year, dayofweek(ts) AS dow, hour(ts) AS hour, CAST(sum(ridership) AS BIGINT) AS ridership
+        FROM d WHERE transit_mode = 'subway'
+        GROUP BY ALL ORDER BY station_complex_id, year, dow, hour
+    """, salida, t0)
 
 
 def main() -> None:

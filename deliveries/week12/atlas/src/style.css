@@ -33,7 +33,7 @@
 #content[data-view=map] .map-emphasis{padding:8px 12px;margin-bottom:10px}
 #content[data-view=map] .map-emphasis small{display:none}
 #content[data-view=map] .stats-strip{padding:12px 0 6px}
-.map-svg.con-calles:not(.sin-calles) .map-bg{fill:none;stroke:#5f7470;stroke-width:1.2;stroke-dasharray:none;opacity:.55}
+.map-svg.con-calles:not(.sin-calles) .map-bg{fill:none;stroke:#8a9a92;stroke-width:.8;stroke-dasharray:none;opacity:.35}
 .map-svg.con-calles:not(.sin-calles) .borough-name{display:none}
 .map-tiles image{opacity:1}
 .map-svg.con-calles:not(.sin-calles) .map-dot{stroke:#fff;stroke-width:1.1}
@@ -159,7 +159,7 @@ dialog{border:1px solid var(--line);border-radius:8px;box-shadow:0 20px 60px #1b
 .narrative b{color:var(--ink)}
 
 /* plano como croquis: calles y nombres en gris tenue; el trazado del metro encima, también recesivo */
-.map-tiles image{opacity:1;filter:saturate(.18) contrast(.92) brightness(1.04)}
+.map-tiles image{opacity:.62;filter:saturate(.55) contrast(.95) brightness(1.03)}
 .map-lines path{stroke:#4f5e63;stroke-width:1.6;opacity:.55;stroke-linecap:round;stroke-linejoin:round}
 .map-svg.sin-calles .map-lines path{stroke:#8a9a92}
 
@@ -218,3 +218,59 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
 #guide .project{max-width:none;font-size:14px}
 .context-bar{height:42px}
 .main-footer{padding:8px 0 10px;border-top:0}
+/* Capa de flujos O-D (grosor = viajes por tramo; una sola tinta, el naranja solo para la selección) */
+.map-layer{display:flex;width:100%;margin:0 0 10px}.map-layer button{flex:1;padding:6px 4px;font-size:10.5px}
+.flow-controls{margin:0 0 10px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.flow-hour-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.flow-play{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:11px;padding:0;line-height:1}
+.flow-play.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.flow-hour-label{font:500 21px/1 Georgia,serif;letter-spacing:-.5px;min-width:58px}
+.flow-day{margin-left:auto}.flow-day button{padding:5px 7px;font-size:9.5px;white-space:nowrap}
+.flow-profile{display:block;width:100%;height:46px;margin-top:2px}
+/* Deslizador sin relleno acumulado: la hora es una posición, no un recorrido. */
+.flow-slider{display:block;width:100%;margin:0;-webkit-appearance:none;appearance:none;background:transparent;height:18px}
+.flow-slider::-webkit-slider-runnable-track{height:2px;background:#c9d1cd;border-radius:1px}
+.flow-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:14px;height:14px;border-radius:50%;background:var(--ink);margin-top:-6px;cursor:pointer}
+.flow-slider::-moz-range-track{height:2px;background:#c9d1cd;border-radius:1px}
+.flow-slider::-moz-range-progress{background:#c9d1cd;height:2px}
+.flow-slider::-moz-range-thumb{width:14px;height:14px;border:0;border-radius:50%;background:var(--ink);cursor:pointer}
+.flow-ticks{display:flex;justify-content:space-between;font-size:8.5px;color:var(--muted);margin-top:1px}
+.map-flow path{stroke:#1d6f8d;opacity:.82;transition:opacity .3s}
+.map-flow.dim path{opacity:.16}
+.map-flow-sel path{stroke:#c96035;opacity:.95}
+.map-dot.quiet{stroke:#1d6f8d;stroke-width:1.1}
+.map-svg.con-calles:not(.sin-calles) .map-dot.quiet{stroke:#1d6f8d;stroke-width:1.1}
+.flow-key{display:flex;align-items:flex-end;gap:14px;margin:6px 0 2px;flex-wrap:wrap}
+.flow-key span{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:9.5px;color:var(--muted)}
+.flow-key span i{display:block;width:34px;background:#1d6f8d;border-radius:2px;opacity:.82}
+.flow-key small{flex-basis:100%;font-size:9px;color:var(--muted)}
+.lg-flow{display:inline-block;width:18px;height:4px;background:#1d6f8d;vertical-align:middle;margin-right:3px;border-radius:2px}
+.lg-flow.sel{background:#c96035}
+.destinations{margin-top:14px}
+.dest-list{display:flex;flex-direction:column;gap:3px;margin-top:8px}
+.dest-list button{display:grid;grid-template-columns:120px 1fr 44px;align-items:center;gap:8px;background:none;padding:3px 0;font-size:10.5px;color:var(--ink);text-align:left}
+.dest-list button:hover .dest-name{color:var(--teal)}
+.dest-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dest-bar{display:block;height:8px;background:#eef1ec;border-radius:2px;overflow:hidden}.dest-bar i{display:block;height:100%;background:#c96035}
+.dest-val{text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+.dest-share{font-size:10.5px;margin-top:10px;color:var(--ink)}.dest-share small{color:var(--muted);font-size:9px}.dest-arrow{color:#b8c3be}
+.map-stage{background:#f4f5f1}
+.flow-show{display:flex;width:100%;margin-top:8px}.flow-show button{flex:1;padding:5px 4px;font-size:10px;white-space:nowrap}
+.map-legend .map-key-words{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:3px;gap:6px}.map-legend .map-key-words span{text-align:center}.map-legend .map-key-words span:first-child{text-align:left}.map-legend .map-key-words span:last-child{text-align:right}
+.scatter-block{margin:12px 0 4px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.scatter-title{font:500 15px/1.25 Georgia,serif;letter-spacing:-.2px;margin:4px 0 6px}
+.scatter-key{display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:var(--muted);margin-top:2px}.scatter-key i{display:inline-block;width:8px;height:8px;border-radius:50%;vertical-align:middle;margin-right:4px}.scatter-key small{color:var(--ink)}
+.map-minimap{right:14px;bottom:14px;width:178px;padding:10px 12px}
+.minimap-svg{display:block;width:100%;height:auto;margin:4px 0 6px}
+.mini-bg{fill:#e6e9e3;stroke:#c3cbc5;stroke-width:.6}
+.minimap-counts{display:grid;grid-template-columns:1fr 1fr;gap:3px 10px;font-size:9.5px;color:var(--muted)}.minimap-counts span{display:flex;align-items:center;gap:4px}.minimap-counts i{width:7px;height:7px;border-radius:50%;flex-shrink:0}.minimap-counts b{margin-left:auto;color:var(--ink);font-weight:500}
+.map-stage .map-credit{bottom:auto;top:8px;right:10px}
+/* v2: mapa base en grises, carriles, controles de día y fidelidad */
+.map-tiles image{opacity:.55;filter:grayscale(1) contrast(.92) brightness(1.06)}
+.flow-day button{padding:4px 3px;font-size:9px;min-width:20px}
+.fidelity{display:block;margin-top:8px;font-size:10px;color:var(--muted)}.fidelity span{display:flex;justify-content:space-between;color:var(--ink)}.fidelity input{display:block;width:100%;margin:2px 0;accent-color:var(--ink)}.fidelity small{display:block;font-size:8.5px;line-height:1.35}
+.lg-node{display:inline-block;width:9px;height:9px;border-radius:50%;background:#1d6f8dcc;vertical-align:middle;margin-right:3px}
+.map-dot.quiet{stroke:#fff;stroke-width:.8}
+.map-svg.con-calles:not(.sin-calles) .map-dot.quiet{stroke:#fff;stroke-width:.8}
+.map-flow path{stroke:#1d6f8d;opacity:.78}
+.inspector-tabs{margin-top:4px}

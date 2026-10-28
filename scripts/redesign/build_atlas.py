@@ -10,7 +10,9 @@ SRC = ROOT/'data/redesign'
 OLD = ROOT/'deliveries/week06/data/processed'
 OUT = ROOT/'atlas/data'
 OUT.mkdir(parents=True,exist_ok=True)
-YEARS = list(range(2020,2025))
+YEARS = list(range(2021,2025))   # 2021 = año base (primer año con estimación origen-destino)
+BASE, END = 2021, 2024
+SRC_CSV = 'year_hourly_2020_2024.csv'   # año completo, todos los meses
 
 def read(path):
     with path.open(newline='',encoding='utf-8') as f:
@@ -20,8 +22,9 @@ stations = {r['station_complex_id']:r for r in read(OLD/'stations_coords.csv') i
 catalog = {str(int(float(r['complex_id']))):r for r in json.loads((SRC/'station_catalog.json').read_text())}
 values = defaultdict(lambda:[0.0]*168)
 observed = defaultdict(set)
-for r in read(SRC/'jan_feb_hourly_2020_2024.csv'):
+for r in read(SRC/SRC_CSV):
     sid,y = r['station_complex_id'],int(r['year'])
+    if y not in YEARS: continue
     # API: Sunday=0; display: Monday=0.
     i = ((int(r['dow'])+6)%7)*24 + int(r['hour'])
     values[sid,y][i] += float(r['ridership'])
@@ -31,7 +34,7 @@ exposures={}
 for y in YEARS:
     c=Counter()
     d=date(y,1,1)
-    while d<date(y,3,1):
+    while d<date(y+1,1,1):   # exposicion de calendario: dias de cada tipo en el año completo
         c[d.weekday()]+=1
         d+=timedelta(days=1)
     exposures[y]=[c[i] for i in range(7)]
@@ -59,10 +62,10 @@ for r in read(OLD/'ridership_by_station_day.csv'):
 output=[];excluded=[]
 for sid,r in stations.items():
     pp={str(y):summarize(values[sid,y],y) for y in YEARS}
-    if not pp['2020'] or not pp['2024']:
+    if not pp[str(BASE)] or not pp[str(END)]:
         excluded.append({'id':sid,'reason':'No positive baseline or endpoint profile'})
         continue
-    a,b=pp['2020'],pp['2024']
+    a,b=pp[str(BASE)],pp[str(END)]
     ctx=catalog.get(sid)
     output.append({'id':sid,'name':r['station_complex'],'borough':r['borough'],
         'lat':float(r['latitude']),'lon':float(r['longitude']),
@@ -108,7 +111,7 @@ for r in json.loads((SRC/'boroughs_raw.json').read_text()):
 source_manifest=json.loads((SRC/'sources.json').read_text())
 app={'meta':{'title':'La forma del día · Atlas de ritmos','years':YEARS,'months':months,
     'days':['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'],
-    'comparison':'Enero–febrero de cada año; perfiles ajustados por número de lunes, martes, etc.',
+    'comparison':'Año completo (todos los meses) de 2021 a 2024; perfiles ajustados por número de lunes, martes, etc. del año; base 2021.',
     'retrieved':source_manifest['retrieved_at_utc'],'scope':'subway; complejos con perfiles positivos en ambos extremos',
     'exposures':exposures,'excluded':excluded,'schemaVersion':1},'system':system,'stations':output,
     'events':json.loads((SRC/'context_events.json').read_text())}

@@ -349,6 +349,11 @@
     "boroughs_raw.json": {
       "bytes": 3167385,
       "sha256": "361ac589847bee86f45179afddef98304ca05f7b04650924873b58d09f8be39f"
+    },
+    "year_hourly_2020_2024.csv": {
+      "sha256": "cf67f491cbf72ee933a8e69e8f8d145852638565b9db56cf9ad9ecc3502b8de6",
+      "rows": 356159,
+      "derivation": "scripts/preprocessing/build_from_full.py (DuckDB sobre data/raw/parquet, todos los meses, modo subway)"
     }
   },
   "full_dataset": {

@@ -1,14 +1,14 @@
-import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges} from './model.js?v=20261027-4';
+import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=20261027-8';
+import {renderMap} from './map-view.js?v=20261028-8';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=20261014-9';
-import {renderInspector} from './inspector.js?v=20261027-11';
-import {renderProject} from './project-view.js?v=20261027-3';
+import {renderInspector} from './inspector.js?v=20261028-4';
+import {renderProject} from './project-view.js?v=20261028-2';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
 const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia',project:'Proyecto'};
-let data,geo,lineas,toastTimer;
+let data,geo,lineas,flows,toastTimer;
 function hydrate(){
   const p=new URLSearchParams(location.search);
   state.view='map';
@@ -18,11 +18,16 @@ function hydrate(){
   if(['morning','weekend','change','decoupled'].includes(p.get('preset')))state.preset=p.get('preset');
   if(p.has('cohort'))state.cohort=new Set(p.get('cohort')?p.get('cohort').split(','):[]);
   if(p.get('pins'))state.pins=p.get('pins').split(',').slice(0,3);
-  for(const [key,allowed] of Object.entries({mode:['delta','current','base'],sort:['change','similar','borough','morning','morningUp','afternoon','night','weekend','volume','volumeDown'],day:['all','0','1','2','3','4','5','6'],mapMetric:['change','deltaAM','deltaWeekend','recovery'],inspectorTab:['fingerprint','compare','evolution','source']}))if(allowed.includes(p.get(key)))state[key]=p.get(key);
+  for(const [key,allowed] of Object.entries({mode:['delta','current','base'],sort:['change','similar','borough','morning','morningUp','afternoon','night','weekend','volume','volumeDown'],day:['all','0','1','2','3','4','5','6'],mapMetric:['change','deltaAM','deltaWeekend','recovery'],inspectorTab:['fingerprint','compare','evolution','source'],layer:['points','flows'],flowShow:['volume','change']}))if(allowed.includes(p.get(key)))state[key]=p.get(key);
   for(const key of ['tvMin','tvMax'])if(p.has(key)&&Number.isFinite(+p.get(key)))state[key]=Math.max(0,Math.min(100,+p.get(key)));
   if(state.tvMin>state.tvMax)[state.tvMin,state.tvMax]=[state.tvMax,state.tvMin];
   for(const key of ['deltaAM','deltaWeekend','recovery']){const lo=p.get(key+'Min'),hi=p.get(key+'Max');if(lo!==null&&hi!==null&&Number.isFinite(+lo)&&Number.isFinite(+hi))state.ranges[key]=[Math.min(+lo,+hi),Math.max(+lo,+hi)];}
   for(const key of ['detail','clock','pathsFocus'])if(p.has(key))state[key]=p.get(key)==='true';
+  if(p.has('hour')&&Number.isInteger(+p.get('hour')))state.flowHour=Math.max(0,Math.min(23,+p.get('hour')));
+  if(p.has('day')&&Number.isInteger(+p.get('day')))state.flowDay=Math.max(0,Math.min(6,+p.get('day')));
+  if(p.has('base')&&[2021,2022,2023].includes(+p.get('base')))setBase(+p.get('base'));
+  if(p.has('fidelity')&&Number.isFinite(+p.get('fidelity')))state.fidelity=Math.max(0,Math.min(1,+p.get('fidelity')));
+  if(p.has('bundling')&&Number.isFinite(+p.get('bundling')))state.bundling=Math.max(0,Math.min(1,+p.get('bundling')));
 }
 function updateURL(){
   const p=new URLSearchParams({view:state.view,year:state.year});
@@ -35,11 +40,11 @@ function updateURL(){
   if(state.tvMax<100)p.set('tvMax',state.tvMax);
   for(const [key,range] of Object.entries(state.ranges))if(range){p.set(key+'Min',range[0]);p.set(key+'Max',range[1]);}
   if(state.pins.length)p.set('pins',state.pins.join(','));
-  for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus'])p.set(key,state[key]);
+  for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus','layer','flowShow'])p.set(key,state[key]);p.set('hour',state.flowHour);p.set('day',state.flowDay);p.set('base',BASE);p.set('fidelity',state.fidelity);p.set('bundling',state.bundling);
   history.replaceState(null,'',`?${p}`);
 }
 const app={
-  get data(){return data;},get geo(){return geo;},get lineas(){return lineas;},state,
+  get data(){return data;},get geo(){return geo;},get lineas(){return lineas;},get flows(){return flows;},state,
   station:id=>data.stations.find(s=>s.id===id),
   filtered(){
     const q=state.query.toLocaleLowerCase();
@@ -80,9 +85,9 @@ function render(){
   const previousScroll=document.querySelector('.matrix-scroll')?.scrollTop||0;
   const items=app.filtered();
   document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===state.view);b.setAttribute('aria-current',b.dataset.view===state.view?'page':'false');});
-  document.querySelector('#year').value=state.year;document.querySelector('#borough').value=state.borough;
+  document.querySelector('#year').value=state.year;document.querySelector('#base').value=BASE;document.querySelector('#borough').value=state.borough;
   document.querySelector('#search').value=state.query;
-  const periodLabel=document.querySelector('#period-label');if(periodLabel)periodLabel.textContent=`ene–feb ${state.year}`;
+  const periodLabel=document.querySelector('#period-label');if(periodLabel)periodLabel.textContent=`${state.year}`;
   document.querySelector('#cohort-count').textContent=`${items.length} / ${data.stations.length} complejos`;
   const rangeNotes=[...(state.tvMin>0||state.tvMax<100?[`TV ${fmt(state.tvMin)}–${fmt(state.tvMax)} pp`]:[]),...Object.entries(state.ranges).filter(([,r])=>r).map(([k,r])=>`${{deltaAM:'AM',deltaWeekend:'Fin de semana',recovery:'Volumen'}[k]} ${fmt(r[0])}–${fmt(r[1])} ${k==='recovery'?'%':'pp'}`)];
   const groupNote=state.cohort?'Grupo de complejos seleccionado':state.preset==='morning'?'Cambio AM menor que −2 pp':state.preset==='weekend'?'Cambio de fin de semana mayor que +2 pp':state.preset==='decoupled'?'Índice volumen entre 80–120 % y cambio de forma ≥10 pp':state.query?'Resultados de búsqueda':state.borough==='all'?'Todos los complejos de subway':state.borough;
@@ -102,20 +107,39 @@ function render(){
 function exportCSV(){
   const columns=['complex_id','name','borough','baseline','target','change_tv_pp','delta_am_pp','delta_weekend_pp','volume_index_pct','observed_cells_baseline','observed_cells_target','retrieved_at_utc'];
   const quote=v=>'"'+String(v).replaceAll('"','""')+'"';
-  const rows=app.filtered().map(s=>{const m=measures(s);return [s.id,s.name,s.borough,'Jan-Feb 2020',`Jan-Feb ${state.year}`,m.change,m.deltaAM,m.deltaWeekend,m.recovery,profile(s,2020).observedCells,profile(s).observedCells,data.meta.retrieved].map(quote).join(',');});
+  const rows=app.filtered().map(s=>{const m=measures(s);return [s.id,s.name,s.borough,'Jan-Feb '+BASE,`Jan-Feb ${state.year}`,m.change,m.deltaAM,m.deltaWeekend,m.recovery,profile(s,BASE).observedCells,profile(s).observedCells,data.meta.retrieved].map(quote).join(',');});
   const blob=new Blob(['\ufeff'+columns.join(',')+'\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download=`evidencia-ritmos-${state.year}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 hydrate();
-Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json('data/lineas.geojson').catch(()=>null)]).then(([a,g,l])=>{
-  if(!a.stations?.length||a.stations.some(s=>!s.profiles['2020']||!s.profiles['2024']||Object.values(s.profiles).filter(Boolean).some(p=>p.p.length!==168||p.p.some(v=>!Number.isFinite(v)||v<0))))throw Error('Los perfiles no cumplen la estructura esperada.');
-  data=a;geo=g;lineas=l;
+Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json('data/lineas.geojson').catch(()=>null),d3.json('data/flows.json').catch(()=>null)]).then(([a,g,l,f])=>{
+  if(!a.stations?.length||a.stations.some(s=>!s.profiles[String(BASE)]||!s.profiles['2024']||Object.values(s.profiles).filter(Boolean).some(p=>p.p.length!==168||p.p.some(v=>!Number.isFinite(v)||v<0))))throw Error('Los perfiles no cumplen la estructura esperada.');
+  data=a;geo=g;lineas=l;flows=f;
+  // Métricas exclusivamente desde el OD: los perfiles de 168 celdas de cada complejo se derivan de los
+  // viajes iniciados (starts[y][nodo][dow][hora], semana representativa). Las entradas por torniquete
+  // quedan fuera de esta versión.
+  if(f&&f.starts){
+    const ni=new Map(f.nodes.map((n,i)=>[n.id,i]));
+    for(const s of data.stations){
+      const i=ni.get(s.id);s.profiles={};
+      for(const y of f.meta.years){
+        const u=f.starts[String(y)]?.[i];if(!u){s.profiles[String(y)]=null;continue;}
+        const v=u.flat(),V=d3.sum(v);
+        if(V<=0){s.profiles[String(y)]=null;continue;}
+        const p=v.map(x=>x/V),work=d3.sum(p.slice(0,120));
+        s.profiles[String(y)]={p,am:work?100*d3.sum(d3.range(5),d=>d3.sum(p.slice(d*24+6,d*24+10)))/work:0,pm:work?100*d3.sum(d3.range(5),d=>d3.sum(p.slice(d*24+16,d*24+20)))/work:0,weekend:100*d3.sum(p.slice(120)),daily:V/7,weekly:V,actualDaily:V/7,observedCells:v.filter(x=>x>0).length};
+      }
+      s.series=[];
+    }
+    data.meta.comparison='Semana representativa del OD estimado de la MTA (promedio de los meses presentes, ponderado por el calendario); viajes iniciados por complejo, día y hora.';
+  }
   state.pins=state.pins.filter(id=>app.station(id));
   if(!app.station(state.selected))state.selected=null;
   document.querySelector('#loading').hidden=true;
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>app.set({view:b.dataset.view})));
-  document.querySelector('#year').addEventListener('change',e=>app.set({year:+e.target.value}));
+  document.querySelector('#year').addEventListener('change',e=>{const y=+e.target.value;if(y<=BASE)setBase(y-1);app.set({year:y});});
+  document.querySelector('#base').addEventListener('change',e=>{const b=+e.target.value;setBase(b);app.set(b>=state.year?{year:b+1}:{});});
   // Entradas al análisis: un selector en el panel del mapa (se delega porque la vista se redibuja).
   document.addEventListener('change',e=>{if(e.target.id==='preset-select')app.set({preset:e.target.value||null,cohort:null,query:'',sort:'change'});});
   document.querySelector('#borough').addEventListener('change',e=>app.set({borough:e.target.value}));

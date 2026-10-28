@@ -1,4 +1,6 @@
-export const state = {view:'atlas',year:2024,borough:'all',query:'',preset:null,cohort:null,selected:null,pins:[],mode:'delta',sort:'change',day:'all',detail:false,mapMetric:'change',tvMin:0,tvMax:100,ranges:{deltaAM:null,deltaWeekend:null,recovery:null},inspectorTab:'fingerprint',clock:true,pathsFocus:true};
+export let BASE=2021; // año base de la comparación (par base → objetivo, 2021–2024)
+export function setBase(y){BASE=y;}
+export const state = {view:'atlas',year:2024,borough:'all',query:'',preset:null,cohort:null,selected:null,pins:[],mode:'delta',sort:'change',day:'all',detail:false,mapMetric:'change',tvMin:0,tvMax:100,ranges:{deltaAM:null,deltaWeekend:null,recovery:null},inspectorTab:'fingerprint',clock:true,pathsFocus:true,layer:'flows',flowHour:8,flowDay:0,flowShow:'volume',fidelity:0.9,bundling:0.65};
 export const dayShort=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 export const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const number = new Intl.NumberFormat('es-PE',{maximumFractionDigits:1});
@@ -7,10 +9,10 @@ export const signed = n => `${n>0?'+':''}${fmt(n)}`;
 export const profile = (s,y=state.year) => s.profiles[String(y)];
 export function relevantEvents(data,s,y=state.year){
   const historical=(s.name.match(/\(([^)]+)\)/)?.[1]||'').split(',').map(x=>x.trim());
-  return (data.events||[]).filter(e=>(e.years.includes(2020)||e.years.includes(y))&&(e.scope==='all'||e.ids?.includes(s.id)||(e.scope==='historical-route'&&historical.includes(e.route))));
+  return (data.events||[]).filter(e=>(e.years.includes(BASE)||e.years.includes(y))&&(e.scope==='all'||e.ids?.includes(s.id)||(e.scope==='historical-route'&&historical.includes(e.route))));
 }
 export function measures(s,y=state.year){
-  const a=profile(s,2020),b=profile(s,y);
+  const a=profile(s,BASE),b=profile(s,y);
   if(!a||!b)return null;
   return {change:50*d3.sum(a.p,(v,i)=>Math.abs(v-b.p[i])),deltaAM:b.am-a.am,deltaWeekend:b.weekend-a.weekend,recovery:100*b.daily/a.daily};
 }
@@ -33,7 +35,7 @@ export function metricColor(key,stations){
   return d3.scaleDiverging([-max,0,max],diverging);
 }
 export function cellValue(s,i,mode=state.mode){
-  const b=profile(s,2020),p=profile(s);
+  const b=profile(s,BASE),p=profile(s);
   return mode==='delta'?100*(p.p[i]-b.p[i]):100*(mode==='base'?b.p[i]:p.p[i]);
 }
 export function showTooltip(html,event){
