@@ -2,3 +2,13 @@
 # Preserve their bytes across checkouts, including CSV line endings.
 /data/redesign/* -text
 /atlas/data/* -text
+
+# Semana 12: conservar bytes de snapshots y artefactos auditados.
+/deliveries/week12/data/context/** -text
+/deliveries/week12/data/processed/** -text
+/deliveries/week12/data/*.json -text
+/deliveries/week12/data/*.csv -text
+/deliveries/week12/atlas/data/* -text
+
+/deliveries/week12/data/full_period/** -text
+/deliveries/week12/data/od_2021_2024/** -text

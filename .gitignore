@@ -15,3 +15,6 @@ secrets.*
 data/raw/
 *.manifest.json
 work/
+
+# Descargas crudas de la entrega reproducible de Semana 12
+deliveries/week12/data/raw/

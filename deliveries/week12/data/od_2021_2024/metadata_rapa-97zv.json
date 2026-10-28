@@ -1,0 +1,1330 @@
+{
+  "id" : "rapa-97zv",
+  "name" : "MTA Subway Origin-Destination Ridership Estimate: 2021",
+  "assetType" : "dataset",
+  "attribution" : "Metropolitan Transportation Authority",
+  "attributionLink" : "https://www.mta.info/open-data",
+  "averageRating" : 0,
+  "category" : "Transportation",
+  "createdAt" : 1721850288,
+  "description" : "This dataset provides an estimate of subway travel patterns based on scaled-up OMNY and MetroCard return swipe data. It provides estimated passenger volumes for all populated origin-destination (O-D) pairs aggregated by month, day of the week, and hour of day. It also provides the name, ID, and approximate latitude and longitude of the origin and destination subway complexes.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 2493,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 40745608,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1721853026,
+  "publicationGroup" : 19589723,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1723836686,
+  "tableId" : 19589723,
+  "totalTimesRated" : 0,
+  "viewCount" : 2634,
+  "viewLastModified" : 1749513173,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1729696384,
+    "reviewedAutomatically" : true,
+    "state" : "approved",
+    "submissionId" : 6590068,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1729696384,
+    "targetAudience" : "public",
+    "workflowId" : 2254,
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1729696384,
+      "failureCount" : 0,
+      "startedAt" : 1729696384,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "xzik-pf59",
+      "displayName" : "NY Open Data"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 596689301,
+    "name" : "Year",
+    "dataTypeName" : "number",
+    "description" : "The year in which the subway trips occurred.",
+    "fieldName" : "year",
+    "position" : 1,
+    "renderTypeName" : "number",
+    "tableColumnId" : 153867784,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "2021",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2021",
+        "count" : "102466982"
+      } ],
+      "smallest" : "2021",
+      "count" : "102466982",
+      "cardinality" : "1"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "noCommas" : "true",
+      "precision" : "0",
+      "align" : "center"
+    }
+  }, {
+    "id" : 596689302,
+    "name" : "Month",
+    "dataTypeName" : "number",
+    "description" : "The month in which the subway trips occurred.",
+    "fieldName" : "month",
+    "position" : 2,
+    "renderTypeName" : "number",
+    "tableColumnId" : 153867785,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "2021",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2021",
+        "count" : "102466982"
+      } ],
+      "smallest" : "2021",
+      "count" : "102466982",
+      "cardinality" : "1"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ",",
+      "align" : "center"
+    }
+  }, {
+    "id" : 596689303,
+    "name" : "Day of Week",
+    "dataTypeName" : "text",
+    "description" : "The day of the week on which the subway trips occurred (Monday, Tuesday, etc.).",
+    "fieldName" : "day_of_week",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 153867786,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "Wednesday",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Friday",
+        "count" : "16078787"
+      }, {
+        "item" : "Thursday",
+        "count" : "15654162"
+      }, {
+        "item" : "Wednesday",
+        "count" : "15611186"
+      }, {
+        "item" : "Tuesday",
+        "count" : "15359649"
+      }, {
+        "item" : "Monday",
+        "count" : "15013780"
+      }, {
+        "item" : "Saturday",
+        "count" : "13143738"
+      }, {
+        "item" : "Sunday",
+        "count" : "11605680"
+      } ],
+      "smallest" : "Friday",
+      "count" : "102466982",
+      "cardinality" : "7"
+    },
+    "format" : { }
+  }, {
+    "id" : 596689304,
+    "name" : "Hour of Day",
+    "dataTypeName" : "number",
+    "description" : "The hour of the day in which the subway trips occurred. All trip times are rounded down to the nearest hour.",
+    "fieldName" : "hour_of_day",
+    "position" : 4,
+    "renderTypeName" : "number",
+    "tableColumnId" : 153867787,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "2021",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2021",
+        "count" : "102466982"
+      } ],
+      "smallest" : "2021",
+      "count" : "102466982",
+      "cardinality" : "1"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ",",
+      "align" : "center"
+    }
+  }, {
+    "id" : 596689305,
+    "name" : "Timestamp",
+    "dataTypeName" : "calendar_date",
+    "description" : " Representative datetime for the year, month, day of week, and hour of day in which the subway trips occurred. This date will be from the first full week of the month.",
+    "fieldName" : "timestamp",
+    "position" : 5,
+    "renderTypeName" : "calendar_date",
+    "tableColumnId" : 153867788,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "2021-12-12T23:00:00.000",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2021-10-08T16:00:00.000",
+        "count" : "100523"
+      }, {
+        "item" : "2021-10-08T17:00:00.000",
+        "count" : "98938"
+      }, {
+        "item" : "2021-10-08T15:00:00.000",
+        "count" : "98653"
+      }, {
+        "item" : "2021-11-09T16:00:00.000",
+        "count" : "97907"
+      }, {
+        "item" : "2021-12-09T16:00:00.000",
+        "count" : "97367"
+      }, {
+        "item" : "2021-12-08T16:00:00.000",
+        "count" : "97303"
+      }, {
+        "item" : "2021-11-08T16:00:00.000",
+        "count" : "97196"
+      }, {
+        "item" : "2021-11-09T17:00:00.000",
+        "count" : "96195"
+      }, {
+        "item" : "2021-11-08T17:00:00.000",
+        "count" : "95392"
+      }, {
+        "item" : "2021-12-09T17:00:00.000",
+        "count" : "95302"
+      }, {
+        "item" : "2021-09-08T16:00:00.000",
+        "count" : "95167"
+      }, {
+        "item" : "2021-12-10T16:00:00.000",
+        "count" : "95083"
+      }, {
+        "item" : "2021-12-09T15:00:00.000",
+        "count" : "94707"
+      }, {
+        "item" : "2021-12-08T17:00:00.000",
+        "count" : "94688"
+      }, {
+        "item" : "2021-06-09T16:00:00.000",
+        "count" : "94230"
+      }, {
+        "item" : "2021-07-09T16:00:00.000",
+        "count" : "94033"
+      }, {
+        "item" : "2021-12-10T15:00:00.000",
+        "count" : "93758"
+      }, {
+        "item" : "2021-09-08T17:00:00.000",
+        "count" : "93746"
+      }, {
+        "item" : "2021-12-08T15:00:00.000",
+        "count" : "93628"
+      }, {
+        "item" : "2021-11-09T15:00:00.000",
+        "count" : "93559"
+      } ],
+      "smallest" : "2021-01-04T00:00:00.000",
+      "count" : "102466982",
+      "cardinality" : "2016"
+    },
+    "format" : {
+      "view" : "date_time",
+      "align" : "center"
+    }
+  }, {
+    "id" : 596689306,
+    "name" : "Origin Station Complex ID",
+    "dataTypeName" : "number",
+    "description" : "The unique identifier for the subway station complex where the trips originated.",
+    "fieldName" : "origin_station_complex_id",
+    "position" : 6,
+    "renderTypeName" : "number",
+    "tableColumnId" : 153867789,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "636",
+      "null" : "0",
+      "top" : [ {
+        "item" : "611",
+        "count" : "729562"
+      }, {
+        "item" : "602",
+        "count" : "639639"
+      }, {
+        "item" : "607",
+        "count" : "621857"
+      }, {
+        "item" : "628",
+        "count" : "614534"
+      }, {
+        "item" : "610",
+        "count" : "608784"
+      }, {
+        "item" : "164",
+        "count" : "567724"
+      }, {
+        "item" : "614",
+        "count" : "560448"
+      }, {
+        "item" : "601",
+        "count" : "534837"
+      }, {
+        "item" : "616",
+        "count" : "526630"
+      }, {
+        "item" : "613",
+        "count" : "524051"
+      }, {
+        "item" : "618",
+        "count" : "520917"
+      }, {
+        "item" : "167",
+        "count" : "519349"
+      }, {
+        "item" : "625",
+        "count" : "518329"
+      }, {
+        "item" : "619",
+        "count" : "515930"
+      }, {
+        "item" : "617",
+        "count" : "513019"
+      }, {
+        "item" : "624",
+        "count" : "504388"
+      }, {
+        "item" : "623",
+        "count" : "499134"
+      }, {
+        "item" : "318",
+        "count" : "488926"
+      }, {
+        "item" : "612",
+        "count" : "485068"
+      }, {
+        "item" : "313",
+        "count" : "482176"
+      } ],
+      "smallest" : "1",
+      "count" : "102466982",
+      "cardinality" : "424"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ",",
+      "align" : "center"
+    }
+  }, {
+    "id" : 596689307,
+    "name" : "Origin Station Complex Name",
+    "dataTypeName" : "text",
+    "description" : "The name of the subway station complex where the trips originated.",
+    "fieldName" : "origin_station_complex_name",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 153867790,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "Zerega Av (6)",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Times Sq-42 St (N,Q,R,W,S,1,2,3,7)/42 St (A,C,E)",
+        "count" : "729562"
+      }, {
+        "item" : "14 St-Union Sq (L,N,Q,R,W,4,5,6)",
+        "count" : "639639"
+      }, {
+        "item" : "34 St-Herald Sq (B,D,F,M,N,Q,R,W)",
+        "count" : "621857"
+      }, {
+        "item" : "Fulton St (A,C,J,Z,2,3,4,5)",
+        "count" : "614534"
+      }, {
+        "item" : "Grand Central-42 St (S,4,5,6,7)",
+        "count" : "608784"
+      }, {
+        "item" : "34 St-Penn Station (A,C,E)",
+        "count" : "567724"
+      }, {
+        "item" : "59 St-Columbus Circle (A,B,C,D,1)",
+        "count" : "560448"
+      }, {
+        "item" : "14 St (F,M,1,2,3)/6 Av (L)",
+        "count" : "534837"
+      }, {
+        "item" : "74-Broadway (7)/Jackson Hts-Roosevelt Av (E,F,M,R)",
+        "count" : "526630"
+      }, {
+        "item" : "Lexington Av (N,R,W)/59 St (4,5,6)",
+        "count" : "524051"
+      }, {
+        "item" : "14 St (A,C,E)/8 Av (L)",
+        "count" : "520917"
+      }, {
+        "item" : "W 4 St-Wash Sq (A,C,E,B,D,F,M)",
+        "count" : "519349"
+      }, {
+        "item" : "Delancey St (F)/Essex St (J,M,Z)",
+        "count" : "518329"
+      }, {
+        "item" : "Broadway-Lafayette St (B,D,F,M)/Bleecker St (6)",
+        "count" : "515930"
+      }, {
+        "item" : "Atlantic Av-Barclays Ctr (B,D,N,Q,R,2,3,4,5)",
+        "count" : "513019"
+      }, {
+        "item" : "Chambers St (A,C)/WTC (E)/Park Pl (2,3)/Cortlandt (R,W)",
+        "count" : "504388"
+      }, {
+        "item" : "Canal St (J,N,Q,R,W,Z,6)",
+        "count" : "499134"
+      }, {
+        "item" : "34 St-Penn Station (1,2,3)",
+        "count" : "488926"
+      }, {
+        "item" : "Lexington Av-53 St (E,M)/51 St (6)",
+        "count" : "485068"
+      }, {
+        "item" : "72 St (1,2,3)",
+        "count" : "482176"
+      } ],
+      "smallest" : "103 St (1)",
+      "count" : "102466982",
+      "cardinality" : "424"
+    },
+    "format" : { }
+  }, {
+    "id" : 596689308,
+    "name" : "Origin Latitude",
+    "dataTypeName" : "number",
+    "description" : "The latitude of the subway station complex where the trips originated.",
+    "fieldName" : "origin_latitude",
+    "position" : 8,
+    "renderTypeName" : "number",
+    "tableColumnId" : 153867791,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "40.903125",
+      "null" : "0",
+      "top" : [ {
+        "item" : "40.755746",
+        "count" : "729562"
+      }, {
+        "item" : "40.735066",
+        "count" : "639639"
+      }, {
+        "item" : "40.749643",
+        "count" : "621857"
+      }, {
+        "item" : "40.710089",
+        "count" : "614534"
+      }, {
+        "item" : "40.751992",
+        "count" : "608784"
+      }, {
+        "item" : "40.752287",
+        "count" : "567724"
+      }, {
+        "item" : "40.768272",
+        "count" : "560448"
+      }, {
+        "item" : "40.737796",
+        "count" : "534837"
+      }, {
+        "item" : "40.746746",
+        "count" : "526630"
+      }, {
+        "item" : "40.762593",
+        "count" : "524051"
+      }, {
+        "item" : "40.740335",
+        "count" : "520917"
+      }, {
+        "item" : "40.732338",
+        "count" : "519349"
+      }, {
+        "item" : "40.718463",
+        "count" : "518329"
+      }, {
+        "item" : "40.725606",
+        "count" : "515930"
+      }, {
+        "item" : "40.684162",
+        "count" : "513019"
+      }, {
+        "item" : "40.712603",
+        "count" : "504388"
+      }, {
+        "item" : "40.718701",
+        "count" : "499134"
+      }, {
+        "item" : "40.750373",
+        "count" : "488926"
+      }, {
+        "item" : "40.75733",
+        "count" : "485068"
+      }, {
+        "item" : "40.778453",
+        "count" : "482176"
+      } ],
+      "smallest" : "40.576127",
+      "count" : "102466982",
+      "cardinality" : "424"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ","
+    }
+  }, {
+    "id" : 596689309,
+    "name" : "Origin Longitude",
+    "dataTypeName" : "number",
+    "description" : "The longitude of the subway station complex where the trips originated.",
+    "fieldName" : "origin_longitude",
+    "position" : 9,
+    "renderTypeName" : "number",
+    "tableColumnId" : 153867792,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "-73.755405",
+      "null" : "0",
+      "top" : [ {
+        "item" : "-73.987581",
+        "count" : "729562"
+      }, {
+        "item" : "-73.990416",
+        "count" : "639639"
+      }, {
+        "item" : "-73.987887",
+        "count" : "621857"
+      }, {
+        "item" : "-74.007838",
+        "count" : "614534"
+      }, {
+        "item" : "-73.977359",
+        "count" : "608784"
+      }, {
+        "item" : "-73.993391",
+        "count" : "567724"
+      }, {
+        "item" : "-73.981833",
+        "count" : "560448"
+      }, {
+        "item" : "-73.997732",
+        "count" : "534837"
+      }, {
+        "item" : "-73.891366",
+        "count" : "526630"
+      }, {
+        "item" : "-73.967613",
+        "count" : "524051"
+      }, {
+        "item" : "-74.002134",
+        "count" : "520917"
+      }, {
+        "item" : "-74.000495",
+        "count" : "519349"
+      }, {
+        "item" : "-73.987776",
+        "count" : "518329"
+      }, {
+        "item" : "-73.995432",
+        "count" : "515930"
+      }, {
+        "item" : "-73.977789",
+        "count" : "513019"
+      }, {
+        "item" : "-74.009552",
+        "count" : "504388"
+      }, {
+        "item" : "-74.00058",
+        "count" : "499134"
+      }, {
+        "item" : "-73.991057",
+        "count" : "488926"
+      }, {
+        "item" : "-73.970487",
+        "count" : "485068"
+      }, {
+        "item" : "-73.98197",
+        "count" : "482176"
+      } ],
+      "smallest" : "-74.030876",
+      "count" : "102466982",
+      "cardinality" : "424"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ","
+    }
+  }, {
+    "id" : 596689310,
+    "name" : "Destination Station Complex ID",
+    "dataTypeName" : "number",
+    "description" : "The unique identifier for the subway station complex where the trips are inferred to have ended.",
+    "fieldName" : "destination_station_complex_id",
+    "position" : 10,
+    "renderTypeName" : "number",
+    "tableColumnId" : 153867793,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "636",
+      "null" : "0",
+      "top" : [ {
+        "item" : "611",
+        "count" : "690603"
+      }, {
+        "item" : "607",
+        "count" : "611277"
+      }, {
+        "item" : "602",
+        "count" : "610639"
+      }, {
+        "item" : "628",
+        "count" : "596739"
+      }, {
+        "item" : "610",
+        "count" : "591883"
+      }, {
+        "item" : "614",
+        "count" : "559419"
+      }, {
+        "item" : "164",
+        "count" : "559218"
+      }, {
+        "item" : "601",
+        "count" : "519461"
+      }, {
+        "item" : "617",
+        "count" : "512596"
+      }, {
+        "item" : "613",
+        "count" : "508632"
+      }, {
+        "item" : "616",
+        "count" : "507459"
+      }, {
+        "item" : "318",
+        "count" : "505741"
+      }, {
+        "item" : "624",
+        "count" : "505527"
+      }, {
+        "item" : "618",
+        "count" : "503148"
+      }, {
+        "item" : "619",
+        "count" : "497258"
+      }, {
+        "item" : "167",
+        "count" : "495371"
+      }, {
+        "item" : "623",
+        "count" : "486527"
+      }, {
+        "item" : "609",
+        "count" : "485056"
+      }, {
+        "item" : "625",
+        "count" : "479190"
+      }, {
+        "item" : "636",
+        "count" : "476967"
+      } ],
+      "smallest" : "1",
+      "count" : "102466982",
+      "cardinality" : "424"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ","
+    }
+  }, {
+    "id" : 596689311,
+    "name" : "Destination Station Complex Name",
+    "dataTypeName" : "text",
+    "description" : "The name of the subway station complex where the trips are inferred to have ended.",
+    "fieldName" : "destination_station_complex_name",
+    "position" : 11,
+    "renderTypeName" : "text",
+    "tableColumnId" : 153867794,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "Zerega Av (6)",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Times Sq-42 St (N,Q,R,W,S,1,2,3,7)/42 St (A,C,E)",
+        "count" : "690603"
+      }, {
+        "item" : "34 St-Herald Sq (B,D,F,M,N,Q,R,W)",
+        "count" : "611277"
+      }, {
+        "item" : "14 St-Union Sq (L,N,Q,R,W,4,5,6)",
+        "count" : "610639"
+      }, {
+        "item" : "Fulton St (A,C,J,Z,2,3,4,5)",
+        "count" : "596739"
+      }, {
+        "item" : "Grand Central-42 St (S,4,5,6,7)",
+        "count" : "591883"
+      }, {
+        "item" : "59 St-Columbus Circle (A,B,C,D,1)",
+        "count" : "559419"
+      }, {
+        "item" : "34 St-Penn Station (A,C,E)",
+        "count" : "559218"
+      }, {
+        "item" : "14 St (F,M,1,2,3)/6 Av (L)",
+        "count" : "519461"
+      }, {
+        "item" : "Atlantic Av-Barclays Ctr (B,D,N,Q,R,2,3,4,5)",
+        "count" : "512596"
+      }, {
+        "item" : "Lexington Av (N,R,W)/59 St (4,5,6)",
+        "count" : "508632"
+      }, {
+        "item" : "74-Broadway (7)/Jackson Hts-Roosevelt Av (E,F,M,R)",
+        "count" : "507459"
+      }, {
+        "item" : "34 St-Penn Station (1,2,3)",
+        "count" : "505741"
+      }, {
+        "item" : "Chambers St (A,C)/WTC (E)/Park Pl (2,3)/Cortlandt (R,W)",
+        "count" : "505527"
+      }, {
+        "item" : "14 St (A,C,E)/8 Av (L)",
+        "count" : "503148"
+      }, {
+        "item" : "Broadway-Lafayette St (B,D,F,M)/Bleecker St (6)",
+        "count" : "497258"
+      }, {
+        "item" : "W 4 St-Wash Sq (A,C,E,B,D,F,M)",
+        "count" : "495371"
+      }, {
+        "item" : "Canal St (J,N,Q,R,W,Z,6)",
+        "count" : "486527"
+      }, {
+        "item" : "Bryant Pk (B,D,F,M)/5 Av (7)",
+        "count" : "485056"
+      }, {
+        "item" : "Delancey St (F)/Essex St (J,M,Z)",
+        "count" : "479190"
+      }, {
+        "item" : "Jay St-MetroTech (A,C,F,R)",
+        "count" : "476967"
+      } ],
+      "smallest" : "103 St (1)",
+      "count" : "102466982",
+      "cardinality" : "424"
+    },
+    "format" : { }
+  }, {
+    "id" : 596689312,
+    "name" : "Destination Latitude",
+    "dataTypeName" : "number",
+    "description" : "The latitude of the subway station complex where the trips are inferred to have ended.",
+    "fieldName" : "destination_latitude",
+    "position" : 12,
+    "renderTypeName" : "number",
+    "tableColumnId" : 153867795,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "40.903125",
+      "null" : "0",
+      "top" : [ {
+        "item" : "40.755746",
+        "count" : "690603"
+      }, {
+        "item" : "40.749643",
+        "count" : "611277"
+      }, {
+        "item" : "40.735066",
+        "count" : "610639"
+      }, {
+        "item" : "40.710089",
+        "count" : "596739"
+      }, {
+        "item" : "40.751992",
+        "count" : "591883"
+      }, {
+        "item" : "40.768272",
+        "count" : "559419"
+      }, {
+        "item" : "40.752287",
+        "count" : "559218"
+      }, {
+        "item" : "40.737796",
+        "count" : "519461"
+      }, {
+        "item" : "40.684162",
+        "count" : "512596"
+      }, {
+        "item" : "40.762593",
+        "count" : "508632"
+      }, {
+        "item" : "40.746746",
+        "count" : "507459"
+      }, {
+        "item" : "40.750373",
+        "count" : "505741"
+      }, {
+        "item" : "40.712603",
+        "count" : "505527"
+      }, {
+        "item" : "40.740335",
+        "count" : "503148"
+      }, {
+        "item" : "40.725606",
+        "count" : "497258"
+      }, {
+        "item" : "40.732338",
+        "count" : "495371"
+      }, {
+        "item" : "40.718701",
+        "count" : "486527"
+      }, {
+        "item" : "40.754022",
+        "count" : "485056"
+      }, {
+        "item" : "40.718463",
+        "count" : "479190"
+      }, {
+        "item" : "40.692259",
+        "count" : "476967"
+      } ],
+      "smallest" : "40.576127",
+      "count" : "102466982",
+      "cardinality" : "424"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ","
+    }
+  }, {
+    "id" : 596689313,
+    "name" : "Destination Longitude",
+    "dataTypeName" : "number",
+    "description" : "The longitude of the subway station complex where the trips are inferred to have ended.",
+    "fieldName" : "destination_longitude",
+    "position" : 13,
+    "renderTypeName" : "number",
+    "tableColumnId" : 153867796,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "-73.755405",
+      "null" : "0",
+      "top" : [ {
+        "item" : "-73.987581",
+        "count" : "690603"
+      }, {
+        "item" : "-73.987887",
+        "count" : "611277"
+      }, {
+        "item" : "-73.990416",
+        "count" : "610639"
+      }, {
+        "item" : "-74.007838",
+        "count" : "596739"
+      }, {
+        "item" : "-73.977359",
+        "count" : "591883"
+      }, {
+        "item" : "-73.981833",
+        "count" : "559419"
+      }, {
+        "item" : "-73.993391",
+        "count" : "559218"
+      }, {
+        "item" : "-73.997732",
+        "count" : "519461"
+      }, {
+        "item" : "-73.977789",
+        "count" : "512596"
+      }, {
+        "item" : "-73.967613",
+        "count" : "508632"
+      }, {
+        "item" : "-73.891366",
+        "count" : "507459"
+      }, {
+        "item" : "-73.991057",
+        "count" : "505741"
+      }, {
+        "item" : "-74.009552",
+        "count" : "505527"
+      }, {
+        "item" : "-74.002134",
+        "count" : "503148"
+      }, {
+        "item" : "-73.995432",
+        "count" : "497258"
+      }, {
+        "item" : "-74.000495",
+        "count" : "495371"
+      }, {
+        "item" : "-74.00058",
+        "count" : "486527"
+      }, {
+        "item" : "-73.983266",
+        "count" : "485056"
+      }, {
+        "item" : "-73.987776",
+        "count" : "479190"
+      }, {
+        "item" : "-73.986642",
+        "count" : "476967"
+      } ],
+      "smallest" : "-74.030876",
+      "count" : "102466982",
+      "cardinality" : "424"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ","
+    }
+  }, {
+    "id" : 596689314,
+    "name" : "Estimated Average Ridership",
+    "dataTypeName" : "number",
+    "description" : "The estimated ridership for an origin-destination pair and hour of day, averaged by day of week over the calendar month.",
+    "fieldName" : "estimated_average_ridership",
+    "position" : 14,
+    "renderTypeName" : "number",
+    "tableColumnId" : 153867797,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "largest" : "806.9622",
+      "null" : "0",
+      "top" : [ {
+        "item" : "0.25",
+        "count" : "878852"
+      }, {
+        "item" : "0.3",
+        "count" : "459467"
+      }, {
+        "item" : "0.3125",
+        "count" : "404922"
+      }, {
+        "item" : "0.3332",
+        "count" : "399613"
+      }, {
+        "item" : "0.2",
+        "count" : "395460"
+      }, {
+        "item" : "0.2918",
+        "count" : "267018"
+      }, {
+        "item" : "0.2858",
+        "count" : "246180"
+      }, {
+        "item" : "0.2666",
+        "count" : "229688"
+      }, {
+        "item" : "0.375",
+        "count" : "220233"
+      }, {
+        "item" : "0.3215",
+        "count" : "210656"
+      }, {
+        "item" : "0.3055",
+        "count" : "188431"
+      }, {
+        "item" : "0.24",
+        "count" : "185067"
+      }, {
+        "item" : "0.5",
+        "count" : "173545"
+      }, {
+        "item" : "0.35",
+        "count" : "167537"
+      }, {
+        "item" : "0.275",
+        "count" : "154650"
+      }, {
+        "item" : "0.2813",
+        "count" : "151834"
+      }, {
+        "item" : "0.2955",
+        "count" : "149410"
+      }, {
+        "item" : "0.2334",
+        "count" : "146850"
+      }, {
+        "item" : "0.3183",
+        "count" : "144869"
+      }, {
+        "item" : "0.325",
+        "count" : "142388"
+      } ],
+      "smallest" : "0.1",
+      "count" : "102466982",
+      "cardinality" : "436954"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ",",
+      "align" : "left"
+    }
+  }, {
+    "id" : 596689315,
+    "name" : "Origin Point",
+    "dataTypeName" : "point",
+    "description" : "Open Data platform-generated geocoding information from supplied address components. Point-type location is the centroid of the address components provided and does not reflect a specific address if the street address component is not provided. Point-type location is supplied in \"POINT (<geocoded longitude> <geocoded latitude>)\" format.",
+    "fieldName" : "origin_point",
+    "position" : 15,
+    "renderTypeName" : "point",
+    "tableColumnId" : 153867798,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "null" : "0",
+      "top" : [ {
+        "item" : {
+          "coordinates" : [ -73.987581, 40.755746 ],
+          "type" : "Point"
+        },
+        "count" : "729562"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.990416, 40.735066 ],
+          "type" : "Point"
+        },
+        "count" : "639639"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.987887, 40.749643 ],
+          "type" : "Point"
+        },
+        "count" : "621857"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.007838, 40.710089 ],
+          "type" : "Point"
+        },
+        "count" : "614534"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.977359, 40.751992 ],
+          "type" : "Point"
+        },
+        "count" : "608784"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.993391, 40.752287 ],
+          "type" : "Point"
+        },
+        "count" : "567724"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.981833, 40.768272 ],
+          "type" : "Point"
+        },
+        "count" : "560448"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.997732, 40.737796 ],
+          "type" : "Point"
+        },
+        "count" : "534837"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.891366, 40.746746 ],
+          "type" : "Point"
+        },
+        "count" : "526630"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.967613, 40.762593 ],
+          "type" : "Point"
+        },
+        "count" : "524051"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.002134, 40.740335 ],
+          "type" : "Point"
+        },
+        "count" : "520917"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.000495, 40.732338 ],
+          "type" : "Point"
+        },
+        "count" : "519349"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.987776, 40.718463 ],
+          "type" : "Point"
+        },
+        "count" : "518329"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.995432, 40.725606 ],
+          "type" : "Point"
+        },
+        "count" : "515930"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.977789, 40.684162 ],
+          "type" : "Point"
+        },
+        "count" : "513019"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.009552, 40.712603 ],
+          "type" : "Point"
+        },
+        "count" : "504388"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.00058, 40.718701 ],
+          "type" : "Point"
+        },
+        "count" : "499134"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.991057, 40.750373 ],
+          "type" : "Point"
+        },
+        "count" : "488926"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.970487, 40.75733 ],
+          "type" : "Point"
+        },
+        "count" : "485068"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.98197, 40.778453 ],
+          "type" : "Point"
+        },
+        "count" : "482176"
+      } ],
+      "count" : "102466982",
+      "cardinality" : "424"
+    },
+    "format" : { }
+  }, {
+    "id" : 596689316,
+    "name" : "Destination Point",
+    "dataTypeName" : "point",
+    "description" : "Open Data platform-generated geocoding information from supplied address components. Point-type location is the centroid of the address components provided and does not reflect a specific address if the street address component is not provided. Point-type location is supplied in \"POINT (<geocoded longitude> <geocoded latitude>)\" format.",
+    "fieldName" : "destination_point",
+    "position" : 16,
+    "renderTypeName" : "point",
+    "tableColumnId" : 153867799,
+    "cachedContents" : {
+      "non_null" : "102466982",
+      "null" : "0",
+      "top" : [ {
+        "item" : {
+          "coordinates" : [ -73.987581, 40.755746 ],
+          "type" : "Point"
+        },
+        "count" : "690603"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.987887, 40.749643 ],
+          "type" : "Point"
+        },
+        "count" : "611277"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.990416, 40.735066 ],
+          "type" : "Point"
+        },
+        "count" : "610639"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.007838, 40.710089 ],
+          "type" : "Point"
+        },
+        "count" : "596739"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.977359, 40.751992 ],
+          "type" : "Point"
+        },
+        "count" : "591883"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.981833, 40.768272 ],
+          "type" : "Point"
+        },
+        "count" : "559419"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.993391, 40.752287 ],
+          "type" : "Point"
+        },
+        "count" : "559218"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.997732, 40.737796 ],
+          "type" : "Point"
+        },
+        "count" : "519461"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.977789, 40.684162 ],
+          "type" : "Point"
+        },
+        "count" : "512596"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.967613, 40.762593 ],
+          "type" : "Point"
+        },
+        "count" : "508632"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.891366, 40.746746 ],
+          "type" : "Point"
+        },
+        "count" : "507459"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.991057, 40.750373 ],
+          "type" : "Point"
+        },
+        "count" : "505741"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.009552, 40.712603 ],
+          "type" : "Point"
+        },
+        "count" : "505527"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.002134, 40.740335 ],
+          "type" : "Point"
+        },
+        "count" : "503148"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.995432, 40.725606 ],
+          "type" : "Point"
+        },
+        "count" : "497258"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.000495, 40.732338 ],
+          "type" : "Point"
+        },
+        "count" : "495371"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.00058, 40.718701 ],
+          "type" : "Point"
+        },
+        "count" : "486527"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.983266, 40.754022 ],
+          "type" : "Point"
+        },
+        "count" : "485056"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.987776, 40.718463 ],
+          "type" : "Point"
+        },
+        "count" : "479190"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.986642, 40.692259 ],
+          "type" : "Point"
+        },
+        "count" : "476967"
+      } ],
+      "count" : "102466982",
+      "cardinality" : "424"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "metadata" : {
+    "attachments" : [ {
+      "filename" : "MTA_SubwayOriginDestinationRidershipEstimate_Overview.pdf",
+      "assetId" : "11596109-1af7-4a7e-9761-d557634415c6",
+      "name" : "MTA_SubwayOriginDestinationRidershipEstimate_Overview.pdf"
+    }, {
+      "filename" : "MTA_SubwayOriginDestinationRidershipEstimate_DataDictionary.pdf",
+      "assetId" : "cbdbab56-dba6-402e-b1d3-49d1cb4df749",
+      "name" : "MTA_SubwayOriginDestinationRidershipEstimate_DataDictionary.pdf"
+    } ],
+    "custom_fields" : {
+      "Dataset Summary" : {
+        "Posting Frequency" : "Static - Not Updated",
+        "Organization" : "New York City Transit",
+        "Contact Information" : "OpenData@mtahq.org",
+        "Time Period" : "2021",
+        "Coverage" : "New York City",
+        "Granularity" : "Month, hour, origin subway station, destination subway station",
+        "Dataset Owner" : "Metropolitan Transportation Authority"
+      },
+      "Additional Resources" : {
+        "See Also" : "https://metrics.mta.info/"
+      },
+      "Notes" : {
+        "Notes" : "Due to data collection and processing requirements, there is a one-month lag between the data and month it is published (e.g. the update in April will only contain data through February)."
+      },
+      "Dataset Information" : {
+        "Agency" : "Metropolitan Transportation Authority"
+      }
+    },
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "xzik-pf59",
+    "displayName" : "NY Open Data",
+    "profileImageUrlLarge" : "/api/users/xzik-pf59/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/xzik-pf59/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/xzik-pf59/profile_images/TINY",
+    "screenName" : "NY Open Data",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "xzik-pf59",
+    "displayName" : "NY Open Data",
+    "profileImageUrlLarge" : "/api/users/xzik-pf59/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/xzik-pf59/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/xzik-pf59/profile_images/TINY",
+    "screenName" : "NY Open Data",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "new york city transit", "nyct", "subway", "ridership", "passengers", "customers", "metrocard", "omny", "fares", "monthly", "hourly", "stations", "subway stations", "station complexes", "coordinates", "origin-destination", "od", "origins", "destinations", "travel patterns" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

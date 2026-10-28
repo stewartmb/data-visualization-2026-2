@@ -1,0 +1,85 @@
+{
+  "source": "https://data.ny.gov/api/views/uhf3-t34z.json",
+  "fields": [
+    {
+      "field": "year",
+      "type": "number",
+      "definition": "The year in which the subway trips occurred."
+    },
+    {
+      "field": "month",
+      "type": "number",
+      "definition": "The month in which the subway trips occurred."
+    },
+    {
+      "field": "day_of_week",
+      "type": "text",
+      "definition": "The day of the week on which the subway trips occurred (Monday, Tuesday, etc.)."
+    },
+    {
+      "field": "hour_of_day",
+      "type": "number",
+      "definition": "The hour of the day in which the subway trips occurred. All trip times are rounded down to the nearest hour."
+    },
+    {
+      "field": "timestamp",
+      "type": "calendar_date",
+      "definition": " Representative datetime for the year, month, day of week, and hour of day in which the subway trips occurred. This date will be from the first full week of the month."
+    },
+    {
+      "field": "origin_station_complex_id",
+      "type": "number",
+      "definition": "The unique identifier for the subway station complex where the trips originated."
+    },
+    {
+      "field": "origin_station_complex_name",
+      "type": "text",
+      "definition": "The name of the subway station complex where the trips originated."
+    },
+    {
+      "field": "origin_latitude",
+      "type": "number",
+      "definition": "The latitude of the subway station complex where the trips originated."
+    },
+    {
+      "field": "origin_longitude",
+      "type": "number",
+      "definition": "The longitude of the subway station complex where the trips originated."
+    },
+    {
+      "field": "destination_station_complex_id",
+      "type": "number",
+      "definition": "The unique identifier for the subway station complex where the trips are inferred to have ended."
+    },
+    {
+      "field": "destination_station_complex_name",
+      "type": "text",
+      "definition": "The name of the subway station complex where the trips are inferred to have ended."
+    },
+    {
+      "field": "destination_latitude",
+      "type": "number",
+      "definition": "The latitude of the subway station complex where the trips are inferred to have ended."
+    },
+    {
+      "field": "destination_longitude",
+      "type": "number",
+      "definition": "The longitude of the subway station complex where the trips are inferred to have ended."
+    },
+    {
+      "field": "estimated_average_ridership",
+      "type": "number",
+      "definition": "The estimated ridership for an origin-destination pair and hour of day, averaged by day of week over the calendar month."
+    },
+    {
+      "field": "origin_point",
+      "type": "point",
+      "definition": "Open Data platform-generated geocoding information from supplied address components. Point-type location is the centroid of the address components provided and does not reflect a specific address if the street address component is not provided. Point-type location is supplied in \"POINT (<geocoded longitude> <geocoded latitude>)\" format."
+    },
+    {
+      "field": "destination_point",
+      "type": "point",
+      "definition": "Open Data platform-generated geocoding information from supplied address components. Point-type location is the centroid of the address components provided and does not reflect a specific address if the street address component is not provided. Point-type location is supplied in \"POINT (<geocoded longitude> <geocoded latitude>)\" format."
+    }
+  ]
+}

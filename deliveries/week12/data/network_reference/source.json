@@ -1,0 +1,24 @@
+{
+  "url": "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip",
+  "resolved_url": "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip",
+  "retrieved_at_utc": "2026-10-28T01:28:56.773372+00:00",
+  "sha256": "2c9e69b82ac596a2fe660b56656509570cfba3c2e4c50be75eaf624eee1bc6f8",
+  "bytes": 5615228,
+  "file": "data/raw/enrichments/gtfs_subway.zip",
+  "etag": "\"bd592a3af7495b744609857b038370b5\"",
+  "last_modified": "Thu, 27 Aug 2026 13:39:18 GMT",
+  "meaning": "Official GTFS reference snapshot. Not a historical 2021-2024 network or observed passenger paths.",
+  "feed_info": [
+    {
+      "feed_publisher_name": "MTA New York City Transit",
+      "feed_publisher_url": "https://www.mta.info/",
+      "feed_lang": "EN",
+      "feed_start_date": "20260526",
+      "feed_end_date": "20261031",
+      "feed_version": "20260826-X-long-term-supplement-trip-ids",
+      "feed_contact_url": "https://groups.google.com/forum/#!forum/mtadeveloperresources"
+    }
+  ],
+  "graph_file": "atlas/data/network_current.json",
+  "graph_sha256": "4ad20971f5816624c7861082738adaabec644409e66d760a77e40570894d4ac0"
+}
