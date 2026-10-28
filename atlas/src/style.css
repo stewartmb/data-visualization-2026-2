@@ -391,3 +391,9 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
 .od-stage,.od-stage .map-svg{background:#f1f2f3}
 .od-stage .map-bg{fill:#e1e3e4;stroke:#bac0c3;stroke-width:.65}
 .od-stage .map-dot.quiet{stroke:#fff;stroke-width:.7}
+
+/* Full-width controls leave enough travel for precise bundling adjustments. */
+.od-stage .flow-controls{grid-template-columns:minmax(0,1fr)}
+.od-stage .fidelity{grid-column:1/-1;margin-top:4px;font-size:10px}
+.od-stage .fidelity input{width:100%;height:22px;margin:2px 0}
+@media(min-width:1000px){.od-stage .map-panel-controls{width:250px}}

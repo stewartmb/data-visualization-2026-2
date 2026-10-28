@@ -1,5 +1,5 @@
 import {state,BASE,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats,passesMetricRanges,cohortProfile} from './model.js?v=20261028-4';
-import {RaebOverlay} from './raeb-overlay.mjs?v=bands1';
+import {RaebOverlay} from './raeb-overlay.mjs?v=controls2';
 let transform=d3.zoomIdentity;
 const names={change:'Cambio de forma · distancia TV (pp)',deltaAM:'Cambio del peso AM · puntos porcentuales',deltaWeekend:'Cambio del peso de fin de semana · puntos porcentuales',recovery:'Índice de volumen · '+BASE+' = 100 %'};
 
@@ -43,8 +43,7 @@ export function renderMap(host,app,items){
         <svg id="flow-profile" class="flow-profile" aria-label="Entradas del sistema por hora"></svg>
         <input id="flow-hour" class="flow-slider" type="range" min="0" max="23" step="1" value="${state.flowHour}" aria-label="Hora de entrada">
         <div class="flow-ticks"><span>12 am</span><span>6 am</span><span>12 pm</span><span>6 pm</span><span>11 pm</span></div>
-        <div id="raeb-status" role="status" class="raeb-status">Preparando relaciones OD…</div>
-        <div class="eyebrow" style="margin-top:10px">AGRUPACIÓN DE RECORRIDOS</div>
+        <div id="raeb-status" role="status" class="raeb-status">Procesando…</div>
         <label class="fidelity"><span>Agrupación <output id="bundling-out">${state.bundling.toFixed(2)}</output></span><input id="bundling" type="range" min="0" max="1" step="0.01" value="${state.bundling}" aria-label="Agrupación de recorridos"><small>0: sin atracción entre curvas · 1: agrupamiento con el radio estimado por RAEB. Actúa sobre todos los pares OD de esta hora.</small></label>
         <label class="fidelity"><span>Fidelidad geométrica <output id="fidelity-out">${state.fidelity.toFixed(2)}</output></span><input id="fidelity" type="range" min="0" max="1" step="0.01" value="${state.fidelity}" aria-label="Fidelidad geométrica de los trazos"><small>0: abstracción libre, puede cruzar el agua · 1: recorridos de referencia. Los trazos intermedios son una abstracción visual; los viajes OD no cambian.</small></label>
       </div>`:''}
@@ -58,7 +57,7 @@ export function renderMap(host,app,items){
         ${filters.length?`<div class="metric-filter-chips">${filters.map(([key,label])=>`<button data-clear-metric="${key}" title="Quitar este filtro">${esc(label)} ×</button>`).join('')}</div>`:''}
       </details>
       </div>
-      <div class="map-control"><button id="map-select">Seleccionar área</button><button id="map-center">Ver toda la red ↺</button></div>
+      <div class="map-control"><button id="map-select">Seleccionar área</button><button id="map-center" title="Quitar la selección y mostrar toda la red">Vista general ↺</button></div>
     </div>
     <div class="map-panel map-legend" aria-label="Leyenda">
       ${flujos?`<div class="map-legend-title">Relaciones OD · <span id="flow-legend-hour">${ampm(state.flowHour)}</span> · ${DAYS_LONG[state.flowDay]}</div>
@@ -102,7 +101,8 @@ export function renderMap(host,app,items){
   if(flujos){
     const baseSvg=document.createElementNS('http://www.w3.org/2000/svg','svg');
     baseSvg.setAttribute('viewBox',`0 0 ${width} ${height}`);baseSvg.setAttribute('aria-hidden','true');
-    baseSvg.style.cssText=`position:absolute;left:0;top:0;width:${width}px;height:${height}px;pointer-events:none;z-index:0`;
+    const mapRect=svgNode.getBoundingClientRect(),stage=svgNode.parentElement,stageRect=stage.getBoundingClientRect();
+    baseSvg.style.cssText=`position:absolute;left:${mapRect.left-stageRect.left-stage.clientLeft}px;top:${mapRect.top-stageRect.top-stage.clientTop}px;width:${width}px;height:${height}px;pointer-events:none;z-index:0`;
     svgNode.parentElement.insertBefore(baseSvg,svgNode);baseG=d3.select(baseSvg).append('g');
     svgNode.style.position='relative';svgNode.style.zIndex='2';svgNode.style.background='transparent';
   }
@@ -166,7 +166,7 @@ export function renderMap(host,app,items){
   g.selectAll('.context-point').data(app.data.stations.filter(s=>!ids.has(s.id)&&profile(s)&&passesMetricRanges(s))).join('circle').attr('class','context-point').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',1.6).attr('fill','#b8c7c1').attr('opacity',.45);
   const R=flujos?2.4:5.2;const rOf=s=>flujos&&nodeR?nodeR(s):R;
   const points=g.selectAll('.map-dot').data(items).join('circle').attr('class','map-dot'+(flujos?' quiet':'')).attr('data-station-id',s=>s.id).attr('vector-effect','non-scaling-stroke').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',s=>rOf(s)).attr('fill',s=>flujos?'#1d6f8dcc':color(metricValue(s,state.mapMetric)))
-    .on('pointerenter',function(e,s){d3.select(this).raise().transition().duration(120).attr('r',(flujos?rOf(s)+3:8)/transform.k);showTooltip(flujos?`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${DAYS_LONG[state.flowDay]} ${ampm(state.flowHour)}: ${fmt(Math.round(app.flows.starts[String(state.year)][app.flows.nodes.findIndex(n=>n.id===s.id)][state.flowDay][state.flowHour]))} viajes iniciados<br><small>Clic: sus conexiones salientes</small>`:`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${names[state.mapMetric]}: ${fmt(metricValue(s,state.mapMetric))}<br><small>Clic para abrir huella y evidencia</small>`,e);}).on('pointermove',(e,s)=>showTooltip(`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${names[state.mapMetric]}: ${fmt(metricValue(s,state.mapMetric))}`,e)).on('pointerleave',function(e,s){d3.select(this).transition().duration(160).attr('r',rOf(s)/transform.k);hideTooltip();}).on('click',(e,s)=>{e.stopPropagation();e.shiftKey?app.pin(s.id):app.select(s.id);});
+    .on('pointerenter',function(e,s){d3.select(this).raise().transition().duration(120).attr('r',(flujos?rOf(s)+3:8)/transform.k);showTooltip(flujos?`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${DAYS_LONG[state.flowDay]} ${ampm(state.flowHour)}: ${fmt(Math.round(app.flows.starts[String(state.year)][app.flows.nodes.findIndex(n=>n.id===s.id)][state.flowDay][state.flowHour]))} viajes iniciados<br><small>Clic: sus conexiones salientes</small>`:`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${names[state.mapMetric]}: ${fmt(metricValue(s,state.mapMetric))}<br><small>Clic para abrir huella y evidencia</small>`,e);}).on('pointermove',(e,s)=>showTooltip(`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${names[state.mapMetric]}: ${fmt(metricValue(s,state.mapMetric))}`,e)).on('pointerleave',function(e,s){d3.select(this).transition().duration(160).attr('r',rOf(s)/transform.k);hideTooltip();}).on('click',(e,s)=>{e.stopPropagation();e.shiftKey?app.pin(s.id):app.select(state.selected===s.id?null:s.id);});
   // Entrada animada: al cambiar medida, filtro o año, los puntos aparecen en vez de saltar.
   points.attr('opacity',1);
   // Draw larger changes last so low values cannot cover them in dense areas.
@@ -237,7 +237,8 @@ export function renderMap(host,app,items){
   host.querySelector('.minimap-counts').innerHTML=['Manhattan','Bronx','Brooklyn','Queens'].map(b=>`<span>${b}<b>${porB.get(b)??0}</b></span>`).join('');
   zoom.on('zoom.mini',e=>pintarMini(e.transform));
   svg.call(zoom).call(zoom.transform,transform);
-  host.querySelector('#map-center').onclick=()=>{transform=d3.zoomIdentity;svg.transition().duration(250).call(zoom.transform,transform);};
+  host.querySelector('#map-center').onclick=()=>{transform=d3.zoomIdentity;if(state.selected){app.set({selected:null});return;}svg.transition().duration(250).call(zoom.transform,transform);};
+  svg.on('click.clear-selection',event=>{if(state.selected&&!event.defaultPrevented)app.set({selected:null});});
   let brushLayer=null;
   host.querySelector('#map-select').onclick=e=>{
     const b=e.currentTarget;

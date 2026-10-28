@@ -1,10 +1,9 @@
-import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=gpu4';
+import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=controls2';
 import {RaebWebGPU} from './raeb-webgpu.mjs?v=bands1';
 
 // D3 retains interaction and linked panels. CPU prepares route hierarchies;
 // density, motion, convergence and flow rasterization stay on the GPU.
 export class RaebOverlay extends RaebCPUOverlay{
- status(text){super.status(this.gpu&&!text.startsWith('WebGPU')?'WebGPU · '+text:text);}
  constructor(data){
   super(data);this.cpuRenderer=this.renderer;this.gpu=false;
   const disabled=new URLSearchParams(location.search).get('compute')==='cpu';
@@ -61,12 +60,11 @@ export class RaebOverlay extends RaebCPUOverlay{
     const job=this.gpuPending;this.gpuPending=null;
     const cancelled=()=>job.sourceId!==this.sourceId||job.id!==this.requestId||!this.gpu;
     if(cancelled())continue;
-    this.status('WebGPU · calculando los haces…');
-    const stats=await this.renderer.solve(job.fidelity,job.strength,{cancelled,onIteration:s=>{if(!cancelled())this.status(`WebGPU · refinando · ${s.iterations} iteraciones`);}});
+    this.status('Procesando…');
+    const stats=await this.renderer.solve(job.fidelity,job.strength,{cancelled});
     if(!stats||cancelled())continue;
     const r=this.renderer;r.canvas.dataset.totalLatencyMs=(performance.now()-this.parameterStarted).toFixed(1);r.canvas.dataset.layoutStats=JSON.stringify(stats);
-    const kind=job.fidelity===0?'Abstracción libre':job.fidelity===1?'Caminos de referencia':'Abstracción guiada por la red';
-    this.status(`WebGPU · ${kind} · ${r.count.toLocaleString('es-PE')} relaciones OD${stats.converged?'':' · refinamiento parcial'}`);
+    this.status(stats.converged?'Completado':'Completado (parcial)');
     const el=document.querySelector('#raeb-status');if(el)el.title=`GPU: ${stats.iterations} iteraciones · NMI ${stats.nmi.toFixed(3)} · ${Math.round(stats.ms)} ms · densidad óptica antes del estilo · ${stats.cacheHit?'caché':'cálculo'}`;
    }
   }catch(error){this.fallback(error);}

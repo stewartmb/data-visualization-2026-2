@@ -94,3 +94,12 @@ Si `τ` es el peso óptico acumulado del trazo (`q/800`), el semiancho es `r = 0
 El solver, los valores OD, las semillas y el NMI canónico no cambian por este estilo. Por tanto, el NMI no es una comparación de capturas finales con bandas. La leyenda del mapa indica la escala raíz y la fusión visual. El respaldo CPU conserva su dibujo anterior.
 
 Prueba reproducible: servir `tests/webgpu-bands.html` por HTTP. Comprueba que mayor peso produce mayor ancho, nueve aportes coincidentes equivalen exactamente a su suma, la opacidad central queda acotada, `b=0` conserva un píxel y la selección es naranja. Resultado observado: anchos de 5 y 9 píxeles en el fixture, 1 píxel sin agrupación y alfa central máximo 0,8196. La prueba CPU/GPU de una iteración continúa pasando. Comprobación visual adicional en la escena completa, zoom y fidelidad=1.
+
+
+## Controles y retorno a la vista general
+
+El estado visible del cálculo usa tres mensajes normales: `Procesando…`, `Completado` y `Completado (parcial)`. El último conserva el significado previo: finalizó el presupuesto de iteraciones sin cumplir el umbral de NMI. Los detalles técnicos quedan en el título del estado y en los atributos de diagnóstico del canvas; los errores reales siguen mostrándose como errores. Se aplica tanto a WebGPU como al respaldo CPU.
+
+Agrupación y fidelidad geométrica ocupan filas separadas con sliders de ancho completo. `Vista general ↺` elimina el complejo seleccionado y restablece el zoom; pulsar el mismo nodo de nuevo o el fondo del mapa elimina la selección manteniendo la cámara. También se conserva Escape. La dispersión y el reloj vuelven al sujeto general, sin cambiar año, hora ni año de contraste.
+
+En el diseño estrecho, la capa de curvas y el fondo geográfico se posicionan sobre el rectángulo real del SVG del mapa, debajo de los controles. Se comprobó que canvas y SVG comparten ubicación y tamaño después de apilar los sliders.

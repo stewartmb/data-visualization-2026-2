@@ -13,7 +13,8 @@ export class RaebCPUOverlay{
     // in WebKit. Pointer events pass through to the SVG's station marks.
     const stage=group.ownerSVGElement.closest('.map-stage');
     const canvas=this.renderer.canvas;
-    canvas.style.position='absolute';canvas.style.left='0';canvas.style.top='0';canvas.style.zIndex='1';
+    const mapRect=group.ownerSVGElement.getBoundingClientRect(),stageRect=stage.getBoundingClientRect();
+    canvas.style.position='absolute';canvas.style.left=(mapRect.left-stageRect.left-stage.clientLeft)+'px';canvas.style.top=(mapRect.top-stageRect.top-stage.clientTop)+'px';canvas.style.zIndex='1';
     canvas.style.width=width+'px';canvas.style.height=height+'px';stage.appendChild(canvas);
     this.renderer.resize(width,height);
     this.exactGroup=document.createElementNS('http://www.w3.org/2000/svg','g');
@@ -32,7 +33,7 @@ export class RaebCPUOverlay{
     if(selectedIndex!==this.renderer.selected){this.selectedLinks=null;this.worker.postMessage({type:'selection',sourceId:this.sourceId,selected:selectedIndex});}
     this.renderer.selected=selectedIndex;this.year=year;this.day=day;this.hour=hour;this.paintReference();this.renderer.schedule();
     if(key===this.currentKey)return;this.parameterStarted=performance.now();this.currentKey=key;this.selectedLinks=null;this.sourceId++;
-    this.renderer.count=0;this.renderer.schedule();this.status(this.fidelity===1?'Caminos de referencia · geometría GTFS completa':'Preparando relaciones OD…');
+    this.renderer.count=0;this.renderer.schedule();this.status('Procesando…');
     const networkUrl=new URL('../data/'+this.data.meta.raeb.network,import.meta.url).href;
     const frameUrl=new URL(`../data/raeb/${year}/${day}-${String(hour).padStart(2,'0')}.f32.gz`,import.meta.url).href;
     const nodes=this.data.nodes.map(n=>p([n.lon,n.lat]));
@@ -47,7 +48,7 @@ export class RaebCPUOverlay{
   parameters(fidelity,strength){
     this.requestId++;this.parameterStarted=performance.now();this.renderer.awaitingSeed=fidelity>0&&fidelity<1;this.fidelity=fidelity;this.strength=strength;this.paintReference();this.renderer.setParameters(fidelity,strength);
     const status=document.querySelector('#raeb-status');if(status)status.removeAttribute('title');
-    this.status(fidelity===1?'Caminos de referencia · geometría GTFS completa':fidelity===0?'Vista previa libre · refinando los haces…':'Vista previa guiada · refinando los haces…');
+    this.status('Procesando…');
     clearTimeout(this.parameterTimer);
     this.parameterTimer=setTimeout(()=>this.request(),75);
   }
@@ -63,7 +64,6 @@ export class RaebCPUOverlay{
       const alpha=1-Math.exp(-(selected>0?selected:total)*membership/800);
       el.setAttribute('opacity',String(alpha*(focused&&selected<=0?.18:1)));
     });
-    if(exact)this.status('Caminos de referencia · geometría GTFS completa');
   }
   request(){
     if(!this.renderer.count)return;
@@ -79,20 +79,19 @@ export class RaebCPUOverlay{
       r.scene(this.free,this.reference,new Float32Array(m.metadata),m.count,m.samples,new Float32Array(m.retention));
       r.setParameters(this.fidelity??.9,this.strength??.65);this.request();
       r.canvas.dataset.curves=String(m.count);r.canvas.dataset.samples=String(m.samples);
-      this.status(this.fidelity===1?'Caminos de referencia · geometría GTFS completa':'Calculando el campo de densidad…');
+      this.status('Procesando…');
     }else if(m.type==='seed'||m.type==='layout'||m.type==='progress'){
       if(m.id!==this.requestId)return;
       r.awaitingSeed=false;
       if(m.type==='seed')r.canvas.dataset.seedLatencyMs=(performance.now()-this.parameterStarted).toFixed(1);
       if(this.fidelity!==1)r.layout(new Float32Array(m.points));
-      if(m.type==='seed')this.status(this.fidelity===0?'Agrupando relaciones OD…':'Guía lista · ajustando agrupación…');
+      if(m.type==='seed')this.status('Procesando…');
       if(m.type==='layout'){
         if(m.fidelity===0&&m.strength===1){
           this.free=new Float32Array(m.points);r.anchors(this.free,this.reference);
         }
         r.canvas.dataset.layoutStats=JSON.stringify(m.stats);r.canvas.dataset.totalLatencyMs=(performance.now()-this.parameterStarted).toFixed(1);
-        const kind=(this.fidelity??.9)===0?'Abstracción libre':(this.fidelity??.9)===1?'Caminos de referencia':'Abstracción guiada por la red';
-        this.status(`${kind} · ${r.count.toLocaleString('es-PE')} relaciones OD${m.stats.converged?'':' · refinamiento parcial'}`);
+        this.status(m.stats.converged?'Completado':'Completado (parcial)');
         const status=document.querySelector('#raeb-status');if(status)status.title=`${m.stats.iterations} iteraciones · NMI ${m.stats.nmi.toFixed(3)} · ${Math.round(m.stats.ms)} ms. La desviación, cuando aparece, usa una muestra de hasta 128 curvas.`;
       }
     }else if(m.type==='error'){this.status(m.message);console.error('RAEB:',m.message);}
