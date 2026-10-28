@@ -40,7 +40,7 @@ export function renderMap(host,app,items){
       ${app.flows?`<div class="segmented map-layer" role="group" aria-label="Capa del mapa"><button data-layer="points" class="${!flujos?'active':''}">Cambio por complejo</button><button data-layer="flows" class="${flujos?'active':''}">Flujos por hora</button></div>`:''}
       ${flujos?`<div class="flow-controls">
         <div class="flow-hour-row"><span class="flow-day-current">${DAYS_LONG[state.flowDay]}</span><output id="flow-hour-label" class="flow-hour-label">${ampm(state.flowHour)}</output><div class="segmented flow-day">${DAYS.map((d,i)=>`<button data-flowday="${i}" class="${state.flowDay===i?'active':''}" title="${DAYS_LONG[i]}">${d.slice(0,2)}</button>`).join('')}</div></div>
-        <svg id="flow-profile" class="flow-profile" aria-label="Entradas del sistema por hora"></svg>
+        <svg id="flow-profile" class="flow-profile" aria-label="Viajes OD iniciados por hora en el año seleccionado"></svg>
         <input id="flow-hour" class="flow-slider" type="range" min="0" max="23" step="1" value="${state.flowHour}" aria-label="Hora de entrada">
         <div class="flow-ticks"><span>12 am</span><span>6 am</span><span>12 pm</span><span>6 pm</span><span>11 pm</span></div>
         <div id="raeb-status" role="status" class="raeb-status">Procesando…</div>
@@ -131,12 +131,10 @@ export function renderMap(host,app,items){
       app.raeb?.frame(state.year,state.flowDay,h,state.selected);app.syncURL?.();
     };
     const porHora=d3.range(24).map(h=>d3.sum(F.starts[String(state.year)],n=>n[state.flowDay][h]));
-    const baseHora=d3.range(24).map(h=>d3.sum(F.starts[String(BASE)],n=>n[state.flowDay][h]));
     const svgP=d3.select(host.querySelector('#flow-profile')),PW=host.querySelector('#flow-profile').clientWidth||222,PH=46;
     svgP.attr('viewBox',`0 0 ${PW} ${PH}`);
-    const px=d3.scaleLinear().domain([0,23]).range([7,PW-7]),py=d3.scaleLinear().domain([0,Math.max(...porHora,...baseHora)]).range([PH-2,12]);
+    const px=d3.scaleLinear().domain([0,23]).range([7,PW-7]),py=d3.scaleLinear().domain([0,Math.max(...porHora)]).range([PH-2,12]);
     svgP.append('path').attr('d',d3.area().x((v,i)=>px(i)).y0(PH-2).y1(v=>py(v)).curve(d3.curveMonotoneX)(porHora)).attr('fill','#1d6f8d').attr('opacity',.14);
-    svgP.append('path').attr('d',d3.line().x((v,i)=>px(i)).y(v=>py(v)).curve(d3.curveMonotoneX)(baseHora)).attr('fill','none').attr('stroke','#909798').attr('stroke-width',1).attr('stroke-dasharray','2 2');
     svgP.append('path').attr('d',d3.line().x((v,i)=>px(i)).y(v=>py(v)).curve(d3.curveMonotoneX)(porHora)).attr('fill','none').attr('stroke','#1d6f8d').attr('stroke-width',1.2);
     const marca=svgP.append('g');marca.append('line').attr('y1',4).attr('y2',PH-2).attr('stroke','#1b2a33');marca.append('circle').attr('r',2.6).attr('fill','#1b2a33');
     const pintarBase=pintarFlujos;pintarFlujos=h=>{pintarBase(h);marca.attr('transform',`translate(${px(h)},0)`);marca.select('circle').attr('cy',py(porHora[h]));};

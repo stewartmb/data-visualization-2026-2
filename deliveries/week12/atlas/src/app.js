@@ -1,6 +1,6 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=20261028-controls2';
+import {renderMap} from './map-view.js?v=20261028-od-year';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=20261014-9';
 import {renderInspector} from './inspector.js?v=20261028-release1';
@@ -106,7 +106,7 @@ function render(){
   const previousScroll=document.querySelector('.matrix-scroll')?.scrollTop||0;
   const items=app.filtered();
   document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===state.view);b.setAttribute('aria-current',b.dataset.view===state.view?'page':'false');});
-  document.querySelector('#year').value=state.year;document.querySelector('#base').value=BASE;document.querySelector('#borough').value=state.borough;
+  document.querySelector('#year').value=state.year;document.querySelector('#borough').value=state.borough;
   document.querySelector('#search').value=state.query;
   const periodLabel=document.querySelector('#period-label');if(periodLabel)periodLabel.textContent=`${state.year}`;
   document.querySelector('#cohort-count').textContent=`${items.length} / ${data.stations.length} complejos`;
@@ -163,8 +163,7 @@ Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json
   if(state.contrastBase<2021)await loadHistoricalProfiles();
   document.querySelector('#loading').hidden=true;
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>app.set({view:b.dataset.view})));
-  document.querySelector('#year').addEventListener('change',e=>{const y=+e.target.value;if(y<=BASE)setBase(y-1);app.set({year:y});});
-  document.querySelector('#base').addEventListener('change',e=>{const b=+e.target.value;setBase(b);app.set(b>=state.year?{year:b+1}:{});});
+  document.querySelector('#year').addEventListener('change',e=>{const y=+e.target.value;if(y<=BASE)setBase(Math.max(2021,y-1));app.set({year:y});});
   // Entradas al análisis: un selector en el panel del mapa (se delega porque la vista se redibuja).
   document.addEventListener('change',e=>{if(e.target.id==='preset-select')app.set({preset:e.target.value||null,cohort:null,query:'',sort:'change'});});
   document.querySelector('#borough').addEventListener('change',e=>app.set({borough:e.target.value}));
