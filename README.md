@@ -1,4 +1,4 @@
-# La forma del día · Atlas de ritmos
+# Fractal · la forma del día · Atlas de ritmos
 
 **Cómo cambió el ritmo horario de las entradas al metro de Nueva York**
 DS5343 Data Visualization · UTEC · 2026-2
@@ -6,6 +6,21 @@ DS5343 Data Visualization · UTEC · 2026-2
 Renzo Alfonso Acervo Correa · Diva Stewart Maquera Bobadilla
 
 > Esta rama propone un rediseño del proyecto: `codex/atlas-ritmos-urbanos`. La aplicación nueva está en `atlas/`. El prototipo y entregas anteriores se conservan como historia del desarrollo.
+
+## Entrega de la Semana 12 (28 de octubre)
+
+La aplicación entregada es el **atlas** ([`atlas/`](atlas/)), en línea en <https://stewartmb.github.io/data-visualization-2026-2/atlas/>. Novedades de esta entrega: mapa de Geografía sobre el plano de calles de la ciudad (OpenStreetMap), pestaña **05 Proyecto** con introducción, datos, hallazgos y conclusión preliminar, y el dataset completo como insumo. La entrega (código, datos, scripts, reporte, respuesta a la crítica, presentación y paper) está en [`deliveries/week12/`](deliveries/week12/).
+
+Desde esta entrega el proyecto trabaja sobre el **dataset completo** (120 855 567 registros), descargado y agregado localmente; el insumo del atlas que produce coincide celda por celda con el versionado en `data/redesign/`:
+
+```bash
+export SOCRATA_APP_TOKEN=...                                   # token gratuito de Open NY, o en un .env
+python3 scripts/acquisition/download_full.py --workers 4      # descarga completa, por día, reanudable (data/raw/, fuera de Git)
+pip install duckdb && python3 scripts/preprocessing/build_from_full.py   # tablas agregadas en data/processed/full
+python3 scripts/redesign/build_atlas.py && python3 scripts/redesign/validate_atlas.py
+```
+
+Responsabilidades y cronograma hasta la Semana 15: sección 8 de [`deliveries/week12/RefinedDraftReport.md`](deliveries/week12/RefinedDraftReport.md).
 
 ## Problema y objetivo
 
@@ -32,10 +47,11 @@ Abrir **http://localhost:8765/atlas/**. No necesita compilación, token ni conex
 | Herramienta | Tareas que apoya |
 |---|---|
 | Atlas semanal de estación × 168 horas | Encontrar franjas de cambio, comparar perfiles, ordenar por magnitud, volumen o semejanza |
-| Mapa con boroughs | Localizar cambios y formar grupos geográficos que persisten en las demás vistas |
+| Mapa sobre el plano de calles | Localizar cambios y formar grupos geográficos que persisten en las demás vistas |
 | Trayectorias fechadas AM × fin de semana | Seguir evolución conjunta en cinco temporadas; comparar sistema, grupo y estaciones |
 | Inspector de estaciones | Leer huella cíclica o matricial, comparar perfiles, consultar evolución mensual y fuentes |
 | Evidencia | Ver medidas del grupo, revisar supuestos, guardar exploraciones y exportar CSV |
+| Proyecto | Leer la pregunta, los datos, cómo se lee el atlas, los hallazgos calculados en vivo y la conclusión preliminar |
 
 El año, filtros, selección, grupos y estaciones fijadas se conservan entre vistas y en la URL. La búsqueda por ejemplo recupera doce vecinos por distancia de Hellinger; no impone tipos de estaciones sin validarlos. Se pueden fijar hasta tres complejos para comparar.
 
@@ -95,7 +111,11 @@ scripts/redesign/          adquisición, transformación y verificaciones
   build_atlas.py
   validate_atlas.py
   smoke.cjs
-deliveries/                entregas históricas de semanas 4–10
+scripts/acquisition/       download_full.py: descarga completa del dataset (por día, reanudable)
+scripts/preprocessing/     build_from_full.py: tablas agregadas con DuckDB desde la descarga completa
+data/processed/full/       las 10 tablas agregadas del dataset completo
+app/                       prototipo de la Semana 10 (Matriz · Recorrido · Mapa), conservado como antecedente
+deliveries/                entregas de las semanas 4–12
 ```
 
 ## Entregas históricas
@@ -107,9 +127,9 @@ deliveries/                entregas históricas de semanas 4–10
 | [6](deliveries/week06/) | Análisis, figuras, bocetos y papers |
 | [7](deliveries/week07/) | Consolidación de la primera fase |
 | [10](deliveries/week10/) | Prototipo funcional y design review: aplicación de tres vistas (Matriz · Recorrido · Mapa), reporte, guion y presentación |
-| [12](deliveries/week12/) | Borrador refinado, respuesta a la crítica y paper |
+| [12](deliveries/week12/) | Borrador refinado: el atlas con plano de calles y página del proyecto, dataset completo, datos y scripts, reporte, respuesta a la crítica, presentación y paper |
 
-La aplicación de la Semana 10 también vive en [`app/`](app/), con `python3 -m http.server 8000` desde esa carpeta.
+El prototipo de la Semana 10 también vive en [`app/`](app/), con `python3 -m http.server 8000` desde esa carpeta.
 
 Los objetivos de esas entregas reflejan el estado de cada fase. El rediseño actual está explicado en [`redesign/README.md`](redesign/README.md). Paper, póster, videos y evaluación con personas siguen pendientes como entregables finales del curso.
 

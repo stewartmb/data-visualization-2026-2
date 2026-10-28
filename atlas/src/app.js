@@ -1,16 +1,17 @@
-import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges} from './model.js?v=20261014-9';
+import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges} from './model.js?v=20261027-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=20261014-10';
+import {renderMap} from './map-view.js?v=20261027-8';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=20261014-9';
-import {renderInspector} from './inspector.js?v=20261014-9';
+import {renderInspector} from './inspector.js?v=20261027-11';
+import {renderProject} from './project-view.js?v=20261027-3';
 
-const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence};
-const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia'};
-let data,geo,toastTimer;
+const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
+const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia',project:'Proyecto'};
+let data,geo,lineas,toastTimer;
 function hydrate(){
   const p=new URLSearchParams(location.search);
-  if(views[p.get('view')])state.view=p.get('view');
+  state.view='map';
   if([2021,2022,2023,2024].includes(+p.get('year')))state.year=+p.get('year');
   if(['all','Manhattan','Brooklyn','Queens','Bronx'].includes(p.get('borough')))state.borough=p.get('borough');
   state.selected=p.get('station')||null;state.query=p.get('q')||'';
@@ -38,7 +39,7 @@ function updateURL(){
   history.replaceState(null,'',`?${p}`);
 }
 const app={
-  get data(){return data;},get geo(){return geo;},state,
+  get data(){return data;},get geo(){return geo;},get lineas(){return lineas;},state,
   station:id=>data.stations.find(s=>s.id===id),
   filtered(){
     const q=state.query.toLocaleLowerCase();
@@ -81,20 +82,20 @@ function render(){
   document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===state.view);b.setAttribute('aria-current',b.dataset.view===state.view?'page':'false');});
   document.querySelector('#year').value=state.year;document.querySelector('#borough').value=state.borough;
   document.querySelector('#search').value=state.query;
-  document.querySelector('#period-label').textContent=`ene–feb ${state.year}`;
-  document.querySelector('#cohort-count').textContent=`${items.length} / ${data.stations.length}`;
+  const periodLabel=document.querySelector('#period-label');if(periodLabel)periodLabel.textContent=`ene–feb ${state.year}`;
+  document.querySelector('#cohort-count').textContent=`${items.length} / ${data.stations.length} complejos`;
   const rangeNotes=[...(state.tvMin>0||state.tvMax<100?[`TV ${fmt(state.tvMin)}–${fmt(state.tvMax)} pp`]:[]),...Object.entries(state.ranges).filter(([,r])=>r).map(([k,r])=>`${{deltaAM:'AM',deltaWeekend:'Fin de semana',recovery:'Volumen'}[k]} ${fmt(r[0])}–${fmt(r[1])} ${k==='recovery'?'%':'pp'}`)];
   const groupNote=state.cohort?'Grupo de complejos seleccionado':state.preset==='morning'?'Cambio AM menor que −2 pp':state.preset==='weekend'?'Cambio de fin de semana mayor que +2 pp':state.preset==='decoupled'?'Índice volumen entre 80–120 % y cambio de forma ≥10 pp':state.query?'Resultados de búsqueda':state.borough==='all'?'Todos los complejos de subway':state.borough;
   document.querySelector('#cohort-note').textContent=[...rangeNotes,groupNote].join(' · ');
   const selected=app.station(state.selected);
-  document.body.classList.toggle('has-inspector',Boolean(selected));
-  document.querySelector('#selection-label').textContent=selected?`${selected.name}${items.some(s=>s.id===selected.id)?'':' · fuera del grupo activo'}`:'Selecciona un complejo para investigar';
-  const host=document.querySelector('#content');host.replaceChildren();
+  document.body.classList.add('has-inspector');
+  document.querySelector('#selection-label').textContent=selected?`${selected.name}${items.some(s=>s.id===selected.id)?'':' · fuera del grupo activo'}`:'';
+  const host=document.querySelector('#content');host.replaceChildren();host.dataset.view=state.view;
   views[state.view](host,app,items);
   if(state.view==='atlas'&&previousScroll)document.querySelector('.matrix-scroll').scrollTop=previousScroll;
   renderInspector(app);
   if(focusId)document.getElementById(focusId)?.focus({preventScroll:true});
-  document.querySelector('#footer-status').textContent=`${data.meta.comparison} · selección compartida entre vistas`;
+  document.querySelector('#footer-status').textContent=`${data.meta.comparison} · MTA / Open NY · plano © OpenStreetMap`;
   updateURL();
 }
 
@@ -107,16 +108,20 @@ function exportCSV(){
 }
 
 hydrate();
-Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson')]).then(([a,g])=>{
+Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json('data/lineas.geojson').catch(()=>null)]).then(([a,g,l])=>{
   if(!a.stations?.length||a.stations.some(s=>!s.profiles['2020']||!s.profiles['2024']||Object.values(s.profiles).filter(Boolean).some(p=>p.p.length!==168||p.p.some(v=>!Number.isFinite(v)||v<0))))throw Error('Los perfiles no cumplen la estructura esperada.');
-  data=a;geo=g;
+  data=a;geo=g;lineas=l;
   state.pins=state.pins.filter(id=>app.station(id));
   if(!app.station(state.selected))state.selected=null;
   document.querySelector('#loading').hidden=true;
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>app.set({view:b.dataset.view})));
   document.querySelector('#year').addEventListener('change',e=>app.set({year:+e.target.value}));
+  // Entradas al análisis: un selector en el panel del mapa (se delega porque la vista se redibuja).
+  document.addEventListener('change',e=>{if(e.target.id==='preset-select')app.set({preset:e.target.value||null,cohort:null,query:'',sort:'change'});});
   document.querySelector('#borough').addEventListener('change',e=>app.set({borough:e.target.value}));
   let timer;document.querySelector('#search').addEventListener('input',e=>{const query=e.target.value;clearTimeout(timer);timer=setTimeout(()=>app.set({query}),180);});
+  // Enter: abre el detalle del primer complejo que coincide (details on demand desde el teclado).
+  document.querySelector('#search').addEventListener('keydown',e=>{if(e.key==='Enter'){const first=app.filtered()[0];if(first)app.select(first.id);}});
   document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>app.set({preset:b.dataset.preset,cohort:null,query:'',sort:'change'})));
   document.querySelector('#reset').addEventListener('click',()=>app.set({cohort:null,preset:null,query:'',borough:'all',tvMin:0,tvMax:100,ranges:{deltaAM:null,deltaWeekend:null,recovery:null}}));
   document.querySelector('#save').addEventListener('click',()=>{
@@ -125,7 +130,7 @@ Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson')]).then(
   });
   document.querySelector('#export').addEventListener('click',exportCSV);
   const guide=document.querySelector('#guide');
-  document.querySelector('#help').addEventListener('click',()=>guide.showModal());
+  document.querySelector('#help').addEventListener('click',()=>{renderProject(document.querySelector('#guide-body'),app);guide.showModal();});
   document.querySelector('#close-guide').addEventListener('click',()=>guide.close());
   guide.addEventListener('keydown',e=>{if(e.key==='Escape')e.stopPropagation();});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.selected&&!guide.open)app.set({selected:null});});

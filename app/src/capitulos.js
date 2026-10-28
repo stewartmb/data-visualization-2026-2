@@ -87,7 +87,7 @@ export function capitulos(M, G) {
         });
         const c = tarjeta(fig, 'Cuánto cambió el pico de cada estación, por borough: una estación por punto', `a la izquierda del umbral, el pico se aplanó más del ${M.meta.umbrales.aplana * 100} % · color = tipo`);
         c.style('margin-top', '12px');
-        tiras(c.node(), { modelo: M, grupos: grandes.map(b => ({ nombre: b, fuerte: b === 'Bronx', estaciones: M.estaciones.filter(e => e.b === b) })), valor: e => e.aplan, dominio: [-0.6, 0.3], umbral: -M.meta.umbrales.aplana, etiquetaUmbral: 'umbral −5 %', ejeTitulo: 'cambio de la razón pico/valle del día laborable, 2024 frente a enero–febrero 2020', visible: () => true, altoFila: 78 });
+        tiras(c.node(), { modelo: M, grupos: grandes.map(b => ({ nombre: b, fuerte: b === 'Bronx', estaciones: M.estaciones.filter(e => e.b === b) })), valor: e => e.aplan, dominio: [-0.6, 0.3], umbral: -M.meta.umbrales.aplana, etiquetaUmbral: 'umbral −5 %', ejeTitulo: 'cambio de la razón pico/valle del día laborable, enero–febrero 2024 frente a enero–febrero 2020', visible: () => true, altoFila: 78 });
       },
       notas: [
         ['Cómo se mide', `Razón pico/valle: el máximo entre las 6 y las 10 h dividido por el mínimo entre las 11 y las 15 h, sobre el perfil del día laborable. Se cuenta como aplanamiento una caída mayor del ${M.meta.umbrales.aplana * 100} %.`],
@@ -110,8 +110,8 @@ export function capitulos(M, G) {
         semana(c.node(), { grupos, resaltar: 'Bronx', altoFila: alto, margen: { t: 30, r: 16, b: 10, l: 170 } });
       },
       notas: [
-        ['Cómo se mide', 'Perfil de 168 horas de cada grupo, ponderado por el volumen de cada estación, normalizado al total de la semana. Se resta el de enero–febrero de 2020 al de 2024 completo.'],
-        ['Qué no demuestra', '2024 completo incluye feriados y verano; enero–febrero de 2020 incluye dos lunes feriados. La comparación día a día se afina con la ventana calendario comparable (pasada D del notebook).'],
+        ['Cómo se mide', 'Perfil de 168 horas de cada grupo, ponderado por el volumen de cada estación, normalizado al total de la semana. Se resta el de enero–febrero de 2020 al de enero–febrero de 2024: la misma ventana de calendario, cuatro años después.'],
+        ['Qué no demuestra', 'Las dos ventanas tienen feriados en lunes (Martin Luther King y Presidents\' Day) y, en 2021, cierres nocturnos que aquí no aparecen. Un día que pierde peso puede ser menos demanda o menos servicio ese día; el perfil no lo distingue.'],
       ],
       preset: { lente: 'forma', origen: 'capítulo 3' },
     },

@@ -325,9 +325,25 @@ recs = sorted(e["rec"] for e in validas)
 pct = lambda p: round(recs[min(len(recs) - 1, int(p * len(recs)))], 4)
 
 # ============================================================ hallazgos (escritos como afirmaciones)
+DIAS = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"]
+def texto_semana(sis, boro):
+    """Cuerpo del hallazgo semanal, escrito a partir de los números y no al revés."""
+    d = [v * 100 for v in sis["dia"]]
+    perdieron = sorted([i for i in range(1, 6) if d[i] <= -0.5], key=lambda i: d[i])
+    ganaron = [i for i in (1, 2, 3, 4, 5, 6, 0) if d[i] >= 0.5]   # lunes a domingo
+    def lista(ix): return " y ".join(", ".join(DIAS[i] for i in ix).rsplit(", ", 1)) if ix else "ningún día"
+    if len(perdieron) == 1:
+        quien = f"el {DIAS[perdieron[0]]} es el único día laborable que perdió peso ({d[perdieron[0]]:+.1f} pp)"
+    else:
+        quien = f"{lista(perdieron)} son los días que más peso perdieron ({', '.join(f'{d[i]:+.1f}' for i in perdieron)} pp)"
+    am_bx = -boro["Bronx"]["am"][5] * 100
+    am_ot = sorted(-boro[b]["am"][5] * 100 for b in ("Manhattan", "Brooklyn", "Queens"))
+    return (f"Sobre las 168 horas de la semana, {quien}, en buena parte en la ventana de la mañana; "
+            f"{lista(ganaron)} lo ganaron. Es la huella semanal del trabajo híbrido, y en el Bronx la mañana del viernes "
+            f"perdió {am_bx:.1f} pp frente a {am_ot[0]:.1f}–{am_ot[-1]:.1f} en los demás boroughs.")
 def rango_pct(vals):
     lo, hi = min(vals) * 100, max(vals) * 100
-    return f"el {lo:.0f}\u00a0%" if round(lo) == round(hi) else f"entre el {lo:.0f} y el {hi:.0f}\u00a0%"
+    return f"{lo:.0f}\u00a0%" if round(lo) == round(hi) else f"entre {lo:.0f} y {hi:.0f}\u00a0%"
 def rango_cambio(vals):
     lo, hi = min(vals) * 100, max(vals) * 100
     return f"{hi:+.0f}\u00a0%" if round(lo) == round(hi) else f"entre {hi:+.0f} y {lo:+.0f}\u00a0%"
@@ -343,10 +359,10 @@ hallazgos = [
          cuerpo=f"La razón pico/valle del día laborable cayó un {-stats['aplanMediano']*100:.0f} % en la estación mediana. Se cuenta aplanamiento solo si supera el 5 %; con cualquier margen serían {sum(1 for e in validas if e['aplan']<0)} de {stats['nValidas']}."),
     dict(id="viernes", numero=3, tipo="positivo",
          titulo=f"La semana se inclinó: el viernes perdió {-semana_sis['dia'][5]*100:.1f} puntos del total semanal y el fin de semana ganó {(semana_sis['dia'][0]+semana_sis['dia'][6])*100:.1f}",
-         cuerpo=f"Sobre las 168 horas de la semana, el jueves y el viernes son los días que más peso perdieron ({semana_sis['dia'][4]*100:+.1f} y {semana_sis['dia'][5]*100:+.1f} pp), casi todo en la ventana de la mañana; sábado y domingo lo ganaron. Lunes y martes no perdieron. Es la huella semanal del trabajo híbrido, y en el Bronx la mañana del viernes perdió {-semana_boro['Bronx']['am'][5]*100:.1f} pp frente a {-min(semana_boro[b]['am'][5] for b in ('Manhattan','Brooklyn','Queens'))*100:.1f}–{-max(semana_boro[b]['am'][5] for b in ('Manhattan','Brooklyn','Queens'))*100:.1f} en los demás."),
+         cuerpo=texto_semana(semana_sis, semana_boro)),
     dict(id="bronx", numero=4, tipo="positivo",
          titulo="El Bronx perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma",
-         cuerpo=f"Recuperación mediana del {bx.get('rec',0)*100:.0f}\u00a0% frente a {rango_pct([o['rec'] for o in otros])} en Manhattan, Brooklyn y Queens; cambio mediano del pico de {bx.get('aplan',0)*100:+.0f}\u00a0% frente a {rango_cambio([o['aplan'] for o in otros])}. Donde no hay trabajo híbrido, el pico se queda y solo baja el volumen."),
+         cuerpo=f"Recuperación mediana del {bx.get('rec',0)*100:.0f}\u00a0% frente al {rango_pct([o['rec'] for o in otros])} en Manhattan, Brooklyn y Queens; cambio mediano del pico de {bx.get('aplan',0)*100:+.0f}\u00a0% frente a {rango_cambio([o['aplan'] for o in otros])}. Donde no hay trabajo híbrido, el pico se queda y solo baja el volumen."),
     dict(id="independientes", numero=5, tipo="negativo",
          titulo="Dentro de un borough, cuánto volvió una estación no dice casi nada de cuánto se aplanó",
          cuerpo=f"La correlación de rango entre recuperación y aplanamiento va de ρ = {min(stats['rho_rec_aplan_borough'].values()):+.2f} a {max(stats['rho_rec_aplan_borough'].values()):+.2f} dentro de cada borough. Son dos ejes de cambio distintos, y por eso la aplicación los muestra en dos canales distintos. La relación que sí existe ({stats['rho_rec_aplan']:+.2f} en el total) es entre boroughs, y es la del Bronx."),

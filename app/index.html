@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>La forma del día — el ritmo del metro de Nueva York, 2020–2024</title>
+<title>Fractal — la forma del día en el metro de Nueva York, 2020–2024</title>
 <meta name="description" content="Cómo cambió el ritmo horario del metro de Nueva York entre 2020 y 2024, estación por estación. Proyecto de visualización de datos en D3.js.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' fill='black'/><path d='M1 12 L4 5 L6 11 L8 3 L10 11 L12 6 L15 12' stroke='white' fill='none' stroke-width='1.4'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,11 +16,12 @@
 <body>
 
 <header class="barra">
-  <a class="marca" href="#perfiles">La forma del día <small>metro de Nueva York, 2020–2024</small></a>
+  <a class="marca" href="#perfiles">Fractal <small>la forma del día · metro de Nueva York, 2020–2024</small></a>
   <nav class="pestanas" id="pestanas" role="tablist" aria-label="Vistas">
     <button role="tab" data-vista="perfiles" class="activa">Matriz</button>
     <button role="tab" data-vista="recorrido">Recorrido</button>
     <button role="tab" data-vista="explorador">Mapa</button>
+    <button role="tab" data-vista="proyecto">Proyecto</button>
   </nav>
   <div class="acciones">
     <button class="boton chico" id="abrir-clave-barra">Qué significa cada marca</button>
@@ -96,6 +97,41 @@
   <div class="tarjeta" id="tarjeta-mapa"><div class="cuerpo-grafico" id="mapa-expl"></div></div>
 </section>
 
+<!-- ================================================= vista 4 · proyecto -->
+<section class="vista oculta proyecto" id="proyecto" data-vista="proyecto">
+  <article class="proyecto-texto">
+    <p class="kicker">DS5343 Data Visualization · UTEC · 2026-2</p>
+    <h1>Fractal: la forma del día en el metro de Nueva York, 2020–2024</h1>
+    <p class="lede">La recuperación del metro se cuenta casi siempre con un solo número: cuánta gente volvió. Este proyecto mira lo que ese número esconde: <em>a qué hora</em> y <em>en qué estaciones</em> volvió, y cómo cambió la forma del día.</p>
+
+    <h2>Introducción</h2>
+    <p>El metro de Nueva York se programa alrededor del doble pico del día laborable: entradas concentradas de 6 a 10 h en las estaciones residenciales y de 16 a 20 h en las laborales. Entre 2020 y 2024 el sistema recuperó cerca del 70 % de sus entradas, pero esa cifra promedia barrios y horas muy distintas. La pregunta del proyecto es si el doble pico sigue existiendo, dónde se aplanó, qué días de la semana cambiaron y si la recuperación fue pareja entre boroughs.</p>
+    <p><b>Audiencia.</b> Investigadores de transporte urbano, periodistas de datos y gobierno local: lectores que necesitan entender <em>cómo</em> cambió el uso del metro por barrio, no solo cuánto. No está pensada para programar frecuencias de trenes: la MTA tiene datos internos (origen–destino, carga por tren) que estas entradas públicas no contienen.</p>
+
+    <h2>Datos</h2>
+    <p><b>Fuente.</b> <a href="https://data.ny.gov/d/wujg-7c2s" target="_blank" rel="noopener">MTA Subway Hourly Ridership: 2020–2024</a> (Open NY, id <code>wujg-7c2s</code>): entradas por hora, complejo de estación, modo, método de pago y clase tarifaria, registradas por torniquetes MetroCard y OMNY. Son entradas a estaciones, no viajes ni personas.</p>
+    <p><b>Volumen.</b> El dataset completo, <b>120 855 567 registros</b> (1 827 días, 428 complejos), se descarga íntegro con la API Socrata, un día por petición y reanudable (<code>scripts/acquisition/download_full.py</code>), y se agrega localmente con DuckDB (<code>scripts/preprocessing/build_from_full.py</code>) a tablas de estación × día, estación × hora de la semana × año y mes × borough × pago × tarifa. Las tablas agregadas reproducen celda por celda las que antes se obtenían con consultas agregadas a la API. La huella SHA-256 de la descarga queda en el manifiesto.</p>
+    <p><b>Unidad de análisis.</b> El perfil de 168 horas de cada estación (24 h × 7 días) dividido por su total: describe su ritmo, no su tamaño. Se compara <b>enero–febrero de 2020</b>, el último período completo antes de la pandemia, con <b>enero–febrero de 2024</b>, la misma ventana de calendario cuatro años después. Comparar contra todo 2024 sesgaba a las estaciones estacionales (playas, estadios, aeropuerto).</p>
+    <p><b>Medidas.</b> Recuperación (entradas por día 2024 ÷ 2020); razón pico/valle del día laborable (máximo 6–10 h ÷ mínimo 11–15 h) y su cambio, el <em>aplanamiento</em>; asimetría mañana/tarde, que clasifica cada estación en residencial, mixta o laboral; y un nivel de confiabilidad por estación (sólida, estacional, interrumpida, pequeña) que marca con anillo punteado las comparaciones dudosas sin excluirlas.</p>
+
+    <h2>Cómo leer la aplicación</h2>
+    <p>La <b>Matriz</b> es la vista principal: cada fila es una estación, cada columna una de las 168 horas, agrupadas por borough; tres lentes muestran la forma de 2024, qué cambió desde 2020 y la evolución mes a mes. El <b>Recorrido</b> va en siete capítulos, cada uno con una pregunta, un gráfico a pantalla completa y qué demuestra y qué no. El <b>Mapa</b> localiza cada estación sobre el plano de la ciudad con cinco lentes (forma del día, tipo, recuperación, cambio del pico, confiabilidad) y filtros que persisten entre vistas.</p>
+
+    <h2>Hallazgos preliminares</h2>
+    <ol id="proyecto-hallazgos"></ol>
+
+    <h2>Conclusión preliminar</h2>
+    <p>La ciudad no se reorganizó: se atenuó. El doble pico sigue existiendo, pero más bajo en dos de cada tres estaciones, con la mañana perdiendo peso frente a la tarde y el viernes perdiendo peso frente al resto de la semana. Esa huella coincide con el trabajo híbrido. El Bronx es la excepción que confirma la lectura: donde el empleo es presencial, el pico se queda igual y lo único que cae es el volumen, y cae más que en cualquier otro borough. Recuperar pasajeros y recuperar la forma del día son dos procesos distintos, y por eso la aplicación los muestra en dos canales distintos.</p>
+
+    <h2>Limitaciones</h2>
+    <p>Las entradas no distinguen menos demanda de menos servicio. Las dos ventanas de comparación tienen feriados y, en 2021, cierres nocturnos. Las horas sin registro se tratan como cero entradas registradas. Las hipótesis sobre trabajo híbrido se contrastan con la forma de los perfiles, no con datos de empleo; la capa del Census (trabajo desde casa por área de influencia) está en preparación.</p>
+
+    <h2>Equipo y materiales</h2>
+    <p>Renzo Alfonso Acervo Correa · Diva Stewart Maquera Bobadilla · José Eduardo Condori Palomino. Profesor: Germain Garcia-Zanabria.</p>
+    <p><a href="https://github.com/stewartmb/data-visualization-2026-2" target="_blank" rel="noopener">Repositorio</a> · <a href="https://github.com/stewartmb/data-visualization-2026-2/tree/main/deliveries/week12" target="_blank" rel="noopener">Entrega de la semana 12</a> · <a href="https://github.com/stewartmb/data-visualization-2026-2/blob/main/deliveries/week12/paper/paper.pdf" target="_blank" rel="noopener">Paper (borrador)</a></p>
+  </article>
+</section>
+
 </main>
 
 <!-- ================================================= panel de estación -->
@@ -146,6 +182,7 @@
 
 
 <script src="lib/d3.min.js"></script>
+<script src="lib/d3-tile.min.js"></script>
 <script type="module" src="src/main.js"></script>
 </body>
 </html>

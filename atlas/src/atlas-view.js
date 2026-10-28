@@ -1,5 +1,5 @@
 import {atlasOrder} from './atlas-order.js?v=20261014-9';
-import {state,esc,fmt,signed,profile,metricValue,hellinger,deltaColor,shareColor,cellValue,showTooltip,hideTooltip,heading,stats,dayShort} from './model.js?v=20261014-9';
+import {state,esc,fmt,signed,profile,metricValue,hellinger,deltaColor,shareColor,cellValue,showTooltip,hideTooltip,heading,stats,dayShort} from './model.js?v=20261027-4';
 
 export function renderAtlas(host,app,items){
   const focus=app.station(state.selected),order=atlasOrder(items,state,focus);

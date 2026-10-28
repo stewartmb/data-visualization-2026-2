@@ -1,6 +1,6 @@
-# La forma del día — la aplicación
+# Fractal: la forma del día — la aplicación
 
-Visualización interactiva en D3.js de cómo cambió el ritmo horario del metro de Nueva York entre 2020 y 2024, estación por estación. Una aplicación de tres vistas — Matriz, Recorrido y Mapa — con una sola selección compartida.
+Visualización interactiva en D3.js de cómo cambió el ritmo horario del metro de Nueva York entre 2020 y 2024, estación por estación. Una aplicación de cuatro vistas — Matriz, Recorrido, Mapa y Proyecto — con una sola selección compartida. La aplicación se construye sobre el dataset completo (120 855 567 registros), descargado y agregado localmente.
 
 **En línea:** <https://stewartmb.github.io/data-visualization-2026-2/app/> *(requiere GitHub Pages activado en el repositorio: Settings → Pages → `main` → `/ (root)`)*
 
@@ -27,8 +27,8 @@ Pensada para 1 200 px o más de ancho. Funciona en móvil (las vistas se apilan)
 |---|---|---|---|
 | | Inicio | La forma del día | el perfil del sistema, 2020 frente a 2024 |
 | 1 | Volumen | ¿Cuánta gente volvió? | la recuperación se estancó cerca del 70 % |
-| 2 | Forma | ¿Sigue existiendo el doble pico? | el pico de la mañana se aplanó en 80 % de las estaciones |
-| 3 | Semana | ¿Qué días de la semana cambiaron? | la semana se inclinó: el viernes perdió 2.4 puntos del total semanal y el fin de semana ganó 3.1 |
+| 2 | Forma | ¿Sigue existiendo el doble pico? | el pico de la mañana se aplanó en 65 % de las estaciones |
+| 3 | Semana | ¿Qué días de la semana cambiaron? | la semana se inclinó: el viernes perdió 3.1 puntos del total semanal |
 | 4 | Tipos | ¿Para qué se usa cada estación? | el cambio fue en una sola dirección: la mañana perdió peso |
 | 5 | Bronx | ¿Por qué el Bronx? | perdió más pasajeros que nadie y es el único borough donde el día no cambió de forma |
 | 6 | Abono | ¿Quién dejó de comprar el abono? | el pase de 30 días se desplomó: la evidencia del uso intermitente |
@@ -36,7 +36,9 @@ Pensada para 1 200 px o más de ancho. Funciona en móvil (las vistas se apilan)
 
 **Matriz** es la vista base: las 428 estaciones como filas, agrupadas por borough, contra las 168 horas de la semana o los 60 meses, con tres lentes (forma del día 2024 · qué cambió 2020 → 2024 · mes a mes), dos tiras sincronizadas debajo y los ocho hallazgos como chips. Un submodo muestra la rejilla de perfiles de 168 h. **Recorrido** lleva los capítulos como botones, con Play; a la izquierda solo la pregunta, el hallazgo y qué significa cada marca, el resto es el gráfico; *cómo se mide* y *qué no demuestra* se abren con un botón, y otro abre el mapa ya configurado en lo que se acaba de ver. Los hallazgos no se escriben a mano: los genera `code/build_model.py` desde los datos, incluidos los negativos.
 
-**Mapa.** Las 428 estaciones a pantalla completa con cinco lentes (forma del día: cada estación como un reloj de 24 h · tipo · recuperación · cambio del pico · confiabilidad). Un clic en una estación abre su panel de evidencia: cifras, perfil antes/después, serie mensual y la tabla con los números detrás de cada afirmación. `←` `→` mueven entre capítulos dentro de Recorrido; `Esc` cierra paneles. La selección sobrevive al cambio de vista.
+**Mapa.** Las 428 estaciones sobre el plano de calles de la ciudad (teselas de OpenStreetMap/CARTO; sin red, los contornos de boroughs) con cinco lentes (forma del día: cada estación como un reloj de 24 h · tipo · recuperación · cambio del pico · confiabilidad). Un clic en una estación abre su panel de evidencia: cifras, perfil antes/después, serie mensual y la tabla con los números detrás de cada afirmación. `←` `→` mueven entre capítulos dentro de Recorrido; `Esc` cierra paneles. La selección sobrevive al cambio de vista.
+
+**Proyecto.** La página del proyecto: introducción, datos, método, hallazgos, conclusión preliminar, equipo y enlaces, para quien llega sin contexto.
 
 **Qué significa cada marca.** El botón de la barra abre la clave visual: qué codifica cada color y cada forma, y qué *no* significa.
 
@@ -46,11 +48,11 @@ Pensada para 1 200 px o más de ancho. Funciona en móvil (las vistas se apilan)
 
 ```
 app/
-├── index.html                 la aplicación: tres vistas + panel de evidencia + clave visual
+├── index.html                 la aplicación: cuatro vistas + panel de evidencia + clave visual
 ├── src/
 │   ├── tokens.css             el sistema de diseño: colores por rol, tipografía, ritmo; modo oscuro
 │   ├── estilos.css            estilos
-│   ├── main.js                carga datos, monta las tres vistas y el panel
+│   ├── main.js                carga datos, monta las vistas, la página del proyecto y el panel
 │   ├── capitulos.js           los siete capítulos: pregunta, hallazgo, marcas, gráfico, notas, preset
 │   ├── estado.js              estado compartido de las vistas (selección, filtros, lente, período)
 │   ├── panel-estacion.js      el panel de evidencia de una estación
@@ -65,7 +67,7 @@ app/
 │       ├── pendiente.js       gráfico de pendientes de la asimetría 2020 → 2024
 │       ├── perfil.js          perfil de 24 h (hero, boroughs, tipos, panel) y de 168 h (rejilla)
 │       ├── serie.js           serie mensual con brush
-│       ├── mapa.js            mapa con d3.geoMercator, cinco lentes (una de glifos) y leyenda de significado
+│       ├── mapa.js            mapa con d3.geoMercator sobre teselas (d3-tile), cinco lentes (una de glifos) y leyenda
 │       ├── dispersion.js      recuperación × cambio del pico, con brush
 │       ├── multiples.js       rejilla de perfiles semanales
 │       └── tarifas.js         composición tarifaria apilada al 100 %
@@ -73,8 +75,9 @@ app/
 │   ├── model.json             el modelo analítico (1.6 MB): estaciones, agregados, hallazgos, estadísticos
 │   └── geo.json               boroughs y líneas del metro, simplificados (77 KB)
 ├── lib/d3.min.js              D3 v7.9.0, servido localmente
+├── lib/d3-tile.min.js         d3-tile 1.0.0: teselas de mapa sobre la proyección
 └── code/
-    ├── build_model.py         construye model.json desde las tablas agregadas de la Semana 6
+    ├── build_model.py         construye model.json desde las tablas agregadas (data/processed/full)
     ├── build_geo.py           construye geo.json desde GeoJSON de NYC y el GTFS de la MTA
     └── datos_nuevos.ipynb     notebook de Colab: trae los datos que corrigen la ventana de comparación y la capa del Census
 ```
@@ -84,16 +87,23 @@ app/
 ## Reconstruir los datos
 
 ```bash
-# el modelo analítico, ~3 s, sin dependencias
-python3 app/code/build_model.py deliveries/week06/data/processed app/data/model.json
+# 1. descarga completa del dataset (una vez; ~90 min con token, reanudable)
+export SOCRATA_APP_TOKEN=...            # o en un .env
+python3 scripts/acquisition/download_full.py --workers 4
+
+# 2. tablas agregadas con DuckDB (~1 min; pip install duckdb)
+python3 scripts/preprocessing/build_from_full.py
+
+# 3. el modelo analítico, ~2 s, sin dependencias
+python3 app/code/build_model.py data/processed/full app/data/model.json
 
 # la geografía, ~5 s, sin dependencias
 python3 app/code/build_geo.py <boroughs.geojson> <carpeta_gtfs> app/data/geo.json
 ```
 
-`build_model.py` acepta dos entradas opcionales que produce `datos_nuevos.ipynb`: `hourofweek_2024_enefeb.csv` (reemplaza el perfil de 2024 completo por el de enero–febrero de 2024, la misma ventana calendario que la línea base) y `acs_por_estacion.csv` (la capa del Census por área de influencia). Si están en la carpeta de entrada, las usa y lo deja registrado en `meta.ventanaComparable` y `meta.tieneACS`.
+`build_from_full.py` produce `hourofweek_2024_enefeb.csv`, con lo que `build_model.py` compara el perfil de enero–febrero de 2020 con el de enero–febrero de 2024 (misma ventana de calendario) y lo registra en `meta.ventanaComparable`. Una entrada opcional, `acs_por_estacion.csv` (capa del Census por área de influencia, en preparación), se registra en `meta.tieneACS`.
 
-Las tablas agregadas de entrada se producen con los notebooks de la Semana 6 a partir de la API SODA de Socrata (ver el README raíz).
+Las mismas tablas se obtenían antes con consultas agregadas a la API SODA (Semana 6); las dos vías dan resultados idénticos celda por celda.
 
 ---
 

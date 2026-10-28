@@ -334,7 +334,9 @@
   "files": {
     "jan_feb_hourly_2020_2024.csv": {
       "bytes": 6228951,
-      "sha256": "dea5f6b82dc07ae6a23b22f50d4ef41c5f10d67573b17e05808fdd8af8af5284"
+      "sha256": "c2ba5a3272f4484cd23ce62ee099a339beff8cb7669b5a36c954e2e8e521a934",
+      "derivation": "Derivado del dataset completo (120 855 567 registros, scripts/acquisition/download_full.py) con DuckDB (scripts/preprocessing/build_from_full.py): enero-febrero de 2020-2024, transit_mode=subway, complejo x dia de la semana x hora. Verificado fila por fila contra el snapshot obtenido por API el 2026-10-14 (sha256 dea5f6b82dc07ae6a23b22f50d4ef41c5f10d67573b17e05808fdd8af8af5284): mismas 350 951 filas y mismos valores; solo cambia el orden.",
+      "derived_at_utc": "2026-10-27T05:24:00+00:00"
     },
     "station_catalog.json": {
       "bytes": 169770,
@@ -348,5 +350,12 @@
       "bytes": 3167385,
       "sha256": "361ac589847bee86f45179afddef98304ca05f7b04650924873b58d09f8be39f"
     }
+  },
+  "full_dataset": {
+    "records": 120855567,
+    "days": 1827,
+    "download": "scripts/acquisition/download_full.py",
+    "aggregation": "scripts/preprocessing/build_from_full.py",
+    "note": "La descarga cruda (data/raw/) queda fuera de Git; el manifiesto local guarda filas por dia y SHA-256."
   }
 }

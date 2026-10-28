@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Fractal · Atlas de ritmos</title>
+  <meta name="description" content="Explora cómo cambiaron los ritmos de entrada al metro de Nueva York, con perfiles de 168 horas y comparación del mismo período entre 2020 y 2024.">
+  <link rel="stylesheet" href="src/style.css?v=20261027-12">
+</head>
+<body>
+<div id="loading" role="status"><span class="loading-mark">▥</span> Preparando el atlas de ritmos…</div>
+<header class="masthead">
+  <a href="./" class="brand" aria-label="Inicio"><span class="brand-icon" aria-hidden="true">▥</span><span>Fractal<small>ATLAS DE RITMOS · NUEVA YORK</small></span></a>
+  <span class="masthead-question">Volvió el metro. ¿Volvió su ritmo? <small>Entradas por hora en 424 complejos de subway · enero–febrero 2020 frente a 2021–2024</small></span>
+  <button id="help" class="quiet" title="Qué es, con qué datos y cómo se lee">Acerca</button>
+</header>
+<div class="app-shell">
+  <main id="main">
+    <div class="context-bar"><span class="baseline-dot"></span> ene–feb 2020 <span class="context-divider">→</span>
+      <select id="year" aria-label="Año de comparación"><option value="2024">ene–feb 2024</option><option value="2023">ene–feb 2023</option><option value="2022">ene–feb 2022</option><option value="2021">ene–feb 2021</option></select>
+      <select id="borough" aria-label="Zona"><option value="all">Todos los boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option></select>
+      <input id="search" type="search" placeholder="Buscar complejo" aria-label="Buscar complejo" autocomplete="off">
+      <span class="context-divider">/</span><b id="cohort-count">—</b> <span id="cohort-note" aria-live="polite">Todo el sistema</span> <button id="reset" class="text-button">↺</button>
+      <span id="selection-label">Selecciona un complejo para investigar</span></div>
+    <div id="content"></div>
+    <footer class="main-footer"><span id="footer-status" role="status"></span><span><button id="save" class="text-button">Guardar exploración</button> · <button id="export" class="text-button">Exportar CSV</button></span></footer>
+  </main>
+</div>
+<aside id="inspector" class="inspector" aria-label="Detalle del complejo"></aside>
+<div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+<div id="toast" class="toast" role="status" hidden></div>
+<dialog id="guide"><button id="close-guide" class="close" aria-label="Cerrar">×</button><div id="guide-body"></div></dialog>
+<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=20261027-18"></script>
+</body></html>

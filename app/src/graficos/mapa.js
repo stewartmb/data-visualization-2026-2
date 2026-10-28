@@ -1,4 +1,5 @@
-// Mapa de estaciones sobre los boroughs y el trazado del metro (d3.geoMercator).
+// Mapa de estaciones sobre un plano de calles (teselas CARTO/OpenStreetMap vía d3-tile,
+// con los boroughs como respaldo sin red) y el trazado del metro (d3.geoMercator).
 // Cuatro lentes, cada una con su leyenda de significado:
 //   tipo   identidad: residencial · mixta · laboral
 //   rec    magnitud: recuperación (azul claro → oscuro)
@@ -15,18 +16,37 @@ export function mapa(cont, opts) {
     visible: null,            // fn(e) → bool; si es null usa estado.esVisible
     enfoqueBorough: null,     // 'Bronx' → encuadra ese borough
     radioMax: 12, tamanoPorRango: true, alto: null, escalaGlifo: 1,
+    calles: true,             // plano de calles de fondo (teselas); si fallan, quedan los boroughs
   }, opts);
   const el = typeof cont === 'string' ? document.querySelector(cont) : cont;
   const M = o.modelo, G = o.geo, est = M.estaciones;
   const root = d3.select(el).style('position', 'relative');
   root.selectAll('svg.mapa, .mapa-leyenda').remove();
   const svg = root.append('svg').attr('class', 'mapa').attr('role', 'img').attr('aria-label', 'Mapa de las estaciones del metro de Nueva York');
+  const gTiles = svg.append('g').attr('class', 'teselas');
   const g = svg.append('g');
   const gBoro = g.append('g');
   const gLin = g.append('g');
   const gEst = g.append('g');
   const gGlif = g.append('g').attr('class', 'glifos');
   const ley = o.leyenda ? root.append('div').attr('class', 'mapa-leyenda') : null;
+  const usaCalles = o.calles && typeof d3.tile === 'function';
+  const credito = usaCalles ? root.append('div').attr('class', 'mapa-credito').html('plano: © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors') : null;
+  let callesFallaron = false;
+  const esOscuro = () => { const t = document.documentElement.dataset.theme; return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; };
+  const urlTesela = ([x, y, z]) => `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
+  // Las teselas se calculan con la proyección compuesta (encuadre × zoom), fuera del <g> con
+  // transform, para que se pidan al nivel de detalle que corresponde y no se vean pixeladas.
+  function pintarTeselas(tr) {
+    if (!usaCalles || callesFallaron) return;
+    const k = proy.scale() * 2 * Math.PI * tr.k, tx = proy.translate()[0] * tr.k + tr.x, ty = proy.translate()[1] * tr.k + tr.y;
+    const teselas = d3.tile().size([W, H]).scale(k).translate([tx, ty]).tileSize(256).clampX(false)();
+    const [sx, sy] = [teselas.scale, teselas.scale];
+    gTiles.selectAll('image').data(teselas, d => d.join('/')).join(
+      enter => enter.append('image').attr('href', urlTesela).on('error', () => { callesFallaron = true; gTiles.remove(); root.classed('sin-calles', true); credito && credito.remove(); })
+    ).attr('x', ([x]) => Math.round((x + teselas.translate[0]) * sx)).attr('y', ([, y]) => Math.round((y + teselas.translate[1]) * sy)).attr('width', Math.ceil(sx)).attr('height', Math.ceil(sy));
+  }
+  root.classed('con-calles', usaCalles);
 
   const proy = d3.geoMercator();
   const path = d3.geoPath(proy);
@@ -80,6 +100,7 @@ export function mapa(cont, opts) {
       objetivo = { type: 'MultiPoint', coordinates: pts };
     }
     proy.fitExtent([[14, 14], [W - 14, H - 14]], objetivo);
+    pintarTeselas(zoom ? d3.zoomTransform(svg.node()) : d3.zoomIdentity);
     gBoro.selectAll('path').data(G.boroughs.features).join('path').attr('class', 'boro').attr('d', path);
     gLin.selectAll('path').data(G.lineas.features).join('path').attr('class', 'linea-metro').attr('d', path);
     puntos.attr('cx', e => proy([e.lon, e.lat])[0]).attr('cy', e => proy([e.lon, e.lat])[1]);
@@ -148,7 +169,7 @@ export function mapa(cont, opts) {
   }
 
   if (o.zoom) {
-    zoom = d3.zoom().scaleExtent([1, 10]).on('zoom', ev => { zk = ev.transform.k; g.attr('transform', ev.transform); puntos.attr('r', e => rad(e)); gLin.selectAll('path').attr('stroke-width', .9 / Math.sqrt(zk)); if (lente() === 'forma') pintar(); });
+    zoom = d3.zoom().scaleExtent([1, 10]).on('zoom', ev => { zk = ev.transform.k; g.attr('transform', ev.transform); pintarTeselas(ev.transform); puntos.attr('r', e => rad(e)); gLin.selectAll('path').attr('stroke-width', .9 / Math.sqrt(zk)); if (lente() === 'forma') pintar(); });
     svg.call(zoom);
   }
 
@@ -157,6 +178,6 @@ export function mapa(cont, opts) {
   return {
     update: pintar,
     enfocar(borough) { o.enfoqueBorough = borough; if (zoom) svg.call(zoom.transform, d3.zoomIdentity); encuadrar(); pintar(); },
-    destruir() { ro.disconnect(); svg.remove(); ley && ley.remove(); },
+    destruir() { ro.disconnect(); svg.remove(); ley && ley.remove(); credito && credito.remove(); },
   };
 }

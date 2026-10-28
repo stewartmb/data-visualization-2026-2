@@ -1,4 +1,4 @@
-// La forma del día — punto de entrada.
+// Fractal (la forma del día) — punto de entrada.
 // Carga el modelo y la geografía, construye la narrativa a partir de los
 // capítulos, monta el explorador enlazado y el panel de evidencia.
 
@@ -21,11 +21,12 @@ Promise.all([d3.json('data/model.json'), d3.json('data/geo.json')]).then(([M, G]
   construirRecorrido(caps);
   montarExplorador(M, G);
   montarPestanas();
+  montarProyecto(M);
   montarClave();
   montarTema();
   document.querySelector('#cargando').remove();
   const h = location.hash.slice(1);
-  if (['perfiles', 'recorrido', 'explorador'].includes(h)) irA(h);
+  if (['perfiles', 'recorrido', 'explorador', 'proyecto'].includes(h)) irA(h);
 }).catch(err => {
   document.querySelector('#cargando').textContent = 'No se pudieron cargar los datos. Hay que servir la carpeta por HTTP (python3 -m http.server).';
   console.error(err);
@@ -192,4 +193,12 @@ function montarClave() {
   d3.select('#abrir-clave-barra').on('click', () => clave.classed('abierta', !clave.classed('abierta')));
   clave.select('.cerrar').on('click', cerrar);
   document.addEventListener('keydown', ev => { if (ev.key === 'Escape') cerrar(); });
+}
+
+// ============================================================ página del proyecto
+function montarProyecto(M) {
+  const ol = d3.select('#proyecto-hallazgos');
+  ol.selectAll('li').data(M.hallazgos).join('li')
+    .html(h => `<b>${h.titulo}.</b> ${h.cuerpo}`)
+    .classed('negativo', h => h.tipo === 'negativo').classed('limite', h => h.tipo === 'limite');
 }

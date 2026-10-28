@@ -21,3 +21,200 @@
 .metric-filter-chips{display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-basis:100%;font-size:10px}.metric-filter-chips button{font-size:10px;background:#fff;border:1px solid #b6c9c0;border-radius:15px;padding:5px 9px;color:var(--teal)}
 
 .metric-formula-help{position:relative;max-width:100%}.metric-formula-trigger{background:transparent;padding:6px 0;color:var(--ink);font-size:11px;font-weight:700;text-align:left;border-bottom:1px dotted #648d87;cursor:help}.metric-formula-trigger span{color:var(--teal);margin-left:4px}.metric-formula-panel{position:absolute;top:100%;left:0;z-index:60;width:min(430px,calc(100vw - 45px));padding:18px;background:var(--navy);color:#f5f8f5;border-radius:7px;box-shadow:0 8px 28px #10293744;font-size:12px;line-height:1.6}.metric-formula-panel>b{display:block;color:#fff;font-size:13px}.metric-formula-panel p{margin:10px 0}.metric-formula-equation{white-space:pre-wrap;overflow-wrap:anywhere;font-family:Georgia,serif;font-size:15px;line-height:1.7;padding:12px;background:#ffffff12;border-radius:4px;margin-top:10px}.metric-formula-base{border-top:1px solid #ffffff30;padding-top:10px;color:#bed1d4;font-size:10px;line-height:1.7}
+
+.map-svg.con-calles:not(.sin-calles) .map-bg{fill:none;stroke:#8a9a92;stroke-width:1;stroke-dasharray:3 3;opacity:.8}.map-svg.con-calles:not(.sin-calles) .borough-name{fill:#4f6159;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}.map-tiles image{opacity:.9}.map-credit{pointer-events:auto}.map-credit a{color:inherit}
+.project{max-width:820px;font-size:15px;line-height:1.6;color:var(--ink,#102937)}.project-lede{font-size:19px;line-height:1.45;color:#2d4650;margin:0 0 18px}.project h3{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted,#5f7470);margin:26px 0 8px}.project p{margin:0 0 12px}.project code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#eef2ef;padding:1px 5px;border-radius:3px}.project a{color:#176c91}.project ol{padding-left:22px;margin:0}.project li{margin:0 0 9px}.project-table{border-collapse:collapse;margin:8px 0 4px;font-size:13px}.project-table th,.project-table td{border-bottom:1px solid var(--line,#dfe6e2);padding:4px 10px 4px 0;text-align:left}.project-table th{font-weight:600;color:var(--muted,#5f7470)}
+
+/* Geografía: el mapa manda. Encabezado y controles compactos; el lienzo ocupa el alto de la ventana. */
+#content[data-view=map] .view-heading{margin:14px 0 10px;align-items:center}
+#content[data-view=map] .view-heading h2{font-size:22px;margin:2px 0}
+#content[data-view=map] .view-heading p{font-size:11px}
+#content[data-view=map] .toolbar{padding:8px 0;margin-bottom:8px}
+#content[data-view=map] .map-emphasis{padding:8px 12px;margin-bottom:10px}
+#content[data-view=map] .map-emphasis small{display:none}
+#content[data-view=map] .stats-strip{padding:12px 0 6px}
+.map-svg.con-calles:not(.sin-calles) .map-bg{fill:none;stroke:#5f7470;stroke-width:1.2;stroke-dasharray:none;opacity:.55}
+.map-svg.con-calles:not(.sin-calles) .borough-name{display:none}
+.map-tiles image{opacity:1}
+.map-svg.con-calles:not(.sin-calles) .map-dot{stroke:#fff;stroke-width:1.1}
+.map-svg.con-calles:not(.sin-calles) .context-point{fill:#6b7f79;opacity:.6}
+.map-credit{background:#ffffffcc;padding:2px 6px;border-radius:3px;bottom:58px}
+.detail-legend-block{margin:8px 0 14px;font-size:10.5px;color:var(--ink);line-height:1.5}
+.detail-legend-title{font-weight:600;margin-bottom:4px}
+.detail-legend-scale{display:flex;align-items:center;gap:8px;margin:2px 0 6px;color:var(--muted)}
+.detail-legend-scale .gradient{width:150px;height:9px}
+.detail-legend-row{margin:3px 0}
+.detail-legend-row i{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:middle;margin:0 3px 0 8px}
+.detail-legend-row i:first-child{margin-left:0}
+.detail-legend-row.muted{color:var(--muted);font-size:9.5px}
+
+/* ---- Geografía como visualización: el mapa es la pantalla; controles y leyenda flotan sobre él ---- */
+#content[data-view=map]{min-height:0}
+.map-stage{position:relative;margin-top:10px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#eef1ec}
+.map-stage .map-svg{display:block;width:100%}
+.map-panel{position:absolute;z-index:3;background:#ffffffee;border:1px solid var(--line);border-radius:7px;padding:12px 14px;font-size:11px;line-height:1.5;color:var(--ink);box-shadow:0 4px 18px #10293718;backdrop-filter:blur(3px)}
+.map-panel-controls{top:14px;left:14px;width:260px}
+.map-panel-controls .eyebrow{margin-bottom:6px}
+.map-field{display:block;font-size:10px;color:var(--muted);margin-bottom:8px}
+.map-field select{display:block;width:100%;margin-top:3px;background:#fff;padding:6px 8px;border:1px solid #d5dfd9;border-radius:4px;color:var(--ink);font-size:11px}
+.map-stage .map-control{position:static;margin:0 0 8px}
+.map-stage .map-control button{padding:5px 9px;font-size:10.5px}
+.map-filter{border-top:1px solid var(--line);padding-top:8px}
+.map-filter summary{cursor:pointer;font-weight:600;font-size:10.5px;color:var(--teal);display:flex;justify-content:space-between;gap:8px}
+.map-filter-n{color:var(--muted);font-weight:400}
+.map-filter .metric-formula-trigger{margin:6px 0 2px}
+.map-filter .tv-range-values{font-size:10px;margin-top:4px}
+.map-filter .dual-range{margin:0 6px}
+.map-filter .text-button{font-size:10px}
+.map-filter .metric-filter-chips{margin-top:6px}
+.map-legend{left:14px;bottom:14px;width:300px}
+.map-legend-title{font-weight:700;font-size:12px;margin-bottom:2px}
+.map-legend-what{color:var(--muted);margin-bottom:8px}
+.map-key-bar{height:10px;border-radius:3px;border:1px solid #0002}
+.map-key-ticks{position:relative;height:14px;font-size:9.5px;color:var(--ink)}
+.map-key-ticks span{position:absolute;transform:translateX(-50%);top:1px}
+.map-key-ticks span::before{content:'';position:absolute;left:50%;top:-5px;width:1px;height:4px;background:var(--ink)}
+.map-key-words{display:flex;justify-content:space-between;font-size:9.5px;color:var(--muted);margin-top:1px}
+.map-key-note{font-size:9.5px;color:var(--muted);margin-top:4px}
+.map-legend-marks{display:flex;flex-direction:column;gap:3px;margin:8px 0 6px;border-top:1px solid var(--line);padding-top:7px}
+.map-legend-marks i{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:middle;margin-right:3px}
+.lg-dot{background:#3b6b8f;border:1px solid #fff;box-shadow:0 0 0 1px #3b6b8f}
+.lg-ring{border:2px solid #102937;background:transparent}
+.lg-ring.pin{border-color:#c96035}
+.lg-ctx{background:#6b7f79;opacity:.6;width:6px;height:6px}
+.map-legend-foot{font-size:9.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:6px}
+.map-stage .map-credit{bottom:6px;right:8px}
+@media(max-width:900px){.map-panel-controls{width:220px}.map-legend{width:min(300px,calc(100% - 28px))}}
+
+/* ======================================================================
+   Tema minimalista (semana 12). El dato es el único color; el cromo es
+   papel, tinta y una línea fina. Un solo nivel de énfasis por panel.
+   ====================================================================== */
+:root{--ink:#1b2a33;--muted:#6f7d86;--navy:#1b2a33;--paper:#fafaf7;--line:#e3e7e2;--teal:#137b80;--orange:#c96035;--pale:#edf3f0;--rail:216px;--top:56px}
+body{background:var(--paper);font:13.5px Atlas,"Avenir Next","Inter",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+/* barra superior: papel, hairline, pestañas en tinta */
+.masthead{background:#fff;color:var(--ink);border-bottom:1px solid var(--line);padding:0 22px;gap:22px}
+.brand{color:var(--ink);font:600 17px/1 Georgia,serif;letter-spacing:-.2px;gap:9px}
+.brand small{color:var(--muted);font:500 8.5px Atlas,"Avenir Next",system-ui,sans-serif;letter-spacing:1.6px;margin-top:5px}
+.brand-icon{font-size:20px;color:#b8c1bb}
+.view-tabs{gap:2px}
+.view-tabs button{color:var(--muted);padding:0 13px;font-size:12.5px;border-bottom:2px solid transparent}
+.view-tabs button span{color:#b3bcc0;font-size:9.5px;margin-right:5px}
+.view-tabs button:hover{color:var(--ink)}
+.view-tabs button.active{color:var(--ink);border-color:var(--ink)}
+.masthead .quiet{color:var(--muted);font-size:11.5px;border:1px solid var(--line);border-radius:4px;padding:5px 9px}
+.masthead .quiet:hover{color:var(--ink);border-color:#c9d0cb}
+/* carril izquierdo: papel, sin caja, controles con hairline */
+.rail{background:var(--paper);border-right:1px solid var(--line);padding:20px 18px 14px;width:var(--rail)}
+.eyebrow{color:var(--muted);font-weight:700;font-size:8.5px;letter-spacing:1.5px}
+.rail h1{font:500 19px/1.2 Georgia,serif;letter-spacing:-.2px;margin:8px 0 6px}
+.intro{font-size:11px;line-height:1.55;margin-bottom:16px}
+.field{font-size:9.5px;letter-spacing:.2px;font-weight:600;color:var(--muted);margin:10px 0}
+.field select,.field input{background:#fff;border:1px solid var(--line);border-radius:4px;padding:7px 9px;font-size:12px;margin-top:5px}
+.field select:hover,.field input:hover{border-color:#c9d0cb}
+.rail-divider{background:var(--line);margin:16px 0}
+.finding{padding:9px 0;font-size:11.5px;border-bottom:1px solid var(--line);gap:9px}
+.finding small{font-size:9.5px;margin-top:2px}
+.finding-symbol{font-size:15px;color:var(--muted);width:16px;text-align:center}
+.finding:hover .finding-symbol{color:var(--orange)}
+.cohort-box{margin:16px 0 8px}
+.cohort-box strong{font:500 24px/1 Georgia,serif;letter-spacing:-.5px;margin:4px 0 6px}
+.cohort-box p{font-size:10.5px}
+.rail-action{font-size:11px;padding:7px 0;color:var(--ink)}
+.rail-action:hover{color:var(--teal)}
+.rail-foot{font-size:8.5px;color:#8a969c;margin-top:16px}
+/* área principal */
+main{padding:0 22px}
+.context-bar{height:40px;font-size:10px}
+.view-heading{margin:18px 0 12px}
+.view-heading h2{font:500 26px/1.15 Georgia,serif;letter-spacing:-.4px;margin:6px 0 8px}
+.view-heading p{font-size:11.5px}
+.task-tag{color:var(--muted)}
+.toolbar{padding:9px 0;margin-bottom:12px}
+.toolbar select{border-color:var(--line)}
+.segmented{background:#eef0ec;padding:2px}
+.segmented button.active{box-shadow:none;border:1px solid var(--line)}
+.viz-card{border-radius:6px}
+.chart-note{background:#fff;font-size:10px}
+.stats-strip{padding:14px 0 10px;gap:30px}
+.stat strong{font:500 22px Georgia,serif}
+.narrative{background:#f1f4f0;font-size:10.5px}
+.map-control button{border-color:var(--line)}
+.map-control button.active{background:var(--ink)}
+.map-panel{background:#fff;border:1px solid var(--line);box-shadow:none;backdrop-filter:none;border-radius:6px}
+.map-stage{border-color:var(--line);border-radius:6px;background:#f3f4f0}
+.main-footer{font-size:9px}
+/* detalle y modales */
+.inspector{box-shadow:none;border-left:1px solid var(--line);padding:22px}
+.inspector h2{font:500 24px/1.15 Georgia,serif}
+.inspector-controls button{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.inspector-controls button:hover{border-color:var(--teal);color:var(--teal)}
+.inspector-tabs button.active{color:var(--ink);border-color:var(--ink)}
+.metric-tile{border-color:var(--line)}
+.method-note{background:#f3f5f1;border-left:2px solid #cfd8d2}
+dialog{border:1px solid var(--line);border-radius:8px;box-shadow:0 20px 60px #1b2a3322}
+.loading-mark{color:#b8c1bb}
+@media(max-width:900px){:root{--top:96px}.masthead{padding:10px 14px 0}}
+.order-explanation{background:#f3f5f1;border-left:2px solid #cfd8d2;font-size:11.5px;padding:10px 13px}.order-explanation b{color:var(--ink)}
+.narrative b{color:var(--ink)}
+
+/* plano como croquis: calles y nombres en gris tenue; el trazado del metro encima, también recesivo */
+.map-tiles image{opacity:1;filter:saturate(.18) contrast(.92) brightness(1.04)}
+.map-lines path{stroke:#4f5e63;stroke-width:1.6;opacity:.55;stroke-linecap:round;stroke-linejoin:round}
+.map-svg.sin-calles .map-lines path{stroke:#8a9a92}
+
+/* carril mínimo: solo lo que cambia el dato. La pregunta vive en la cabecera y en Proyecto. */
+:root{--rail:188px}
+.rail{padding:14px 14px 12px}
+.rail .field{margin:0 0 10px;font-size:9px;letter-spacing:.4px;text-transform:uppercase}
+.rail .field select,.rail .field input{padding:6px 8px;font-size:11.5px;margin-top:4px}
+.rail-eyebrow{margin:16px 0 4px}
+.rail .finding{padding:7px 0;font-size:11.5px;gap:0;border-bottom:1px solid var(--line)}
+.rail .finding:last-of-type{border-bottom:0}
+.rail .finding:hover{color:var(--teal)}
+.rail .cohort-box{margin:14px 0 6px}
+.rail .cohort-box strong{font:500 20px/1 Georgia,serif;margin:3px 0 4px}
+.rail .cohort-box p{font-size:10px;margin:0 0 6px}
+.rail .text-button{font-size:10.5px}
+.rail-actions{border-top:1px solid var(--line);margin-top:10px;padding-top:6px}
+.rail .rail-action{font-size:10.5px;padding:5px 0}
+.rail .rail-foot{font-size:8.5px;margin-top:12px}
+
+.map-dot{transition:none}.view-tabs button,.finding,.segmented button,.inspector-tabs button{transition:color .15s,border-color .15s,background .15s}#content{animation:fade .25s ease-out}@keyframes fade{from{opacity:.35}to{opacity:1}}@media(prefers-reduced-motion:reduce){#content{animation:none}}
+
+/* La visualización ocupa toda la pantalla; los filtros son un cajón que se abre bajo demanda. */
+.app-shell{display:block}
+.rail{position:fixed;left:0;top:var(--top);height:calc(100vh - var(--top));width:220px;z-index:25;background:#fff;border-right:1px solid var(--line);box-shadow:8px 0 24px #1b2a3314;transform:translateX(-100%);transition:transform .2s ease;overflow:auto}
+body.rail-open .rail{transform:none}
+#filters-toggle[aria-expanded=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.masthead #filters-toggle{margin-left:auto}
+.masthead #help{margin-left:8px}
+.masthead .view-tabs{margin:0 auto}
+main{margin:0 auto;padding:0 18px}
+body.has-inspector main{margin-right:410px}
+.context-bar #cohort-count{color:var(--ink);font-weight:600}
+.context-bar #cohort-note{color:var(--muted)}
+@media(prefers-reduced-motion:reduce){.rail{transition:none}}
+
+/* sin carril: controles globales en la línea de contexto */
+.rail{display:none}
+.context-bar{height:44px;gap:8px}
+.context-bar select,.context-bar input{font-size:11px;padding:4px 6px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink)}
+.context-bar input{width:150px}
+.context-bar #reset{font-size:13px;padding:0 4px}
+.main-footer .text-button{font-size:9px}
+.map-panel-controls{width:250px}
+.map-legend{width:260px}
+
+/* el panel de detalle está siempre a la vista; el cierre vuelve al grupo activo */
+main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{position:static;width:auto;height:auto;border-left:0;border-top:1px solid var(--line)}}
+
+/* una sola pantalla: mapa + panel; la pregunta en la cabecera; el resto bajo demanda */
+.masthead-question{margin:0 auto;font:500 14px/1.2 Georgia,serif;color:var(--ink);text-align:center}
+.masthead-question small{display:block;font:400 10px Atlas,"Avenir Next",system-ui,sans-serif;color:var(--muted);margin-top:3px}
+.masthead #help{margin-left:0}
+#guide{width:min(820px,92vw);max-height:88vh;padding:28px 30px}
+#guide .view-heading{margin:0 0 10px}
+#guide .project{max-width:none;font-size:14px}
+.context-bar{height:42px}
+.main-footer{padding:8px 0 10px;border-top:0}
