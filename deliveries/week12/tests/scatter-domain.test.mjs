@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {comparisonContext,scatterDomain} from '../atlas/src/scatter-domain.mjs';
+const rows=[{id:'301',recovery:1945.7649868,change:8},{id:'146',recovery:101.1758,change:2},{id:'x',recovery:291.3349,change:20}];
+const before=structuredClone(rows),r=scatterDomain(rows,2021,2024);
+assert.equal(r.xMax,300);assert.equal(r.main.length,2);assert.equal(r.context.length,1);assert.deepEqual(rows,before);
+assert.equal(comparisonContext('146',2021,2024),null);
+assert.equal(comparisonContext('301',2022,2024),null);
+assert.equal(scatterDomain(rows,2022,2024).main.length,3);
+assert.equal(scatterDomain(rows,2022,2024).xMax,1950);
+assert.equal(scatterDomain([...rows,{id:'ordinary-outlier',recovery:2400,change:2}],2021,2024).xMax,2400);
+assert.equal(scatterDomain([],2021,2024).xMax,150);
+const f=JSON.parse(fs.readFileSync(new URL('../atlas/data/flows.json',import.meta.url)));
+const actual=f.nodes.map((n,i)=>({id:n.id,recovery:100*f.starts['2024'][i].flat().reduce((a,b)=>a+b,0)/f.starts['2021'][i].flat().reduce((a,b)=>a+b,0),change:0}));
+const real=scatterDomain(actual,2021,2024);
+assert.equal(real.main.length,423);assert.equal(real.context.length,1);assert.equal(real.xMax,300);
+assert(Math.abs(real.context[0].recovery-1945.764983)<1e-5);
+console.log('PASS: verified closure separated only for affected comparisons; all other extremes retained; raw ratios unchanged; annual dataset axis 0–300 with 423 + 1 contextual complex.');

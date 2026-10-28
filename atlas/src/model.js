@@ -11,10 +11,13 @@ export function relevantEvents(data,s,y=state.year){
   const historical=(s.name.match(/\(([^)]+)\)/)?.[1]||'').split(',').map(x=>x.trim());
   return (data.events||[]).filter(e=>(e.years.includes(BASE)||e.years.includes(y))&&(e.scope==='all'||e.ids?.includes(s.id)||(e.scope==='historical-route'&&historical.includes(e.route))));
 }
+const metricCache=new WeakMap();
 export function measures(s,y=state.year){
   const a=profile(s,BASE),b=profile(s,y);
   if(!a||!b)return null;
-  return {change:50*d3.sum(a.p,(v,i)=>Math.abs(v-b.p[i])),deltaAM:b.am-a.am,deltaWeekend:b.weekend-a.weekend,recovery:100*b.daily/a.daily};
+  const cached=metricCache.get(s);if(cached?.a===a&&cached.b===b)return cached.value;
+  const value={change:50*d3.sum(a.p,(v,i)=>Math.abs(v-b.p[i])),deltaAM:b.am-a.am,deltaWeekend:b.weekend-a.weekend,recovery:100*b.daily/a.daily};
+  metricCache.set(s,{a,b,value});return value;
 }
 export function hellinger(a,b){return Math.sqrt(d3.sum(a,(v,i)=>(Math.sqrt(v)-Math.sqrt(b[i]))**2)/2);}
 export function cohortProfile(stations,y){
@@ -22,7 +25,7 @@ export function cohortProfile(stations,y){
   if(!weight)return null;
   const p=d3.range(168).map(i=>d3.sum(rows,r=>r.p[i]*r.weekly)/weight);
   const weekday=d3.sum(p.slice(0,120));
-  return {p,am:100*d3.sum(d3.range(5),d=>d3.sum(p.slice(d*24+6,d*24+10)))/weekday,weekend:100*d3.sum(p.slice(120)),daily:weight/7};
+  return {p,am:weekday?100*d3.sum(d3.range(5),d=>d3.sum(p.slice(d*24+6,d*24+10)))/weekday:0,weekend:100*d3.sum(p.slice(120)),daily:weight/7,weekly:weight,observedCells:p.filter(v=>v>0).length};
 }
 export function metricValue(s,key,y=state.year){return measures(s,y)?.[key] ?? NaN;}
 const diverging=t=>t<=.5?d3.interpolateRgb('#176c91','#f5f5ef')(2*t):d3.interpolateRgb('#f5f5ef','#b6532c')(2*t-1);

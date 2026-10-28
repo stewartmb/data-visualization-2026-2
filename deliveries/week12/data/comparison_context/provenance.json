@@ -1,0 +1,28 @@
+{
+  "station_complex_id": "301",
+  "affected_comparison_year": 2021,
+  "sources": [
+    {
+      "source": "mta_closure",
+      "url": "https://apps.cio.ny.gov/apps/mediacontact/public/view.cfm?parm=05263848-E4F1-92EC-B38BB3829F9FE33D",
+      "query": "HTTP GET, public article, no analytical filters",
+      "retrieved_at_utc": "2026-10-28T09:15:37.830110+00:00",
+      "status": 200,
+      "resolved_url": "https://apps.cio.ny.gov/apps/mediacontact/public/view.cfm?parm=05263848-E4F1-92EC-B38BB3829F9FE33D",
+      "sha256": "616e4817a3679e91e97228de904ebc3928a98b7c6be0c5389c7e7dd9a84737a9",
+      "bytes": 28595,
+      "raw_file": "data/raw/comparison_context/mta_closure.html"
+    },
+    {
+      "source": "reopening_report",
+      "url": "https://patch.com/new-york/washington-heights-inwood/wash-heights-181st-street-1-station-reopens-new-elevators",
+      "query": "HTTP GET, public article, no analytical filters",
+      "retrieved_at_utc": "2026-10-28T09:15:38.903864+00:00",
+      "status": 200,
+      "resolved_url": "https://patch.com/new-york/washington-heights-inwood/wash-heights-181st-street-1-station-reopens-new-elevators",
+      "sha256": "a19a3d19dadc14eb514dd6c6df47463d0c8539d7913baeb5b2a074d638d14ec4",
+      "bytes": 233898,
+      "raw_file": "data/raw/comparison_context/reopening_report.html"
+    }
+  ]
+}

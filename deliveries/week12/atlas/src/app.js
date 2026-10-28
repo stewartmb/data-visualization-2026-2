@@ -1,9 +1,9 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=20261028-8';
+import {renderMap} from './map-view.js?v=20261028-review7';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=20261014-9';
-import {renderInspector} from './inspector.js?v=20261028-4';
+import {renderInspector} from './inspector.js?v=20261028-review7';
 import {renderProject} from './project-view.js?v=20261028-2';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
@@ -44,6 +44,7 @@ function updateURL(){
   history.replaceState(null,'',`?${p}`);
 }
 const app={
+  syncURL:updateURL,
   get data(){return data;},get geo(){return geo;},get lineas(){return lineas;},get flows(){return flows;},state,
   station:id=>data.stations.find(s=>s.id===id),
   filtered(){
@@ -100,21 +101,22 @@ function render(){
   if(state.view==='atlas'&&previousScroll)document.querySelector('.matrix-scroll').scrollTop=previousScroll;
   renderInspector(app);
   if(focusId)document.getElementById(focusId)?.focus({preventScroll:true});
-  document.querySelector('#footer-status').textContent=`${data.meta.comparison} · MTA / Open NY · plano © OpenStreetMap`;
+  document.querySelector('#footer-status').textContent=`${data.meta.comparison} · MTA / Open NY · referencia GTFS MTA 2026`;
   updateURL();
 }
 
 function exportCSV(){
   const columns=['complex_id','name','borough','baseline','target','change_tv_pp','delta_am_pp','delta_weekend_pp','volume_index_pct','observed_cells_baseline','observed_cells_target','retrieved_at_utc'];
   const quote=v=>'"'+String(v).replaceAll('"','""')+'"';
-  const rows=app.filtered().map(s=>{const m=measures(s);return [s.id,s.name,s.borough,'Jan-Feb '+BASE,`Jan-Feb ${state.year}`,m.change,m.deltaAM,m.deltaWeekend,m.recovery,profile(s,BASE).observedCells,profile(s).observedCells,data.meta.retrieved].map(quote).join(',');});
+  const rows=app.filtered().map(s=>{const m=measures(s);return [s.id,s.name,s.borough,'Jan-Dec '+BASE,`Jan-Dec ${state.year}`,m.change,m.deltaAM,m.deltaWeekend,m.recovery,profile(s,BASE).observedCells,profile(s).observedCells,data.meta.retrieved].map(quote).join(',');});
   const blob=new Blob(['\ufeff'+columns.join(',')+'\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob);
   const a=document.createElement('a');a.href=url;a.download=`evidencia-ritmos-${state.year}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 hydrate();
-Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json('data/lineas.geojson').catch(()=>null),d3.json('data/flows.json').catch(()=>null)]).then(([a,g,l,f])=>{
+Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json('data/lineas.geojson').catch(()=>null),d3.json('data/flows.json')]).then(([a,g,l,f])=>{
   if(!a.stations?.length||a.stations.some(s=>!s.profiles[String(BASE)]||!s.profiles['2024']||Object.values(s.profiles).filter(Boolean).some(p=>p.p.length!==168||p.p.some(v=>!Number.isFinite(v)||v<0))))throw Error('Los perfiles no cumplen la estructura esperada.');
+  if(!f?.starts||!f?.flows||!f?.meta?.years?.includes(BASE)||!f.meta.years.includes(state.year))throw Error('Faltan los agregados OD para esta comparación. No se usarán datos de entradas como reemplazo.');
   data=a;geo=g;lineas=l;flows=f;
   // Métricas exclusivamente desde el OD: los perfiles de 168 celdas de cada complejo se derivan de los
   // viajes iniciados (starts[y][nodo][dow][hora], semana representativa). Las entradas por torniquete
@@ -132,7 +134,7 @@ Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json
       }
       s.series=[];
     }
-    data.meta.comparison='Semana representativa del OD estimado de la MTA (promedio de los meses presentes, ponderado por el calendario); viajes iniciados por complejo, día y hora.';
+    data.meta.comparison='Semana representativa del OD estimado de la MTA (los doce meses completos, ponderados por el calendario); viajes iniciados por complejo, día y hora.';
   }
   state.pins=state.pins.filter(id=>app.station(id));
   if(!app.station(state.selected))state.selected=null;

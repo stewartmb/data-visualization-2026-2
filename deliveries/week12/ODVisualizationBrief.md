@@ -1,4 +1,4 @@
-# Prompt para el agente: Atlas OD con bundling restringido a la red
+# Prompt para el agente: Atlas OD con RAEB y abstracción graduable
 
 Trabaja en la raíz del repositorio `stewartmb/data-visualization-2026-2`. Todas las rutas siguientes son relativas a esa raíz; consulta `deliveries/week12/DataSharing.md` para obtener los archivos en otra computadora. Implementa una versión funcional del siguiente diseño, con datos reales y procesamiento reproducible. Lee primero `AGENTS.md`, `Proyecto_Final_Guia.md` —especialmente la entrega de Semana 12— y la documentación existente. Conserva el trabajo local del usuario. No hagas push ni despliegues públicos.
 
@@ -16,7 +16,9 @@ Referencias a consultar:
 - Página de los autores: https://webspace.science.uu.nl/~telea001/InfoVis/RAEB
 - Tube Heartbeat: https://misc.oomap.co.uk/tubeheartbeat.com/london/
 
-RAEB aporta el principio de simplificar recorridos considerando la red subyacente. Tube Heartbeat inspira la exploración horaria y los nodos que cambian de tamaño. **Nuestra propuesta añade restricciones topológicas duras y bundling direccional**; no atribuyas estas extensiones al algoritmo original. Si implementas una adaptación, denomínala “bundling restringido a la red, inspirado en RAEB”. Solo afirma reproducir RAEB si realmente implementas y documentas sus componentes.
+La indicación más reciente del usuario es permitir **abstracción geométrica libre con fidelidad 0** y recuperar progresivamente los caminos de referencia al aumentarla. Esta indicación sustituye el requisito anterior de mantener todas las curvas dentro de un corredor ferroviario. El grafo y los valores OD siguen siendo invariantes: un puente visual en una abstracción no representa nueva infraestructura.
+
+Implementa los componentes de RAEB, no una simplificación Douglas–Peucker ni un cambio de separación entre carriles. Declara las adaptaciones ferroviarias y numéricas; no lo presentes como reproducción idéntica de los experimentos de los autores.
 
 ## 2. Decisiones iniciales explícitas
 
@@ -25,7 +27,7 @@ RAEB aporta el principio de simplificar recorridos considerando la red subyacent
 - Dispersión: **un solo diagrama bivariado**, como la imagen; no una matriz SPLOM con muchas variables.
 - Hora inicial: **lunes, 08:00–09:00**, como hora de inicio del viaje. Reloj y barra horaria permiten cambiarla.
 - Mapa: magnitud absoluta del año objetivo. Dispersión y reloj: comparación entre los dos años. Títulos y leyendas deben indicar esta diferencia de escala temporal.
-- Las métricas de dispersión describen la semana completa y permanecen fijas durante la animación horaria. La hora activa solo cambia el mapa y el indicador del reloj.
+- Las métricas de dispersión describen la semana completa y permanecen fijas al seleccionar día y hora. La hora activa solo cambia el mapa y el indicador del reloj.
 - Red de referencia constante para todos los años, para que las diferencias visuales procedan del OD y no de un cambio silencioso de red. Esto es un escenario modelado, no una reconstrucción histórica del servicio.
 
 Estas son decisiones de diseño para avanzar. Documenta cualquier cambio necesario por una limitación comprobada.
@@ -51,47 +53,29 @@ No llames a los segmentos “ocupación”, “congestión”, “trenes en tiem
 
 Verifica el estado real de adquisición y validación; no supongas que ya terminó. La descarga tiene su propio proceso: no lo dupliques ni lo interrumpas. Desarrolla en paralelo lo independiente. Antes de publicar cifras completas, exige los controles del procesamiento OD; si faltan meses, muestra su ausencia y no rellenes con datos ficticios ni ceros. No ejecutes el validador completo sobre archivos parciales.
 
-## 4. Red, asignación de rutas y conservación de conectividad
+## 4. Red y asignación de referencia
 
-Ya existen:
+Utiliza el GTFS MTA adquirido por `scripts/acquire_network.py`: secuencias consecutivas de paradas y transferencias explícitas, recortadas sobre `shapes.txt` con orden monótono y distancia máxima de proyección de 250 m. No añadas enlaces por proximidad. La referencia disponible corresponde a 2026, no al servicio histórico 2021–2024.
 
-- `deliveries/week12/data/raw/enrichments/gtfs_subway.zip`, con `shapes.txt`, `stop_times.txt`, `stops.txt`, `trips.txt`, `routes.txt`, transferencias y calendarios.
-- `deliveries/week12/atlas/data/network_current.json`, un resumen de adyacencias de servicios; **no sustituye una red enrutable con geometrías**.
+`prepare_raeb.py` prepara una referencia estática de 424 complejos, 547 enlaces ferroviarios y 2 transferencias peatonales declaradas. La asignación minimiza distancia geométrica sobre las adyacencias dirigidas del GTFS, con desempates deterministas. Es una unión de patrones de servicio y colapsa las plataformas en complejos: no comprueba horarios, esperas ni compatibilidad temporal de servicios. No denominarla ruta observada, mejor ruta real ni asignación de menor tiempo. Estas limitaciones permanecen explícitas.
 
-El snapshot disponible tiene versión `20260826-X-long-term-supplement-trip-ids`, de 2026. Confirma los metadatos. No lo presentes como GTFS histórico de 2021–2024. La interfaz debe indicar de forma discreta y visible: **“OD estimado MTA · rutas modeladas sobre red de referencia 2026”**. Si se incorpora otra red, actualiza su procedencia y significado.
+Conserva por separado demanda asignada, no mapeada, no asignable y origen=destino. No conviertas OD internos de un complejo en bucles inventados. No cambies ninguna de estas cantidades al mover parámetros visuales.
 
-Construye el grafo respetando secuencia de paradas, dirección, pertenencia a servicios y conexiones de transbordo permitidas. Conserva plataformas/servicios durante el cálculo aunque los nodos visuales sean complejos. No conectes estaciones porque estén cerca ni porque sus líneas se crucen en pantalla. Recorta las geometrías de `shapes` al tramo correcto entre paradas, con control de orden; una adyacencia express no es un segmento recto que salta sobre el territorio.
+## 5. Dos barras y motor RAEB
 
-Para esta versión usa una **asignación determinista de menor tiempo programado de recorrido**, con costes de transbordo documentados y desempates estables. El tiempo de recorrido, los enlaces de transferencia y cualquier penalización adicional deben quedar separados en la configuración. No inventes frecuencias, esperas, probabilidades de elección ni calibración de preferencias. Si falta un coste necesario, utiliza un supuesto explícito y reproducible, y evalúa su sensibilidad; no lo presentes como medición.
+**Fidelidad geométrica f ∈ [0,1], inicial 0,90.** Normaliza `p_ra=5f`. Jerarquía de enlaces por importancia: 0,3 × longitud normalizada + 0,1 × clase + 0,6 × flujo normalizado. En este ferrocarril la clase es constante 1: no se fabrican clases de carreteras. Se conserva el top 5 %, 10 %, 20 %, 40 % y 100 % en cinco niveles anidados; los huecos se sustituyen por cuerdas entre segmentos conservados, siguiendo §4.4. La importancia usa el conjunto de años/horas para mantener estable la referencia.
 
-No combines servicios incompatibles de distintos calendarios en un recorrido imposible. Define una instancia de servicio coherente del snapshot para cada tipo de día y declara cualquier simplificación. Mantén el modelo de rutas separado del motor de bundling.
+- f=0: OD rectos como semilla y bundling sin guía ferroviaria. Pueden aparecer cruces visuales sobre el agua. Son abstracciones, no nuevos caminos reales.
+- 0<f<1: se conservan progresivamente tramos de la jerarquía. Se interpola entre niveles vecinos para una barra continua.
+- f=1: mostrar la geometría completa del GTFS y la carga asignada, sin atajos introducidos por el muestreo de curvas.
 
-Conserva los OD no asignables como categoría auditable; informa su número y peso. Los OD con origen igual a destino no deben producir viajes circulares inventados: cuentan en las métricas del origen y quedan sin carga de tramo. No fuerces el universo a 424 complejos: calcula el universo real del OD, su intersección con la red y los casos no mapeados. Ninguna exclusión silenciosa.
+**Agrupación b ∈ [0,1], inicial 0,65.** Multiplica el radio inicial del kernel estimado. b=0 elimina la atracción entre curvas de la semilla del nivel elegido; b=1 usa el radio estimado completo. No modifica pesos, extremos ni asignación.
 
-### Regla inviolable
+El motor calcula KDE radial con kernel Epanechnikov, advección por su gradiente, suavizado laplaciano, radio decreciente λ=0,9 y refuerzo de densidad de la guía `θ=1,1 maxρ`. Estima el radio con Fréchet discreto y DBSCAN; controla convergencia mediante imágenes de curvas y NMI≥0,8. El máximo de 48 iteraciones es una salvaguarda y no equivale automáticamente a convergencia.
 
-**El bundling cambia la representación, nunca el grafo, los caminos asignados ni los valores.** Preserva origen, destino, orden de segmentos, sentido y cruces ferroviarios válidos de cada camino. Un cruce visual no crea una conexión ni permite cambiar de tren. Mantén identificadores de segmento y de cruces sobre/bajo el agua.
+Adaptaciones declaradas: raster acotado, 32 muestras por curva, mínimo 16 enlaces para estimar el kernel en una red pequeña, radio acotado, interpolación de niveles, pesos OD agregados y curva ferroviaria exacta en f=1. La desviación Fréchet mostrada en el diagnóstico se estima con hasta 128 curvas, no con todo el conjunto. RAEB original no separa sentidos durante el agrupamiento; esta versión tampoco lo promete. La selección de origen conserva el significado dirigido del OD.
 
-No se permiten nuevos puentes, túneles, atajos, transbordos o enlaces por proximidad. La suavización de curvas también debe cumplirlo: una spline puede inventar un cruce aunque sus puntos de control sean válidos. Si una curva no supera los controles, usa la geometría original en ese tramo.
-
-## 5. Dos barras de 0 a 1, con semántica comprobable
-
-Coloca dos controles compactos bajo “Agrupación de recorridos”, sin dominar el mapa. Son **parámetros propios de esta adaptación**, no dos parámetros originales de RAEB normalizados arbitrariamente.
-
-**A. Agrupación, b ∈ [0,1], inicial 0,65.**
-
-- 0: caminos asignados sin desplazamiento de bundling; puede haber superposición natural en tramos compartidos.
-- 1: máxima agrupación visual permitida entre caminos compatibles que comparten corredor y sentido.
-- No agrupar líneas paralelas distintas solo por cercanía. Los haces pueden compartir representación de un tramo, conservando la posibilidad de seguir cada conexión de extremo a extremo.
-
-**B. Fidelidad geométrica, f ∈ [0,1], inicial 0,90.**
-
-- 1: eje del camino sobre su geometría de referencia, sin desplazamiento lateral ni suavizado que la desvíe.
-- 0: máxima simplificación/desplazamiento permitida **dentro del corredor admisible de ese camino**; sigue prohibido alterar conexiones o cruces.
-- Define una tolerancia geométrica máxima `epsilon_max`, explícita y comprobada, con `epsilon(f) = (1-f) × epsilon_max`. El ancho visual del trazo no se confunde con el desplazamiento de su eje.
-- Los corredores admisibles se identifican por el camino y sus segmentos, no únicamente por distancia al ferrocarril más cercano. No hagas una interpolación libre hacia una curva que pueda cortar un río.
-
-Los dos controles nunca modifican OD, asignación de rutas ni métricas. Explica brevemente los extremos junto a las barras. Documenta la función de `b`, las unidades de `epsilon_max` y su comportamiento al hacer zoom. Si con f=1 o b=0 desaparece un efecto de desplazamiento, es correcto; informa esa dependencia sin simular un cambio inexistente.
+Mantén las muestras alineadas por longitud del recorrido original y ancla los segmentos conservados. Dibuja sus shapes completos con carga agregada y usa WebGL para la fracción no conservada. Usa un worker para el cálculo. Las barras deben responder inmediatamente con una **vista previa**, luego interpolar al resultado calculado. Explica este estado en una línea breve. La vista previa no es una solución convergida de RAEB. El zoom cambia solo la cámara; no repite la asignación ni el bundling.
 
 ## 6. Métricas coherentes para mapa, dispersión y reloj
 
@@ -124,12 +108,12 @@ Diseña para escritorio como la referencia: aproximadamente **70 % mapa / 30 % c
 
 - Fondo geográfico **en grises**, agua y tierra distinguibles por luminosidad; etiquetas discretas. Sin colores de calles, parques ni líneas oficiales compitiendo con las métricas.
 - Red de referencia como estructura fina gris. Capa analítica de haces con un tono azul petróleo de buen contraste.
-- Grosor de haces: volumen asignado al tramo/cohorte. Usa una escala explícita y fija durante la reproducción y entre los años comparados. Si necesita transformación para el rango, declárala en una leyenda con valores; no normalices por fotograma.
-- Sentidos opuestos: carriles/offsets separados, con flechas legibles. No muestres solo el sentido dominante. Agrupar flujos opuestos debe quedar prohibido.
+- Densidad visual: cada OD aporta opacidad α=1−exp(−q/800), con escala fija entre años y horas. La superposición revela haces; es una lectura cualitativa, con saturación y precisión de raster. Los valores exactos pertenecen al dato OD. En f=1, sumar carga por enlace y aplicar la misma transferencia óptica sobre la geometría completa.
+- No inventar separación direccional: RAEB agrupa por geometría. Al seleccionar un origen, distinguir sus relaciones salientes; no confundir orientación del OD con velocidad o posición instantánea.
 - Nodos: **área proporcional a viajes iniciados en el origen** para día y hora activos. No uses radio proporcional. Mantén hit areas cómodas y una marca neutra distinguible para valor cero; si aplicas pisos o topes de tamaño, explica la excepción y conserva el valor exacto.
 - Halo y contorno indican selección. Un acento cálido resalta las conexiones salientes del origen seleccionado; la red completa sigue visible como contexto. No emplees simultáneamente color para borough, línea, cambio, volumen y selección.
-- Animación: crecen/disminuyen nodos y grosores al recorrer las 24 horas. Flechas o pulsos de dirección con velocidad visual constante, sin aparentar velocidades medidas de trenes. No animes un punto por pasajero. Respeta movimiento reducido y permite pausa.
-- Tooltip del tramo: orígenes/destinos asociados, sentido, valor, unidad y explicación “rutas asignadas de viajes que comienzan a esta hora”. Explica allí el modelo y la red de referencia.
+- Selección temporal manual: los nodos y la densidad cambian al elegir un día y una hora en el reloj. No incorporar reproducción automática, botón play/pausa ni un temporizador. No simules velocidad de trenes ni un punto por pasajero.
+- Detalles del nodo: viajes iniciados y selección de conexiones salientes. Mantener la procedencia y el significado de curvas modeladas accesibles bajo demanda.
 
 ### Dispersión superior derecha: volumen × forma
 
@@ -139,7 +123,7 @@ Diseña para escritorio como la referencia: aproximadamente **70 % mapa / 30 % c
 - Color neutro/contextual y acento para selección; no introduzcas categorías territoriales extra para rellenar canales.
 - Hover, clic y selección por pincel resaltan los mismos complejos en mapa y reloj. Los no seleccionados se atenúan sin desaparecer.
 - Sin jitter que falsee posiciones. Resuelve puntos coincidentes mediante selección de candidatos o detalle bajo demanda.
-- Dominio estable durante la animación; muestra todos los valores válidos sin recortes silenciosos. Informa aparte cuántos complejos no tienen comparación válida.
+- Dominio estable al cambiar de día y hora; muestra todos los valores válidos sin recortes silenciosos. Informa aparte cuántos complejos no tienen comparación válida.
 - Tooltip/foco del eje X: “100 %: mismo volumen de viajes iniciados que en el año base”. Eje Y: “Cuánto cambió el reparto de viajes entre días y horas; 0: mismo patrón”. Fórmula disponible en una segunda capa.
 
 ### Reloj inferior derecho: matriz radial semanal
@@ -147,7 +131,7 @@ Diseña para escritorio como la referencia: aproximadamente **70 % mapa / 30 % c
 - Siete anillos, lunes interior a domingo exterior; 24 sectores horarios, medianoche arriba y sentido horario. Misma geometría y escala en toda selección.
 - Color divergente azul–neutro–terracota centrado en 0: `Delta_pp` del peso semanal de viajes iniciados. Leyenda simétrica estable para el ámbito comparado, con saturación declarada si existe.
 - Inicialmente representa todo el sistema OD; al seleccionar, representa ese complejo o grupo. El título identifica claramente el ámbito.
-- Clic en una celda fija día y hora del mapa. La barra horaria conserva ese día y recorre sus 24 horas. El sector activo se reconoce con contorno, no cambiando su valor cromático.
+- Clic en una celda fija día y hora del mapa. La barra horaria permite elegir manualmente otra hora del mismo día; nunca avanza por sí sola. El sector activo se reconoce con contorno, no cambiando su valor cromático.
 - Tooltip: día, intervalo horario, viajes representativos de ambos años, peso en cada año y diferencia en pp. Nombra las unidades: viajes y porcentaje no son intercambiables.
 - Mantén el reloj como idiom principal. No agregues otro gráfico o pestañas de huella que dupliquen esta función.
 
@@ -157,7 +141,7 @@ Diseña para escritorio como la referencia: aproximadamente **70 % mapa / 30 % c
 
 En una esquina inferior del mapa coloca un **minimapa geográfico fijo de contexto**, independiente del zoom principal: contornos grises, red/nodos simplificados y rectángulo de la extensión visible. El rectángulo se deriva de los límites reales de la cámara; no es decorativo. Actualízalo al mover o ampliar, permite arrastrarlo y ofrece “Ver toda la red”. No resetees selección al recentrar.
 
-Controles visibles: pareja de años, play/pausa y hora, dos barras del bundling, zoom/recentrar y búsqueda discreta. Días se eligen en el reloj; grupos se construyen por selección directa. La búsqueda complementa la exploración, no la habilita. No añadas menús de borough, tarifas, categorías, modos de red o métricas sin necesidad comprobada.
+Controles visibles: pareja de años, selección manual de hora, dos barras del bundling, zoom/recentrar y búsqueda discreta. No añadir reproducción automática ni un botón de reproducción. Días se eligen en el reloj; grupos se construyen por selección directa. La búsqueda complementa la exploración, no la habilita. No añadas menús de borough, tarifas, categorías, modos de red o métricas sin necesidad comprobada.
 
 Al alejar: simplificación de geometría, jerarquía de etiquetas y agrupación espacial de nodos cuando sea necesaria. Los grupos visuales deben señalar cuántos complejos contienen y permitir abrirlos al acercarse; conserva la selección individual. Al acercar: usa las coordenadas reales y tamaños estables en pantalla dentro de límites declarados. No desplaces estaciones para evitar solapamiento geográfico; separa representación agregada de posición real. No normalices valores ni excluyas flujos porque quedaron fuera del viewport.
 
@@ -185,13 +169,13 @@ Antes de declarar terminado, comprueba:
 
 - Conteos/cobertura OD contrastados con fuente; datos incompletos distinguidos de cero.
 - Balance de demanda: asignada + no asignable + origen=destino coincide con la demanda de entrada de cada cohorte, sin doble conteo entre esas categorías.
-- Volúmenes y métricas no cambian al mover b/f, hacer zoom o animar.
+- Volúmenes y métricas no cambian al mover b/f, hacer zoom o cambiar la hora.
 - Casos conocidos de puente/túnel, líneas paralelas, express y cruce sin transbordo; prueba combinaciones extremas e intermedias de ambas barras. Cero enlaces topológicos inventados.
-- La trayectoria renderizada conserva la secuencia válida de segmentos; control geométrico por tramo y retorno a la geometría original si falla.
+- f=0 permite geometría libre; f=1 usa las geometrías completas de referencia. En todos los valores, conservar los extremos OD y la demanda. Un cruce de curvas no añade una conexión al grafo.
 - TV=0 para perfiles proporcionales con volúmenes distintos; faltantes y denominadores cero tratados correctamente.
 - Comparación de grupo calculada desde cantidades, no desde medias de ratios.
 - Selección enlazada en las tres vistas, minimapa con extensión correcta y orientación conservada después del zoom.
-- 24 horas reproducibles, leyendas/escala estables y opción de movimiento reducido.
+- Las 168 combinaciones día–hora se pueden seleccionar manualmente; mapa y reloj quedan sincronizados y las leyendas/escalas son estables. No existe avance automático del tiempo.
 - Evidencia visual a 1440×900 y otra resolución de escritorio; sin controles tapando grandes regiones del mapa ni gráficos cortados.
 
 Entrega la aplicación ejecutable, scripts reproducibles y una nota breve de decisiones/limitaciones con capturas reales. Indica qué está descargado, qué está validado y qué utiliza la interfaz. Si la descarga aún impide una verificación final, deja ese estado explícito y termina todo el trabajo independiente; no sustituyas la validación pendiente por una afirmación de completitud.

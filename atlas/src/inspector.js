@@ -1,50 +1,35 @@
 import {state,BASE,esc,fmt,signed,profile,measures,hellinger,deltaColor,shareColor,cellValue,showTooltip,hideTooltip,dayShort,relevantEvents,cohortProfile} from './model.js?v=20261028-4';
 
+import {scatterDomain,comparisonContext} from './scatter-domain.mjs';
+
 export const BOROUGH_COLOR={Manhattan:'#1d6f8d',Brooklyn:'#b08a3e',Queens:'#7a5aa6',Bronx:'#5a8a4a'};
 
-export function renderInspector(app){
-  const host=document.querySelector('#inspector'),s=app.station(state.selected);
-  host.hidden=false;
-  if(!s){renderGroup(host,app);return;}
-  const a=profile(s,BASE),b=profile(s),m=measures(s),tabs={fingerprint:'Reloj',compare:'Comparar',source:'Fuente'};
-  const events=relevantEvents(app.data,s);
-  host.innerHTML=`<button class="close" id="close-inspector" aria-label="Cerrar detalle">×</button><div class="eyebrow">COMPLEJO ${s.id} / ${esc(s.borough)}</div><h2>${esc(s.name.replace(/ \(.*/,''))}</h2><div class="sub">Año completo · ${BASE} frente a ${state.year}<br>${s.routes.map(r=>`<span class="route">${esc(r)}</span>`).join('')} <span style="font-size:9px">rutas del catálogo actual</span></div>
-  <div id="scatter-host"></div>
-  ${events.length?`<details class="method-note service-context"><summary>Contexto de servicio que revisar (${events.length})</summary>${events.map(e=>`<p><b>${esc(e.title)}</b><br>${esc(e.description)}<br><a href="${esc(e.url)}" target="_blank" rel="noopener">Fuente MTA · ${esc(e.source_date)} ↗</a></p>`).join('')}</details>`:''}
-  <div class="inspector-controls"><button id="pin-station">${state.pins.includes(s.id)?'◆ Quitar de comparación':'◇ Fijar comparación'}</button><button id="find-neighbors">Buscar similares ↗</button></div>
-  <nav class="inspector-tabs" aria-label="Detalle de la estación">${Object.entries(tabs).map(([k,v])=>`<button id="inspect-tab-${k}" data-tab="${k}" class="${k===state.inspectorTab?'active':''}">${v}</button>`).join('')}</nav>
-  <div id="detail-body"></div>
-  <div class="metric-grid"><div class="metric-tile"><span>CAMBIO DE FORMA · TV</span><strong>${fmt(m.change)} pp</strong></div><div class="metric-tile"><span>PESO AM · DIFERENCIA</span><strong>${signed(m.deltaAM)} pp</strong></div><div class="metric-tile"><span>FIN DE SEMANA · DIFERENCIA</span><strong>${signed(m.deltaWeekend)} pp</strong></div><div class="metric-tile"><span>ÍNDICE DE VOLUMEN · ${BASE} = 100</span><strong>${fmt(m.recovery)} %</strong></div></div>
-  <p class="method-note">El peso AM usa 06:00–10:00 de lunes a viernes. El fin de semana usa sábado + domingo sobre una semana comparable. Las proporciones describen entradas agregadas; no identifican personas ni motivos.</p>`;
-  drawScatter(host.querySelector('#scatter-host'),app);
-  host.querySelector('#close-inspector').onclick=()=>app.set({selected:null});
-  host.querySelector('#pin-station').onclick=()=>app.pin(s.id);
-  host.querySelector('#find-neighbors').onclick=()=>app.similar(s.id);
-  host.querySelectorAll('[data-tab]').forEach(btn=>btn.onclick=()=>app.set({inspectorTab:btn.dataset.tab}));
-  const body=host.querySelector('#detail-body');
-  if(state.inspectorTab==='fingerprint'){drawFingerprint(body,s,app);drawTrajectory(body,s.profiles,app,s.name.replace(/ \(.*/,''));drawDestinations(body,s,app);}
-  if(state.inspectorTab==='compare')drawComparison(body,s,app);
-  if(state.inspectorTab==='evolution')drawEvolution(body,s,app);
-  if(state.inspectorTab==='source')body.innerHTML=`<div class="source-row"><b>Unidad</b><br>ID ${s.id} · complejo de estación, no andén ni línea individual.<br>Lat ${s.lat} · lon ${s.lon}</div><div class="source-row"><b>Qué se mide</b><br>Viajes iniciados en el complejo por día de la semana y hora, en una semana representativa de cada año: promedio de los meses presentes del OD estimado de la MTA, ponderado por las veces que cada día de la semana ocurre en el mes.<br>${BASE}: ${a.observedCells}/168 celdas con viajes · ${state.year}: ${b.observedCells}/168.</div><div class="source-row"><b>Semana representativa</b><br>${BASE}: ${fmt(Math.round(a.weekly))} viajes · ${state.year}: ${fmt(Math.round(b.weekly))} viajes (${fmt(a.daily)} y ${fmt(b.daily)} por día).</div><div class="source-row"><b>Fuente y modelo</b><br><a href="https://data.ny.gov/d/jsu2-fbtj" target="_blank" rel="noopener">MTA Subway Origin-Destination Ridership Estimate ↗</a> (un dataset por año, 2021–2024): estimación de la MTA por encadenamiento de viajes; no son salidas observadas ni trayectorias.<br>Rutas asignadas por nuestro modelo (camino más corto sobre una red de referencia construida del trazado de rutas actual), constante para todos los años.<br>Meses presentes: ${esc(JSON.stringify(app.flows?.meta?.months_present??{}))}.</div><p class="method-note">Las medidas no describen ocupación, congestión ni horarios reales de trenes. Un cruce visual de trazos no es una conexión.</p>`;
+function coverageLabel(app){
+  const months=app.flows?.meta?.months_present||{};
+  const describe=y=>{const m=months[String(y)]||[];return m.length===12?'enero–diciembre':m.join(',')==='1,2'?'enero–febrero':m.length?`${m.length} meses`:'cobertura sin verificar';};
+  const a=describe(BASE),b=describe(state.year);
+  return a===b?`${a} · ${BASE} → ${state.year}`:`${BASE}: ${a} · ${state.year}: ${b}`;
 }
 
-// Sin selección, el panel no desaparece: muestra la huella del grupo activo (ponderada por entradas),
-// con la misma leyenda. Así la leyenda del reloj está siempre a la vista y el detalle es un cambio de sujeto.
-function renderGroup(host,app){
-  const items=app.filtered(),y=state.year;
-  const a=cohortProfile(items,BASE),b=cohortProfile(items,y);
-  if(!a||!b){host.innerHTML=`<div class="eyebrow">GRUPO ACTIVO</div><h2>Sin datos</h2><p class="sub">No hay complejos en el grupo.</p>`;return;}
-  const nombre=state.cohort?'Grupo seleccionado':state.preset?{morning:'La mañana cambia',weekend:'Otro fin de semana',change:'Ritmos que se alejan',decoupled:'Volumen ≠ ritmo'}[state.preset]:state.query?'Resultados de búsqueda':state.borough==='all'?'Todo el sistema':state.borough;
-  const g={id:'__grupo',name:nombre,borough:`${items.length} complejos`,routes:[],profiles:{[String(BASE)]:{...a,observedCells:168},[String(y)]:{...b,observedCells:168}}};
-  const m=measures(g);
-  host.innerHTML=`<div class="eyebrow">GRUPO ACTIVO · ${items.length} COMPLEJOS</div><h2>${esc(nombre)}</h2><div class="sub">Año completo · ${BASE} frente a ${y} · perfil ponderado por entradas<br>Haz clic en un complejo del mapa o del gráfico para ver el suyo.</div>
-  <div id="scatter-host"></div>
-  <div id="detail-body" style="margin-top:14px"></div>
-  <div class="metric-grid"><div class="metric-tile"><span>CAMBIO DE FORMA · TV</span><strong>${fmt(m.change)} pp</strong></div><div class="metric-tile"><span>PESO AM · DIFERENCIA</span><strong>${signed(m.deltaAM)} pp</strong></div><div class="metric-tile"><span>FIN DE SEMANA · DIFERENCIA</span><strong>${signed(m.deltaWeekend)} pp</strong></div><div class="metric-tile"><span>ÍNDICE DE VOLUMEN · ${BASE} = 100</span><strong>${fmt(m.recovery)} %</strong></div></div>`;
+export function renderInspector(app){
+  const host=document.querySelector('#inspector'),selected=app.station(state.selected);
+  const items=app.filtered(),a=cohortProfile(items,BASE),b=cohortProfile(items,state.year);
+  host.hidden=false;state.clock=true;
+  const selectedValid=selected&&measures(selected);
+  if(!selectedValid&&(!a||!b)){host.innerHTML=`<div class="eyebrow">SIN DATOS COMPARABLES</div><h2>Amplía la selección</h2><button id="clear-empty">Ver todo el sistema</button>`;host.querySelector('#clear-empty').onclick=()=>app.set({cohort:null,query:'',borough:'all',preset:null});return;}
+  const nombre=selectedValid?selected.name.replace(/ \(.*/,''):state.cohort?'Grupo seleccionado':state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:'Todo el sistema';
+  const subject=selectedValid?selected:{id:'__grupo',name:nombre,profiles:{[String(BASE)]:a,[String(state.year)]:b}};
+  host.innerHTML=`<header class="linked-heading"><div class="eyebrow">${selectedValid?`COMPLEJO ${esc(selected.id)} · ${esc(selected.borough)}`:items.length+' COMPLEJOS · SELECCIÓN ACTIVA'}</div><h2 title="${esc(nombre)}">${esc(nombre)}</h2><p>${esc(coverageLabel(app))}</p>${selectedValid?'<button class="close" id="clear-subject" aria-label="Volver a todo el sistema">×</button>':''}</header>
+  <section id="scatter-host" aria-label="Volumen frente a forma semanal"></section>
+  <section class="clock-panel" aria-label="Reloj semanal de la selección"><div class="eyebrow">03 · CUÁNDO CAMBIA</div><div id="detail-body"></div></section>
+  <details class="inline-evidence"><summary>Datos, cobertura y modelo ⓘ</summary><div><b>${esc(coverageLabel(app))}</b><p>El mapa representa viajes que comienzan en la hora activa. La dispersión y el reloj resumen la semana representativa del período disponible.</p><p>Origen–destino estimado por MTA; los recorridos son asignados por un modelo sobre una red de referencia, no trayectorias observadas. Se utilizan los doce meses completos de cada año, ponderados por la cantidad de cada día de la semana.</p><p>Volumen: viajes iniciados. Forma: redistribución de sus 168 pesos semanales; TV=0 significa mismo patrón. Un grupo se calcula sumando cantidades antes de normalizar.</p><p>La referencia GTFS corresponde a 2026; no representa el servicio histórico. Las curvas libres son abstracciones visuales, no nuevas vías. El modelo minimiza distancia, sin comprobar horarios ni compatibilidad de servicios. El balance conserva aparte 0,1333 viajes semanales representativos no mapeados en 2023.</p></div></details>`;
+  if(selectedValid){
+    const context=comparisonContext(selected.id,BASE,state.year);
+    if(context)host.querySelector('.inline-evidence>div').insertAdjacentHTML('afterbegin',`<p class="comparison-closure-note"><b>${context.label}</b><br>${esc(context.explanation)}<br>${context.sources.map(source=>`<a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.label)} ↗</a>`).join(' · ')}</p>`);
+  }
   drawScatter(host.querySelector('#scatter-host'),app);
-  drawFingerprint(host.querySelector('#detail-body'),g,app,false);
-  const traj={};for(const y of [2021,2022,2023,2024]){const c=cohortProfile(items,y);if(c)traj[y]=c;}
-  drawTrajectory(host.querySelector('#detail-body'),traj,app,nombre);
+  drawFingerprint(host.querySelector('#detail-body'),subject,app,false);
+  host.querySelector('#clear-subject')?.addEventListener('click',()=>app.set({selected:null}));
 }
 
 // Trayectoria: el sujeto (complejo o grupo) recorre las cinco temporadas en el espacio peso AM × fin de semana,
@@ -73,13 +58,7 @@ function drawTrajectory(host,profiles,app,nombre){
 }
 
 function drawFingerprint(host,s,app,conVecinos=true){
-  host.innerHTML=`<div class="segmented" id="shape-toggle"><button data-clock="true" class="${state.clock?'active':''}">Reloj semanal</button><button data-clock="false" class="${!state.clock?'active':''}">Semana (matriz)</button></div><div class="segmented" style="margin:10px 0" id="detail-mode"><button data-mode="delta" class="${state.mode==='delta'?'active':''}">Diferencia</button><button data-mode="current" class="${state.mode==='current'?'active':''}">${state.year}</button><button data-mode="base" class="${state.mode==='base'?'active':''}">${BASE}</button></div><svg class="detail-viz" role="img" aria-label="Huella de 168 horas del complejo seleccionado"></svg><div class="detail-legend-block">
-    <div class="detail-legend-title">${state.mode==='delta'?`Color: cuánto cambió el peso de cada hora, ${state.year} menos ${BASE}`:`Color: peso de cada hora en los viajes iniciados de la semana de ${state.mode==='base'?BASE:state.year}`}</div>
-    <div class="detail-legend-scale"><span>${state.mode==='delta'?'−0,65 pp':'0 %'}</span><span class="gradient ${state.mode==='delta'?'':'seq'}"></span><span>${state.mode==='delta'?'+0,65 pp':'1,5 % o más'}</span></div>
-    ${state.mode==='delta'?`<div class="detail-legend-row"><i style="background:#247b9b"></i> azul: la hora pesa <b>menos</b> que en ${BASE} <i style="background:#f5f5ef;border:1px solid #ccc"></i> igual <i style="background:#bd5c30"></i> naranja: pesa <b>más</b></div>`:`<div class="detail-legend-row"><i style="background:#f4f5ee;border:1px solid #ccc"></i> claro: casi sin viajes <i style="background:#0d6877"></i> oscuro: una de las horas más cargadas (la semana suma 100 %)</div>`}
-    ${state.clock?`<div class="detail-legend-row"><b>Cómo leer el reloj.</b> Cada anillo es un día: <b>lunes en el centro, domingo en el borde</b> (Lun … Dom); la línea punteada separa lunes–viernes de sábado–domingo. Cada sector es una hora: <b>12 am arriba</b>, en el sentido del reloj; 6 am a la derecha, 12 pm abajo, 6 pm a la izquierda. Un sector oscuro a las 8 am en los anillos de lunes a viernes es el pico de la mañana laboral.</div>`:`<div class="detail-legend-row"><b>Cómo leer.</b> Arriba, la forma del día: qué porcentaje de las entradas de la semana entra a cada hora (gris ${BASE}, negro ${state.year}); si el pico negro queda por debajo del gris, el pico se aplanó. En medio, cada fila es un día (lunes arriba, domingo abajo) y cada columna una hora, de 12 am a 11 pm; la franja punteada es la mañana laboral (6–10 am). A la derecha, el peso de cada día en la semana (gris 2020, negro ${state.year}).</div>`}
-    <div class="detail-legend-row muted">Valores fuera de la escala saturan el color; pasa el cursor por una celda para ver el valor exacto.</div>
-  </div>`;
+  host.innerHTML=`<div class="clock-toolbar"><h3>El reparto de la semana</h3><div class="segmented" id="detail-mode"><button data-mode="delta" class="${state.mode==='delta'?'active':''}">Δ</button><button data-mode="current" class="${state.mode==='current'?'active':''}">${state.year}</button><button data-mode="base" class="${state.mode==='base'?'active':''}">${BASE}</button></div></div><svg class="detail-viz clock-viz" role="img" aria-label="Matriz radial de siete días y veinticuatro horas"></svg><div class="detail-legend-block"><div class="detail-legend-title">${state.mode==='delta'?`Peso horario · ${state.year} menos ${BASE}`:`Peso horario en la semana · ${state.mode==='base'?BASE:state.year}`}</div><div class="detail-legend-scale"><span>${state.mode==='delta'?'−0,65 pp':'0 %'}</span><span class="gradient ${state.mode==='delta'?'':'seq'}"></span><span>${state.mode==='delta'?'+0,65 pp':'≥1,5 %'}</span></div><p class="clock-hint">Lunes adentro · domingo afuera. Clic en una celda: día y hora del mapa.</p><details class="clock-help"><summary>Cómo leer el reloj ⓘ</summary><p>24 horas en sentido horario, medianoche arriba. Cada anillo es un día. En Δ, azul significa menor peso semanal y terracota mayor peso; el centro de la escala es cero. El color satura en los límites de la leyenda. Consulta cada celda para sus valores exactos.</p></details></div>`;
   host.querySelectorAll('[data-clock]').forEach(btn=>btn.onclick=()=>app.set({clock:btn.dataset.clock==='true'}));
   host.querySelectorAll('[data-mode]').forEach(btn=>btn.onclick=()=>app.set({mode:btn.dataset.mode}));
   const svg=d3.select(host.querySelector('svg')).attr('viewBox',state.clock?'0 0 360 362':'0 0 404 318');
@@ -128,8 +107,9 @@ function drawFingerprint(host,s,app,conVecinos=true){
     svg.append('text').attr('x',X0).attr('y',Y0+7*RH+28).attr('font-size',8.5).attr('fill','#6f7d86').text(`Peso AM lun–vie: ${profile(s,BASE).am.toFixed(1)} % → ${profile(s).am.toFixed(1)} % · fin de semana: ${profile(s,BASE).weekend.toFixed(1)} % → ${profile(s).weekend.toFixed(1)} %`);
   }
   // Clic en una celda fija el día y la hora del mapa; la celda activa se marca con contorno (no con color).
-  marks.style('cursor','pointer').on('click',(e,i)=>app.set({flowDay:Math.floor(i/24),flowHour:i%24}));
+  marks.attr('data-clock-cell',i=>i).attr('tabindex',0).attr('role','button').attr('aria-label',i=>`${dayShort[Math.floor(i/24)]}, ${i%24}:00. Fijar día y hora del mapa.`).style('cursor','pointer').on('click',(e,i)=>app.set({flowDay:Math.floor(i/24),flowHour:i%24})).on('keydown',(e,i)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();app.set({flowDay:Math.floor(i/24),flowHour:i%24});}});
   const activa=state.flowDay*24+state.flowHour;
+  marks.attr('aria-pressed',i=>String(i===activa));
   marks.filter(i=>i===activa).attr('stroke','#102937').attr('stroke-width',1.6).raise();
   marks.on('pointerenter',(e,i)=>{
     const a=profile(s,BASE).p[i]*100,b=profile(s).p[i]*100;
@@ -205,12 +185,16 @@ function drawScatter(host,app){
   if(!host)return;
   const all=app.data.stations.filter(s=>measures(s)),items=new Set(app.filtered().map(s=>s.id));
   const W=360,H=232,M={t:22,r:14,b:34,l:40};
-  const vals=all.map(s=>measures(s));
-  const xMax=Math.ceil(d3.quantile(vals.map(m=>m.recovery).sort(d3.ascending),0.99)/50)*50,yMax=Math.ceil(d3.quantile(vals.map(m=>m.change).sort(d3.ascending),0.99)/5)*5;
-  const x=d3.scaleLinear().domain([Math.min(100,Math.floor(d3.min(vals,m=>m.recovery)/10)*10),xMax]).range([M.l,W-M.r]).clamp(true),y=d3.scaleLinear().domain([0,yMax]).range([H-M.b,M.t]).clamp(true);
-    host.innerHTML=`<div class="scatter-block"><div class="eyebrow">02 · VOLUMEN × FORMA</div><h3 class="scatter-title">Crecer y cambiar de forma son dos cosas distintas.</h3>
-  <svg class="detail-viz" viewBox="0 0 ${W} ${H}" role="img" aria-label="Volumen frente a cambio de forma, un punto por complejo"></svg>
-  <div class="scatter-key"><span>x: 100 % = mismo volumen de viajes iniciados que en ${BASE}</span><span>y: cuánto cambió el reparto entre días y horas; 0 = mismo patrón</span><span>${all.length} complejos comparables · ${app.data.stations.length-all.length} sin comparación válida</span></div></div>`;
+  const domain=scatterDomain(all.map(s=>({id:s.id,...measures(s)})),BASE,state.year);
+  const contextual=new Set(domain.context.map(r=>r.id));
+  const plotted=all.filter(s=>!contextual.has(s.id));
+  const {xMax,yMax}=domain;
+  const x=d3.scaleLinear().domain([0,xMax]).range([M.l,W-M.r]),y=d3.scaleLinear().domain([0,yMax]).range([H-M.b,M.t]);
+    host.innerHTML=`<div class="scatter-block"><div class="eyebrow">02 · VOLUMEN × FORMA</div><h3 class="scatter-title">Más viajes, ¿otra semana?</h3>
+  <svg class="detail-viz" viewBox="0 0 ${W} ${H}" role="img" aria-label="Volumen frente a cambio de forma; los casos afectados por cierre se indican debajo" data-x-max="${xMax}" data-y-max="${yMax}" data-plotted-count="${plotted.length}"></svg>
+  <div class="scatter-key"><span>100 % = volumen de ${BASE}</span><span>TV = cambio del reparto semanal</span><span>${plotted.length} puntos${contextual.size?` · ${contextual.size} con cierre documentado`:''} · ${app.data.stations.length-all.length} sin comparación válida</span></div>
+  ${domain.context.map(row=>{const s=app.station(row.id),ctx=comparisonContext(row.id,BASE,state.year);return `<button type="button" class="text-button scatter-exception" data-scatter-context="${esc(s.id)}" aria-pressed="${state.selected===s.id}" style="display:block;text-align:left;font-size:9px;line-height:1.35;padding:4px 5px;margin:2px 0 0;border-left:2px solid ${state.selected===s.id?'#102937':'#c2561f'};color:#9a512e;flex-shrink:0" title="${esc(ctx.explanation)}">⚠ ${esc(s.name)} · índice ${fmt(row.recovery)} %<br><span style="color:#60747b">${ctx.label}: ${BASE}. Valor conservado fuera del eje.</span></button>`;}).join('')}
+  </div>`;
   const svg=d3.select(host.querySelector('svg'));
   svg.append('g').attr('class','chart-axis').attr('transform',`translate(0,${H-M.b})`).call(d3.axisBottom(x).ticks(5).tickFormat(v=>v+' %').tickSize(3));
   svg.append('g').attr('class','chart-axis').attr('transform',`translate(${M.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(3));
@@ -218,13 +202,18 @@ function drawScatter(host,app){
   svg.append('text').attr('x',x(100)+4).attr('y',H-M.b-5).attr('font-size',8.5).attr('fill','#6f7d86').text(`base ${BASE} = 100`);
   svg.append('text').attr('x',W-M.r).attr('y',H-8).attr('text-anchor','end').attr('font-size',8.5).attr('fill','#6f7d86').text(`volumen · ${state.year} frente a ${BASE} →`);
   svg.append('text').attr('x',M.l).attr('y',M.t-9).attr('font-size',8.5).attr('fill','#6f7d86').text('↑ cambio de forma · TV (pp)');
-  const ordered=[...all].sort((a,b)=>(items.has(a.id)?1:0)-(items.has(b.id)?1:0));
+  const ordered=[...plotted].sort((a,b)=>(items.has(a.id)?1:0)-(items.has(b.id)?1:0));
   svg.append('g').selectAll('circle').data(ordered,s=>s.id).join('circle')
     .attr('cx',s=>x(measures(s).recovery)).attr('cy',s=>y(measures(s).change)).attr('r',s=>items.has(s.id)?3:2.2)
     .attr('fill','#1d6f8d').attr('opacity',s=>items.has(s.id)?.55:.1).style('cursor','pointer')
     .on('pointerenter',(e,s)=>{const m=measures(s);showTooltip(`<b>${esc(s.name.replace(/ \(.*/,''))}</b><br>${esc(s.borough)}<br>volumen ${fmt(m.recovery)} % · TV ${fmt(m.change)} pp`,e);}).on('pointermove',(e,s)=>{const m=measures(s);showTooltip(`<b>${esc(s.name.replace(/ \(.*/,''))}</b><br>volumen ${fmt(m.recovery)} % · TV ${fmt(m.change)} pp`,e);}).on('pointerleave',hideTooltip)
     .on('click',(e,s)=>app.select(s.id));
+  host.querySelectorAll('[data-scatter-context]').forEach(button=>{
+    const station=app.station(button.dataset.scatterContext),m=measures(station),ctx=comparisonContext(station.id,BASE,state.year);
+    const tooltip=e=>showTooltip(`<b>${esc(station.name)}</b><br>Índice: ${fmt(m.recovery)} % (${BASE} = 100)<br>Incremento: ${signed(m.recovery-100)} % · TV ${fmt(m.change)} pp<br>Semana representativa ${BASE}: ${fmt(profile(station,BASE).weekly)} viajes<br>Semana representativa ${state.year}: ${fmt(profile(station).weekly)} viajes<br><small>${esc(ctx.explanation)}</small>`,e);
+    button.onpointerenter=tooltip;button.onpointerleave=hideTooltip;button.onclick=()=>app.select(station.id);
+  });
   const sel=app.station(state.selected);
-  if(sel&&measures(sel)){const m=measures(sel);svg.append('circle').attr('cx',x(m.recovery)).attr('cy',y(m.change)).attr('r',6.5).attr('fill','none').attr('stroke','#102937').attr('stroke-width',1.8).style('pointer-events','none');
+  if(sel&&measures(sel)&&!contextual.has(sel.id)){const m=measures(sel);svg.append('circle').attr('cx',x(m.recovery)).attr('cy',y(m.change)).attr('r',6.5).attr('fill','none').attr('stroke','#102937').attr('stroke-width',1.8).style('pointer-events','none');
     svg.append('text').attr('x',x(m.recovery)+9).attr('y',y(m.change)+3).attr('font-size',9).attr('fill','#102937').attr('paint-order','stroke').attr('stroke','#fff').attr('stroke-width',3).text(sel.name.replace(/ \(.*/,''));}
 }
