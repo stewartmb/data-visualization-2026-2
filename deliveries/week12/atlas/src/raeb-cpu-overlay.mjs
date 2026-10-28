@@ -2,8 +2,8 @@ import {routeHierarchy} from './raeb-core.mjs?v=gpu4';
 import {RaebRenderer} from './raeb-renderer.mjs';
 
 export class RaebCPUOverlay{
-  constructor(data){
-    this.data=data;this.levels=routeHierarchy(data.links).level;this.renderer=new RaebRenderer();this.sourceId=0;this.requestId=0;this.currentKey=null;
+  constructor(data,{renderer=new RaebRenderer()}={}){
+    this.data=data;this.levels=routeHierarchy(data.links).level;this.renderer=renderer;this.sourceId=0;this.requestId=0;this.currentKey=null;
     this.worker=new Worker(new URL('./raeb-worker.mjs?v=gpu4',import.meta.url),{type:'module'});
     this.worker.onmessage=({data:m})=>this.message(m);
     this.worker.onerror=e=>this.status('No se pudo calcular el agrupamiento: '+e.message);

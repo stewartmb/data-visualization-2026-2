@@ -950,6 +950,7 @@
     "scripts/validate_atlas.py",
     "scripts/validate_enrichments.py",
     "scripts/validate_full_period.py",
+    "tests/backend-startup.test.mjs",
     "tests/contrast-model.test.mjs",
     "tests/raeb-core.test.mjs",
     "tests/scatter-domain.test.mjs",

@@ -68,7 +68,7 @@ La equivalencia completa con el artículo no está validada. Los tests actuales 
 
 La aplicación intenta WebGPU al iniciar. El worker conserva la descarga/decodificación, la asignación a caminos ya preparados, la jerarquía y sus semillas. La GPU realiza splatting, convolución radial Epanechnikov, refuerzo de la guía, advección, suavizado, rasterización y cálculo de NMI. Se conservan D3 para cámara, nodos, selección, dispersión y reloj. No existe reproducción temporal automática.
 
-`raeb-overlay.mjs` coordina el backend GPU y `raeb-cpu-overlay.mjs` conserva el respaldo CPU/WebGL2. Si falla la inicialización o se informa un error/pérdida de dispositivo, vuelve al respaldo. `compute=cpu` permite probarlo explícitamente en la URL inicial. El indicador visible muestra WebGPU cuando está activo.
+`raeb-overlay.mjs` coordina el backend GPU y `raeb-cpu-overlay.mjs` conserva el respaldo CPU/WebGL2. Primero se inicializa WebGPU, sin crear un renderer WebGL2. Solo si falla esa inicialización o se informa un error/pérdida de dispositivo se construye el respaldo. Los mensajes del worker esperan la elección del backend, incluidas la escena y la selección. Si ambos motores fallan, se detiene el worker y se conserva un error explícito en el estado del mapa. `compute=cpu` permite probar el respaldo directamente en la URL inicial. El backend activo se registra en el atributo de diagnóstico `data-backend` del canvas; el estado visible normal conserva los tres mensajes documentados abajo.
 
 Los puntos permanecen en buffers GPU; durante el solver se leen únicamente 16 bytes de estadísticas por iteración. Las lecturas completas de `readBuffer` están reservadas al test pequeño. La densidad y opacidad se acumulan en punto fijo con dos enteros de 32 bits y escala 65536: evita requerir atómicos de coma flotante, con cuantización explícita de 1/65536. Cada buffer respeta el límite del dispositivo. Se guardan dos poses finales por cohorte en GPU.
 
@@ -103,3 +103,7 @@ El estado visible del cálculo usa tres mensajes normales: `Procesando…`, `Com
 Agrupación y fidelidad geométrica ocupan filas separadas con sliders de ancho completo. `Vista general ↺` elimina el complejo seleccionado y restablece el zoom; pulsar el mismo nodo de nuevo o el fondo del mapa elimina la selección manteniendo la cámara. También se conserva Escape. La dispersión y el reloj vuelven al sujeto general, sin cambiar año, hora ni año de contraste.
 
 En el diseño estrecho, la capa de curvas y el fondo geográfico se posicionan sobre el rectángulo real del SVG del mapa, debajo de los controles. Se comprobó que canvas y SVG comparten ubicación y tamaño después de apilar los sliders.
+
+## Regresión del arranque gráfico
+
+Ejecutar `node deliveries/week12/tests/backend-startup.test.mjs` desde la raíz. Usa los coordinadores reales con dispositivos gráficos controlados: WebGPU disponible sin WebGL2, respaldo diferido tras fallo GPU, mensajes de escena/selección recibidos durante el arranque, fallo de ambos motores, pérdida de dispositivo en uso y modo CPU explícito. No sustituye las pruebas numéricas de GPU ni certifica compatibilidad de todos los navegadores.

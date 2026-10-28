@@ -1,6 +1,6 @@
 # Ejecutar el Atlas actual
 
-Desde la raíz del repositorio: `python3 -m http.server 8775`; abrir `/atlas/` o `/deliveries/week12/atlas/`. Se usan módulos ES y fetch: requiere HTTP. Publicación mediante HTTPS para WebGPU. D3 local, GPU cuando está disponible y respaldo CPU/WebGL2.
+Desde la raíz del repositorio: `python3 -m http.server 8775`; abrir `/atlas/` o `/deliveries/week12/atlas/`. Se usan módulos ES y fetch: requiere HTTP. Publicación mediante HTTPS para WebGPU. D3 local; se intenta WebGPU primero, sin crear un contexto WebGL2. Solo si WebGPU falla se inicia el respaldo CPU/WebGL2. Si ambos fallan se indica que el mapa de flujos no está disponible; los gráficos SVG siguen funcionando.
 
 **Entradas 2019–2024:** 72 meses, 141.836.156 registros fuente, 12 campos originales. Fuentes MTA/Open NY `t69i-h2me` (solo 2019) y `wujg-7c2s` (2020–2024). **OD estimado 2021–2024:** 48 meses, 446.399.011 registros, 16 campos; fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z` y `jsu2-fbtj`. **Red:** GTFS de referencia 2026, 424 complejos de subway, 547 enlaces ferroviarios y 2 transferencias peatonales declaradas. **Territorio:** borough y NTA 2020 según ubicación del complejo.
 
