@@ -60,5 +60,4 @@ campo. Los metadatos originales y sus huellas se conservan en la misma carpeta.
 
 `DOWNLOADING` significa en curso. `DOWNLOADED_UNVERIFIED` significa que llegaron
 los 48 archivos; **no equivale a validación completa**. Solo `validation.json`
-con `status: PASS` confirma los controles posteriores. Estos datos todavía no
-se incorporan a las visualizaciones existentes del Atlas.
+con `status: PASS` confirma los controles posteriores. La validación completa está en este repositorio con `status: PASS`: 48 meses y 446.399.011 registros. El mapa actual ya utiliza los artefactos OD preparados (672 cohortes), sus caminos y perfiles 2021–2024. El estado del manifiesto de adquisición conserva la fase de descarga; el informe de validación posterior es el que acredita los controles.

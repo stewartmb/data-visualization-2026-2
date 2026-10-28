@@ -112,15 +112,10 @@ la suma de entradas, transbordos y número de registros de la base completa.
 No se interpreta un día sin registros de una estación como disponibilidad del
 servicio con demanda cero.
 
-## Datos disponibles y comparación visual
+## Datos disponibles y comparación visual vigente
 
-La base completa cubre los **72 meses**. Las curvas mensuales del cliente usan
-los 72 meses. La huella semanal del Atlas conserva la comparación metodológica
-previa de **enero–febrero de 2020 frente a 2021–2024**, con ajuste de calendario.
-Son dos alcances explícitos: ampliar los datos no cambia automáticamente la
-definición de una medida ya publicada. La línea mensual muestra promedios
-diarios observados por mes, sin ajuste por composición de días de la semana.
+La base completa cubre los **72 meses**. El cubo horario preparado genera perfiles de entradas de todos los meses de 2019–2024 mediante `prepare_historical_contrast.py`. El selector **Base histórica** de la derecha permite 2019 y 2020; ambos extremos de esa comparación se calculan con entradas. El mapa mantiene exclusivamente OD 2021–2024. Ver [HistoricalContrast](HistoricalContrast.md).
 
-Los scripts antiguos y el reporte de la entrega describen también ese análisis
-previo. Este documento y los manifiestos de `data/full_period/` identifican la
-ampliación temporal, sus controles y las tablas disponibles para nuevas tareas.
+`full_period.json` y las tablas mensuales se conservan como datos de contexto preparados; una tabla disponible no significa que su antigua curva esté expuesta en el panel principal actual. Los scripts y las cifras de enero–febrero se mantienen como ruta histórica de compatibilidad, no como definición de la huella vigente. No ejecutar la construcción antigua para sustituir silenciosamente artefactos OD.
+
+Las tareas actuales y las tablas que las sostienen están en [AnalyticalTasks](AnalyticalTasks.md) y `data/analytical_tasks/`. La ampliación temporal no genera destinos ni una red histórica para 2019/2020.
