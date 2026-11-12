@@ -6,6 +6,8 @@ let BASE=2021;
 const measures=(s,y=state.year)=>contrastMeasures(s,BASE,y);
 const cellValue=(s,i,mode=state.mode)=>contrastCell(s,i,mode,BASE,state.year);
 
+// Color del grupo elegido con el pincel de la dispersión; el mismo en el mapa.
+export const GROUP_COLOR='#7b3fa0';
 export const BOROUGH_COLOR={Manhattan:'#1d6f8d',Brooklyn:'#b08a3e',Queens:'#7a5aa6',Bronx:'#5a8a4a'};
 
 function coverageLabel(app){
@@ -24,7 +26,7 @@ export function renderInspector(mapApp){
   host.hidden=false;state.clock=true;
   const selectedValid=selected&&measures(selected);
   if(!selectedValid&&(!a||!b)){host.innerHTML=`<div class="eyebrow">SIN DATOS COMPARABLES</div><h2>Amplía la selección</h2><button id="clear-empty">Ver todo el sistema</button>`;host.querySelector('#clear-empty').onclick=()=>app.set({cohort:null,query:'',borough:'all',preset:null});return;}
-  const nombre=selectedValid?selected.name.replace(/ \(.*/,''):state.cohort?'Grupo seleccionado':state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:'Todo el sistema';
+  const nombre=selectedValid?selected.name.replace(/ \(.*/,''):state.cohort?`Promedio de ${items.length} complejo${items.length===1?'':'s'}`:state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:'Todo el sistema';
   const subject=selectedValid?selected:{id:'__grupo',name:nombre,profiles:{[String(BASE)]:a,[String(state.year)]:b}};
   host.innerHTML=`<header class="linked-heading"><div class="eyebrow">${selectedValid?`COMPLEJO ${esc(selected.id)} · ${esc(selected.borough)}`:items.length+' COMPLEJOS · SELECCIÓN ACTIVA'}</div><h2 title="${esc(nombre)}">${esc(nombre)}</h2><div class="contrast-context" style="display:flex;align-items:center;gap:7px;margin-top:5px;font-size:12px"><label for="contrast-base" style="font-weight:700">Base histórica</label><select id="contrast-base" aria-label="Año de contraste de los gráficos de la derecha" style="font:inherit;padding:2px 5px;width:auto">${CONTRAST_YEARS.filter(y=>y<state.year).map(y=>`<option value="${y}"${y===BASE?' selected':''}>${y}</option>`).join('')}</select><span>→ ${state.year}</span></div><p style="font-size:9px;margin-top:3px" id="contrast-source">${esc(app.contrast.label)} · ${esc(coverageLabel(app))}</p>${selectedValid?'<button class="close" id="clear-subject" aria-label="Volver a todo el sistema">×</button>':''}</header>
   <section id="scatter-host" aria-label="Volumen frente a forma semanal"></section>
@@ -207,7 +209,7 @@ function drawScatter(host,app){
   const x=d3.scaleLinear().domain([0,xMax]).range([M.l,W-M.r]),y=d3.scaleLinear().domain([0,yMax]).range([H-M.b,M.t]);
     host.innerHTML=`<div class="scatter-block"><div class="eyebrow">02 · VOLUMEN × FORMA</div><h3 class="scatter-title">Más viajes, ¿otra semana?</h3>
   <svg class="detail-viz" viewBox="0 0 ${W} ${H}" role="img" aria-label="Volumen frente a cambio de forma" data-x-max="${xMax}" data-y-max="${yMax}" data-plotted-count="${plotted.length}"></svg>
-  <div class="scatter-key"><span>100 % = volumen de ${BASE}</span><span>TV = cambio del reparto semanal</span><span>${plotted.length} puntos${contextual.size?` · ${contextual.size} con cierre documentado`:''} · ${app.data.stations.length-all.length} sin comparación válida</span></div>
+  <div class="scatter-key"><span>100 % = volumen de ${BASE}</span><span>TV = cambio del reparto semanal</span><span>${plotted.length} puntos${contextual.size?` · ${contextual.size} con cierre documentado`:''} · ${app.data.stations.length-all.length} sin comparación válida</span><span class="scatter-brush-note">${state.cohort?`<i style="background:${GROUP_COLOR}"></i>${items.size} en el grupo: morado aquí y en el mapa; el reloj muestra su promedio. <button id="scatter-clear" class="text-button">Quitar ×</button>`:'Arrastra para elegir un grupo: se pinta en el mapa y el reloj muestra su promedio.'}</span></div>
   </div>`;
   const svg=d3.select(host.querySelector('svg'));
   svg.append('g').attr('class','chart-axis').attr('transform',`translate(0,${H-M.b})`).call(d3.axisBottom(x).ticks(5).tickFormat(v=>v+' %').tickSize(3));
@@ -217,11 +219,22 @@ function drawScatter(host,app){
   svg.append('text').attr('x',W-M.r).attr('y',H-8).attr('text-anchor','end').attr('font-size',8.5).attr('fill','#6f7d86').text(`volumen · ${state.year} frente a ${BASE} →`);
   svg.append('text').attr('x',M.l).attr('y',M.t-9).attr('font-size',8.5).attr('fill','#6f7d86').text('↑ cambio de forma · TV (pp)');
   const ordered=[...plotted].sort((a,b)=>(items.has(a.id)?1:0)-(items.has(b.id)?1:0));
+  // Pincel: los puntos dentro del rectángulo forman el grupo (state.cohort). Va debajo de los puntos
+  // para que el clic sobre un punto siga abriendo ese complejo. Clic en vacío: quita el grupo.
+  const grouped=!!state.cohort,pool=()=>{const keep=state.cohort;state.cohort=null;const ids=new Set(app.filtered().map(s=>s.id));state.cohort=keep;return ids;};
+  svg.append('g').attr('class','scatter-brush').call(d3.brush().extent([[M.l,M.t],[W-M.r,H-M.b]]).on('end',event=>{
+    if(!event.sourceEvent)return;
+    if(!event.selection){if(state.cohort)app.set({cohort:null});return;}
+    const [[x0,y0],[x1,y1]]=event.selection,allowed=pool();
+    const ids=plotted.filter(s=>{const m=measures(s),px=x(m.recovery),py=y(m.change);return allowed.has(s.id)&&px>=x0&&px<=x1&&py>=y0&&py<=y1;}).map(s=>s.id);
+    if(ids.length)app.set({cohort:new Set(ids),preset:null,selected:null});else app.toast('No hay complejos en ese rectángulo.');
+  }));
   svg.append('g').selectAll('circle').data(ordered,s=>s.id).join('circle')
     .attr('cx',s=>x(measures(s).recovery)).attr('cy',s=>y(measures(s).change)).attr('r',s=>items.has(s.id)?3:2.2)
-    .attr('fill','#1d6f8d').attr('opacity',s=>items.has(s.id)?.55:.1).style('cursor','pointer')
+    .attr('fill',s=>grouped&&items.has(s.id)?GROUP_COLOR:'#1d6f8d').attr('opacity',s=>items.has(s.id)?(grouped?.8:.55):(grouped?.22:.1)).style('cursor','pointer')
     .on('pointerenter',(e,s)=>{const m=measures(s);showTooltip(`<b>${esc(s.name.replace(/ \(.*/,''))}</b><br>${esc(s.borough)}<br>volumen ${fmt(m.recovery)} % · TV ${fmt(m.change)} pp`,e);}).on('pointermove',(e,s)=>{const m=measures(s);showTooltip(`<b>${esc(s.name.replace(/ \(.*/,''))}</b><br>volumen ${fmt(m.recovery)} % · TV ${fmt(m.change)} pp`,e);}).on('pointerleave',hideTooltip)
     .on('click',(e,s)=>app.select(s.id));
+  host.querySelector('#scatter-clear')?.addEventListener('click',()=>app.set({cohort:null}));
   const sel=app.station(state.selected);
   if(sel&&measures(sel)&&!contextual.has(sel.id)){const m=measures(sel);svg.append('circle').attr('cx',x(m.recovery)).attr('cy',y(m.change)).attr('r',6.5).attr('fill','none').attr('stroke','#102937').attr('stroke-width',1.8).style('pointer-events','none');
     svg.append('text').attr('x',x(m.recovery)+9).attr('y',y(m.change)+3).attr('font-size',9).attr('fill','#102937').attr('paint-order','stroke').attr('stroke','#fff').attr('stroke-width',3).text(sel.name.replace(/ \(.*/,''));}

@@ -25,7 +25,7 @@ El balance semanal de 2023 incluye 0,133315 viajes representativos no mapeados; 
 | §6.2, desviación | Fréchet contra el camino mapeado | Muestra determinista de hasta128 curvas; diagnóstico, no error completo |
 | Interacción | WebGPU para cálculo y raster; worker para preparar caminos; CPU/WebGL2 como respaldo | Caché de dos resultados por cohorte; geometría GTFS completa en f=1 |
 
-Esto es una **adaptación ferroviaria implementada de los componentes de RAEB**, no una reproducción idéntica de los experimentos ni del ejecutable original. La dirección no participa en el campo de agrupamiento; se conserva en las entidades OD y al resaltar los salientes de un origen. En f=0 se resuelven una vez las curvas O→D y D→O equivalentes, sumando pesos; después se expanden todas las entidades dirigidas. No hay muestreo de pares.
+Esto es una **adaptación ferroviaria implementada de los componentes de RAEB**, no una reproducción idéntica de los experimentos ni del ejecutable original. La dirección no participa en el campo de agrupamiento; se conserva en las entidades OD y al resaltar los salientes de un origen. En f=0 se resuelven una vez las curvas O→D y D→O equivalentes, sumando pesos; después se expanden todas las entidades dirigidas. No hay muestreo aleatorio de pares; desde el 12 de noviembre las curvas siguen una regla de cobertura por origen (ver la sección de esa fecha).
 
 La barra de agrupación multiplica el radio estimado, y b=0 desactiva advección. La de fidelidad controla cuánta referencia conserva la semilla y el campo guía: f=0 produce haces libres que pueden cruzar el agua; f=1 muestra los shapes completos. La geometría libre es abstracción visual y nunca se devuelve al grafo como infraestructura.
 
@@ -107,3 +107,29 @@ En el diseño estrecho, la capa de curvas y el fondo geográfico se posicionan s
 ## Regresión del arranque gráfico
 
 Ejecutar `node deliveries/week12/tests/backend-startup.test.mjs` desde la raíz. Usa los coordinadores reales con dispositivos gráficos controlados: WebGPU disponible sin WebGL2, respaldo diferido tras fallo GPU, mensajes de escena/selección recibidos durante el arranque, fallo de ambos motores, pérdida de dispositivo en uso y modo CPU explícito. No sustituye las pruebas numéricas de GPU ni certifica compatibilidad de todos los navegadores.
+
+## Ajustes del 12 de noviembre: latencia, cobertura, escala de ancho y terminación
+
+Medido en la escena 2024/lunes/08h (143.855 relaciones con viajes) en un Mac con WebGPU. Esta sección sustituye lo que digan las anteriores sobre los mismos puntos.
+
+**Semillas.** `seed(level)` recorría todos los vértices de cada camino por cada relación. Ahora guarda los desplazamientos por enlace y busca cada muestra por longitud de arco con búsqueda binaria. La salida es idéntica bit a bit a la anterior (niveles 0–5 y `sampleLevels`, diferencia máxima 0). Cambiar de hora pasó de ≈5,5 s a 0,2–0,4 s (preparación 70–180 ms; el solver ya tardaba <0,5 s).
+
+**Cobertura de curvas (sustituye "sin muestreo de pares").** El 74 % de las relaciones lleva menos de un viaje diario y formaba una neblina de trazos que tapaba los haces. Ahora se dibujan, por cada origen, sus destinos más cargados hasta sumar el 90 % de sus viajes: 40.761 de 143.855 relaciones a las 08h (63.309 de 154.144 a las 17h). No es un muestreo aleatorio: es un umbral determinista por origen, de modo que ninguna estación queda sin curvas. Las cargas de la red de referencia, el área de los nodos y las métricas siguen usando el 100 % de la matriz. La leyenda indica la regla y el conteo de la hora. `?coverage=1` en la URL dibuja todas las relaciones.
+
+**Escala de ancho.** Antes `r = 0,5 + b × min(4; 1,25√τ)`: el ancho saturaba en τ≈10 (≈8.200 viajes) cuando los troncales llegan a ≈63.000 a las 08h, y además dependía del slider de agrupación. Ahora `r = 0,5 + 4·√(min(1; q/q_max))` px, con `q_max` = 85.777, la mayor carga de un enlace (ambos sentidos) en todos los años, días y horas. Ancho total de 1 a 9 px, fijo entre horas y años e independiente de `b`. Con b=0 se conservan los trazos finos individuales. La leyenda muestra tres anchos con su valor (1 mil, 10 mil y el máximo). El respaldo WebGL2 conserva su estilo anterior.
+
+**Terminación.** Con el presupuesto de 48 iteraciones el NMI subía despacio (0,4→0,8) y a menudo terminaba en "Completado (parcial)". La causa: el radio del kernel decae con λ=0,9 y a partir de cierta iteración es menor que una celda del raster de densidad; ya no hay atracción, pero el suavizado laplaciano sigue relajando las curvas fuera de sus haces. Comparación visual con f=0,2/b=0,3: 16 iteraciones (radio ≈1 celda) dan los haces más compactos; 23, aceptable; 48, haces abiertos en abanico. El solver (GPU y CPU) termina ahora cuando NMI≥0,8 **o** cuando el radio baja de una celda (`MIN_KERNEL=1`). `stats.termination` vale `nmi`, `kernel`, `budget` o `none`, y aparece en el tooltip del estado. "Completado (parcial)" queda solo para `budget`. Resultados: f=0,9/b=0,65 → 2 iteraciones (NMI 0,85); f=0,5/b=0,65 → 23 (kernel); f=0/b=1 → 27 (kernel); f=0,2/b=0,3 → 16 (kernel). Es una desviación explícita de §6.1 del artículo, que solo usa el NMI.
+
+**Sin cambios, con motivo.**
+- El realce de densidad solo sobre las rutas retenidas es el ajuste del propio artículo (§5.2); no se tocó.
+- El tamaño de kernel del Algoritmo 1 cae en el respaldo (`dbscanFallback: true`, radio ≈16,5 celdas) porque DBSCAN no forma grupos con las rutas de esta red; el slider de agrupación escala ese radio.
+- Con fidelidad intermedia, los tramos no retenidos se unen con cuerdas rectas y forman abanicos que pueden cruzar agua. Es propio de la abstracción de recorridos de RAEB, no un error de cálculo. Con f≥0,9 casi no aparecen.
+- Se probó rasterizar el splat por segmentos y suavizar la imagen de análisis: cambio marginal en NMI y el doble de tiempo de solver. Descartado.
+
+**Controles.** Los sliders de agrupación y fidelidad ya no recalculan al arrastrar; el botón "Aplicar" (o Enter) lanza el cálculo.
+
+**Selección en la dispersión.** Arrastrar en «Volumen × forma» elige un grupo de complejos (`state.cohort`). En el mapa de flujos el grupo se pinta en morado y el resto se atenúa, sin ocultarlo; el reloj muestra el promedio del grupo (pesos semanales ponderados por volumen) y el título indica cuántos complejos son. Clic en vacío o «Quitar ×» lo deshace. «Seleccionar área» del mapa produce el mismo grupo.
+
+**Leyenda del mapa.** Quedan visibles la escala de anchos y una línea con la cobertura de curvas; las explicaciones largas pasan a «Cómo leer el mapa», plegado por defecto, para que la leyenda no tape los controles en pantallas bajas.
+
+**Pruebas.** Pasan las cinco pruebas de Node y, en navegador con WebGPU, `tests/webgpu.html` y `tests/webgpu-bands.html` (esta última comprueba además que `b` no cambia el ancho, que el máximo de la escala mide 9 px y que satura ahí).

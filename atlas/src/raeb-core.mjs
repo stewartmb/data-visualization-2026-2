@@ -2,6 +2,15 @@
 // Rail adaptation: hier(r)=1 (no fictitious road classes); controls normalize
 // route awareness to [0,1] and multiply the automatically estimated kernel.
 export const LEVELS=[0,.05,.10,.20,.40,1];
+// Smallest kernel radius, in cells of the density raster, at which another KDEEB iteration is run.
+export const MIN_KERNEL=1;
+// Largest load of a reference link (both directions) over every year, day and hour: the fixed upper
+// end of the band-width scale. Cached on the dataset object.
+export function maxLinkLoad(data){
+  if(data._maxLinkLoad)return data._maxLinkLoad;let max=0;
+  for(const year of Object.values(data.flows))for(const day of year)for(const loads of day)for(let i=0;i<loads.length;i+=2)if(loads[i]+loads[i+1]>max)max=loads[i]+loads[i+1];
+  return data._maxLinkLoad=max;
+}
 export const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
 export function resample(points,count=32){
@@ -130,43 +139,81 @@ export function trailImage(points,weights,samples,width,height){
   return Uint8Array.from(optical,v=>Math.round(255*(1-Math.exp(-v))));
 }
 
-export function makeScene(nodes,links,paths,weights,width,height,samples=32){
+export function makeScene(nodes,links,paths,weights,width,height,samples=32,coverage=1){
   const gw=clamp(Math.round(width/4),192,320),gh=Math.max(96,Math.round(height*gw/width)),sx=(gw-3)/width,sy=(gh-3)/height;
   const project=p=>[p[0]*sx+1,p[1]*sy+1];
   const nodeXY=nodes.map(project),routes=links.map(l=>l.points.map(project));
   const hierarchy=routeHierarchy(links),kernel=estimateKernel(routes,hierarchy.ranked,gw,gh);
-  const n=nodes.length,active=[];
-  for(let pair=0;pair<weights.length;pair++)if(weights[pair]>0&&paths[pair]?.length)active.push(pair);
+  const n=nodes.length,active=[];let relations=0,demand=0,drawnDemand=0;
+  if(coverage>=1){for(let pair=0;pair<weights.length;pair++)if(weights[pair]>0&&paths[pair]?.length){active.push(pair);relations++;demand+=weights[pair];}drawnDemand=demand;}
+  else{
+    // Drawing rule (declared in the legend): for every origin, its heaviest destinations until they
+    // add up to `coverage` of the trips it starts in this cohort. Every origin keeps its main
+    // relations; the long tail of sub-unit pairs stops hiding them. Loads on reference links and
+    // node sizes are computed elsewhere from ALL pairs and are not affected.
+    const row=[];
+    for(let o=0;o<n;o++){
+      row.length=0;let total=0;
+      for(let d=0;d<n;d++){const pair=o*n+d;if(weights[pair]>0&&paths[pair]?.length){row.push(pair);total+=weights[pair];relations++;}}
+      demand+=total;row.sort((a,b)=>weights[b]-weights[a]||a-b);
+      let sum=0,keep=0;while(keep<row.length&&sum<coverage*total)sum+=weights[row[keep++]];
+      drawnDemand+=sum;for(let k=0;k<keep;k++)active.push(row[k]);
+    }
+    active.sort((a,b)=>a-b);
+  }
   const metadata=new Float32Array(active.length*4),seedCache=new Map();
   for(let i=0;i<active.length;i++){const pair=active[i];metadata.set([weights[pair],Math.floor(pair/n),pair%n,0],i*4);}
   const sampleLevels=new Float32Array(active.length*samples);
+  // Seeds are requested at every cohort change and for each hierarchy level. Walking every shape
+  // vertex of every path (≈1.5·10⁸ vertices at 08 h) dominated the latency of an hour change, so
+  // each link direction keeps its vertices and cumulative lengths once, and a trail is evaluated
+  // at its 32 arc-length positions by offsets per link and a binary search inside the link.
+  // Semantics are those of §4.4: links of the active levels keep their real geometry; the rest is
+  // bridged by a chord between the neighbouring kept vertices, parametrised by ORIGINAL arc length.
+  const directed=routes.flatMap(r=>[0,1].map(reverse=>{
+    const m=r.length,x=new Float64Array(m),y=new Float64Array(m),cum=new Float64Array(m);
+    for(let k=0;k<m;k++){const q=r[reverse?m-1-k:k];x[k]=q[0];y[k]=q[1];if(k)cum[k]=cum[k-1]+Math.hypot(x[k]-x[k-1],y[k]-y[k-1]);}
+    return {m,x,y,cum,total:cum[m-1]};
+  }));
+  let longest=0;for(const pair of active)if(paths[pair].length>longest)longest=paths[pair].length;
+  const start=new Float64Array(longest+1),end=new Float64Array(longest+1),before=new Int32Array(longest+1),after=new Int32Array(longest+2);
   function seed(level){
     if(seedCache.has(level))return seedCache.get(level);
-    const points=new Float32Array(active.length*samples*2);
+    const points=new Float32Array(active.length*samples*2),levels=hierarchy.level;
     for(let i=0;i<active.length;i++){
-      const pair=active[i],origin=nodeXY[Math.floor(pair/n)],destination=nodeXY[pair%n];
-      if(level===0){points.set(resample([origin,destination],samples),i*samples*2);continue;}
-      const poly=[origin],tags=[hierarchy.level[paths[pair][0]>>1]];
-      for(const arc of paths[pair]){
-        const link=arc>>1,r=routes[link],tag=hierarchy.level[link];
-        if(arc&1)for(let k=r.length-1;k>=0;k--){poly.push(r[k]);tags.push(tag);}
-        else for(const p of r){poly.push(p);tags.push(tag);}
+      const pair=active[i],origin=nodeXY[Math.floor(pair/n)],destination=nodeXY[pair%n],path=paths[pair],base=i*samples*2;
+      const ox=origin[0],oy=origin[1],ex=destination[0],ey=destination[1];
+      if(level===0){
+        const dx=ex-ox,dy=ey-oy,total=Math.hypot(dx,dy);
+        for(let j=0;j<samples;j++){const t=total*j/(samples-1),u=t/(total||1);points[base+2*j]=ox+dx*u;points[base+2*j+1]=oy+dy*u;}
+        continue;
       }
-      poly.push(destination);tags.push(tags.at(-1));
-      const lengths=new Float64Array(poly.length);
-      for(let j=1;j<poly.length;j++)lengths[j]=lengths[j-1]+Math.hypot(poly[j][0]-poly[j-1][0],poly[j][1]-poly[j-1][1]);
-      const kept=[0];for(let j=1;j<poly.length-1;j++)if(tags[j]<=level)kept.push(j);kept.push(poly.length-1);
-      let next=1,original=1;const total=lengths.at(-1);
+      // Arc-length offsets of every link along the original route, including the small joins
+      // between the station coordinate and the shape, and between consecutive shapes.
+      const count=path.length;let t=0,lastX=ox,lastY=oy;
+      for(let a=0;a<count;a++){const d=directed[path[a]];start[a]=t+Math.hypot(d.x[0]-lastX,d.y[0]-lastY);t=end[a]=start[a]+d.total;lastX=d.x[d.m-1];lastY=d.y[d.m-1];}
+      const total=t+Math.hypot(ex-lastX,ey-lastY);
+      // before[a]: nearest kept link strictly before a (−1: origin); after[a]: nearest kept link at or after a (count: destination).
+      let previous=-1;for(let a=0;a<count;a++){before[a]=previous;if(levels[path[a]>>1]<=level)previous=a;}before[count]=previous;
+      let following=count;after[count]=count;for(let a=count-1;a>=0;a--){if(levels[path[a]>>1]<=level)following=a;after[a]=following;}
+      let a=0;
       for(let j=0;j<samples;j++){
-        // All hierarchy levels use the ORIGINAL route arc-length parameter.
-        // Resampling each simplified curve independently makes corresponding
-        // points slide around corners and creates spurious diagonal curtains.
-        const t=total*j/(samples-1);
-        while(next<kept.length-1&&lengths[kept[next]]<t)next++;
-        while(original<poly.length-1&&lengths[original]<t)original++;
-        const lo=kept[next-1],hi=kept[next],u=(t-lengths[lo])/(lengths[hi]-lengths[lo]||1),k=(i*samples+j)*2;
-        points[k]=poly[lo][0]+u*(poly[hi][0]-poly[lo][0]);points[k+1]=poly[lo][1]+u*(poly[hi][1]-poly[lo][1]);
-        if(level===5)sampleLevels[i*samples+j]=Math.max(tags[original-1],tags[original]);
+        const s=total*j/(samples-1),k=base+2*j;
+        while(a<count&&end[a]<s)a++;
+        const inside=a<count&&s>start[a];
+        if(level===5)sampleLevels[i*samples+j]=a>=count?levels[path[count-1]>>1]:inside||a===0?levels[path[a]>>1]:Math.max(levels[path[a-1]>>1],levels[path[a]>>1]);
+        if(inside&&levels[path[a]>>1]<=level){
+          const d=directed[path[a]],local=s-start[a];let lo=1,hi=d.m-1;
+          while(lo<hi){const mid=(lo+hi)>>1;if(d.cum[mid]<local)lo=mid+1;else hi=mid;}
+          const u=(local-d.cum[lo-1])/(d.cum[lo]-d.cum[lo-1]||1);
+          points[k]=d.x[lo-1]+u*(d.x[lo]-d.x[lo-1]);points[k+1]=d.y[lo-1]+u*(d.y[lo]-d.y[lo-1]);
+          continue;
+        }
+        const from=before[inside?a:Math.min(a,count)],to=inside?after[a+1]:after[Math.min(a,count)];
+        let x0=ox,y0=oy,t0=0,x1=ex,y1=ey,t1=total;
+        if(from>=0){const d=directed[path[from]];x0=d.x[d.m-1];y0=d.y[d.m-1];t0=end[from];}
+        if(to<count){const d=directed[path[to]];x1=d.x[0];y1=d.y[0];t1=start[to];}
+        const u=(s-t0)/(t1-t0||1);points[k]=x0+u*(x1-x0);points[k+1]=y0+u*(y1-y0);
       }
     }
     seedCache.set(level,points);return points;
@@ -196,20 +243,20 @@ export function makeScene(nodes,links,paths,weights,width,height,samples=32){
     const result=new Float32Array(points.length);
     for(let i=0;i<result.length;i+=2){result[i]=(points[i]-1)/sx;result[i+1]=(points[i+1]-1)/sy;}return result;
   }
-  return {gridToCss:[1/sx,1/sy],hierarchy,nodeCount:n,width:gw,height:gh,samples,active,metadata,kernel,routes,seed,seedAt,guide,retention,sampleLevels,css,weights:active.map(p=>weights[p]),scale:Math.max(1/sx,1/sy)};
+  return {drawn:{coverage,relations,curves:active.length,demand,drawnDemand},gridToCss:[1/sx,1/sy],hierarchy,nodeCount:n,width:gw,height:gh,samples,active,metadata,kernel,routes,seed,seedAt,guide,retention,sampleLevels,css,weights:active.map(p=>weights[p]),scale:Math.max(1/sx,1/sy)};
 }
 
 export async function bundle(scene,fidelity,strength,{cancelled=()=>false,progress=()=>{},maxIterations=48}={}){
   const started=performance.now(),{width,height,samples}=scene;
   const reference=scene.seed(5),points=scene.seedAt(fidelity);
-  if(strength<=0||fidelity>=1||!scene.active.length)return {points:scene.css(points),stats:{iterations:0,nmi:1,converged:true,ms:performance.now()-started,kernel:scene.kernel}};
+  if(strength<=0||fidelity>=1||!scene.active.length)return {points:scene.css(points),stats:{iterations:0,nmi:1,termination:'none',converged:true,ms:performance.now()-started,kernel:scene.kernel}};
   const seed=points.slice(),guide=scene.guide(fidelity),retained=scene.retention(fidelity);
   const masses=new Float32Array(scene.active.length);
   for(let c=0;c<masses.length;c++){
     let len=0;for(let j=1;j<samples;j++){const k=(c*samples+j)*2;len+=Math.hypot(points[k]-points[k-2],points[k+1]-points[k-1]);}
     masses[c]=scene.weights[c]*Math.max(1,len/(samples-1));
   }
-  let radius=Math.max(.05,scene.kernel.radius*strength),previous=trailImage(points,scene.weights,samples,width,height),nmi=0,iterations=0;
+  let radius=Math.max(.05,scene.kernel.radius*strength),previous=trailImage(points,scene.weights,samples,width,height),nmi=0,iterations=0,termination='budget';
   let next=new Float32Array(points.length);
   for(let iteration=0;iteration<maxIterations;iteration++){
     if(cancelled())return null;
@@ -238,13 +285,15 @@ export async function bundle(scene,fidelity,strength,{cancelled=()=>false,progre
     if(previous)nmi=normalizedMI(previous,image);
     iterations=iteration+1;previous=image;radius=radius*.9;
     if(iteration===1||iteration===4)progress(scene.css(points),{iteration:iterations,nmi});
-    if(nmi>=.8)break;
+    if(nmi>=.8){termination='nmi';break;}
+    // Same rule as the GPU solver: stop once the kernel no longer spans neighbouring cells.
+    if(radius<MIN_KERNEL){termination='kernel';break;}
     await new Promise(resolve=>setTimeout(resolve,0));
   }
   let deviation=0,checked=0;
   const step=Math.max(1,Math.ceil(scene.active.length/128));
   for(let c=0;c<scene.active.length;c+=step){const start=c*samples*2;deviation+=discreteFrechet(points.subarray(start,start+samples*2),reference.subarray(start,start+samples*2));checked++;}
-  return {points:scene.css(points),stats:{iterations,nmi,converged:nmi>=.8,ms:performance.now()-started,kernel:scene.kernel,deviationPx:checked?deviation/checked*scene.scale:0,deviationSample:checked}};
+  return {points:scene.css(points),stats:{iterations,nmi,termination,converged:termination!=='budget',ms:performance.now()-started,kernel:scene.kernel,deviationPx:checked?deviation/checked*scene.scale:0,deviationSample:checked}};
 }
 
 // KDEEB is direction independent: at f=0, O→D and D→O have identical

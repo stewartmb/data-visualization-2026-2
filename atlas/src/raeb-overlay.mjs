@@ -1,6 +1,7 @@
-import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=backend-first';
-import {RaebRenderer} from './raeb-renderer.mjs';
-import {RaebWebGPU} from './raeb-webgpu.mjs?v=bands1';
+import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=20261112g';
+import {RaebRenderer} from './raeb-renderer.mjs?v=20261112g';
+import {RaebWebGPU} from './raeb-webgpu.mjs?v=20261112g';
+import {maxLinkLoad} from './raeb-core.mjs?v=20261112g';
 
 // D3 retains interaction and linked panels. CPU prepares route hierarchies;
 // density, motion, convergence and flow rasterization stay on the GPU.
@@ -12,7 +13,7 @@ export class RaebOverlay extends RaebCPUOverlay{
   super(data,{renderer});
   this.gpu=!disabled;this.cpuRenderer=disabled?renderer:null;this.failed=false;
   if(disabled){renderer.canvas.dataset.backend='cpu';this.backendReady=Promise.resolve(false);return;}
-  const gpu=this.gpuRenderer=renderer;
+  const gpu=this.gpuRenderer=renderer;gpu.setScale?.(maxLinkLoad(data));
   this.backendReady=gpu.ready.then(()=>{
    gpu.onError=error=>this.fallback(error);this.paintReference();return this.gpu;
   }).catch(error=>this.fallback(error,{restart:false}));
@@ -63,6 +64,8 @@ export class RaebOverlay extends RaebCPUOverlay{
     if(this.solverTask)await this.solverTask;if(m.sourceId!==this.sourceId)return;
     await this.renderer.setScene({...m,free:new Float32Array(m.free),reference:new Float32Array(m.reference),metadata:new Float32Array(m.metadata),retention:new Float32Array(m.retention),railInfo:new Float32Array(m.railInfo),railVertices:new Float32Array(m.railVertices)});
     if(m.sourceId!==this.sourceId)return;this.paintReference();this.request();
+    if(m.timing)this.renderer.canvas.dataset.prepare=JSON.stringify(m.timing);
+    if(m.drawn){this.renderer.canvas.dataset.drawn=JSON.stringify(m.drawn);this.drawn(m.drawn);}
    }catch(error){this.fallback(error);}return;
   }
   if(!this.gpu)return super.message(m);
@@ -80,11 +83,13 @@ export class RaebOverlay extends RaebCPUOverlay{
     const cancelled=()=>job.sourceId!==this.sourceId||job.id!==this.requestId||!this.gpu;
     if(cancelled())continue;
     this.status('Procesando…');
-    const stats=await this.renderer.solve(job.fidelity,job.strength,{cancelled});
+    const trace=[];
+    const stats=await this.renderer.solve(job.fidelity,job.strength,{cancelled,onIteration:({nmi})=>trace.push(+nmi.toFixed(3))});
+    if(trace.length)this.renderer.canvas.dataset.nmiTrace=JSON.stringify(trace);
     if(!stats||cancelled())continue;
     const r=this.renderer;r.canvas.dataset.totalLatencyMs=(performance.now()-this.parameterStarted).toFixed(1);r.canvas.dataset.layoutStats=JSON.stringify(stats);
     this.status(stats.converged?'Completado':'Completado (parcial)');
-    const el=document.querySelector('#raeb-status');if(el)el.title=`GPU: ${stats.iterations} iteraciones · NMI ${stats.nmi.toFixed(3)} · ${Math.round(stats.ms)} ms · densidad óptica antes del estilo · ${stats.cacheHit?'caché':'cálculo'}`;
+    const el=document.querySelector('#raeb-status');if(el)el.title=`GPU: ${stats.iterations} iteraciones · NMI ${stats.nmi.toFixed(3)} · fin: ${this.ending(stats)} · ${Math.round(stats.ms)} ms · densidad óptica antes del estilo · ${stats.cacheHit?'caché':'cálculo'}`;
    }
   }catch(error){this.fallback(error);}
  }

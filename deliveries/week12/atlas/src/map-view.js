@@ -1,5 +1,8 @@
 import {state,BASE,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats,passesMetricRanges,cohortProfile} from './model.js?v=20261028-4';
-import {RaebOverlay} from './raeb-overlay.mjs?v=backend-first';
+import {GROUP_COLOR} from './inspector.js?v=20261112g';
+import {RaebOverlay} from './raeb-overlay.mjs?v=20261112g';
+import {maxLinkLoad} from './raeb-core.mjs?v=20261112g';
+import {renderSegments} from './segments-view.js?v=20261112g';
 let transform=d3.zoomIdentity;
 const names={change:'Cambio de forma · distancia TV (pp)',deltaAM:'Cambio del peso AM · puntos porcentuales',deltaWeekend:'Cambio del peso de fin de semana · puntos porcentuales',recovery:'Índice de volumen · '+BASE+' = 100 %'};
 
@@ -16,7 +19,13 @@ const formulas={
 const ampm=h=>h===0?'12 am':h<12?`${h} am`:h===12?'12 pm':`${h-12} pm`;
 const DAYS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'],DAYS_LONG=['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
 export function renderMap(host,app,items){
+  // Capa «Tramos»: mapa troceado y vistas de wavelets, en su propio módulo.
+  if(state.layer==='segments'&&app.flows)return renderSegments(host,app,items);
   const flujos=state.layer==='flows'&&!!app.flows&&!!app.flows.flows[String(state.year)];
+  // Grupo elegido con el pincel de la dispersión (o con «Seleccionar área»): en la capa de flujos no
+  // oculta al resto; todos los complejos siguen en el mapa y los del grupo se pintan en otro color.
+  const group=flujos&&state.cohort?state.cohort:null;
+  if(group){const keep=state.cohort;state.cohort=null;items=app.filtered();state.cohort=keep;}
   const cambio=flujos&&state.flowShow==='change'&&state.year!==BASE&&!!app.flows.flows[String(BASE)];
   const metric=state.mapMetric,unit=metric==='recovery'?'%':'pp',title={change:'distancia TV',deltaAM:'cambio del peso AM',deltaWeekend:'cambio del peso de fin de semana',recovery:'índice de volumen'}[metric];
   const values=app.data.stations.filter(s=>profile(s)).map(s=>metricValue(s,metric));
@@ -38,6 +47,7 @@ export function renderMap(host,app,items){
     <div class="map-panel map-panel-controls">
       <div class="eyebrow">01 · CONEXIONES Y RITMOS</div>
       ${app.flows?`<div class="segmented map-layer" role="group" aria-label="Capa del mapa"><button data-layer="points" class="${!flujos?'active':''}">Cambio por complejo</button><button data-layer="flows" class="${flujos?'active':''}">Flujos por hora</button></div>`:''}
+      ${flujos?`<div class="segmented sw-mode" role="group" aria-label="Qué muestra el mapa"><button data-layer="flows" class="active">Curvas OD</button><button data-layer="segments" title="Cada tramo entre estaciones con su carga y sus cambios bruscos">Tramos</button></div>`:''}
       ${flujos?`<div class="flow-controls">
         <div class="flow-hour-row"><span class="flow-day-current">${DAYS_LONG[state.flowDay]}</span><output id="flow-hour-label" class="flow-hour-label">${ampm(state.flowHour)}</output><div class="segmented flow-day">${DAYS.map((d,i)=>`<button data-flowday="${i}" class="${state.flowDay===i?'active':''}" title="${DAYS_LONG[i]}">${d.slice(0,2)}</button>`).join('')}</div></div>
         <svg id="flow-profile" class="flow-profile" aria-label="Viajes OD iniciados por hora en el año seleccionado"></svg>
@@ -46,6 +56,7 @@ export function renderMap(host,app,items){
         <div id="raeb-status" role="status" class="raeb-status">Procesando…</div>
         <label class="fidelity"><span>Agrupación <output id="bundling-out">${state.bundling.toFixed(2)}</output></span><input id="bundling" type="range" min="0" max="1" step="0.01" value="${state.bundling}" aria-label="Agrupación de recorridos"><small>0: sin atracción entre curvas · 1: agrupamiento con el radio estimado por RAEB. Actúa sobre todos los pares OD de esta hora.</small></label>
         <label class="fidelity"><span>Fidelidad geométrica <output id="fidelity-out">${state.fidelity.toFixed(2)}</output></span><input id="fidelity" type="range" min="0" max="1" step="0.01" value="${state.fidelity}" aria-label="Fidelidad geométrica de los trazos"><small>0: abstracción libre, puede cruzar el agua · 1: recorridos de referencia. Los trazos intermedios son una abstracción visual; los viajes OD no cambian.</small></label>
+        <div class="raeb-apply-row"><button id="raeb-apply" class="raeb-apply" type="button" disabled>Aplicar</button><span id="raeb-pending" class="raeb-pending" aria-live="polite"></span></div>
       </div>`:''}
       <div class="points-controls"${flujos?' hidden':''}>
       <label class="map-field">Color de los puntos<select id="map-metric">${Object.entries(names).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label>
@@ -63,8 +74,14 @@ export function renderMap(host,app,items){
       ${flujos?`<div class="map-legend-title">Relaciones OD · <span id="flow-legend-hour">${ampm(state.flowHour)}</span> · ${DAYS_LONG[state.flowDay]}</div>
       <div class="map-legend-what">${state.year} · Promedio por día de los doce meses, según hora de entrada.</div>
       <div id="map-key"></div>
-      <div class="map-legend-marks">Área del nodo = viajes iniciados · naranja = OD salientes de la selección.</div>
-      <div class="map-legend-foot" id="flow-legend-foot">Las curvas agrupan relaciones OD; no muestran trenes ni rutas observadas.</div>`:`<div class="map-legend-title">${L.titulo}</div>
+      ${group?`<div class="map-legend-group"><i style="background:${GROUP_COLOR}"></i>${group.size} complejo${group.size===1?'':'s'} del grupo elegido en la dispersión</div>`:''}
+      <div class="map-legend-foot" id="raeb-drawn-short"></div>
+      <details class="map-legend-more"><summary>Cómo leer el mapa ⓘ</summary>
+        <div class="map-key-note" id="map-key-note"></div>
+        <div class="map-legend-marks">Área del nodo = viajes iniciados · naranja = OD salientes de la selección.</div>
+        <div class="map-legend-foot" id="raeb-drawn"></div>
+        <div class="map-legend-foot" id="flow-legend-foot">Las curvas agrupan relaciones OD; no muestran trenes ni rutas observadas.</div>
+      </details>`:`<div class="map-legend-title">${L.titulo}</div>
       <div class="map-legend-what">${L.que}</div>
       <div id="map-key"></div>
       <div class="map-legend-marks"><span><i class="lg-dot"></i> un punto = un complejo &nbsp;<i class="lg-ring"></i> seleccionado &nbsp;<i class="lg-ring pin"></i> fijado</span></div>
@@ -116,11 +133,12 @@ export function renderMap(host,app,items){
     const F=app.flows,ni=new Map(F.nodes.map((n,i)=>[n.id,i]));
     if(!F._smax){let sx=0;for(const y of Object.values(F.starts))for(const n of y)for(const d of n)for(const v of d)if(v>sx)sx=v;F._smax=sx;}
     const rNode=d3.scaleSqrt().domain([0,F._smax]).range([0,13]);
-    nodeR=(s,h=state.flowHour)=>{const v=F.starts[String(state.year)]?.[ni.get(s.id)]?.[state.flowDay]?.[h]??0;return v>0?Math.max(1.8,rNode(v)):1.6;};
+    nodeR=(s,h=state.flowHour)=>{const v=F.starts[String(state.year)]?.[ni.get(s.id)]?.[state.flowDay]?.[h]??0,r=v>0?Math.max(1.8,rNode(v)):1.6;return group?.has(s.id)?Math.max(3.4,r):r;};
     baseG.append('g').attr('class','rail-reference').selectAll('path').data(F.links).join('path')
       .attr('d',l=>d3.line()(l.coords.map(projection))).attr('fill','none').attr('stroke','#adb2b3').attr('stroke-width',.65).attr('vector-effect','non-scaling-stroke').attr('opacity',.5).style('pointer-events','none');
     try{
       app.raeb??=new RaebOverlay(F);
+      if(new URLSearchParams(location.search).has('debug'))globalThis.__raeb=app.raeb;
       app.raeb.attach(g.node(),width,height,projection,transform);
       app.raeb.parameters(state.fidelity,state.bundling);
     }catch(error){host.querySelector('#raeb-status').textContent=error.message;console.error(error);}
@@ -140,11 +158,27 @@ export function renderMap(host,app,items){
     const pintarBase=pintarFlujos;pintarFlujos=h=>{pintarBase(h);marca.attr('transform',`translate(${px(h)},0)`);marca.select('circle').attr('cy',py(porHora[h]));};
     const slider=host.querySelector('#flow-hour');slider.oninput=()=>{state.flowHour=+slider.value;pintarFlujos(state.flowHour);};
     host.querySelectorAll('[data-flowday]').forEach(b=>b.onclick=()=>app.set({flowDay:+b.dataset.flowday}));
+    // Las barras solo mueven un borrador; el agrupamiento (costoso) se recalcula al presionar «Aplicar».
+    const draft={fidelity:state.fidelity,bundling:state.bundling};
+    const applyBtn=host.querySelector('#raeb-apply'),pendingNote=host.querySelector('#raeb-pending');
+    const refreshApply=()=>{
+      const dirty=draft.fidelity!==state.fidelity||draft.bundling!==state.bundling;
+      applyBtn.disabled=!dirty;applyBtn.classList.toggle('ready',dirty);
+      pendingNote.textContent=dirty?'Sin aplicar':'';
+      for(const key of ['fidelity','bundling'])host.querySelector('#'+key+'-out').classList.toggle('pending',draft[key]!==state[key]);
+    };
+    const applyDraft=()=>{
+      if(applyBtn.disabled)return;
+      state.fidelity=draft.fidelity;state.bundling=draft.bundling;
+      app.raeb?.parameters(state.fidelity,state.bundling);app.syncURL?.();refreshApply();
+    };
     for(const key of ['fidelity','bundling']){
       const input=host.querySelector('#'+key);
-      input.oninput=()=>{state[key]=+input.value;host.querySelector('#'+key+'-out').value=state[key].toFixed(2);app.raeb?.parameters(state.fidelity,state.bundling);};
-      input.onchange=()=>app.syncURL?.();
+      input.oninput=()=>{draft[key]=+input.value;host.querySelector('#'+key+'-out').value=draft[key].toFixed(2);refreshApply();};
+      input.onchange=null;
+      input.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();applyDraft();}};
     }
+    applyBtn.onclick=applyDraft;
     app._relane=()=>app.raeb?.transform(transform);
   }else{app._relane=null;}
   host.querySelectorAll('[data-layer]').forEach(b=>b.onclick=()=>app.set({layer:b.dataset.layer}));
@@ -163,12 +197,13 @@ export function renderMap(host,app,items){
   if(metric==='recovery'){const ord=values.slice().sort(d3.ascending);medianaVol=Math.round(d3.median(ord));const lo=Math.floor(d3.quantile(ord,0.05)),hi=Math.ceil(d3.quantile(ord,0.95));color=d3.scaleDiverging([lo,medianaVol,hi],t=>t<=.5?d3.interpolateRgb('#176c91','#f5f5ef')(2*t):d3.interpolateRgb('#f5f5ef','#b6532c')(2*t-1)).clamp(true);}
   g.selectAll('.context-point').data(app.data.stations.filter(s=>!ids.has(s.id)&&profile(s)&&passesMetricRanges(s))).join('circle').attr('class','context-point').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',1.6).attr('fill','#b8c7c1').attr('opacity',.45);
   const R=flujos?2.4:5.2;const rOf=s=>flujos&&nodeR?nodeR(s):R;
-  const points=g.selectAll('.map-dot').data(items).join('circle').attr('class','map-dot'+(flujos?' quiet':'')).attr('data-station-id',s=>s.id).attr('vector-effect','non-scaling-stroke').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',s=>rOf(s)).attr('fill',s=>flujos?'#1d6f8dcc':color(metricValue(s,state.mapMetric)))
+  const points=g.selectAll('.map-dot').data(items).join('circle').attr('class','map-dot'+(flujos?' quiet':'')).attr('data-station-id',s=>s.id).attr('vector-effect','non-scaling-stroke').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',s=>rOf(s)).attr('fill',s=>flujos?(group?.has(s.id)?GROUP_COLOR:'#1d6f8dcc'):color(metricValue(s,state.mapMetric)))
     .on('pointerenter',function(e,s){d3.select(this).raise().transition().duration(120).attr('r',(flujos?rOf(s)+3:8)/transform.k);showTooltip(flujos?`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${DAYS_LONG[state.flowDay]} ${ampm(state.flowHour)}: ${fmt(Math.round(app.flows.starts[String(state.year)][app.flows.nodes.findIndex(n=>n.id===s.id)][state.flowDay][state.flowHour]))} viajes iniciados<br><small>Clic: sus conexiones salientes</small>`:`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${names[state.mapMetric]}: ${fmt(metricValue(s,state.mapMetric))}<br><small>Clic para abrir huella y evidencia</small>`,e);}).on('pointermove',(e,s)=>showTooltip(`<b>${esc(s.name)}</b><br>${esc(s.borough)}<br>${names[state.mapMetric]}: ${fmt(metricValue(s,state.mapMetric))}`,e)).on('pointerleave',function(e,s){d3.select(this).transition().duration(160).attr('r',rOf(s)/transform.k);hideTooltip();}).on('click',(e,s)=>{e.stopPropagation();e.shiftKey?app.pin(s.id):app.select(state.selected===s.id?null:s.id);});
   // Entrada animada: al cambiar medida, filtro o año, los puntos aparecen en vez de saltar.
-  points.attr('opacity',1);
+  points.attr('opacity',s=>group&&!group.has(s.id)?.3:1);
   // Draw larger changes last so low values cannot cover them in dense areas.
   points.sort((a,b)=>Math.abs(metricValue(a,state.mapMetric))-Math.abs(metricValue(b,state.mapMetric)));
+  if(group)points.filter(s=>group.has(s.id)).attr('stroke','#fff').attr('stroke-width',1).raise();
   // Zoom semántico: al acercar aparecen los nombres de los complejos y, más cerca, su valor.
   // Lejos, solo los puntos; a medio zoom, los nombres de los complejos con mayor cambio; cerca, todos.
   const medAbs=d3.median(items,s=>Math.abs(metricValue(s,state.mapMetric)))||0;
@@ -251,7 +286,14 @@ export function renderMap(host,app,items){
     brushLayer=svg.append('g').attr('class','map-brush').call(brush);
   };
   if(flujos){
-    host.querySelector('#map-key').innerHTML='<svg viewBox="0 0 240 28" style="width:100%;height:28px" role="img" aria-label="Los haces se ensanchan al acumular más viajes OD"><path d="M8 14H56" stroke="#0e546d" stroke-width="1.5" stroke-linecap="round"/><path d="M88 14H144" stroke="#0e546d" stroke-width="4" stroke-linecap="round"/><path d="M176 14H232" stroke="#0e546d" stroke-width="9" stroke-linecap="round"/></svg><div class="map-key-words"><span>menos flujo</span><span>más flujo acumulado</span></div><div class="map-key-note">En WebGPU, los trazos próximos forman una banda continua. Más flujo local: mayor ancho (escala raíz, hasta 9 px). Escala fija entre horas y años. Los cruces visuales no implican transbordos.</div>';
+    {
+      // Same encoding as the WebGPU ribbons: width = 1 + 8·sqrt(load / max) px, max = busiest link of the dataset.
+      const top=maxLinkLoad(app.flows),w=v=>1+8*Math.sqrt(Math.min(1,v/top)),short=v=>v>=1000?Math.round(v/1000)+' mil':String(v);
+      const marks=[1000,10000,top];
+      host.querySelector('#map-key').innerHTML=`<svg viewBox="0 0 240 28" style="width:100%;height:28px" role="img" aria-label="El ancho del haz crece con la raíz de los viajes acumulados">${marks.map((v,k)=>`<path d="M${8+84*k} 14H${56+84*k}" stroke="#0e546d" stroke-width="${w(v).toFixed(1)}" stroke-linecap="round"/>`).join('')}</svg><div class="map-key-words" style="display:grid;grid-template-columns:repeat(3,1fr);text-align:center">${marks.map(v=>`<span>${short(v)}</span>`).join('')}</div>`;
+      host.querySelector('#map-key-note').textContent='Viajes de la hora (promedio por día) acumulados en el haz. Ancho ∝ √viajes, de 1 a 9 px; el máximo es el tramo más cargado de 2021–2024. Escala fija entre horas y años. Los cruces visuales no implican transbordos.';
+      app.raeb?.drawn?.(app.raeb.lastDrawn);
+    }
     if(!items.length)app.toast('El grupo está vacío.');return;
   }
   const legend=host.querySelector('#map-key'),domain=color.domain(),min=domain[0],max=domain.at(-1);

@@ -1,9 +1,9 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=20261028-backend-first';
+import {renderMap} from './map-view.js?v=20261112g';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=20261014-9';
-import {renderInspector} from './inspector.js?v=20261028-release1';
+import {renderInspector} from './inspector.js?v=20261112g';
 import {renderProject} from './project-view.js?v=20261028-release1';
 
 import {normalizeContrastBase,inspectorContrast,contrastMeasures} from './contrast-model.mjs';
@@ -28,7 +28,7 @@ function hydrate(){
   if(['morning','weekend','change','decoupled'].includes(p.get('preset')))state.preset=p.get('preset');
   if(p.has('cohort'))state.cohort=new Set(p.get('cohort')?p.get('cohort').split(','):[]);
   if(p.get('pins'))state.pins=p.get('pins').split(',').slice(0,3);
-  for(const [key,allowed] of Object.entries({mode:['delta','current','base'],sort:['change','similar','borough','morning','morningUp','afternoon','night','weekend','volume','volumeDown'],day:['all','0','1','2','3','4','5','6'],mapMetric:['change','deltaAM','deltaWeekend','recovery'],inspectorTab:['fingerprint','compare','evolution','source'],layer:['points','flows'],flowShow:['volume','change']}))if(allowed.includes(p.get(key)))state[key]=p.get(key);
+  for(const [key,allowed] of Object.entries({mode:['delta','current','base'],sort:['change','similar','borough','morning','morningUp','afternoon','night','weekend','volume','volumeDown'],day:['all','0','1','2','3','4','5','6'],mapMetric:['change','deltaAM','deltaWeekend','recovery'],inspectorTab:['fingerprint','compare','evolution','source'],layer:['points','flows','segments'],flowShow:['volume','change'],segVar:['am','rev'],segColor:['load','wave','zone']}))if(allowed.includes(p.get(key)))state[key]=p.get(key);
   for(const key of ['tvMin','tvMax'])if(p.has(key)&&Number.isFinite(+p.get(key)))state[key]=Math.max(0,Math.min(100,+p.get(key)));
   if(state.tvMin>state.tvMax)[state.tvMin,state.tvMax]=[state.tvMax,state.tvMin];
   for(const key of ['deltaAM','deltaWeekend','recovery']){const lo=p.get(key+'Min'),hi=p.get(key+'Max');if(lo!==null&&hi!==null&&Number.isFinite(+lo)&&Number.isFinite(+hi))state.ranges[key]=[Math.min(+lo,+hi),Math.max(+lo,+hi)];}
@@ -39,6 +39,7 @@ function hydrate(){
   state.contrastBase=normalizeContrastBase(p.has('contrastBase')?+p.get('contrastBase'):2019,state.year,BASE);
   if(p.has('fidelity')&&Number.isFinite(+p.get('fidelity')))state.fidelity=Math.max(0,Math.min(1,+p.get('fidelity')));
   if(p.has('bundling')&&Number.isFinite(+p.get('bundling')))state.bundling=Math.max(0,Math.min(1,+p.get('bundling')));
+  if(p.has('tau')&&Number.isFinite(+p.get('tau')))state.segTau=Math.max(.5,Math.min(.99,+p.get('tau')));
 }
 function updateURL(){
   const p=new URLSearchParams({view:state.view,year:state.year});
@@ -52,6 +53,7 @@ function updateURL(){
   for(const [key,range] of Object.entries(state.ranges))if(range){p.set(key+'Min',range[0]);p.set(key+'Max',range[1]);}
   if(state.pins.length)p.set('pins',state.pins.join(','));
   for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus','layer','flowShow'])p.set(key,state[key]);p.set('hour',state.flowHour);p.set('day',state.flowDay);p.set('base',BASE);p.set('fidelity',state.fidelity);p.set('bundling',state.bundling);p.set('contrastBase',state.contrastBase??BASE);
+  if(state.layer==='segments'){p.set('segVar',state.segVar??'am');p.set('segColor',state.segColor??'load');p.set('tau',state.segTau??.8);}
   history.replaceState(null,'',`?${p}`);
 }
 const app={

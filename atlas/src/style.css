@@ -402,3 +402,68 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
 .enrichment-context{margin-top:18px;border-top:1px solid var(--line);padding-top:12px;font-size:11px;line-height:1.6}.enrichment-context summary{cursor:pointer;font-weight:700;color:var(--teal)}.enrichment-context h3{font-size:12px;margin:18px 0 7px}.enrichment-context p{margin:8px 0}.enrichment-context p>b{font-size:20px}.enrichment-table{width:100%;border-collapse:collapse;font-size:10px;margin:10px 0}.enrichment-table caption{text-align:left;font-size:10px;color:var(--muted);margin-bottom:5px}.enrichment-table th,.enrichment-table td{padding:5px 3px;border-bottom:1px solid var(--line);text-align:right;vertical-align:top}.enrichment-table th:first-child,.enrichment-table td:first-child{text-align:left}.enrichment-table th[scope=row]{font-weight:400}
 
 .full-period-chart{display:block;width:100%;height:auto}.full-period-context{padding-bottom:10px;border-bottom:1px solid var(--line)}
+
+/* Botón «Aplicar» de las barras de agrupamiento: los cambios se calculan solo al confirmarlos. */
+.raeb-apply-row{grid-column:1/-1;display:flex;align-items:center;gap:10px;margin-top:6px}
+.raeb-apply{border:1px solid var(--line);border-radius:4px;padding:6px 14px;font-size:11px;background:#fff;color:var(--muted)}
+.raeb-apply.ready{background:var(--navy);border-color:var(--navy);color:#fff}
+.raeb-pending{font-size:9px;color:var(--muted)}
+.fidelity output.pending{color:#b6532c;font-weight:600}
+
+/* Capa «Tramos»: mapa troceado y vistas enlazadas de wavelets (ManyWaves). */
+.sw-mode{display:flex;margin:0 0 8px}.sw-mode button{flex:1;padding:5px 6px;font-size:10.5px}
+.sw-stage{display:flex;flex-direction:column;overflow:hidden}
+.sw-map{position:relative;flex:1;min-height:0}
+.sw-empty{padding:28px;color:var(--muted);font-size:12px}
+.sw-controls{top:12px;left:12px;width:236px;padding:10px 12px}
+.sw-controls .eyebrow{margin-bottom:6px}
+.sw-hour-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:5px}
+.sw-day-current{font-size:12px;color:var(--muted);text-transform:capitalize}
+.sw-hour-row .flow-hour-label{font-size:22px;font-weight:600;white-space:nowrap;text-align:right}
+.sw-days{display:flex;margin-bottom:4px}.sw-days button{flex:1;padding:4px 0;font-size:9.5px}
+.sw-field{display:block;margin-top:8px}.sw-field>span{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:3px}
+.sw-field .segmented{display:flex}.sw-field .segmented button{flex:1;padding:4px 4px;font-size:10px;white-space:nowrap}
+.sw-tau input{display:block;width:100%;margin:0}.sw-tau output{color:var(--ink);font-variant-numeric:tabular-nums}
+.sw-controls .map-control{margin:10px 0 0;display:flex;gap:6px}.sw-controls .map-control button{flex:1;padding:5px 6px;font-size:10px}
+.sw-controls .map-control button:disabled{opacity:.45;cursor:default}
+.sw-legend{right:12px;bottom:12px;width:250px;padding:9px 11px;font-size:10px}
+.sw-legend .map-legend-what{font-size:9.5px;margin-bottom:6px}
+.sw-legend .map-legend-foot{margin-top:6px}
+.sw-map .map-credit{top:8px;right:10px;bottom:auto}
+.sw-station{fill:#f4f5f1;stroke:#9aa5a8;stroke-width:.5;vector-effect:non-scaling-stroke;pointer-events:none}
+.sw-key-ticks{position:relative;height:13px;font-size:9px;color:var(--muted);margin-top:2px}.sw-key-ticks span{position:absolute;white-space:nowrap}
+.sw-hit{cursor:pointer}
+.sw-dock{flex:none;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr) 214px;background:#fff;border-top:1px solid var(--line)}
+.sw-card{min-width:0;padding:8px 12px 6px;border-right:1px solid var(--line)}.sw-card:last-child{border-right:0}
+.sw-card h3{margin:2px 0 4px;font:650 12px/1.3 Atlas,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sw-card h3 small{font-weight:400;font-size:9.5px;color:var(--muted);margin-left:4px}
+.sw-card svg{display:block;width:100%;overflow:visible}
+.sw-hint{margin:3px 0 0;font-size:9px;line-height:1.35;color:var(--muted)}
+.sw-axis{font-size:8.5px;fill:var(--muted)}.sw-axis.current{fill:var(--ink);font-weight:700}.sw-var{font-size:9px}
+.sw-daysep{stroke:#fff;stroke-width:1;pointer-events:none}#sw-series .sw-daysep{stroke:#e3e7e2}
+.sw-now{stroke:#102937;stroke-width:1.2;pointer-events:none}
+.sw-cell{stroke:#102937;stroke-width:1.4;pointer-events:none}.sw-row-current{stroke:#102937;stroke-width:.9;pointer-events:none}
+#sw-heat rect{cursor:pointer}
+.sw-band{fill:#e4e8e5}.sw-line{fill:none;stroke:#1d6f8d;stroke-width:.8;opacity:.42}.sw-mean{fill:none;stroke:#102937;stroke-width:1.4}
+.sw-pt{opacity:.38;cursor:pointer}.sw-pt.strong{opacity:.92;stroke:#fff;stroke-width:.4}.sw-pt.selected{opacity:1;stroke:#102937;stroke-width:1.5}
+.sw-encoding .selection{fill:#1d6f8d;fill-opacity:.12;stroke:#1d6f8d}
+@media(max-width:999px){
+  .sw-stage{display:block;height:auto}
+  .sw-map{display:flex;flex-direction:column}
+  .sw-map .map-svg{order:2;height:430px!important}
+  .sw-controls,.sw-legend{position:relative;inset:auto;width:auto;border:0;border-bottom:1px solid var(--line);border-radius:0}
+  .sw-controls{order:1}.sw-legend{order:3;border-top:1px solid var(--line)}
+  .sw-map .map-credit{position:relative;inset:auto;order:4;padding:6px 10px;font-size:8px}
+  .sw-dock{grid-template-columns:1fr}.sw-card{border-right:0;border-bottom:1px solid var(--line)}
+}
+
+/* Grupo elegido con el pincel de la dispersión y leyenda compacta del mapa de flujos. */
+.scatter-brush .selection{fill:#7b3fa0;fill-opacity:.1;stroke:#7b3fa0;stroke-width:1}
+.scatter-brush .overlay{cursor:crosshair}
+.scatter-brush-note{flex-basis:100%;color:var(--muted)}
+.scatter-brush-note i,.map-legend-group i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}
+.map-legend-group{font-size:10px;margin-top:6px}
+.map-legend-more{margin-top:6px;border-top:1px solid var(--line);padding-top:5px}
+.map-legend-more summary{cursor:pointer;color:var(--teal);font-size:10px}
+.map-legend-more .map-key-note{margin-top:5px}
+.od-stage .map-legend #raeb-drawn-short{border-top:0;padding-top:0;margin-top:5px}

@@ -1,10 +1,11 @@
-import {routeHierarchy} from './raeb-core.mjs?v=gpu4';
-import {RaebRenderer} from './raeb-renderer.mjs';
+import {routeHierarchy} from './raeb-core.mjs?v=20261112g';
+import {RaebRenderer} from './raeb-renderer.mjs?v=20261112g';
 
 export class RaebCPUOverlay{
   constructor(data,{renderer=new RaebRenderer()}={}){
+    const requested=+new URLSearchParams(globalThis.location?.search??'').get('coverage');this.coverage=requested>0&&requested<=1?requested:.9;
     this.data=data;this.levels=routeHierarchy(data.links).level;this.renderer=renderer;this.sourceId=0;this.requestId=0;this.currentKey=null;
-    this.worker=new Worker(new URL('./raeb-worker.mjs?v=gpu4',import.meta.url),{type:'module'});
+    this.worker=new Worker(new URL('./raeb-worker.mjs?v=20261112g',import.meta.url),{type:'module'});
     this.worker.onmessage=({data:m})=>this.message(m);
     this.worker.onerror=e=>this.status('No se pudo calcular el agrupamiento: '+e.message);
   }
@@ -27,6 +28,17 @@ export class RaebCPUOverlay{
     this.width=width;this.height=height;this.projection=projection;this.transform(camera);
   }
   status(text){const el=document.querySelector('#raeb-status');if(el)el.textContent=text;}
+  // States in the legend which OD relations are drawn as curves (per-origin coverage rule).
+  drawn(d){
+    this.lastDrawn=d;const el=document.querySelector('#raeb-drawn');if(!el||!d)return;
+    const n=v=>Math.round(v).toLocaleString('es-PE'),share=d.demand>0?Math.round(100*d.drawnDemand/d.demand):100;
+    const brief=document.querySelector('#raeb-drawn-short');if(brief)brief.textContent=`Viajes por hora, ancho ∝ √viajes · curvas: ${share} % de los viajes (${n(d.curves)} relaciones)`;
+    el.textContent=d.coverage<1
+      ?`Curvas: por cada origen, los destinos que suman el ${Math.round(d.coverage*100)} % de sus viajes (${n(d.curves)} de ${n(d.relations)} relaciones; ${share} % de los viajes de la hora). Nodos y red de referencia: 100 %.`
+      :`Curvas: las ${n(d.curves)} relaciones OD con viajes en la hora (100 %).`;
+  }
+  // Why the solver stopped, for the status tooltip.
+  ending(stats){return {nmi:'imagen estable (NMI ≥ 0,8)',kernel:'kernel agotado (radio menor que una celda)',budget:'límite de iteraciones',none:'sin iteraciones'}[stats.termination]??'';}
   frame(year,day,hour,selected){
     const p=this.projection,key=`${year}/${day}/${hour}/${this.width}/${this.height}/${p.scale()}/${p.translate()}`;
     const selectedIndex=this.data.nodes.findIndex(n=>n.id===selected);
@@ -38,7 +50,7 @@ export class RaebCPUOverlay{
     const frameUrl=new URL(`../data/raeb/${year}/${day}-${String(hour).padStart(2,'0')}.f32.gz`,import.meta.url).href;
     const nodes=this.data.nodes.map(n=>p([n.lon,n.lat]));
     const links=this.data.links.map(l=>({...l,points:l.coords.map(c=>p(c))}));
-    this.worker.postMessage({type:'source',sourceId:this.sourceId,networkUrl,frameUrl,nodes,links,width:this.width,height:this.height,samples:32,selected:selectedIndex});
+    this.worker.postMessage({type:'source',sourceId:this.sourceId,networkUrl,frameUrl,nodes,links,width:this.width,height:this.height,samples:32,selected:selectedIndex,coverage:this.coverage??1});
   }
   transform(camera){
     this.renderer.setCamera(camera);this.renderer.canvas.dataset.camera=JSON.stringify({k:camera.k,x:camera.x,y:camera.y});
@@ -78,7 +90,7 @@ export class RaebCPUOverlay{
       const css=buffer=>{const a=new Float32Array(buffer);if(m.grid)for(let i=0;i<a.length;i+=2){a[i]=(a[i]-1)*m.grid.gridToCss[0];a[i+1]=(a[i+1]-1)*m.grid.gridToCss[1];}return a;};this.reference=css(m.reference);this.free=css(m.free);
       r.scene(this.free,this.reference,new Float32Array(m.metadata),m.count,m.samples,new Float32Array(m.retention));
       r.setParameters(this.fidelity??.9,this.strength??.65);this.request();
-      r.canvas.dataset.curves=String(m.count);r.canvas.dataset.samples=String(m.samples);
+      r.canvas.dataset.curves=String(m.count);r.canvas.dataset.samples=String(m.samples);this.drawn(m.drawn);
       this.status('Procesando…');
     }else if(m.type==='seed'||m.type==='layout'||m.type==='progress'){
       if(m.id!==this.requestId)return;
@@ -92,7 +104,7 @@ export class RaebCPUOverlay{
         }
         r.canvas.dataset.layoutStats=JSON.stringify(m.stats);r.canvas.dataset.totalLatencyMs=(performance.now()-this.parameterStarted).toFixed(1);
         this.status(m.stats.converged?'Completado':'Completado (parcial)');
-        const status=document.querySelector('#raeb-status');if(status)status.title=`${m.stats.iterations} iteraciones · NMI ${m.stats.nmi.toFixed(3)} · ${Math.round(m.stats.ms)} ms. La desviación, cuando aparece, usa una muestra de hasta 128 curvas.`;
+        const status=document.querySelector('#raeb-status');if(status)status.title=`${m.stats.iterations} iteraciones · NMI ${m.stats.nmi.toFixed(3)} · fin: ${this.ending(m.stats)} · ${Math.round(m.stats.ms)} ms. La desviación, cuando aparece, usa una muestra de hasta 128 curvas.`;
       }
     }else if(m.type==='error'){this.status(m.message);console.error('RAEB:',m.message);}
   }

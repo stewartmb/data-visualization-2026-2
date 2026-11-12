@@ -2,7 +2,7 @@
 // accumulate in two u32 words (carry addition), avoiding float-atomic extensions.
 export const COMPUTE = /* wgsl */ `
 struct Params {
- dims:vec4u, raster:vec4u, control:vec4f, project:vec4f, conversion:vec4f, flags:vec4u,
+ dims:vec4u, raster:vec4u, control:vec4f, project:vec4f, conversion:vec4f, flags:vec4u, scale:vec4f,
 }
 struct Wide {lo:atomic<u32>,hi:atomic<u32>,}
 struct Optical {blue:Wide,orange:Wide,}
@@ -180,7 +180,7 @@ var<workgroup> nmiWork:array<vec4f,256>;
 `;
 
 export const DISPLAY = /* wgsl */ `
-struct Params {dims:vec4u,raster:vec4u,control:vec4f,project:vec4f,conversion:vec4f,flags:vec4u,}
+struct Params {dims:vec4u,raster:vec4u,control:vec4f,project:vec4f,conversion:vec4f,flags:vec4u,scale:vec4f,}
 struct Wide {lo:u32,hi:u32,} struct Optical {blue:Wide,orange:Wide,}
 @group(0) @binding(0) var<uniform> p:Params;
 @group(0) @binding(15) var<storage,read> optical:array<Optical>;
@@ -190,9 +190,13 @@ struct Wide {lo:u32,hi:u32,} struct Optical {blue:Wide,orange:Wide,}
 fn tau(v:Wide)->f32{return (f32(v.hi)*4294967296.0+f32(v.lo))/65536.0;}
 // One compositing decision per output pixel. Nearby centerlines form a
 // continuous envelope; opacity is never accumulated again during display.
-// Width encodes local accumulated OD weight, with a fixed square-root scale.
+// Width encodes local accumulated OD weight on a fixed square-root scale. Its upper end,
+// p.scale.x, is the largest reference-link load of the whole dataset (all years, days and
+// hours) in optical units, so the width keeps discriminating up to the busiest corridor
+// instead of saturating at a small fraction of it. The bundling strength only drives the
+// solver; it no longer rescales the encoding (b=0 still draws the thin individual trails).
 fn coverage(delta:vec2f,weight:f32,pixelRatio:f32)->f32{
- let radius=(.5+min(4.0,1.25*sqrt(max(0.0,weight)))*p.control.y)*pixelRatio;
+ let radius=(.5+4.0*sqrt(min(1.0,max(0.0,weight)/max(p.scale.x,1e-6))))*pixelRatio;
  let edge=clamp(radius+.5-length(delta),0.0,1.0);
  return edge*edge*(3.0-2.0*edge)*.82*(1.0-exp(-weight/.2));
 }

@@ -1,9 +1,10 @@
-import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=bands1';
+import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=20261112g';
 const ENTRIES={initialize:[0,1,3,4,7,8],splat:[0,1,8,9],decodeDensity:[0,9,10],convolve:[0,10,11],maximum:[0,11,13],maximumFinal:[13,14],boost:[0,11,12,14],advect:[0,1,2,3,4,5,6,11],smoothPoints:[0,1,2,3,4,5,6],rasterCurves:[0,1,6,7,15],rasterRails:[0,15,23,24],rasterGuide:[0,12,23,24],image:[0,15,17],histogram:[0,16,17,18,19,20],mutualInformation:[0,18,19,20,21],mutualInformationFinal:[21,22]};
+import {MIN_KERNEL} from './raeb-core.mjs?v=20261112g';
 export class RaebWebGPU{
  constructor(){
   this.canvas=document.createElement('canvas');this.canvas.className='raeb-canvas';this.canvas.setAttribute('aria-hidden','true');this.canvas.style.cssText='display:block;pointer-events:none;width:100%;height:100%';
-  this.camera={k:1,x:0,y:0};this.parameters={fidelity:.9,strength:.65};this.selected=-1;this.count=0;this.generation=0;this.levels=new Map();this.layouts=new Map();this.buffers=new Map();this.ready=this.initialize();
+  this.camera={k:1,x:0,y:0};this.parameters={fidelity:.9,strength:.65};this.selected=-1;this.count=0;this.generation=0;this.opticalMax=10.24;this.levels=new Map();this.layouts=new Map();this.buffers=new Map();this.ready=this.initialize();
  }
  async initialize(){
   if(!navigator.gpu)throw Error('WebGPU no está disponible');
@@ -18,8 +19,8 @@ export class RaebWebGPU{
   this.context.configure({device:d,format:this.format,alphaMode:'premultiplied'});
   const display=d.createShaderModule({code:DISPLAY});
   this.displayPipeline=await d.createRenderPipelineAsync({layout:'auto',vertex:{module:display,entryPoint:'vertex'},fragment:{module:display,entryPoint:'fragment',targets:[{format:this.format}]},primitive:{topology:'triangle-list'}});
-  this.uniformCompute=this.create(96,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST,'compute parameters');
-  this.uniformDraw=this.create(96,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST,'drawing parameters');
+  this.uniformCompute=this.create(112,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST,'compute parameters');
+  this.uniformDraw=this.create(112,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST,'drawing parameters');
   this.statsRead=this.create(16,GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ,'NMI readback');
   this.canvas.dataset.renderer='WebGPU compute + merged ribbons';this.canvas.dataset.bundleStyle='merged-ribbons';this.canvas.dataset.backend='webgpu';return this;
  }
@@ -39,9 +40,11 @@ export class RaebWebGPU{
   if(this.canvas.width!==w||this.canvas.height!==h){this.canvas.width=w;this.canvas.height=h;this.screenDirty=true;}this.schedule();
  }
  setCamera(camera){this.camera=camera;this.inputAt=performance.now();this.schedule();}
+ // Upper end of the fixed width scale: `load` trips per day (largest reference-link load of the dataset).
+ setScale(load){if(load>0){this.opticalMax=load/800;this.canvas.dataset.widthScaleMax=String(Math.round(load));this.schedule();}}
  setParameters(fidelity,strength){this.parameters={fidelity,strength};this.inputAt=performance.now();this.schedule();}
  params({fidelity=this.parameters.fidelity,strength=this.parameters.strength,radius=1,analysis=false}={}){
-  const data=new ArrayBuffer(96),u=new Uint32Array(data),f=new Float32Array(data),s=this.scene;
+  const data=new ArrayBuffer(112),u=new Uint32Array(data),f=new Float32Array(data),s=this.scene;
   u.set([s.width,s.height,this.count,this.samples],0);
   u.set([analysis?s.width:this.canvas.width,analysis?s.height:this.canvas.height,this.linkCount,analysis?0:this.selected+1],4);
   const k=fidelity*5;f.set([fidelity,strength,radius,k-Math.floor(k)],8);
@@ -50,7 +53,7 @@ export class RaebWebGPU{
    const rx=this.canvas.width/this.width,ry=this.canvas.height/this.height,c=this.camera;
    f.set([c.k*s.gridToCss[0]*rx,c.k*s.gridToCss[1]*ry,(c.x-c.k*s.gridToCss[0])*rx,(c.y-c.k*s.gridToCss[1])*ry],12);
   }
-  f.set([this.width,this.height,...s.gridToCss],16);u[20]=analysis?0:1;return data;
+  f.set([this.width,this.height,...s.gridToCss],16);u[20]=analysis?0:1;f[24]=this.opticalMax;return data;
  }
  resources(uniform=this.uniformCompute,extra={}){return new Map([[0,uniform],...this.buffers,...Object.entries(extra).map(([k,v])=>[+k,v])]);}
  pass(encoder,key,resources,x,y=1){
@@ -87,7 +90,7 @@ export class RaebWebGPU{
   const cached=this.layouts.get(key);
   if(cached){const e=this.device.createCommandEncoder();e.copyBufferToBuffer(cached.buffer,0,this.buffers.get(1),0,this.pointBytes);this.device.queue.submit([e.finish()]);await this.device.queue.onSubmittedWorkDone();this.schedule();return {...cached.stats,cacheHit:true,ms:performance.now()-started};}
   this.bindLevel(Math.floor(fidelity*5),Math.ceil(fidelity*5));
-  let radius=Math.max(.05,this.scene.kernel.radius*strength),iterations=0,nmi=1;
+  let radius=Math.max(.05,this.scene.kernel.radius*strength),iterations=0,nmi=1,termination='budget';
   this.device.queue.writeBuffer(this.uniformCompute,0,this.params({fidelity,strength,radius,analysis:true}));
   let e=this.device.createCommandEncoder();let resources=this.resources();this.pass(e,'initialize',resources,Math.ceil(this.count/256));e.clearBuffer(this.buffers.get(12));this.pass(e,'rasterGuide',resources,Math.ceil(this.linkCount/64));
   this.raster(e,resources,{image:true});this.device.queue.submit([e.finish()]);await this.device.queue.onSubmittedWorkDone();
@@ -106,11 +109,16 @@ export class RaebWebGPU{
     await this.statsRead.mapAsync(GPUMapMode.READ);nmi=new Float32Array(this.statsRead.getMappedRange())[0];this.statsRead.unmap();
     if(cancelled()||generation!==this.generation)return null;
     iterations=iteration+1;prev=this.buffers.get(16);this.buffers.set(16,this.buffers.get(17));this.buffers.set(17,prev);radius*=.9;
-    onIteration({iterations,nmi});this.schedule();if(nmi>=stability)break;
+    onIteration({iterations,nmi});this.schedule();
+    if(nmi>=stability){termination='nmi';break;}
+    // λ-decay guarantees convergence (§3.1). Below one cell of the density raster the kernel no
+    // longer spans neighbouring cells: advection stops while the Laplacian smoothing would keep
+    // relaxing the trails out of their bundles, so the solver ends here.
+    if(radius<MIN_KERNEL){termination='kernel';break;}
    }
-  }
+  }else termination='none';
   if(cancelled()||generation!==this.generation)return null;
-  const result={backend:'webgpu',iterations,nmi,converged:nmi>=stability||strength<=0||fidelity===1,ms:performance.now()-started,kernel:this.scene.kernel,stabilityImage:'canonical optical density before ribbon styling',pointReadbacks:0};
+  const result={backend:'webgpu',iterations,nmi,termination,converged:termination!=='budget',ms:performance.now()-started,kernel:this.scene.kernel,stabilityImage:'canonical optical density before ribbon styling',pointReadbacks:0};
   const buffer=this.storage(this.pointBytes,'cached layout');e=this.device.createCommandEncoder();e.copyBufferToBuffer(this.buffers.get(1),0,buffer,0,this.pointBytes);this.device.queue.submit([e.finish()]);this.layouts.set(key,{buffer,stats:result});
   if(this.layouts.size>2){const oldest=this.layouts.keys().next().value;this.layouts.get(oldest).buffer.destroy();this.layouts.delete(oldest);}this.canvas.dataset.layoutStats=JSON.stringify(result);this.schedule();return result;
  }
