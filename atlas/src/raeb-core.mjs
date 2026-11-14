@@ -1,6 +1,6 @@
 // RAEB/KDEEB numerical core. Paper sections 3.1, 4.3–5.2 and 6.1.
 // Rail adaptation: hier(r)=1, since GTFS has no road categories.
-import {metersPerRadian} from './raeb-scale.mjs?v=free-years1';
+import {metersPerRadian} from './raeb-scale.mjs?v=rail-reading1';
 
 export const RAIL_DBSCAN_METERS = 1_000;
 const MIN_CLUSTER_ROUTES = 8;
@@ -33,9 +33,10 @@ export function discreteFrechet(a,b){
 
 export function routeHierarchy(links){
   const maxLen=Math.max(0,...links.map(l=>l.len))||1,maxFlow=Math.max(0,...links.map(l=>l.reference_flow||0))||1;
-  const ranked=links.map((l,i)=>({i,score:.3*l.len/maxLen+.1+.6*(l.reference_flow||0)/maxFlow})).sort((a,b)=>b.score-a.score||a.i-b.i);
+  const ranked=links.flatMap((l,i)=>l.kind==='declared_walk_transfer'?[]:[{i,score:.3*l.len/maxLen+.1+.6*(l.reference_flow||0)/maxFlow}]).sort((a,b)=>b.score-a.score||a.i-b.i);
   const level=new Uint8Array(links.length);
   for(let k=1;k<LEVELS.length;k++)for(let j=0;j<Math.ceil(LEVELS[k]*ranked.length);j++)if(!level[ranked[j].i])level[ranked[j].i]=k;
+  links.forEach((link,i)=>{if(link.kind==='declared_walk_transfer')level[i]=5;});
   return {ranked,level};
 }
 
@@ -268,6 +269,7 @@ export function makeScene(nodes,links,paths,weights,width,height,samples=32,{pap
   function guide(f){
     const field=new Float32Array(gw*gh),k=f*5;
     for(let i=0;i<routes.length;i++){
+      if(links[i].kind==='declared_walk_transfer')continue;
       const strength=clamp(k-hierarchy.level[i]+1,0,1);if(!strength)continue;
       const r=routes[i];
       for(let j=1;j<r.length;j++){

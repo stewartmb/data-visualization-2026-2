@@ -1,18 +1,18 @@
 // WebGPU compute and drawing share the same optical rasterizer. All totals
 // accumulate in two u32 words (carry addition), avoiding float-atomic extensions.
-const SELECTED_FLOW_MAX_OPACITY = 0.92;
+const SELECTED_FLOW_MAX_OPACITY = 0.94;
+const SELECTED_FLOW_MIN_OPACITY = 0.48;
 export function selectedFlowOpacity(trips, maximum) {
-  return SELECTED_FLOW_MAX_OPACITY * Math.max(0,Math.min(trips/maximum,1));
+  return trips>0 ? SELECTED_FLOW_MIN_OPACITY + (SELECTED_FLOW_MAX_OPACITY-SELECTED_FLOW_MIN_OPACITY)*Math.sqrt(Math.min(trips/maximum,1)) : 0;
 }
-export const SELECTED_FLOW_EXPRESSION = `${SELECTED_FLOW_MAX_OPACITY}*clamp(trips/maximum,0.0,1.0)`;
-// Rounded from the 95th percentile of link loads on the representative
-// Monday at 5 p.m. in 2024. Keep the scale fixed when exploring the map.
-export const FLOW_COLOR_MAX = 18_000;
+export const SELECTED_FLOW_EXPRESSION = `${SELECTED_FLOW_MIN_OPACITY}+(${SELECTED_FLOW_MAX_OPACITY}-${SELECTED_FLOW_MIN_OPACITY})*sqrt(clamp(trips/maximum,0.0,1.0))`;
+// Keep the same rounded upper reference when exploring different hours and years.
+export const FLOW_COLOR_MAX = 17_000;
 
 export const FLOW_COLOR_STOPS = [
-  {trips:0, color:'#c8cdd0'},
-  {trips:FLOW_COLOR_MAX/4, color:'#ba8500'},
-  {trips:FLOW_COLOR_MAX, color:'#c23b32'}
+  {trips:0, color:'#718f97'},
+  {trips:FLOW_COLOR_MAX/4, color:'#33768a'},
+  {trips:FLOW_COLOR_MAX, color:'#093f53'}
 ];
 const flowChannels = FLOW_COLOR_STOPS.map(({color}) =>
   color.slice(1).match(/../g).map(channel => parseInt(channel,16))
@@ -28,13 +28,13 @@ export function flowColor(trips, maximum=FLOW_COLOR_MAX) {
 }
 
 function shaderFlowColor(vector, signature) {
-  const [gray,yellow,red] = flowChannels.map(color =>
+  const [light,medium,dark] = flowChannels.map(color =>
     `${vector}(${color.map(channel => (channel/255).toFixed(6)).join(',')})`
   );
   return `${signature}{
   float position=2.0*sqrt(clamp(trips/maximum,0.0,1.0));
-  if(position<1.0){return mix(${gray},${yellow},position);}
-  return mix(${yellow},${red},position-1.0);
+  if(position<1.0){return mix(${light},${medium},position);}
+  return mix(${medium},${dark},position-1.0);
 }`;
 }
 
@@ -187,7 +187,7 @@ fn putOptical(index:u32,amount:f32,focused:bool){
  }
 }
 @compute @workgroup_size(64) fn rasterRails(@builtin(global_invocation_id) id:vec3u){
- let l=id.x;if(l>=p.raster.z){return;}let row=rails[l*2u];let selected=rails[l*2u+1u].x;
+ let l=id.x;if(l>=p.raster.z){return;}let row=rails[l*2u];let info=rails[l*2u+1u];if(info.y>0.0){return;}let selected=info.x;
  let membership=clamp(p.control.x*5.0-row.z+1.0,0.0,1.0);
  let focused=p.raster.w>0u;let trips=select(row.w,selected,focused);
  if(membership==0.0||trips<=0.0){return;}
@@ -204,7 +204,7 @@ fn putOptical(index:u32,amount:f32,focused:bool){
  }
 }
 @compute @workgroup_size(64) fn rasterGuide(@builtin(global_invocation_id) id:vec3u){
- let l=id.x;if(l>=p.raster.z){return;}let row=rails[l*2u];let membership=clamp(p.control.x*5.0-row.z+1.0,0.0,1.0);if(membership==0.0){return;}
+ let l=id.x;if(l>=p.raster.z){return;}let row=rails[l*2u];if(rails[l*2u+1u].y>0.0){return;}let membership=clamp(p.control.x*5.0-row.z+1.0,0.0,1.0);if(membership==0.0){return;}
  for(var j=1u;j<u32(row.y);j++){
   let a=railVertices[u32(row.x)+j-1u];let b=railVertices[u32(row.x)+j];let count=u32(max(1.0,ceil(distance(a,b)*1.5)));
   for(var t=0u;t<=count;t++){
@@ -245,12 +245,12 @@ fn tau(v:Wide)->f32{return (f32(v.hi)*4294967296.0+f32(v.lo))/65536.0;}
 // One compositing decision per output pixel. Nearby centerlines form a
 // continuous envelope; opacity is never accumulated again during display.
 // Width encodes local accumulated OD weight, with a fixed square-root scale.
-fn bandEdge(delta:vec2f,weight:f32,pixelRatio:f32)->f32{
- let radius=(.5+min(4.0,1.25*sqrt(max(0.0,weight)))*p.control.y)*pixelRatio;
+fn bandEdge(delta:vec2f,weight:f32,pixelRatio:f32,zoomWidth:f32)->f32{
+ let radius=(.5+min(4.0,1.25*sqrt(max(0.0,weight))*zoomWidth)*p.control.y)*pixelRatio;
  let edge=clamp(radius+.5-length(delta),0.0,1.0);
  return edge*edge*(3.0-2.0*edge);
 }
-// The display stroke has a fixed width in CSS pixels. Use the maximum
+// Display width is calculated in CSS pixels from flow. Use the maximum
 // contribution across neighboring centerlines so widening adds no OD volume.
 fn opticalWeight(index:u32)->f32{
  let v=optical[index];
@@ -264,11 +264,12 @@ ${WGSL_FLOW_COLOR}
  let maximum=select(${FLOW_COLOR_MAX}.0,bitcast<f32>(p.flags.z),focused);
  if(!paper&&(p.control.y<=0.0||p.flags.x==0u)){
   let weight=opticalWeight(index);let trips=weight*800.0;
-  let alpha=select(1.0-exp(-weight),${SELECTED_FLOW_EXPRESSION},focused);
+  let alpha=select(0.0,select(1.0-exp(-weight),${SELECTED_FLOW_EXPRESSION},focused),trips>0.0);
   return vec4f(flowColor(trips,maximum)*alpha,alpha);
  }
  let ratio=f32(p.raster.x)/p.conversion.x;
- let extent=i32(ceil(select(4.5,1.5,paper)*ratio+.5));
+ let zoomWidth=max(1.0,bitcast<f32>(p.flags.w));
+ let extent=i32(ceil(select(4.5,.55+1.45*zoomWidth,paper)*ratio+.5));
  var alpha=0.0;
  var flow=0.0;
  for(var dy=-extent;dy<=extent;dy++){
@@ -280,10 +281,11 @@ ${WGSL_FLOW_COLOR}
    let selectedAlpha=${SELECTED_FLOW_EXPRESSION};
    var candidate=0.0;
    if(paper){
-    let edge=clamp(1.5*ratio+.5-length(vec2f(delta)),0.0,1.0);
-    candidate=select(pow(1.0-exp(-1.4*weight),.6),selectedAlpha,focused)*edge;
+    let radius=.55+1.45*zoomWidth*sqrt(clamp(trips/maximum,0.0,1.0));
+    let edge=clamp(radius*ratio+.5-length(vec2f(delta)),0.0,1.0);
+    candidate=select(.06+.9*pow(1.0-exp(-trips/1150.0),.65),selectedAlpha,focused)*edge;
    }else{
-    candidate=select(.82*(1.0-exp(-weight/.2)),selectedAlpha,focused)*bandEdge(vec2f(delta),weight,ratio);
+    candidate=select(.82*(1.0-exp(-weight/.2)),selectedAlpha,focused)*bandEdge(vec2f(delta),weight,ratio,zoomWidth);
    }
    if(candidate>alpha||(candidate==alpha&&weight>flow)){alpha=candidate;flow=weight;}
   }

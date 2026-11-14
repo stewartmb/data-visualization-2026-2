@@ -1,5 +1,6 @@
-import {initialKernelRadius} from './raeb-core.mjs?v=raeb-rail1';
-import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=flow-gray1';
+import {initialKernelRadius} from './raeb-core.mjs?v=rail-reading1';
+import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=zoom-width1';
+import {zoomStrokeScale} from './od-encoding.mjs?v=zoom-width1';
 const ENTRIES={initialize:[0,1,3,4,7,8],splat:[0,1,8,9],decodeDensity:[0,9,10],convolve:[0,10,11],maximum:[0,11,13],maximumFinal:[13,14],boost:[0,11,12,14],advect:[0,1,2,3,4,5,6,11],smoothPoints:[0,1,2,3,4,5,6],rasterCurves:[0,1,6,7,15],rasterRails:[0,15,23,24],rasterGuide:[0,12,23,24],image:[0,15,17],histogram:[0,16,17,18,19,20],mutualInformation:[0,18,19,20,21],mutualInformationFinal:[21,22]};
 export class RaebWebGPU{
  constructor(){
@@ -52,7 +53,10 @@ export class RaebWebGPU{
    f.set([c.k*s.gridToCss[0]*rx,c.k*s.gridToCss[1]*ry,(c.x-c.k*s.gridToCss[0])*rx,(c.y-c.k*s.gridToCss[1])*ry],12);
   }
   f.set([this.width,this.height,...s.gridToCss],16);u[20]=analysis?0:1;u[21]=this.paper?1:0;
-  if(!analysis)f[22]=this.colorMax||0;
+  if(!analysis){
+   f[22]=this.colorMax||0;
+   f[23]=zoomStrokeScale(this.camera.k);
+  }
   return data;
  }
  resources(uniform=this.uniformCompute,extra={}){return new Map([[0,uniform],...this.buffers,...Object.entries(extra).map(([k,v])=>[+k,v])]);}
@@ -130,7 +134,7 @@ export class RaebWebGPU{
  schedule(){if(!this.pending)this.pending=requestAnimationFrame(()=>{this.pending=0;this.draw().catch(e=>this.onError?.(e));});}
  async draw(){
   if(!this.device||!this.context||this.disposed)return;
-  if(!this.count){
+  if(!this.count||this.exact){
    const e=this.device.createCommandEncoder();const pass=e.beginRenderPass({colorAttachments:[{view:this.context.getCurrentTexture().createView(),clearValue:{r:0,g:0,b:0,a:0},loadOp:'clear',storeOp:'store'}]});pass.end();this.device.queue.submit([e.finish()]);return;
   }
   if(!this.scene)return;
@@ -146,7 +150,7 @@ export class RaebWebGPU{
   }finally{this.drawing=false;if(this.redraw){this.redraw=false;this.schedule();}}
  }
  async readBuffer(binding,Type=Float32Array){
-  await this.device.queue.onSubmittedWorkDone();const source=this.buffers.get(binding),read=this.create(source.size,GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ,'validation readback'),e=this.device.createCommandEncoder();e.copyBufferToBuffer(source,0,read,0,source.size);this.device.queue.submit([e.finish()]);await read.mapAsync(GPUMapMode.READ);const data=new Type(read.getMappedRange().slice(0));read.unmap();read.destroy();return data;
+  const source=this.buffers.get(binding),read=this.create(source.size,GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ,'validation readback'),e=this.device.createCommandEncoder();e.copyBufferToBuffer(source,0,read,0,source.size);this.device.queue.submit([e.finish()]);await read.mapAsync(GPUMapMode.READ);const data=new Type(read.getMappedRange().slice(0));read.unmap();read.destroy();return data;
  }
  releaseScene(){
   const owned=new Set([...this.buffers.values(),...this.levels.values(),...[...this.layouts.values()].map(x=>x.buffer),this.screenOptical]);for(const b of owned)if(b)b.destroy();

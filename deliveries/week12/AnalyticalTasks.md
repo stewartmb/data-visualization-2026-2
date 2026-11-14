@@ -128,16 +128,16 @@ Rango `[-1,1]`: positivo = predominan viajes con destino en R; negativo = predom
 
 ## T6 — Exposición ante una interrupción de referencia
 
-**Extensión con seis escenarios reproducibles preparados; sin interfaz interactiva todavía.** Es un experimento de escenario con demanda fija, no una predicción del comportamiento real ni una técnica validada por RAEB.
+**La interfaz simula la interrupción de las paradas de un complejo.** Los seis ejemplos de retiro de enlaces preparados para la Semana 12 usan el grafo vigente. Las muestras entregadas en Semana 6 conservan su versión original. Es un experimento de escenario con demanda fija, no una predicción del comportamiento real ni una técnica validada por RAEB.
 
 **Entrada:** OD de una cohorte, grafo de referencia intacto y un enlace ferroviario elegido. Retirar sus aristas dirigidas en ambos sentidos si existen, identificando qué IDs se eliminan; no retirar transferencias peatonales ni enlaces paralelos sin declararlo. Un enlace GTFS no identifica necesariamente una infraestructura física completa: no llamarlo “cierre de túnel” sin verificar todos los tramos involucrados.
 
-Recalcular caminos de menor distancia con el mismo criterio y desempates de la referencia. Comparar solo pares de complejos distintos que eran asignables en la red intacta. Separar los no asignables previos y origen=destino.
+Recalcular caminos de menor costo con el mismo criterio de la referencia. El costo combina longitud de vía y penalización del transbordo, en kilómetros equivalentes al resumir el escenario. Comparar solo pares de complejos distintos que eran asignables en la red intacta. Separar los no asignables previos y origen=destino.
 
 ```text
 Q = Σ_OD elegibles q_OD
 U_e = Σ_OD que pierden conexión q_OD / Q
-Δkm_e = Σ_OD aún conectados q_OD (distancia_sin_e − distancia_original)
+Δkm_e = Σ_OD aún conectados q_OD (costo_sin_e − costo_original)
         / Σ_OD aún conectados q_OD
 ```
 
@@ -165,6 +165,6 @@ Se mantiene el panel integrado: mapa central + dispersión volumen × forma + re
 
 Cada tarea debe producir una respuesta escrita con entidad/territorio, período, unidad, valores y una cautela pertinente. Comparar esos resultados con agregados reproducibles independientes; después evaluar con personas si la interacción permite encontrarlos. Ausencia de capacidad o tiempo de viaje no se soluciona cambiando el idiom.
 
-Prioridad de desarrollo: cerrar síntesis territorial y lectura exacta (T1/T2/T4/T5), validar franjas (T3), y desarrollar T6 como extensión separada si cabe en la entrega. No presentar T6 como interacción terminada durante una demostración. Los seis cálculos y sus muestras están en `data/analytical_tasks/` y Semana 6, con preparación reproducible.
+El Atlas actual permite leer cargas exactas por tramo (T4) y probar una interrupción por complejo (T6). También permite probar enlaces hipotéticos desde un haz RAEB. La síntesis territorial de T1, T2 y T5 permanece como evidencia y la validación con usuarios sigue pendiente. Los seis cálculos vigentes están en `data/analytical_tasks/`. Semana 6 conserva las muestras originales. El método vigente del mapa se documenta en RAEB Implementation.
 
 Fuentes y alcance: [ODData](ODData.md), [HistoricalContrast](HistoricalContrast.md), [RAEB Implementation](RAEBImplementation.md). Fundamento visual y alternativas: [revisión de Semana 6](../week06/referencias.md). La literatura respalda métodos y decisiones puntuales; no valida automáticamente estas seis preguntas ni nuestra herramienta.

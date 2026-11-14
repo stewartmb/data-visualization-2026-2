@@ -1,7 +1,7 @@
-import {makeScene,makeRailKernelEstimator,bundle,bundleFree} from './raeb-core.mjs?v=free-years1';
+import {makeScene,makeRailKernelEstimator,bundle,bundleFree} from './raeb-core.mjs?v=rail-reading1';
 const layouts=new Map();
 let network=null,sourceId=0,requestId=0,scene=null,pending=null,processing=false,warming=false,weights=null,selected=-1;
-let sentLevels=new Set(),calibrateRail;
+let sentLevels=new Set(),calibrateRail,origins=null;
 async function decompress(url,json=false){
   const response=await fetch(url);if(!response.ok)throw Error(`No se pudo leer ${url}: ${response.status}`);
   const decoded=new Response(response.body.pipeThrough(new DecompressionStream('gzip')));
@@ -10,7 +10,11 @@ async function decompress(url,json=false){
 function send(type,points,extra={}){const buffer=points.buffer;postMessage({type,sourceId,...extra,points:buffer},[buffer]);}
 function selection(){
   if(!weights||!network)return;const n=Math.round(Math.sqrt(weights.length)),loads=new Float32Array(scene?.routes.length||0);
-  if(selected>=0&&scene)for(let d=0;d<n;d++){const pair=selected*n+d;for(const arc of network.paths[pair])loads[arc>>1]+=weights[pair];}
+  const activeOrigins=selected>=0?[selected]:origins??[];
+  if(scene)for(const origin of activeOrigins)for(let d=0;d<n;d++){
+    const pair=origin*n+d;
+    if(weights[pair]>0)for(const arc of network.paths[pair])loads[arc>>1]+=weights[pair];
+  }
   postMessage({type:'selection',sourceId,loads:loads.buffer},[loads.buffer]);
 }
 async function solveLatest(){
@@ -41,9 +45,13 @@ async function solveLatest(){
 onmessage=async({data})=>{
   try{
     if(data.type==='source'){
-      sourceId=data.sourceId;requestId++;scene=null;weights=null;pending=null;layouts.clear();selected=data.selected;warming=true;const current=sourceId;
+      sourceId=data.sourceId;requestId++;scene=null;weights=null;pending=null;layouts.clear();selected=data.selected;origins=data.origins??null;warming=true;const current=sourceId;
       network??=await decompress(data.networkUrl,true);
       const buffer=await decompress(data.frameUrl);if(current!==sourceId)return;weights=new Float32Array(buffer);if(current!==sourceId)return;
+      if(origins!==null){
+        const n=data.nodes.length,allowed=new Set(origins);
+        for(let origin=0;origin<n;origin++)if(!allowed.has(origin))weights.fill(0,origin*n,(origin+1)*n);
+      }
       if(data.paper)calibrateRail??=makeRailKernelEstimator(data.links,data.latitude);
       scene=makeScene(data.nodes,data.links,network.paths,weights,data.width,data.height,data.samples,{
         paper:data.paper,calibrate:data.paper?calibrateRail:null,metersPerPixel:data.metersPerPixel
@@ -51,7 +59,7 @@ onmessage=async({data})=>{
       selection();
       const free=scene.seed(0).slice(),reference=scene.seed(5).slice(),metadata=scene.metadata.slice(),retention=scene.sampleLevels.slice();
       const railInfo=new Float32Array(scene.routes.length*8),vertices=[];
-      scene.routes.forEach((r,i)=>{railInfo.set([vertices.length/2,r.length,scene.hierarchy.level[i],0,0,0,0,0],i*8);for(const p of r)vertices.push(...p);});
+      scene.routes.forEach((r,i)=>{railInfo.set([vertices.length/2,r.length,scene.hierarchy.level[i],0,0,data.links[i].kind==='declared_walk_transfer'?1:0,0,0],i*8);for(const p of r)vertices.push(...p);});
       const railVertices=new Float32Array(vertices),grid={width:scene.width,height:scene.height,gridToCss:scene.gridToCss,kernel:scene.kernel};sentLevels=new Set([0,5]);
       postMessage({type:'scene',sourceId,free:free.buffer,reference:reference.buffer,metadata:metadata.buffer,retention:retention.buffer,count:scene.active.length,samples:scene.samples,kernel:scene.kernel,grid,railInfo:railInfo.buffer,railVertices:railVertices.buffer},[free.buffer,reference.buffer,metadata.buffer,retention.buffer,railInfo.buffer,railVertices.buffer]);
       // Do not compute an unrelated free layout before the requested level.

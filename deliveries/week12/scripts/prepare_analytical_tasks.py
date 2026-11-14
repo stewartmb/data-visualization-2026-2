@@ -5,7 +5,7 @@ No raw download, imagined historical OD, capacity or observed routes. T6 is an
 illustrative fixed-demand graph scenario; it is not an operational forecast.
 """
 from pathlib import Path
-import csv, gzip, hashlib, json, datetime
+import argparse, csv, gzip, hashlib, json, datetime
 import numpy as np
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import shortest_path
@@ -15,9 +15,13 @@ def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def csvout(name,rows):
  rows=list(rows)
  with (OUT/name).open('w',newline='') as f:
-  w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
+  line_ending='\n' if name in {'T4_corridor_loads.csv','T6_reference_scenarios.csv'} else '\r\n'
+  w=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator=line_ending);w.writeheader();w.writerows(rows)
  return len(rows)
 def main():
+ parser=argparse.ArgumentParser(description=__doc__)
+ parser.add_argument('--skip-week06-samples',action='store_true',help='Preserve the samples already delivered in Week 6.')
+ args=parser.parse_args()
  OUT.mkdir(exist_ok=True,parents=True)
  hist=json.loads((A/'historical_contrast.json').read_text());f=json.loads((A/'flows.json').read_text());manifest=json.loads((A/'raeb/manifest.json').read_text())
  assert hist['meta']['status']=='PASS' and manifest['status']=='PASS'
@@ -61,32 +65,42 @@ def main():
   for e,link in enumerate(links):loads.append(dict(year=year,link_id=e,origin=link['a'],destination=link['b'],kind=link['kind'],length_m=link['len'],weekly_assigned_traversals_both_directions=float(weekly[year][e]),monday08_start_cohort_traversals_both_directions=float(ar[0,8,2*e:2*e+2].sum())))
  counts['T4_corridor_loads.csv']=csvout('T4_corridor_loads.csv',loads)
  index={s:i for i,s in enumerate(ids)}
+ route_nodes=f['meta']['network']['route_nodes'];stop_ids=list(route_nodes);stop_index={s:i for i,s in enumerate(stop_ids)}
+ members=[np.array([stop_index[s] for s in stop_ids if route_nodes[s]['complex']==cid]) for cid in ids]
  def distances(removed=None):
-  rr=[];cc=[];ww=[]
-  for e,l in enumerate(links):
+  directed={}
+  for e,link in enumerate(links):
    if e==removed:continue
-   a=index[l['a']];b=index[l['b']]
-   for direction in [0,1]:
-    if l['allowed'][direction]:rr.append(a if direction==0 else b);cc.append(b if direction==0 else a);ww.append(l['len'])
-  return shortest_path(csr_matrix((ww,(rr,cc)),shape=(n,n)),directed=True,method='D')
+   a,b=stop_index[link['stop_a']],stop_index[link['stop_b']]
+   for direction,allowed in enumerate(link['allowed']):
+    if not allowed:continue
+    arc=(b,a) if direction else (a,b)
+    cost=link['cost'][direction] if isinstance(link['cost'],list) else link['cost']
+    directed[arc]=min(directed.get(arc,float('inf')),cost)
+  rows,columns=zip(*directed)
+  stops_n=len(stop_ids)
+  costs=shortest_path(csr_matrix((list(directed.values()),(rows,columns)),shape=(stops_n,stops_n)),directed=True,method='D')
+  origin_costs=np.stack([costs[stops].min(axis=0) for stops in members],axis=0)
+  return np.stack([origin_costs[:,stops].min(axis=1) for stops in members],axis=1)
  d0=distances();valid=np.isfinite(d0)&(~np.eye(n,dtype=bool));q=Qs[2024];denom=float(q[valid].sum());assert denom>0
  # Illustrative scenarios: 3 busiest inter-borough links and 3 busiest remaining links.
  rank=sorted([i for i,l in enumerate(links) if l['kind']=='rail'],key=lambda e:weekly[2024][e],reverse=True)
  cross=[e for e in rank if membership[index[links[e]['a']]]!=membership[index[links[e]['b']]]][:3]
  degree=np.zeros(n,dtype=int)
- for l in links:degree[index[l['a']]]+=1;degree[index[l['b']]]+=1
+ for l in links:
+  if l['kind']=='rail':degree[index[l['a']]]+=1;degree[index[l['b']]]+=1
  leaf=next(e for e in rank if degree[index[links[e]['a']]]==1 or degree[index[links[e]['b']]]==1)
  chosen=cross+[e for e in rank if e not in cross and e!=leaf][:2]+[leaf];scenarios=[]
  for e in chosen:
   d=distances(e);lost=valid&~np.isfinite(d);connected=valid&np.isfinite(d);extra=d[connected]-d0[connected];assert (extra>=-1e-7).all()
   remaining=float(q[connected].sum());disconnected=float(q[lost].sum());link=links[e]
-  affected=connected.copy();affected[connected]=extra>1e-6
-  row=dict(year=2024,link_removed=e,origin=link['a'],destination=link['b'],removed_directions=';'.join(str(i) for i,b in enumerate(link['allowed']) if b),eligible_weekly_estimated_od=denom,disconnected_weekly_estimated_od=disconnected,disconnected_share_pct=100*disconnected/denom,additional_km_weighted_connected=float(np.sum(q[connected]*np.maximum(extra,0))/remaining/1000) if remaining else '',still_connected_weekly_estimated_od=remaining,detoured_weekly_estimated_od=float(q[affected].sum()))
+  affected=connected.copy();affected[connected]=extra>.01
+  row=dict(year=2024,link_removed=e,origin=link['a'],destination=link['b'],removed_directions=';'.join(str(i) for i,b in enumerate(link['allowed']) if b),eligible_weekly_estimated_od=denom,disconnected_weekly_estimated_od=disconnected,disconnected_share_pct=100*disconnected/denom,additional_equivalent_km_weighted_connected=float(np.sum(q[connected]*np.maximum(extra,0))/remaining/1000) if remaining else '',still_connected_weekly_estimated_od=remaining,detoured_weekly_estimated_od=float(q[affected].sum()))
   assert np.isclose(remaining+disconnected,denom);scenarios.append(row)
  counts['T6_reference_scenarios.csv']=csvout('T6_reference_scenarios.csv',scenarios)
- evidence={'status':'PASS','built_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'method':'Representative weeks; aggregate quantities before normalization. OD hour denotes starting cohort. Fixed-demand distance-only graph removal examples, not operational predictions.','source_sha256':{str(p.relative_to(P)):sha(p) for p in [A/'historical_contrast.json',A/'flows.json',A/'raeb/manifest.json']},'inputs':'All 672 dense float32 OD frames verified against the RAEB manifest; small float32 rounding retained.','checks':['territorial OD conservation','external origins equal external destinations across partition','no negative/non-finite OD','no shortened shortest distance after removing links','scenario connected + disconnected demand conservation'],'row_counts':counts,'scenarios':'Six illustrative link removals, not exhaustive ranking of network vulnerability.','artifacts':{name:sha(OUT/name) for name in counts},'ui_status':'Evidence/preparation only. Does not declare T1-T6 fully implemented in the interface.'}
+ evidence={'status':'PASS','built_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'method':'Representative weeks; aggregate quantities before normalization. OD hour denotes starting cohort. Fixed-demand graph removal examples. Cost combines rail distance and declared transfer penalty; no operational prediction.','source_sha256':{str(p.relative_to(P)):sha(p) for p in [A/'historical_contrast.json',A/'flows.json',A/'raeb/manifest.json']},'inputs':'All 672 dense float32 OD frames verified against the RAEB manifest; small float32 rounding retained.','checks':['territorial OD conservation','external origins equal external destinations across partition','no negative/non-finite OD','no shortened shortest distance after removing links','scenario connected + disconnected demand conservation'],'row_counts':counts,'scenarios':'Six illustrative link removals, not exhaustive ranking of network vulnerability.','artifacts':{name:sha(OUT/name) for name in counts},'ui_status':'Evidence/preparation only. Does not declare T1-T6 fully implemented in the interface.'}
  (OUT/'validation.json').write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n')
- for name in counts:
+ for name in (() if args.skip_week06_samples else counts):
   target=R/'deliveries/week06/data/processed'/name;target.parent.mkdir(exist_ok=True,parents=True)
   # Week 6 representative processed sample for each proposed analytic task.
   with (OUT/name).open() as inp:

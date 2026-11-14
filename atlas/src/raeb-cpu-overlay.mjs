@@ -1,7 +1,8 @@
-import {metersPerProjectedPixel} from './raeb-scale.mjs?v=free-years1';
-import {routeHierarchy} from './raeb-core.mjs?v=raeb-rail1';
-import {RaebRenderer} from './raeb-renderer.mjs?v=flow-gray1';
-import {flowColor, selectedFlowOpacity} from './raeb-gpu-shaders.mjs?v=flow-gray1';
+import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
+import {routeHierarchy} from './raeb-core.mjs?v=rail-reading1';
+import {RaebRenderer} from './raeb-renderer.mjs?v=zoom-width1';
+import {frameURL,networkURL} from './od-encoding.mjs?v=rail-reading1';
+import {flowColor, selectedFlowOpacity} from './raeb-gpu-shaders.mjs?v=zoom-width1';
 
 export function setRaebStatus(message) {
   const status = document.querySelector('#raeb-status');
@@ -19,7 +20,7 @@ export class RaebCPUOverlay{
     this.data=data;this.paper=paper;this.rendererMode(renderer);this.levels=routeHierarchy(data.links).level;this.renderer=renderer;this.sourceId=0;this.requestId=0;this.currentKey=null;
     this.dataURL=dataURL;
     this.latitude=latitude;
-    this.worker=new Worker(new URL('./raeb-worker.mjs?v=free-years1',import.meta.url),{type:'module'});
+    this.worker=new Worker(new URL('./raeb-worker.mjs?v=linked-scope1',import.meta.url),{type:'module'});
     this.worker.onmessage=({data:m})=>this.message(m);
     this.worker.onerror=e=>this.status('No se pudo calcular el agrupamiento: '+e.message);
   }
@@ -31,6 +32,7 @@ export class RaebCPUOverlay{
     // in WebKit. Pointer events pass through to the SVG's station marks.
     const stage=group.ownerSVGElement.parentElement;
     const canvas=this.renderer.canvas;
+    this.stage=stage;
     const mapRect=group.ownerSVGElement.getBoundingClientRect(),stageRect=stage.getBoundingClientRect();
     canvas.style.position='absolute';canvas.style.left=(mapRect.left-stageRect.left-stage.clientLeft)+'px';canvas.style.top=(mapRect.top-stageRect.top-stage.clientTop)+'px';canvas.style.zIndex='1';
     canvas.style.width=width+'px';canvas.style.height=height+'px';stage.appendChild(canvas);
@@ -44,22 +46,23 @@ export class RaebCPUOverlay{
     });
     this.width=width;this.height=height;this.projection=projection;this.transform(camera);
   }
-  status(message){setRaebStatus(message);}
-  frame(year,day,hour,selected){
-    const p=this.projection,key=`${year}/${day}/${hour}/${this.width}/${this.height}/${p.scale()}/${p.translate()}`;
+  status(message){if(!this.stage||(this.stage.isConnected&&!this.stage.classList.contains('svg-exact-rails')))setRaebStatus(message);}
+  frame(year,day,hour,selected,origins=null){
+    const p=this.projection,key=`${year}/${day}/${hour}/${this.width}/${this.height}/${p.scale()}/${p.translate()}/${origins?.join(',')??'all'}`;
+    this.origins=origins;
     const selectedIndex=this.data.nodes.findIndex(n=>n.id===selected);
     this.renderer.colorMax=this.data.starts?.[year]?.[selectedIndex]?.[day]?.[hour]||undefined;
     if(selectedIndex!==this.renderer.selected){this.selectedLinks=null;this.worker.postMessage({type:'selection',sourceId:this.sourceId,selected:selectedIndex});}
-    if(key!==this.currentKey)this.selectedLinks=null;
+    if(key!==this.currentKey){this.selectedLinks=null;this.layoutContext=null;this.currentLayout=null;}
     this.renderer.selected=selectedIndex;this.year=year;this.day=day;this.hour=hour;this.paintReference();this.renderer.schedule();
     if(key===this.currentKey){this.onKernel?.(this.kernel);return;}
     this.kernel=null;this.onKernel?.(null);this.parameterStarted=performance.now();this.currentKey=key;this.sourceId++;
     this.renderer.count=0;this.renderer.schedule();this.status('Procesando…');
-    const networkUrl=new URL(this.data.meta.raeb.network,this.dataURL).href;
-    const frameUrl=new URL(`raeb/${year}/${day}-${String(hour).padStart(2,'0')}.f32.gz`,this.dataURL).href;
+    const networkUrl=networkURL(this.dataURL,this.data.meta).href;
+    const frameUrl=frameURL(this.dataURL,year,day,hour).href;
     const nodes=this.data.nodes.map(n=>p([n.lon,n.lat]));
     const links=this.data.links.map(l=>({...l,points:l.coords.map(c=>p(c))}));
-    this.worker.postMessage({type:'source',sourceId:this.sourceId,networkUrl,frameUrl,nodes,links,width:this.width,height:this.height,samples:32,paper:this.paper,latitude:this.latitude,metersPerPixel:metersPerProjectedPixel(p,this.latitude),selected:selectedIndex});
+    this.worker.postMessage({type:'source',sourceId:this.sourceId,networkUrl,frameUrl,nodes,links,width:this.width,height:this.height,samples:32,paper:this.paper,latitude:this.latitude,metersPerPixel:metersPerProjectedPixel(p,this.latitude),selected:selectedIndex,origins});
   }
   transform(camera){
     this.renderer.setCamera(camera);this.renderer.canvas.dataset.camera=JSON.stringify({k:camera.k,x:camera.x,y:camera.y});
@@ -67,11 +70,15 @@ export class RaebCPUOverlay{
     this.renderer.schedule();
   }
   parameters(fidelity,strength){
-    this.requestId++;this.parameterStarted=performance.now();this.renderer.awaitingSeed=!this.paper&&fidelity>0&&fidelity<1;this.fidelity=fidelity;this.strength=strength;this.paintReference();this.renderer.setParameters(fidelity,strength);
+    this.currentLayout=null;this.requestId++;this.parameterStarted=performance.now();this.renderer.awaitingSeed=!this.paper&&fidelity>0&&fidelity<1;this.fidelity=fidelity;this.strength=strength;this.paintReference();this.renderer.setParameters(fidelity,strength);
     const status=document.querySelector('#raeb-status');if(status)status.removeAttribute('title');
     this.status(this.onTracks?'Sobre la vía':'Procesando…');
     clearTimeout(this.parameterTimer);
     this.parameterTimer=setTimeout(()=>this.request(),75);
+  }
+  async inspectLayout(){
+    if(!this.layoutContext||!this.currentLayout)return null;
+    return {...this.layoutContext,points:this.currentLayout};
   }
   paintReference(){
     this.renderer.exact=this.onTracks||(!this.paper&&this.fidelity===1);
@@ -82,9 +89,10 @@ export class RaebCPUOverlay{
     const loads=this.data.flows[String(this.year)]?.[this.day]?.[this.hour];if(!loads)return;
     const focused=this.renderer.selected>=0;
     this.exactPaths.forEach((el,i)=>{
-      const total=loads[2*i]+loads[2*i+1],selected=this.selectedLinks?.[i]||0;
+      const filtered=this.origins!==null;
+      const total=filtered?(this.selectedLinks?.[i]??0):loads[2*i]+loads[2*i+1],selected=this.selectedLinks?.[i]||0;
       const membership=Math.max(0,Math.min(1,(this.fidelity??0)*5-this.levels[i]+1));
-      const trips=(focused?selected:total)*membership;
+      const trips=this.data.links[i].kind==='rail'?(focused?selected:total)*membership:0;
       const weight=trips/800;
       el.setAttribute('stroke',flowColor(trips,this.renderer.colorMax));
       const alpha=focused&&this.renderer.colorMax
@@ -96,7 +104,7 @@ export class RaebCPUOverlay{
   request(){
     clearTimeout(this.parameterTimer);
     if(this.onTracks)return this.status('Sobre la vía');
-    if(!this.renderer.count)return;
+    if(!this.renderer.count)return this.status('Completado');
     const id=++this.requestId;
     this.worker.postMessage({type:'parameters',id,fidelity:this.fidelity??.9,strength:this.strength??.65});
   }
@@ -106,6 +114,7 @@ export class RaebCPUOverlay{
     if(m.type==='selection'){this.selectedLinks=new Float32Array(m.loads);this.paintReference();
     }else if(m.type==='scene'){
       this.kernel=m.kernel;this.onKernel?.(this.kernel);
+      this.layoutContext={metadata:new Float32Array(m.metadata),samples:m.samples,grid:m.grid};
       const css=buffer=>{const a=new Float32Array(buffer);if(m.grid)for(let i=0;i<a.length;i+=2){a[i]=(a[i]-1)*m.grid.gridToCss[0];a[i+1]=(a[i+1]-1)*m.grid.gridToCss[1];}return a;};this.reference=css(m.reference);this.free=css(m.free);
       if(this.paper)r.awaitingSeed=true;
       r.scene(this.free,this.reference,new Float32Array(m.metadata),m.count,m.samples,new Float32Array(m.retention));
@@ -119,6 +128,7 @@ export class RaebCPUOverlay{
       if(this.paper||this.fidelity!==1)r.layout(new Float32Array(m.points));
       if(m.type==='seed')this.status('Procesando…');
       if(m.type==='layout'){
+        this.currentLayout=new Float32Array(m.points);
         if(!this.paper&&m.fidelity===0&&m.strength===1){
           this.free=new Float32Array(m.points);r.anchors(this.free,this.reference);
         }

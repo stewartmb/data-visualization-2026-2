@@ -8,32 +8,47 @@ Los doce meses de 2021, 2022, 2023 y 2024, procedentes de los cuatro datasets MT
 
 Para cada mes y tipo de día, `a` es `estimated_average_ridership`; `n` es el número de ese día en el mes. El promedio anual comparable es `q = Σ(n × a)/Σ n`. No se promedian indiscriminadamente doce promedios mensuales. La ausencia de un par dentro de un mes validado completo se considera cero; un mes faltante provoca rechazo. Se conserva el detalle de procedencia en `flows.json.meta` y SHA-256 por artefacto en `data/raeb/manifest.json`.
 
-La referencia GTFS 2026 contiene 424 complejos y 549 enlaces: 547 ferroviarios y 2 transferencias peatonales explícitas. Se recortan shapes entre paradas consecutivas, con control monótono y tolerancia máxima de 250 m. No se crean enlaces por cercanía. La asignación es distancia mínima sobre adyacencias dirigidas, en una unión estática de patrones con plataformas colapsadas: no comprueba horarios ni compatibilidad de servicios, ni reconstruye servicio histórico. No son recorridos observados.
+La referencia GTFS 2026 contiene **424 complejos OD, 475 paradas padre GTFS, 556 enlaces ferroviarios y 75 transbordos declarados**. Los recorridos se construyen desde las secuencias de paradas, con extremos comunes por parada padre. El máximo ajuste entre extremos proyectados en este archivo fue 0,04 m. El ruteo elige cualquier parada del complejo para salir o llegar. Para pasar entre paradas intermedias exige el enlace ferroviario o el transbordo dirigido declarado en GTFS. Cada arco ferroviario cuesta su longitud. Para un transbordo se usa el máximo de 1 m, su separación geométrica y los segundos mínimos declarados multiplicados por 8 m/s. La conversión es un supuesto del modelo y el resultado se describe en distancia equivalente cuando combina ambas partes. Se utiliza una unión fija de patrones de servicio.
 
 El balance semanal de 2023 incluye 0,133315 viajes representativos no mapeados; queda registrado, no absorbido por los haces. Los otros tres años tienen balance completamente asignado. El volumen de origen conserva sus cantidades disponibles antes de normalizar las 168 celdas. No interpretar la carga como ocupación o congestión.
 
 ## Mapa principal con RAEB
 
-El mapa abre con `raeb=paper`, fidelidad 3 y radio automático. `raeb=atlas` abre el agrupamiento anterior desde el enlace bajo los controles. El selector discreto `p_ra` va de 0 (semillas rectas y agrupamiento libre) a 5 (toda la red guía el agrupamiento). RAEB conserva los extremos de cada curva y modifica la densidad sobre los tramos de la jerarquía seleccionada. Con radio 0 muestra las semillas. En nivel 5 y radio 0 suma la demanda asignada por tramo y la dibuja sobre la geometría GTFS.
+El mapa abre con `raeb=paper`, fidelidad 5 y radio cero, mostrando las cargas asignadas sobre la vía. `raeb=atlas` abre el agrupamiento anterior desde el enlace bajo los controles. El selector discreto `p_ra` va de 0 (semillas rectas y agrupamiento libre) a 5 (toda la red guía el agrupamiento). RAEB conserva los extremos de cada curva y modifica la densidad sobre los tramos de la jerarquía seleccionada. Con radio 0 muestra las semillas. En nivel 5 y radio 0 suma la demanda asignada por tramo y la dibuja sobre la geometría GTFS.
 
-El color de las curvas agrupadas muestra demanda OD estimada. La red aparece en gris. Al seleccionar un complejo se muestran sus conexiones salientes y los demás complejos quedan como puntos grises de navegación. La app conserva el remuestreo de 32 puntos por par ponderado, la cuadrícula de cálculo reducida, WebGPU con respaldo CPU y un tope operativo de 150 iteraciones. El paper utiliza sus propias trayectorias, resolución y muestreo.
+Grosor y una escala secuencial petróleo muestran la demanda estimada. Al seleccionar un complejo, el grosor de las ramas muestra las salidas que comparten un tramo y el tamaño de cada destino muestra sus viajes. La vista anual usa una escala por hora/origen en el detalle y una escala común de hasta 17.000 en la vista general. Los círculos opcionales de afluencia muestran salidas más viajes que terminan allí, clasificados por la hora de entrada del viaje. La app conserva el remuestreo de 32 puntos por par ponderado, la cuadrícula de cálculo reducida, WebGPU con respaldo CPU y un tope operativo de 150 iteraciones. El paper utiliza sus propias trayectorias, resolución y muestreo.
+
+## Lectura de escenarios
+
+- **Explorar un haz** inspecciona las curvas calculadas cerca del punto señalado fuera de la red. Muestra la demanda OD que contribuye y la distancia asignada frente a la directa para el par con mayor aporte.
+- **Probar enlace hipotético** añade un arco bidireccional de longitud geodésica entre dos paradas existentes. Compara costo y cargas con demanda fija. El modelo no incorpora capacidad, horarios, costos de obra ni cambios de demanda.
+- **Dependencia de la red** elimina las paradas del complejo seleccionado para estimar pérdida de acceso, aislamiento y desvíos. «Cierre» significa interrupción de las paradas y los arcos incidentes. No simula un tren que pasa sin detenerse.
+- Los minimapas muestran diferencias por tramo frente al año abierto en el mapa principal. En modo Comparar, la referencia pasa a ser el año elegido como A. La escala se comparte entre los minimapas y se ajusta a la franja y referencia activas. La comparación principal aplica una escala fija en la vista general. Los filtros territoriales y de búsqueda acotan los viajes por origen en el mapa principal, en RAEB y en los minimapas. Los tramos y destinos pueden quedar fuera del área de origen.
+
+Para reproducir la reasignación sin repetir la adquisición ni la agregación horaria, ejecutar desde la raíz:
+
+```sh
+python3 deliveries/week12/scripts/prepare_raeb.py --reroute-existing
+python3 deliveries/week12/scripts/sync_live_atlas.py
+node deliveries/week12/tests/validate-raeb-data.mjs
+```
 
 ## Jerarquía y niveles de fidelidad
 
 La [§4.3 del paper](https://zeng-wei.com/publication/papers/2019_RAEB.pdf#page=5) calcula el puntaje de cada vía como `0,30 × longitud relativa + 0,10 × categoría vial + 0,60 × flujo relativo`. La longitud se divide por la de la vía más larga y el flujo asignado por el mayor flujo de la red. La categoría de OpenStreetMap aporta 1, 0,75, 0,5 o 0,25 según el tipo de vía. Los autores eligieron los pesos experimentalmente. Ordenaron las vías por puntaje descendente y fijaron los cortes acumulados del 5, 10, 20, 40 y 100 %. El artículo presenta los cortes como una elección práctica y no especifica un cálculo para derivarlos.
 
-En el Atlas cada elemento del ranking es un enlace del grafo GTFS. La categoría vale 1 para todos los enlaces, por lo que su aporte de 0,10 es constante y el orden depende de la longitud y del flujo. Para la franja seleccionada, el flujo de cada enlace suma el peso OD de los caminos asignados que lo recorren, en ambos sentidos. Al cambiar de franja puede cambiar qué enlaces entran en el grupo, aunque la cantidad seleccionada siga siendo la misma.
+En el Atlas el ranking usa los enlaces ferroviarios del grafo GTFS. Los transbordos intervienen en la continuidad del recorrido y quedan fuera de la guía ferroviaria. La categoría vale 1 para todos los enlaces, por lo que su aporte de 0,10 es constante y el orden depende de la longitud y del flujo. Para la franja seleccionada, el flujo de cada enlace suma el peso OD de los caminos asignados que lo recorren, en ambos sentidos. Al cambiar de franja puede cambiar qué enlaces entran en el grupo, aunque la cantidad seleccionada siga siendo la misma.
 
 | Nivel | Porcentaje acumulado del ranking | Enlaces que guían el agrupamiento |
 |---:|---:|---:|
 | 0 | 0 % | 0 |
 | 1 | 5 % | 28 |
-| 2 | 10 % | 55 |
-| 3 | 20 % | 110 |
-| 4 | 40 % | 220 |
-| 5 | 100 % | 549 |
+| 2 | 10 % | 56 |
+| 3 | 20 % | 112 |
+| 4 | 40 % | 223 |
+| 5 | 100 % | 556 |
 
-La app redondea hacia arriba el producto del porcentaje por los 549 enlaces. En el nivel 4, el trazado inicial conserva la geometría de los enlaces seleccionados y une con rectas los huecos del recorrido. En el 5, los **329 enlaces adicionales** aportan su geometría al trazado inicial y a la guía de densidad. Con radio positivo, las curvas todavía se desplazan al agruparse. El caso «Sobre la vía» con nivel 5 y radio cero es una decisión del Atlas. La [figura 11 del paper](https://zeng-wei.com/publication/papers/2019_RAEB.pdf#page=10) compara 0, 1, 3 y 5 para taxis en Manhattan, por lo que no muestra directamente la transición 4 → 5. [Implementación de jerarquía, trazado inicial y guía](atlas/src/raeb-core.mjs)
+La app redondea hacia arriba el producto del porcentaje por los 556 enlaces ferroviarios. En el nivel 4, el trazado inicial conserva la geometría de los enlaces seleccionados y une con rectas los huecos del recorrido. En el 5, los **333 enlaces adicionales** aportan su geometría al trazado inicial y a la guía de densidad. Con radio positivo, las curvas todavía se desplazan al agruparse. El caso «Sobre la vía» con nivel 5 y radio cero es una decisión del Atlas. La [figura 11 del paper](https://zeng-wei.com/publication/papers/2019_RAEB.pdf#page=10) compara 0, 1, 3 y 5 para taxis en Manhattan, por lo que no muestra directamente la transición 4 → 5. [Implementación de jerarquía, trazado inicial y guía](atlas/src/raeb-core.mjs)
 
 ## Calibración del radio para el subway
 
@@ -44,12 +59,12 @@ La app redondea hacia arriba el producto del porcentaje por los 549 enlaces. En 
 
 | Franja representativa | Candidatos | Mayor grupo | Radio inicial |
 |---|---:|---:|---:|
-| 2024 · lunes · 8 a. m. | 220 | 36 | 944,47 m |
-| 2024 · lunes · 5 p. m. | 110 | 14 | 661,68 m |
-| 2024 · domingo · 8 a. m. | 220 | 23 | 865,49 m |
-| 2021 · lunes · 8 a. m. | 220 | 24 | 852,94 m |
+| 2024 · lunes · 8 a. m. | 56 | 14 | 660,61 m |
+| 2024 · lunes · 5 p. m. | 56 | 12 | 629,96 m |
+| 2024 · domingo · 8 a. m. | 56 | 12 | 629,96 m |
+| 2021 · lunes · 8 a. m. | 56 | 10 | 531,15 m |
 
-La comprobación de las 672 franjas de 2021–2024 encontró un grupo en cada una. El radio automático varió de **480,23 m a 1.523,48 m**. La estimación de cada franja es el máximo del deslizador. **Automático** aplica ese valor. Puedes reducirlo hasta cero o fijar un radio manual en metros. Si otra franja tiene un máximo menor que el radio manual, el control baja a ese máximo. La regla bajo el minimapa cambia con el zoom y el círculo usa la misma escala. El radio representa distancia en línea recta en la primera iteración. En las siguientes se reduce por un factor de 0,9.
+La comprobación de las 672 franjas de 2021–2024 encontró un grupo en cada una. El radio automático varió de **392,69 m a 878,08 m**. La estimación de cada franja es el máximo del deslizador. **Automático** aplica ese valor. Puedes reducirlo hasta cero o fijar un radio manual en metros. Si otra franja tiene un máximo menor que el radio manual, el control baja a ese máximo. La regla bajo el minimapa cambia con el zoom y el círculo usa la misma escala. El radio representa distancia en línea recta en la primera iteración. En las siguientes se reduce por un factor de 0,9.
 
 Reproducción del valor inicial y verificación de las franjas desde la raíz:
 
@@ -76,7 +91,7 @@ En la vista anterior (`raeb=atlas`), la barra de agrupación multiplica el radio
 
 En el respaldo CPU, la guía de enlaces conservados se dibuja en SVG. El worker entrega primero una semilla del nivel elegido y después su refinamiento; no se interpola una maraña libre para simular alta fidelidad. Las curvas libres conservan WebGL. La vista previa no equivale a una solución convergida y el estado lo indica. El zoom transforma la cámara y las capas SVG: no recalcula KDE ni OD. Durante el movimiento se reduce el muestreo de dibujo a8 vértices y se recuperan32 al estabilizarse; los datos y la solución no cambian.
 
-Campo óptico canónico: `τ=Σ(q/800)` por píxel de trazo; en el respaldo CPU se representa por opacidad. En el mapa principal, WebGPU dibuja trazos de 3 px y representa la densidad por intensidad. Para un origen seleccionado, la opacidad de pantalla es `0,92 × clamp(q/Q, 0, 1)`, donde `q` es el flujo dibujado y `Q` es el total estimado que inicia en el complejo en la franja activa. Así los tramos que concentran una parte grande de las salidas destacan incluso en complejos pequeños. Ambas vistas usan una escala continua de raíz cuadrada, de gris claro a amarillo y rojo, con referencias de 0, 4.500 y 18.000 viajes OD estimados por día. El extremo rojo se fijó redondeando el percentil 95 (17.572) de los 536 enlaces con flujo positivo del lunes representativo de 2024 a las 17:00. La vista general y los minimapas mantienen esa escala entre horas y años. Al seleccionar un complejo, el color del mapa principal usa como extremo superior sus viajes iniciados en la franja activa. La leyenda muestra ese total y se actualiza con complejo, día, hora y año. El cálculo de caminos y las cantidades se conservan. WebGPU colorea la demanda acumulada localmente al dibujar el haz. WebGL2 colorea cada curva por separado y los enlaces exactos en SVG usan su carga asignada. La opacidad se aplica sobre la densidad acumulada en WebGPU y con mezcla por máximo entre curvas seleccionadas en WebGL2. La imagen usada para medir NMI conserva la transferencia óptica original. La vista anterior usa las bandas fusionadas descritas al final de este documento. Con nivel 5 y radio 0 se agrega la carga sobre la geometría completa de los enlaces. Nodos: área proporcional a viajes iniciados, con radio mínimo1,8px para valores positivos pequeños y1,6px para cero; la escala superior fija corresponde a13px. No confundir tamaño mínimo con volumen observado.
+Campo óptico canónico `τ=Σ(q/800)` por píxel de trazo. WebGPU estiliza la densidad acumulada localmente con grosor e intensidad. WebGL2 colorea cada curva y puede mostrar un solapamiento distinto. La imagen de convergencia NMI conserva la transferencia óptica original. Sobre la vía, el SVG dibuja una marca por tramo ferroviario, con ancho entre 0,85 y 4 píxeles y escala de raíz cuadrada. En la vista general el máximo fijo es 17.000 viajes. El detalle por origen usa la proporción de todas sus salidas en la franja. Los minimapas usan una escala divergente compartida por franja y referencia. El área de los puntos de afluencia usa salidas más llegadas según hora de inicio, con tope de radio de 13 px. Los puntos de destino utilizan su propia escala dentro de la selección.
 
 ## Reproducir
 

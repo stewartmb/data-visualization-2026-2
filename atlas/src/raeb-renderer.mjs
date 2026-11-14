@@ -1,7 +1,9 @@
-import {FLOW_COLOR_MAX, GLSL_FLOW_COLOR, SELECTED_FLOW_EXPRESSION} from './raeb-gpu-shaders.mjs?v=flow-gray1';
+import {FLOW_COLOR_MAX, GLSL_FLOW_COLOR, SELECTED_FLOW_EXPRESSION} from './raeb-gpu-shaders.mjs?v=zoom-width1';
+
+import {zoomStrokeScale} from './od-encoding.mjs?v=zoom-width1';
 
 // Instanced WebGL2 draws one strip per OD curve. The paper view uses a
-// triangle strip to keep the stroke width constant in CSS pixels.
+// triangle strip to draw the stroke width in CSS pixels.
 const VERTEX=`#version 300 es
 precision highp float;
 precision highp int;
@@ -24,6 +26,7 @@ uniform bool uPaper;
 uniform int uFlowPass;
 uniform float uSelected;
 uniform float uColorMax;
+uniform float uZoomWidth;
 out vec4 vColor;
 vec4 at(sampler2D source,int i){return texelFetch(source,ivec2(i%uTextureWidth,i/uTextureWidth),0);}
 vec2 previewAt(int point,int curve,int sampleIndex,vec4 anchor,vec2 parameters){
@@ -58,7 +61,8 @@ void main(){
   float alpha=1.0-exp(-trips*(uPaper?1.4:1.0)/800.0);
   float maximum=uColorMax;
   vec3 ink=flowColor(trips,maximum);
-  if(uFlowPass==1)alpha=${SELECTED_FLOW_EXPRESSION};
+  if(uFlowPass==1)alpha=trips>0.0?${SELECTED_FLOW_EXPRESSION}:0.0;
+  else if(uPaper&&trips>0.0)alpha=.005+.94*(1.0-exp(-trips/1150.0));
   if(uSelected>=0.0&&!focus)alpha=0.0;
   vColor=vec4(uFlowPass==1?ink*alpha:ink,alpha);
   vec2 screen=position*uCamera.x+uCamera.yz;
@@ -68,7 +72,7 @@ void main(){
     vec2 tangent=end-start;
     vec2 normal=vec2(-tangent.y,tangent.x)/max(length(tangent),0.001);
     float side=gl_VertexID%2==0?-1.0:1.0;
-    screen+=normal*side*1.5;
+    screen+=normal*side*(.55+1.45*uZoomWidth*sqrt(clamp(trips/maximum,0.0,1.0)));
   }
   gl_Position=vec4(screen.x/uViewport.x*2.0-1.0,1.0-screen.y/uViewport.y*2.0,0,1);
 }`;
@@ -87,7 +91,7 @@ export class RaebRenderer{
     const shader=(type,source)=>{const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;};
     this.program=gl.createProgram();gl.attachShader(this.program,shader(gl.VERTEX_SHADER,VERTEX));gl.attachShader(this.program,shader(gl.FRAGMENT_SHADER,FRAGMENT));gl.linkProgram(this.program);
     if(!gl.getProgramParameter(this.program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(this.program));
-    this.uniforms=Object.fromEntries(['uAnchors','uLayout','uMetadata','uFromLayout','uRetention','uFromPreview','uFromParameters','uTextureWidth','uSamples','uRenderSamples','uViewport','uCamera','uParameters','uTween','uPreview','uPaper','uFlowPass','uSelected','uColorMax'].map(k=>[k,gl.getUniformLocation(this.program,k)]));
+    this.uniforms=Object.fromEntries(['uAnchors','uLayout','uMetadata','uFromLayout','uRetention','uFromPreview','uFromParameters','uTextureWidth','uSamples','uRenderSamples','uViewport','uCamera','uParameters','uTween','uPreview','uPaper','uFlowPass','uSelected','uColorMax','uZoomWidth'].map(k=>[k,gl.getUniformLocation(this.program,k)]));
     this.textures=Array.from({length:5},()=>gl.createTexture());
     this.textureWidth=1024;this.camera={k:1,x:0,y:0};this.parameters={fidelity:.9,strength:.65};this.selected=-1;this.preview=true;this.count=0;
     gl.enable(gl.BLEND);gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);
@@ -140,6 +144,7 @@ export class RaebRenderer{
     const t=Math.min(1,(performance.now()-(this.transitionStart||0))/90);
     gl.uniform1f(u.uTween,t);gl.uniform1i(u.uPreview,this.preview?1:0);gl.uniform1i(u.uPaper,this.paper?1:0);gl.uniform1f(u.uSelected,this.selected);
     gl.uniform1f(u.uColorMax,this.colorMax||FLOW_COLOR_MAX);
+    gl.uniform1f(u.uZoomWidth,zoomStrokeScale(this.camera.k));
     const reduced=performance.now()<(this.qualityUntil||0)||(!this.preview&&t<1),renderSamples=reduced?Math.min(8,this.samples):this.samples;
     gl.uniform1i(u.uRenderSamples,renderSamples);
     const primitive=this.paper?gl.TRIANGLE_STRIP:gl.LINE_STRIP;

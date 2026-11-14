@@ -3,6 +3,7 @@ import {state,BASE as MAP_BASE,esc,fmt,signed,profile,deltaColor,shareColor,show
 import {scatterDomain,comparisonContext} from './scatter-domain.mjs';
 import {activeODCompareBase,activeContrastBase,availableContrastYears,inspectorContrast,contrastMeasures,contrastCell,annualMeasures,isODMap} from './contrast-model.mjs?v=annual-od1';
 let BASE=2021;
+const closureCache=new Map();
 const measures=(s,y=state.year)=>contrastMeasures(s,BASE,y);
 const cellValue=(s,i,mode=state.mode)=>contrastCell(s,i,mode,BASE,state.year);
 const hourLabel=h=>h===0?'12 am':h<12?`${h} am`:h===12?'12 pm':`${h-12} pm`;
@@ -31,6 +32,9 @@ function coverageLabel(app){
 }
 
 export function renderInspector(mapApp){
+  const previousClosure=document.querySelector('#od-closure');
+  const closureOpen=previousClosure?.open&&previousClosure.dataset.station===state.selected;
+  mapApp.updateClosure=null;
   const paired=activeODCompareBase(state,mapApp.flows)!==null;
   const annual=isODMap(state)&&!paired;
   const dataset=mapApp.dataset;
@@ -40,28 +44,34 @@ export function renderInspector(mapApp){
   const items=app.filtered(),a=annual?null:cohortProfile(items,BASE),b=cohortProfile(items,state.year);
   host.hidden=false;state.clock=true;
   const selectedValid=selected&&(annual?annualMeasures(selected,state.year):measures(selected));
-  if(!selected&&(!b||(!annual&&!a))){host.innerHTML=`<h2>Sin datos para la selección</h2><button id="clear-empty">Ver todo el sistema</button>`;host.querySelector('#clear-empty').onclick=()=>app.set({cohort:null,query:'',borough:'all',preset:null,tvMin:0,tvMax:100,ranges:{deltaAM:null,deltaWeekend:null,recovery:null}});return;}
+  if(!selected&&(!b||(!annual&&!a))){host.innerHTML=`<h2>Sin datos para la selección</h2><button id="clear-empty">Ver todo el sistema</button>`;host.querySelector('#clear-empty').onclick=()=>app.resetScope();return;}
   const filtered=state.preset||state.tvMin>0||state.tvMax<100||Object.values(state.ranges).some(Boolean);
   const nombre=selected?selected.name.replace(/ \(.*/,''):state.cohort?'Grupo seleccionado':state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:filtered?'Grupo filtrado':'Todo el sistema';
   const profiles=annual?{[state.year]:b}:{[BASE]:a,[state.year]:b};
-  const subject=selected??{profiles};
+  const subject=selected??{profiles,name:nombre==='Todo el sistema'?'todo el sistema':nombre};
   const contrastControl=annual?'':paired
     ? `<strong>Comparación OD</strong><span>A ${BASE} → B ${state.year}</span>`
     : `<label for="contrast-base" style="font-weight:700">Año de referencia</label><select id="contrast-base" aria-label="Año de contraste de los gráficos de la derecha" style="font:inherit;padding:2px 5px;width:auto">${availableContrastYears(state,dataset).filter(y=>y!==state.year).map(y=>`<option value="${y}"${y===BASE?' selected':''}>${y}</option>`).join('')}</select><span>→ ${state.year}</span>`;
   host.innerHTML=`<header class="linked-heading"><div class="eyebrow">${selected?`${dataset.id==='bart'?'ESTACIÓN':'COMPLEJO'} ${esc(selected.id)} · ${esc(selected.borough)}`:items.length+' '+dataset.stationLabel.toUpperCase()}</div><h2 title="${esc(nombre)}">${esc(nombre)}</h2><div class="contrast-context" style="display:flex;align-items:center;gap:7px;margin-top:5px;font-size:12px">${contrastControl}</div><p style="font-size:9px;margin-top:3px" id="contrast-source">${esc(app.contrast.label)} · ${esc(coverageLabel(app))}</p>${selected?'<button class="close" id="clear-subject" aria-label="Volver a la vista general">×</button>':''}</header>
   <section id="scatter-host" aria-label="${annual?'Afluencia y concentración horaria':'Volumen frente a forma semanal'}"></section>
-  <section class="clock-panel" aria-label="Reloj semanal de la selección"><div id="detail-body"></div></section>
-  <details class="inline-evidence"><summary>Datos, cobertura y modelo ⓘ</summary><div><b>${esc(coverageLabel(app))}</b><p>El mapa representa viajes que comienzan en la hora activa. La dispersión y el reloj resumen la semana representativa del período disponible.</p><p>Origen–destino estimado por MTA; los recorridos son asignados por un modelo sobre una red de referencia, no trayectorias observadas. Se utilizan los doce meses completos de cada año, ponderados por la cantidad de cada día de la semana.</p><p>Gráficos de la derecha: ${esc(app.contrast.label)}, usando la misma fuente para ambos años. ${app.contrast.kind==='entries'?'2019 y 2020 se incorporan solo como referencia de afluencia; no hay OD reconstruido para esos años.':'Los años de contraste OD son 2021–2024.'}</p><p>Volumen: ${esc(app.contrast.unit)}. Forma: redistribución de sus 168 pesos semanales; TV=0 significa mismo patrón. Un grupo se calcula sumando cantidades antes de normalizar.</p><p>La referencia GTFS corresponde a 2026; no representa el servicio histórico. Las curvas libres son abstracciones visuales, no nuevas vías. El modelo minimiza distancia, sin comprobar horarios ni compatibilidad de servicios. El balance conserva aparte 0,1333 viajes semanales representativos no mapeados en 2023.</p></div></details>`;
+  ${selected&&annual&&mapApp.flows.meta.network?.route_nodes?`<details class="inline-evidence od-closure" id="od-closure" data-station="${esc(selected.id)}">
+    <summary>Dependencia de la red · simular cierre</summary>
+    <div><p>Retira todas las paradas del complejo en la red de referencia para la franja del mapa.</p>
+    <dl class="closure-values" aria-live="polite"></dl>
+    <p>Demanda fija. El escenario también interrumpe el paso por esas paradas.</p></div>
+  </details>`:''}
+  <section class="clock-panel"  aria-label="Reloj semanal de la selección"><div id="detail-body"></div></section>
+  <details class="inline-evidence"><summary>Datos, cobertura y modelo ⓘ</summary><div><b>${esc(coverageLabel(app))}</b><p>El mapa representa viajes que comienzan en la hora activa. La dispersión y el reloj resumen la semana representativa del período disponible.</p><p>Origen–destino estimado por MTA; los recorridos son asignados por un modelo sobre una red de referencia, no trayectorias observadas. Se utilizan los doce meses completos de cada año, ponderados por la cantidad de cada día de la semana.</p><p>Gráficos de la derecha: ${esc(app.contrast.label)}, usando la misma fuente para ambos años. ${app.contrast.kind==='entries'?'2019 y 2020 se incorporan solo como referencia de afluencia; no hay OD reconstruido para esos años.':'Los años de contraste OD son 2021–2024.'}</p><p>Volumen: ${esc(app.contrast.unit)}. Forma: redistribución de sus 168 pesos semanales; TV=0 significa mismo patrón. Un grupo se calcula sumando cantidades antes de normalizar.</p><p>La referencia GTFS corresponde a 2026; no representa el servicio histórico. Las curvas libres son abstracciones visuales, no nuevas vías. El modelo minimiza un costo basado en longitud de vía y transbordos GTFS declarados. Usa una red fija a todas las horas. El balance conserva aparte 0,1333 viajes semanales representativos no mapeados en 2023.</p></div></details>`;
   if(dataset.id==='bart'){
     const description=annual?'La dispersión muestra el promedio diario y el peso de la hora pico de cada estación.':'La dispersión compara volumen y forma. Si una estación carece de viajes en uno de los años, queda fuera de esa comparación.';
-    host.querySelector('.inline-evidence>div').innerHTML=`<p>${esc(dataset.evidence)}</p><p>El reloj muestra el peso de cada hora en la semana. ${description}</p>`;
+    host.querySelector('.inline-evidence:not(.od-closure)>div').innerHTML=`<p>${esc(dataset.evidence)}</p><p>El reloj muestra el peso de cada hora en la semana. ${description}</p>`;
   }
   if(annual&&dataset.id==='nyc'){
-    host.querySelector('.inline-evidence>div').innerHTML=`<p>${esc(coverageLabel(app))}. Distribución de los viajes OD estimados por la MTA, ponderada por el calendario. El reloj del sistema suma los viajes por franja antes de calcular su porcentaje semanal.</p><p>La dispersión muestra el promedio diario y la proporción que concentra la franja de mayor demanda de cada complejo. Los recorridos del mapa se asignan sobre la red GTFS de referencia.</p>`;
+    host.querySelector('.inline-evidence:not(.od-closure)>div').innerHTML=`<p>${esc(coverageLabel(app))}. Distribución de los viajes OD estimados por la MTA, ponderada por el calendario. El reloj del sistema suma los viajes por franja antes de calcular su porcentaje semanal.</p><p>La dispersión muestra el promedio diario y la proporción que concentra la franja de mayor demanda de cada complejo. Los recorridos del mapa se asignan sobre la red GTFS de referencia. El grafo usa paradas y transbordos declarados, con las entradas y salidas agrupadas por complejo.</p>`;
   }
   if(!annual&&selectedValid&&dataset.id==='nyc'){
     const context=comparisonContext(selected.id,BASE,state.year);
-    if(context)host.querySelector('.inline-evidence>div').insertAdjacentHTML('afterbegin',`<p class="comparison-closure-note"><b>${context.label}</b><br>${esc(context.explanation)}<br>${context.sources.map(source=>`<a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.label)} ↗</a>`).join(' · ')}</p>`);
+    if(context)host.querySelector('.inline-evidence:not(.od-closure)>div').insertAdjacentHTML('afterbegin',`<p class="comparison-closure-note"><b>${context.label}</b><br>${esc(context.explanation)}<br>${context.sources.map(source=>`<a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.label)} ↗</a>`).join(' · ')}</p>`);
   }
   host.querySelector('#contrast-base')?.addEventListener('change',async event=>{
     const select=event.currentTarget,previous=BASE;
@@ -70,11 +80,47 @@ export function renderInspector(mapApp){
     try{await mapApp.setContrastBase(+select.value);}
     catch(error){select.value=previous;select.disabled=false;source.textContent=previousSource;mapApp.toast(error.message);}
   });
+  const closure=host.querySelector('#od-closure');
+  mapApp.updateClosure=bindClosure(closure,mapApp,selected);
+  if(closure&&closureOpen)closure.open=true;
   drawScatter(host.querySelector('#scatter-host'),app,annual);
   const detail=host.querySelector('#detail-body');
   if(!selected||selectedValid)drawFingerprint(detail,subject,app,annual);
   else detail.textContent=annual?`Sin viajes OD para esta selección en ${state.year}.`:`Sin datos comparables para ${BASE} y ${state.year}.`;
   host.querySelector('#clear-subject')?.addEventListener('click',()=>app.set({selected:null}));
+}
+
+function bindClosure(details,app,station){
+  if(!details)return;
+  const values=details.querySelector('dl');
+  const update=async()=>{
+    if(!details.open)return;
+    const {year,flowDay,flowHour}=state;
+    const key=`${station.id}/${year}/${flowDay}/${flowHour}`;
+    values.dataset.key=key;
+    const stillCurrent=()=>details.isConnected&&values.dataset.key===key;
+    const draw=result=>{
+      if(!stillCurrent())return;
+      const rows=[['Viajes que pierden su origen o destino',result.access],
+        ['Otros viajes sin ruta',result.disconnected],
+        ['Otros viajes con un recorrido más costoso',result.detoured]];
+      values.replaceChildren(...rows.flatMap(([label,count])=>{
+        const dt=document.createElement('dt'),dd=document.createElement('dd');
+        dt.textContent=label;dd.textContent=fmt(count);
+        return [dt,dd];
+      }));
+    };
+    if(closureCache.has(key)){draw(closureCache.get(key));return;}
+    values.textContent='Calculando para la franja activa…';
+    try{
+      const result=await app.routing.scenario(year,flowDay,flowHour,{closed:station.id});
+      closureCache.set(key,result);
+      if(closureCache.size>24)closureCache.delete(closureCache.keys().next().value);
+      draw(result);
+    }catch(error){if(stillCurrent())values.textContent='No se pudo simular el cierre para esta franja.';}
+  };
+  details.addEventListener('toggle',update);
+  return update;
 }
 
 // Trayectoria: el sujeto (complejo o grupo) recorre las cinco temporadas en el espacio peso AM × fin de semana,
@@ -110,7 +156,7 @@ function drawFingerprint(host,s,app,annual){
   const current=profile(s);
   const reference=annual?null:profile(s,BASE);
   const controls=annual?'':`<div class="segmented" id="detail-mode"><button data-mode="delta" class="${delta?'active':''}">Δ</button><button data-mode="current" class="${mode==='current'?'active':''}">${state.year}</button><button data-mode="base" class="${mode==='base'?'active':''}">${BASE}</button></div>`;
-  host.innerHTML=`<div class="clock-toolbar"><h3>El reparto de la semana</h3>${controls}</div>
+  host.innerHTML=`<div class="clock-toolbar"><h3>${annual?'Semana de '+esc(s.name?.replace(/ \(.*/,'')||'la selección'):'El reparto de la semana'}</h3>${controls}</div>
     <output id="clock-current-time"></output>
     <svg class="detail-viz clock-viz" viewBox="0 0 360 362" role="group" aria-label="Reloj de siete días y veinticuatro horas"></svg>
     <div class="detail-legend-block">
@@ -241,6 +287,8 @@ function drawScatter(host,app,annual){
   const xLabel=annual?'Viajes por día':`Volumen · ${state.year} frente a ${BASE}`;
   const yLabel=annual?'% semanal en la hora pico':'Cambio de forma · TV (pp)';
   const unit=app.dataset.id==='bart'?'estación':'complejo';
+  const through=annual?app.flows.through:null;
+  const indices=new Map(app.flows.nodes.map((station,i)=>[station.id,i]));
   const key=annual
     ? `La hora pico es la franja de una hora con más viajes en la semana de cada ${unit}.`
     : `100 % = volumen de ${BASE} · TV = cambio del reparto semanal`;
@@ -275,6 +323,11 @@ function drawScatter(host,app,annual){
       const hour=row.peak%24,hh=h=>String(h).padStart(2,'0')+':00';
       const slot=`${dayShort[Math.floor(row.peak/24)]} ${hh(hour)}–${hh((hour+1)%24)}`;
       pointValue.textContent=`${fmt(row.recovery)} viajes/día · ${slot} · ${fmt(row.change)} %`;
+      if(through){
+        const i=indices.get(row.id);
+        const passing=d3.sum(through[state.year].flat(),frame=>frame[i])/7;
+        pointValue.textContent+=` · ${fmt(passing)} viajes/día pasan por aquí`;
+      }
     }else{
       pointValue.textContent=`Volumen ${fmt(row.recovery)} % · TV ${fmt(row.change)} pp`;
     }

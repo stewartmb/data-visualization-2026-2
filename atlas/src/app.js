@@ -1,19 +1,22 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=nyc-only1';
-import {createODYearMaps} from './od-year-maps.js?v=flow-gray1';
+import {renderMap} from './map-view.js?v=zoom-width1';
+import {createODYearMaps} from './od-year-maps.js?v=linked-scope1';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=overview1';
-import {renderInspector} from './inspector.js?v=scatter-reading1';
+import {renderInspector} from './inspector.js?v=linked-scope1';
 import {renderProject} from './project-view.js?v=20261028-release1';
 
 import {activeContrastBase,activeODCompareBase,availableContrastYears,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=annual-od1';
-import {dataset} from './datasets.mjs?v=nyc-only1';
+import {dataset} from './datasets.mjs?v=rail-reading1';
+import {createRoutingData} from './od-routing.mjs?v=linked-scope1';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
 const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia',project:'Proyecto'};
 let data,geo,lineas,flows,toastTimer,historicalProfiles,historicalPromise;
 let choosingODYears=false,pendingODYear=null;
+const stationIndices=new Map();
+const scopeKeys=['borough','query','cohort','preset','tvMin','tvMax','ranges'];
 async function loadHistoricalProfiles(){
   if(historicalProfiles)return historicalProfiles;
   historicalPromise??=d3.json('data/historical_contrast.json').then(value=>{
@@ -46,10 +49,10 @@ function hydrate(){
   state.contrastBase=availableContrastYears(state,dataset).includes(contrastBase)?contrastBase:null;
   if(p.has('fidelity')&&Number.isFinite(+p.get('fidelity')))state.fidelity=Math.max(0,Math.min(1,+p.get('fidelity')));
   state.paperRAEB=p.get('raeb')!=='atlas';
-  state.paperLevel=p.has('pra')&&/^\d$/.test(p.get('pra'))?Math.min(5,+p.get('pra')):3;
+  state.paperLevel=p.has('pra')&&/^\d$/.test(p.get('pra'))?Math.min(5,+p.get('pra')):5;
   if(p.has('bundling')&&Number.isFinite(+p.get('bundling')))state.bundling=Math.max(0,Math.min(1,+p.get('bundling')));
   state.paperBundling=p.has('paperBundling')&&Number.isFinite(+p.get('paperBundling'))?Math.max(0,Math.min(1,+p.get('paperBundling'))):null;
-  state.paperRadius=p.has('paperRadius')&&Number.isFinite(+p.get('paperRadius'))?Math.max(0,+p.get('paperRadius')):null;
+  state.paperRadius=p.has('paperRadius')&&Number.isFinite(+p.get('paperRadius'))?Math.max(0,+p.get('paperRadius')):p.has('pra')||p.has('paperBundling')?null:0;
 }
 function updateURL(){
   const p=new URLSearchParams({view:state.view,year:state.year});
@@ -71,6 +74,8 @@ function updateURL(){
     if(state.paperRadius!==null)p.set('paperRadius',state.paperRadius);
     else if(state.paperBundling!==null)p.set('paperBundling',state.paperBundling);
   }else p.set('raeb','atlas');
+  if(state.selected)p.set('inspect',state.selected);
+  if(new URLSearchParams(location.search).get('compute')==='cpu')p.set('compute','cpu');
   history.replaceState(null,'',`?${p}`);
 }
 const app={
@@ -78,12 +83,15 @@ const app={
   syncURL:updateURL,
   updateODYearMaps:null,
   updateFlowHour:null,
+  updateClosure:null,
   setFlowTime(day,hour){
     if(day===state.flowDay&&app.updateFlowHour){
       state.flowHour=hour;
       app.updateFlowHour(hour);
+      app.updateClosure?.();
     }else app.set({flowDay:day,flowHour:hour});
   },
+  routing:null,
   get historicalProfiles(){return historicalProfiles;},
   async setContrastBase(year){
     if(year===state.year||!availableContrastYears(state,dataset).includes(year))return;
@@ -95,8 +103,8 @@ const app={
   },
   get data(){return data;},get geo(){return geo;},get lineas(){return lineas;},get flows(){return flows;},state,
   station:id=>data.stations.find(s=>s.id===id),
-  filtered(){
-    const q=state.query.toLocaleLowerCase();
+  filtered(query=state.query){
+    const q=query.trim().toLocaleLowerCase();
     return data.stations.filter(s=>{
       if(!profile(s))return false;
       if(state.borough!=='all'&&s.borough!==state.borough)return false;
@@ -106,11 +114,24 @@ const app={
       if(!passesMetricRanges(s))return false;
       if(state.preset==='morning'&&m.deltaAM>=-2)return false;
       if(state.preset==='weekend'&&m.deltaWeekend<=2)return false;
+      if(state.preset==='change'&&m.change<10)return false;
       if(state.preset==='decoupled'&&(m.recovery<80||m.recovery>120||m.change<10))return false;
       return true;
     });
   },
-  set(patch){if(['mode','sort','day','year'].some(k=>k in patch&&patch[k]!==state[k])){const scroller=document.querySelector('.matrix-scroll');if(scroller)scroller.scrollTop=0;}Object.assign(state,patch);render();},
+  set(patch){
+    if(['mode','sort','day','year'].some(k=>k in patch&&patch[k]!==state[k])){
+      const scroller=document.querySelector('.matrix-scroll');if(scroller)scroller.scrollTop=0;
+    }
+    Object.assign(state,patch);
+    if(state.selected&&scopeKeys.some(key=>key in patch)&&!app.filtered().some(s=>s.id===state.selected))state.selected=null;
+    render();
+  },
+  resetScope(){
+    document.querySelector('#search').value='';
+    app.set({selected:null,cohort:null,preset:null,query:'',borough:'all',tvMin:0,tvMax:100,
+      ranges:{deltaAM:null,deltaWeekend:null,recovery:null}});
+  },
   select(id){state.selected=id;render();},
   pin(id){
     if(state.pins.includes(id))state.pins=state.pins.filter(x=>x!==id);
@@ -136,6 +157,8 @@ function renderODYears(){
     pendingODYear=null;
   }
   const a=canCompare?(choosingODYears?pendingODYear:state.odCompareBase):null;
+  app.odPreviewBase=a??state.year;
+  if(canCompare)app.updateODYearMaps?.(state.flowDay,state.flowHour,app.odPreviewBase,app.odScope);
   const comparing=canCompare&&state.odCompareBase!==null;
   const button=document.querySelector('#od-compare');
   button.hidden=!canCompare;
@@ -143,15 +166,17 @@ function renderODYears(){
   document.querySelector('#od-compare-status').textContent=canCompare
     ? choosingODYears
       ? a===null?'Elige A, el año de referencia.':`A · ${a}. Elige B, un año distinto.`
-      : comparing?`A ${a} → B ${state.year}`:'⌘ + clic en dos años'
+      : comparing?`A ${a} → B ${state.year}`:`Mapa principal · ${state.year}`
     : '';
   document.querySelectorAll('[data-od-year]').forEach(yearButton=>{
     const year=+yearButton.dataset.odYear;
     const role=year===a?'A':comparing&&!choosingODYears&&year===state.year?'B':'';
     yearButton.querySelector('small').textContent=role;
     yearButton.dataset.role=role;
-    yearButton.setAttribute('aria-label',role?`${year}, año ${role}`:String(year));
-    yearButton.setAttribute('aria-pressed',String(!!role||(!choosingODYears&&year===state.year)));
+    const activeYear=!choosingODYears&&year===state.year;
+    const label=role?`${year}, año ${role}`:activeYear?`${year}, visible en el mapa principal`:String(year);
+    yearButton.setAttribute('aria-label',label);
+    yearButton.setAttribute('aria-pressed',String(!!role||activeYear));
   });
 }
 
@@ -182,16 +207,22 @@ function render(){
   const focusId=document.activeElement?.id;
   const previousScroll=document.querySelector('.matrix-scroll')?.scrollTop||0;
   const items=app.filtered();
+  const selected=app.station(state.selected);
+  const scoped=!!selected||items.length!==data.stations.length;
+  app.odScope={
+    origins:scoped?(selected?[selected]:items).map(s=>stationIndices.get(s.id)).filter(Number.isInteger):null,
+    label:selected?selected.name.replace(/ \([^)]*\)/g,''):state.cohort?'Área seleccionada':state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:scoped?'Grupo filtrado':'Toda la red'
+  };
   document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===state.view);b.setAttribute('aria-current',b.dataset.view===state.view?'page':'false');});
   renderODYears();
   document.querySelector('#borough').value=state.borough;
-  document.querySelector('#search').value=state.query;
+  const search=document.querySelector('#search');
+  if(search!==document.activeElement)search.value=state.query;
   const periodLabel=document.querySelector('#period-label');if(periodLabel)periodLabel.textContent=`${state.year}`;
   document.querySelector('#cohort-count').textContent=`${items.length} / ${data.stations.length} ${dataset.stationLabel}`;
   const rangeNotes=[...(state.tvMin>0||state.tvMax<100?[`TV ${fmt(state.tvMin)}–${fmt(state.tvMax)} pp`]:[]),...Object.entries(state.ranges).filter(([,r])=>r).map(([k,r])=>`${{deltaAM:'AM',deltaWeekend:'Fin de semana',recovery:'Volumen'}[k]} ${fmt(r[0])}–${fmt(r[1])} ${k==='recovery'?'%':'pp'}`)];
-  const groupNote=state.cohort?'Grupo de complejos seleccionado':state.preset==='morning'?'Cambio AM menor que −2 pp':state.preset==='weekend'?'Cambio de fin de semana mayor que +2 pp':state.preset==='decoupled'?'Índice volumen entre 80–120 % y cambio de forma ≥10 pp':state.query?'Resultados de búsqueda':state.borough==='all'?'Todos los complejos de subway':state.borough;
+  const groupNote=state.cohort?'Grupo de complejos seleccionado':state.preset==='morning'?'Cambio AM menor que −2 pp':state.preset==='weekend'?'Cambio de fin de semana mayor que +2 pp':state.preset==='change'?'Cambio de forma ≥10 pp':state.preset==='decoupled'?'Índice volumen entre 80–120 % y cambio de forma ≥10 pp':state.query?'Resultados de búsqueda':state.borough==='all'?'Todos los complejos de subway':state.borough;
   document.querySelector('#cohort-note').textContent=[...rangeNotes,groupNote].join(' · ');
-  const selected=app.station(state.selected);
   document.body.classList.add('has-inspector');
   document.querySelector('#selection-label').textContent=selected?`${selected.name}${items.some(s=>s.id===selected.id)?'':' · fuera del grupo activo'}`:'';
   const host=document.querySelector('#content');host.replaceChildren();host.dataset.view=state.view;
@@ -227,7 +258,7 @@ function downloadCSV(columns,rows,filename){
 }
 
 hydrate();
-const loadData=name=>d3.json(new URL(name,dataset.dataURL));
+const loadData=name=>d3.json(new URL(name==='flows.json'?'flows.json?v=rail-reading1':name,dataset.dataURL));
 Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),dataset.id==='nyc'?loadData('lineas.geojson').catch(()=>null):null,loadData('flows.json')]).then(async([a,g,l,f])=>{
   if(!a.stations?.length)throw Error('Falta el catálogo de estaciones.');
   if(dataset.id==='nyc'&&a.stations.some(s=>!s.profiles?.['2021']||!s.profiles['2024']||
@@ -236,6 +267,7 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),dataset.id==='n
   }
   if(!f?.starts||!f?.flows||!f?.meta?.years?.includes(BASE)||!f.meta.years.includes(state.year))throw Error('Faltan los agregados OD para esta comparación. No se usarán datos de entradas como reemplazo.');
   data=a;geo=g;lineas=l;flows=f;
+  app.routing=createRoutingData(f,dataset.dataURL);
   // Métricas exclusivamente desde el OD: los perfiles de 168 celdas de cada complejo se derivan de los
   // viajes iniciados (starts[y][nodo][dow][hora], semana representativa). El contraste histórico
   // utiliza perfiles separados de entradas, con la misma fuente para ambos años.
@@ -256,6 +288,7 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),dataset.id==='n
   }
   state.pins=state.pins.filter(id=>app.station(id));
   if(!app.station(state.selected))state.selected=null;
+  f.nodes.forEach((station,index)=>stationIndices.set(station.id,index));
   if(!isODMap(state)&&state.contrastBase!==null&&!dataset.years.includes(state.contrastBase))await loadHistoricalProfiles();
   document.querySelector('.brand small').textContent=`ATLAS DE RITMOS · ${dataset.name.toUpperCase()}`;
   if(dataset.id==='bart')document.title='Fractal · Área de la Bahía · BART';
@@ -277,11 +310,13 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),dataset.id==='n
     caption.append(String(year),document.createElement('small'));
     const canvas=document.createElement('canvas');
     canvas.setAttribute('aria-hidden','true');
-    button.append(canvas,caption);
+    const change=document.createElement('span');
+    change.className='od-year-change';
+    button.append(canvas,caption,change);
     button.addEventListener('click',event=>chooseODYear(event,year));
     yearStrip.append(button);
   }
-  app.updateODYearMaps=createODYearMaps(yearStrip,g,f);
+  app.updateODYearMaps=createODYearMaps(yearStrip,g,f,app.routing);
   document.querySelector('#od-compare').addEventListener('click',()=>{
     if(!choosingODYears&&state.odCompareBase!==null){
       app.set({odCompareBase:null});
@@ -294,11 +329,21 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),dataset.id==='n
   // Entradas al análisis: un selector en el panel del mapa (se delega porque la vista se redibuja).
   document.addEventListener('change',e=>{if(e.target.id==='preset-select')app.set({preset:e.target.value||null,cohort:null,query:'',sort:'change'});});
   document.querySelector('#borough').addEventListener('change',e=>app.set({borough:e.target.value}));
-  let timer;document.querySelector('#search').addEventListener('input',e=>{const query=e.target.value;clearTimeout(timer);timer=setTimeout(()=>app.set({query}),180);});
-  // Enter: abre el detalle del primer complejo que coincide (details on demand desde el teclado).
-  document.querySelector('#search').addEventListener('keydown',e=>{if(e.key==='Enter'){const first=app.filtered()[0];if(first)app.select(first.id);}});
+  const search=document.querySelector('#search');
+  let searchTimer;
+  search.addEventListener('input',()=>{
+    clearTimeout(searchTimer);
+    searchTimer=setTimeout(()=>app.set({query:search.value}),180);
+  });
+  search.addEventListener('keydown',event=>{
+    if(event.key!=='Enter')return;
+    clearTimeout(searchTimer);
+    const query=search.value;
+    const first=app.filtered(query)[0];
+    app.set({query,selected:first?.id??null});
+  });
   document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>app.set({preset:b.dataset.preset,cohort:null,query:'',sort:'change'})));
-  document.querySelector('#reset').addEventListener('click',()=>app.set({cohort:null,preset:null,query:'',borough:'all',tvMin:0,tvMax:100,ranges:{deltaAM:null,deltaWeekend:null,recovery:null}}));
+  document.querySelector('#reset').addEventListener('click',()=>{clearTimeout(searchTimer);app.resetScope();});
   document.querySelector('#save').addEventListener('click',()=>{
     const params=new URLSearchParams(location.search);
     if(state.selected)params.set('inspect',state.selected);

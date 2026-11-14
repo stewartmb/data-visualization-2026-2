@@ -39,11 +39,11 @@ def write_json(path, value):
     path.write_bytes(gzip.compress(raw, mtime=0) if path.suffix == '.gz' else raw)
 
 
-def xy(lon, lat):
-    return np.array([lon * 111320 * math.cos(math.radians(40.73)), lat * 111320])
+def xy(lon, lat, latitude=40.73):
+    return np.array([lon * 111320 * math.cos(math.radians(latitude)), lat * 111320])
 
 
-def network(archive, stations, catalog):
+def network(archive, stations, catalog, latitude=40.73, *, by_stop=False):
     with zipfile.ZipFile(archive) as z:
         def read(name):
             with z.open(name) as f:
@@ -67,24 +67,26 @@ def network(archive, stations, catalog):
     for row in catalog:
         for stop in row.get('gtfs_stop_ids', '').split(';'):
             if stop.strip(): stop_complex[stop.strip()] = str(int(float(row['complex_id'])))
-    def complex_id(stop):
+    def parent_stop(stop):
         seen = set()
         while stop not in stop_complex and stop in stops and stop not in seen:
             seen.add(stop); stop = stops[stop].get('parent_station', '')
-        return stop_complex.get(stop)
+        return stop if stop in stop_complex else None
     links = {}
+    physical = {}
     rejected = []
+    eligible = {stop for stop, cid in stop_complex.items() if cid in ids} if by_stop else ids
     for shape_id, route, sequence in sorted(patterns):
         coords = shapes.get(shape_id)
         if coords is None or len(coords) < 2: continue
-        local = coords * [111320 * math.cos(math.radians(40.73)), 111320]
+        local = coords * [111320 * math.cos(math.radians(latitude)), 111320]
         delta = local[1:] - local[:-1]
         length = np.linalg.norm(delta, axis=1)
         cum = np.concatenate(([0.0], np.cumsum(length)))
         last_pos = 0.0
         matched = []
         for stop in sequence:
-            row = stops[stop]; point = xy(float(row['stop_lon']), float(row['stop_lat']))
+            row = stops[stop]; point = xy(float(row['stop_lon']), float(row['stop_lat']), latitude)
             t = np.clip(np.sum((point - local[:-1]) * delta, axis=1) / np.maximum(length**2, 1e-9), 0, 1)
             projected = local[:-1] + delta * t[:, None]
             along = cum[:-1] + t * length
@@ -95,9 +97,14 @@ def network(archive, stations, catalog):
                 rejected.append({'stop': stop, 'shape': shape_id, 'reason': 'shape distance/order'}); matched.append(None); continue
             pos = float(along[i]); last_pos = pos
             lonlat = coords[i] + t[i] * (coords[i + 1] - coords[i])
-            matched.append((complex_id(stop), pos, i, lonlat))
+            parent = parent_stop(stop)
+            if parent is not None and stop_complex[parent] in ids:
+                row = stops[parent]
+                physical[parent] = {'complex': stop_complex[parent],
+                                    'coords': [float(row['stop_lon']), float(row['stop_lat'])]}
+            matched.append((parent if by_stop else stop_complex.get(parent), pos, i, lonlat))
         for a, b in zip(matched, matched[1:]):
-            if not a or not b or a[0] not in ids or b[0] not in ids or a[0] == b[0]: continue
+            if not a or not b or a[0] not in eligible or b[0] not in eligible or a[0] == b[0]: continue
             if b[1] <= a[1]: continue
             geom = [a[3].tolist(), *coords[a[2] + 1:b[2] + 1].tolist(), b[3].tolist()]
             key = tuple(sorted((a[0], b[0])))
@@ -110,16 +117,18 @@ def network(archive, stations, catalog):
             if route not in candidate['routes']: candidate['routes'].append(route)
             if dist < candidate['len']:
                 candidate['len'] = dist; candidate['coords'] = geom if direction == 0 else geom[::-1]
+    if by_stop:
+        return physical_network(links, physical, transfers, parent_stop, latitude, feed_info, rejected)
     by_id = {s['id']: s for s in stations}
     for r in transfers:
         if r.get('transfer_type') == '3': continue
-        a, b = complex_id(r['from_stop_id']), complex_id(r['to_stop_id'])
+        a, b = (stop_complex.get(parent_stop(r[k])) for k in ('from_stop_id', 'to_stop_id'))
         if a not in ids or b not in ids or a == b: continue
         key = tuple(sorted((a, b))); direction = 0 if a == key[0] else 1
         if key not in links:
             first, second = by_id[key[0]], by_id[key[1]]
             coords = [[first['lon'], first['lat']], [second['lon'], second['lat']]]
-            dist = float(np.linalg.norm(xy(*coords[0]) - xy(*coords[1])))
+            dist = float(np.linalg.norm(xy(*coords[0], latitude) - xy(*coords[1], latitude)))
             links[key] = {'a': key[0], 'b': key[1], 'len': max(dist, 1), 'coords': coords, 'allowed': [False, False], 'routes': [], 'kind': 'declared_walk_transfer'}
         links[key]['allowed'][direction] = True
     output = list(links.values())
@@ -128,6 +137,63 @@ def network(archive, stations, catalog):
         edge['coords'] = [[round(x, 7), round(y, 7)] for x, y in edge['coords']]
     return output, {'feed_info': feed_info, 'rejected_shape_matches': rejected, 'inferred_proximity_edges': 0,
                     'meaning': 'Static reference network: GTFS consecutive stops and explicit transfers, not historical service availability or observed passenger paths.'}
+
+
+def physical_network(rail, nodes, transfers, parent_stop, latitude, feed_info, rejected):
+    """Rail uses actual consecutive GTFS stops; transfers are explicitly declared."""
+    endpoints = defaultdict(list)
+    for link in rail.values():
+        endpoints[link['a']].append(link['coords'][0])
+        endpoints[link['b']].append(link['coords'][-1])
+    nodes = {stop: nodes[stop] for stop in sorted(endpoints)}
+    offsets = []
+    for stop, node in nodes.items():
+        model = xy(*node['coords'], latitude)
+        node['coords'] = [round(v, 7) for v in min(
+            endpoints[stop], key=lambda point: np.linalg.norm(xy(*point, latitude) - model)
+        )]
+        offsets.extend(float(np.linalg.norm(xy(*p, latitude) - xy(*node['coords'], latitude)))
+                       for p in endpoints[stop])
+    edges = []
+    for link in rail.values():
+        a, b = link['a'], link['b']
+        anchor_a, anchor_b = nodes[a]['coords'], nodes[b]['coords']
+        geometry = [[round(v, 7) for v in p] for p in link['coords']]
+        geometry[0], geometry[-1] = anchor_a, anchor_b
+        length = sum(np.linalg.norm(xy(*p, latitude) - xy(*q, latitude)) for p, q in zip(geometry, geometry[1:]))
+        edges.append({**link, 'a': nodes[a]['complex'], 'b': nodes[b]['complex'],
+                      'stop_a': a, 'stop_b': b, 'coords': geometry,
+                      'len': round(float(length), 3), 'cost': round(max(1., float(length)), 3)})
+    walk = {}
+    for transfer in transfers:
+        if transfer['transfer_type'] == '3':
+            continue
+        a, b = (parent_stop(transfer[k]) for k in ('from_stop_id', 'to_stop_id'))
+        if a not in nodes or b not in nodes or a == b:
+            continue
+        key = tuple(sorted((a, b)))
+        coords = [nodes[stop]['coords'] for stop in key]
+        length = float(np.linalg.norm(xy(*coords[0], latitude) - xy(*coords[1], latitude)))
+        # Compare rail distance with walking/transfer time via an explicitly
+        # modeled conversion of 8 m of rail distance per second of transfer.
+        cost = max(1., length, 8 * float(transfer.get('min_transfer_time') or 0))
+        edge = walk.setdefault(key, {'a': nodes[key[0]]['complex'], 'b': nodes[key[1]]['complex'],
+                                    'stop_a': key[0], 'stop_b': key[1], 'kind': 'declared_walk_transfer',
+                                    'coords': coords, 'routes': [], 'len': round(length, 3),
+                                    'cost': [None, None], 'allowed': [False, False]})
+        direction = int(a != key[0])
+        previous = edge['cost'][direction]
+        edge['cost'][direction] = round(cost if previous is None else min(previous, cost), 3)
+        edge['allowed'][direction] = True
+    return edges + list(walk.values()), {
+        'feed_info': feed_info, 'rejected_shape_matches': rejected,
+        'inferred_proximity_edges': 0, 'route_nodes': nodes,
+        'endpoint_snap_max_m': round(max(offsets, default=0), 2),
+        'endpoint_snap_p95_m': round(float(np.quantile(offsets, .95)), 2) if offsets else 0,
+        'rail_cost': 'distance in metres',
+        'transfer_cost': 'max(1 m, endpoint distance, GTFS minimum transfer time × 8 m/s), by direction',
+        'meaning': 'Static GTFS parent-stop graph with directed declared transfers and multi-source/multi-target OD complex access.'
+    }
 
 
 def paths_for(stations, links):
@@ -160,9 +226,83 @@ def paths_for(stations, links):
     return paths, np.array(pair_index, dtype=np.int32), np.array(arc_index, dtype=np.int32), unreachable
 
 
+def through_incidence(stations, links, paths):
+    n = len(stations)
+    index = {s['id']: i for i, s in enumerate(stations)}
+    link_destinations = [(index[link['b']], index[link['a']]) for link in links]
+    pair_indices, complex_indices = [], []
+    for pair, path in enumerate(paths):
+        origin, destination = divmod(pair, n)
+        via = {link_destinations[arc >> 1][arc & 1] for arc in path}
+        via.difference_update((origin, destination))
+        pair_indices.extend([pair] * len(via))
+        complex_indices.extend(sorted(via))
+    return np.asarray(pair_indices, dtype=np.int32), np.asarray(complex_indices, dtype=np.int32)
+
+
+def station_demands(matrix, through_pair, through_complex, n):
+    square = matrix.reshape(n, n)
+    incoming = square.sum(axis=0, dtype=np.float64) - np.diag(square)
+    through = np.bincount(through_complex, weights=matrix[through_pair], minlength=n)
+    return np.round(incoming, 4).tolist(), np.round(through, 4).tolist()
+
+
+def reroute_existing(source, stations, links, net_meta, paths, incidence_pair, incidence_arc):
+    data_dir = P/'atlas/data'
+    source_dir = source/'atlas/data'
+    out = data_dir/'raeb'
+    manifest = json.loads((source_dir/'raeb/manifest.json').read_text())
+    source_flows = source_dir/'flows.json'
+    if sha(source_flows) != manifest['flows_sha256']:
+        raise SystemExit('El resumen OD no coincide con el manifiesto.')
+    data = json.loads(source_flows.read_text())
+    if [s['id'] for s in data['nodes']] != [s['id'] for s in stations]:
+        raise SystemExit('Cambió el orden de los complejos en las matrices OD.')
+    n = len(stations)
+    through_pair, through_complex = through_incidence(stations, links, paths)
+    loads_by_year, incoming, through = {}, {}, {}
+    guide_flow = np.zeros(len(links))
+    for year in data['meta']['years']:
+        loads_by_year[str(year)] = year_loads = []
+        incoming[str(year)], through[str(year)] = year_arrivals, year_through = [], []
+        for day in range(7):
+            year_loads.append(day_loads := [])
+            year_arrivals.append(day_arrivals := [])
+            year_through.append(day_through := [])
+            for hour in range(24):
+                key = f'{year}/{day}-{hour:02d}'
+                frame = source_dir/f'raeb/{key}.f32.gz'
+                if sha(frame) != manifest['assets'][key]['sha256']:
+                    raise SystemExit(f'Matriz OD distinta del manifiesto: {key}')
+                raw = np.frombuffer(gzip.decompress(frame.read_bytes()), dtype='<f4')
+                loads = np.bincount(incidence_arc, weights=raw[incidence_pair], minlength=2*len(links))
+                day_loads.append(np.round(loads, 3).tolist())
+                arrivals, uses = station_demands(raw, through_pair, through_complex, n)
+                day_arrivals.append(arrivals)
+                day_through.append(uses)
+                guide_flow += loads.reshape(-1, 2).sum(axis=1)
+        print(f'{year}: 168 matrices verificadas y cargas reasignadas.', flush=True)
+    for edge, flow in zip(links, guide_flow):
+        edge['reference_flow'] = round(float(flow), 3)
+    metadata = data['meta']
+    metadata.update(network=net_meta, unreachable_pairs=0, route_model='gtfs-parent-stops-v1',
+                    method='Calendar-weighted annual OD. Static GTFS minimum modeled cost, combining rail distance and declared transfer cost.',
+                    built_at_utc=datetime.now(timezone.utc).isoformat())
+    data.update(links=links, flows=loads_by_year, incoming=incoming, through=through)
+    write_json(out/'network.json.gz', {'paths': paths, 'meta': net_meta})
+    write_json(data_dir/'flows.json', data)
+    manifest.update(network_sha256=sha(out/'network.json.gz'),
+                    flows_sha256=sha(data_dir/'flows.json'), metadata=metadata)
+    write_json(out/'manifest.json', manifest)
+
+
 def main():
+    from raeb_stop_network import stop_paths
+
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--source-package', type=Path, default=P)
+    ap.add_argument('--reroute-existing', action='store_true',
+                    help='Validate and reuse the existing annual OD matrices, rebuilding derived routes and loads only.')
     args = ap.parse_args(); source = args.source_package.resolve()
     report_path = source/'data/od_2021_2024/validation.json'
     report = json.loads(report_path.read_text())
@@ -171,8 +311,17 @@ def main():
     atlas_path = P/'atlas/data/atlas.json'; stations = json.loads(atlas_path.read_text())['stations']
     archive = source/'data/raw/enrichments/gtfs_subway.zip'
     catalog = json.loads((P/'data/station_catalog.json').read_text())
-    links, net_meta = network(archive, stations, catalog)
-    paths, incidence_pair, incidence_arc, unreachable = paths_for(stations, links)
+    if sha(archive) != json.loads((source/'data/network_reference/source.json').read_text())['sha256']:
+        raise SystemExit('La referencia GTFS difiere de la adquisición registrada.')
+    links, net_meta = network(archive, stations, catalog, by_stop=True)
+    paths, unreachable = stop_paths(stations, links, net_meta['route_nodes'])
+    if unreachable:
+        raise SystemExit(f'Pares sin ruta: {unreachable[:20]}')
+    incidence_pair = np.repeat(np.arange(len(paths), dtype=np.int32), [len(path) for path in paths])
+    incidence_arc = np.fromiter((arc for path in paths for arc in path), dtype=np.int32)
+    if args.reroute_existing:
+        reroute_existing(source, stations, links, net_meta, paths, incidence_pair, incidence_arc)
+        return
     n = len(stations); n_arcs = 2*len(links)
     print(f'GTFS: {n} complejos, {len(links)} tramos, {len(unreachable)} pares no asignables, cero enlaces por proximidad.', flush=True)
     out = P/'atlas/data/raeb'; out.mkdir(parents=True, exist_ok=True)
@@ -183,6 +332,8 @@ def main():
     con.execute('CREATE TABLE nodes (id VARCHAR, i INTEGER)')
     con.executemany('INSERT INTO nodes VALUES (?, ?)', [(s['id'], i) for i,s in enumerate(stations)])
     starts, flows, coverage, balances, assets = {}, {}, {}, {}, {}
+    incoming, through = {}, {}
+    through_pair, through_complex = through_incidence(stations, links, paths)
     guide_flow = np.zeros(len(links))
     source_files = {}
     for year in [2021, 2022, 2023, 2024]:
@@ -204,8 +355,11 @@ def main():
             GROUP BY ALL ORDER BY d,h,o,j""").fetchnumpy()
         frame_key = rows['d']*24+rows['h']; boundaries = np.searchsorted(frame_key, np.arange(169))
         u = np.zeros((n,7,24)); year_flows = []; balance = defaultdict(float)
+        incoming[str(year)], through[str(year)] = year_arrivals, year_through = [], []
         for day in range(7):
             day_flows = []
+            year_arrivals.append(day_arrivals := [])
+            year_through.append(day_through := [])
             for hour in range(24):
                 frame = day*24+hour; lo,hi = boundaries[frame:frame+2]
                 o,j,q = rows['o'][lo:hi],rows['j'][lo:hi],rows['q'][lo:hi]
@@ -213,6 +367,9 @@ def main():
                 u[:,day,hour] = np.bincount(o[valid_o], weights=q[valid_o], minlength=n)
                 matrix = np.zeros(n*n)
                 matrix[o[mapped]*n+j[mapped]] = q[mapped]
+                arrivals, uses = station_demands(matrix, through_pair, through_complex, n)
+                day_arrivals.append(arrivals)
+                day_through.append(uses)
                 arc_volume = np.bincount(incidence_arc, weights=matrix[incidence_pair], minlength=n_arcs)
                 day_flows.append(np.round(arc_volume,3).tolist()); guide_flow += arc_volume.reshape(-1,2).sum(axis=1)
                 assigned_mask = np.array([bool(paths[int(a)*n+int(b)]) if a>=0 and b>=0 and a!=b else False for a,b in zip(o,j)])
@@ -230,15 +387,15 @@ def main():
         del rows
     for edge,flow in zip(links,guide_flow): edge['reference_flow'] = round(float(flow),3)
     metadata = {'source':'MTA OD estimates 2021–2024; all 48 validated monthly partitions.',
-        'years':[2021,2022,2023,2024], 'months_present':coverage, 'network':net_meta,
-        'method':'Calendar-weighted mean for each weekday/hour, denominator includes every occurrence in all twelve months. Static GTFS distance-shortest-path assignment; no historical service claim.',
+        'years':[2021,2022,2023,2024], 'route_model':'gtfs-parent-stops-v1', 'months_present':coverage, 'network':net_meta,
+        'method':'Calendar-weighted mean for each weekday/hour, denominator includes every occurrence in all twelve months. Static GTFS minimum modeled cost; rail distance and declared transfer cost.',
         'sparse_assumption':'An absent OD cell inside a complete published month contributes zero. Missing months are rejected.',
         'balance_weekly_trips':balances,'unreachable_pairs':len(unreachable),
         'raeb':{'network':'raeb/network.json.gz','frames':'raeb/{year}/{day}-{hour}.f32.gz','dtype':'little-endian Float32, dense origin-major square matrix; includes self OD without a rendered route','samples_per_trail':32},
         'gtfs_sha256':sha(archive),'validation_sha256':sha(report_path),'source_files':source_files,
         'built_at_utc':datetime.now(timezone.utc).isoformat()}
     data = {'meta':metadata,'nodes':[{k:s[k] for k in ['id','name','lat','lon','borough']} for s in stations],
-            'links':links,'starts':starts,'flows':flows,'origins':{},'manhattanShare':{}}
+            'links':links,'starts':starts,'incoming':incoming,'through':through,'flows':flows,'origins':{},'manhattanShare':{}}
     write_json(P/'atlas/data/flows.json',data)
     write_json(out/'manifest.json',{'status':'PASS','frames':len(assets),'assets':assets,'network_sha256':sha(out/'network.json.gz'),'flows_sha256':sha(P/'atlas/data/flows.json'),'metadata':metadata})
     root = P.parents[1]/'atlas/data'
