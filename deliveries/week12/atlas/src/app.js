@@ -1,16 +1,19 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=20261028-backend-first';
+import {renderMap} from './map-view.js?v=nyc-only1';
+import {createODYearMaps} from './od-year-maps.js?v=flow-gray1';
 import {renderPaths} from './paths-view.js?v=20261014-9';
-import {renderEvidence} from './evidence-view.js?v=20261014-9';
-import {renderInspector} from './inspector.js?v=20261028-release1';
+import {renderEvidence} from './evidence-view.js?v=overview1';
+import {renderInspector} from './inspector.js?v=scatter-reading1';
 import {renderProject} from './project-view.js?v=20261028-release1';
 
-import {normalizeContrastBase,inspectorContrast,contrastMeasures} from './contrast-model.mjs';
+import {activeContrastBase,activeODCompareBase,availableContrastYears,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=annual-od1';
+import {dataset} from './datasets.mjs?v=nyc-only1';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
 const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia',project:'Proyecto'};
 let data,geo,lineas,flows,toastTimer,historicalProfiles,historicalPromise;
+let choosingODYears=false,pendingODYear=null;
 async function loadHistoricalProfiles(){
   if(historicalProfiles)return historicalProfiles;
   historicalPromise??=d3.json('data/historical_contrast.json').then(value=>{
@@ -22,9 +25,12 @@ async function loadHistoricalProfiles(){
 function hydrate(){
   const p=new URLSearchParams(location.search);
   state.view='map';
-  if([2021,2022,2023,2024].includes(+p.get('year')))state.year=+p.get('year');
-  if(['all','Manhattan','Brooklyn','Queens','Bronx'].includes(p.get('borough')))state.borough=p.get('borough');
-  state.selected=p.get('station')||null;state.query=p.get('q')||'';
+  state.showFlowNodes=p.get('flowNodes')!=='0';
+  state.year=dataset.years.includes(+p.get('year'))?+p.get('year'):dataset.defaultYear;
+  const odBase=+p.get('odBase');
+  state.odCompareBase=dataset.years.includes(odBase)&&odBase!==state.year?odBase:null;
+  if(['all',...dataset.areas].includes(p.get('borough')))state.borough=p.get('borough');
+  state.selected=p.get('inspect')||null;state.query=p.get('q')||'';
   if(['morning','weekend','change','decoupled'].includes(p.get('preset')))state.preset=p.get('preset');
   if(p.has('cohort'))state.cohort=new Set(p.get('cohort')?p.get('cohort').split(','):[]);
   if(p.get('pins'))state.pins=p.get('pins').split(',').slice(0,3);
@@ -35,15 +41,22 @@ function hydrate(){
   for(const key of ['detail','clock','pathsFocus'])if(p.has(key))state[key]=p.get(key)==='true';
   if(p.has('hour')&&Number.isInteger(+p.get('hour')))state.flowHour=Math.max(0,Math.min(23,+p.get('hour')));
   if(p.has('day')&&Number.isInteger(+p.get('day')))state.flowDay=Math.max(0,Math.min(6,+p.get('day')));
-  if(p.has('base')&&[2021,2022,2023].includes(+p.get('base')))setBase(+p.get('base'));
-  state.contrastBase=normalizeContrastBase(p.has('contrastBase')?+p.get('contrastBase'):2019,state.year,BASE);
+  setBase(normalizeContrastBase(p.get('base'),state.year,dataset.defaultBase,dataset.years));
+  const contrastBase=+p.get('contrastBase');
+  state.contrastBase=availableContrastYears(state,dataset).includes(contrastBase)?contrastBase:null;
   if(p.has('fidelity')&&Number.isFinite(+p.get('fidelity')))state.fidelity=Math.max(0,Math.min(1,+p.get('fidelity')));
+  state.paperRAEB=p.get('raeb')!=='atlas';
+  state.paperLevel=p.has('pra')&&/^\d$/.test(p.get('pra'))?Math.min(5,+p.get('pra')):3;
   if(p.has('bundling')&&Number.isFinite(+p.get('bundling')))state.bundling=Math.max(0,Math.min(1,+p.get('bundling')));
+  state.paperBundling=p.has('paperBundling')&&Number.isFinite(+p.get('paperBundling'))?Math.max(0,Math.min(1,+p.get('paperBundling'))):null;
+  state.paperRadius=p.has('paperRadius')&&Number.isFinite(+p.get('paperRadius'))?Math.max(0,+p.get('paperRadius')):null;
 }
 function updateURL(){
   const p=new URLSearchParams({view:state.view,year:state.year});
+  if(dataset.id!=='nyc')p.set('system',dataset.id);
+  if(!state.showFlowNodes)p.set('flowNodes','0');
+  if(state.odCompareBase!==null)p.set('odBase',state.odCompareBase);
   if(state.borough!=='all')p.set('borough',state.borough);
-  if(state.selected)p.set('station',state.selected);
   if(state.query)p.set('q',state.query);
   if(state.preset)p.set('preset',state.preset);
   if(state.cohort)p.set('cohort',[...state.cohort].join(','));
@@ -51,15 +64,30 @@ function updateURL(){
   if(state.tvMax<100)p.set('tvMax',state.tvMax);
   for(const [key,range] of Object.entries(state.ranges))if(range){p.set(key+'Min',range[0]);p.set(key+'Max',range[1]);}
   if(state.pins.length)p.set('pins',state.pins.join(','));
-  for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus','layer','flowShow'])p.set(key,state[key]);p.set('hour',state.flowHour);p.set('day',state.flowDay);p.set('base',BASE);p.set('fidelity',state.fidelity);p.set('bundling',state.bundling);p.set('contrastBase',state.contrastBase??BASE);
+  for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus','layer','flowShow'])p.set(key,state[key]);p.set('hour',state.flowHour);p.set('day',state.flowDay);p.set('base',BASE);p.set('fidelity',state.fidelity);p.set('bundling',state.bundling);
+  if(availableContrastYears(state,dataset).includes(state.contrastBase))p.set('contrastBase',state.contrastBase);
+  if(state.paperRAEB){
+    p.set('raeb','paper');p.set('pra',state.paperLevel);
+    if(state.paperRadius!==null)p.set('paperRadius',state.paperRadius);
+    else if(state.paperBundling!==null)p.set('paperBundling',state.paperBundling);
+  }else p.set('raeb','atlas');
   history.replaceState(null,'',`?${p}`);
 }
 const app={
+  dataset,
   syncURL:updateURL,
+  updateODYearMaps:null,
+  updateFlowHour:null,
+  setFlowTime(day,hour){
+    if(day===state.flowDay&&app.updateFlowHour){
+      state.flowHour=hour;
+      app.updateFlowHour(hour);
+    }else app.set({flowDay:day,flowHour:hour});
+  },
   get historicalProfiles(){return historicalProfiles;},
   async setContrastBase(year){
-    if(normalizeContrastBase(year,state.year,BASE)!==year)return;
-    if(year<2021)await loadHistoricalProfiles();
+    if(year===state.year||!availableContrastYears(state,dataset).includes(year))return;
+    if(!dataset.years.includes(year))await loadHistoricalProfiles();
     state.contrastBase=year;
     // Re-render only the right column: no camera, map metric, OD frame, node
     // sizes, year, or bundling job is changed by a historical contrast.
@@ -100,16 +128,66 @@ const app={
   saved(){try{return JSON.parse(localStorage.getItem('rhythm-atlas-saved')||'[]');}catch{return [];}}
 };
 
+function renderODYears(){
+  const canCompare=state.view==='map'&&state.layer==='flows';
+  document.querySelector('.od-year-strip').classList.toggle('has-year-maps',canCompare);
+  if(!canCompare){
+    choosingODYears=false;
+    pendingODYear=null;
+  }
+  const a=canCompare?(choosingODYears?pendingODYear:state.odCompareBase):null;
+  const comparing=canCompare&&state.odCompareBase!==null;
+  const button=document.querySelector('#od-compare');
+  button.hidden=!canCompare;
+  button.textContent=choosingODYears?'Cancelar':comparing?'Salir de comparación':'Comparar';
+  document.querySelector('#od-compare-status').textContent=canCompare
+    ? choosingODYears
+      ? a===null?'Elige A, el año de referencia.':`A · ${a}. Elige B, un año distinto.`
+      : comparing?`A ${a} → B ${state.year}`:'⌘ + clic en dos años'
+    : '';
+  document.querySelectorAll('[data-od-year]').forEach(yearButton=>{
+    const year=+yearButton.dataset.odYear;
+    const role=year===a?'A':comparing&&!choosingODYears&&year===state.year?'B':'';
+    yearButton.querySelector('small').textContent=role;
+    yearButton.dataset.role=role;
+    yearButton.setAttribute('aria-label',role?`${year}, año ${role}`:String(year));
+    yearButton.setAttribute('aria-pressed',String(!!role||(!choosingODYears&&year===state.year)));
+  });
+}
+
+function chooseODYear(event,year){
+  const canCompare=state.view==='map'&&state.layer==='flows';
+  if(canCompare&&(event.metaKey||event.ctrlKey||choosingODYears)){
+    if(!choosingODYears||pendingODYear===null){
+      choosingODYears=true;
+      pendingODYear=year;
+      renderODYears();
+      return;
+    }
+    if(year===pendingODYear)return;
+    const odCompareBase=pendingODYear;
+    choosingODYears=false;
+    pendingODYear=null;
+    app.set({year,odCompareBase});
+    return;
+  }
+  choosingODYears=false;
+  pendingODYear=null;
+  app.set({year,odCompareBase:null});
+}
+
 function render(){
+  if(BASE===state.year)setBase(normalizeContrastBase(null,state.year,dataset.defaultBase,dataset.years));
   hideTooltip();
   const focusId=document.activeElement?.id;
   const previousScroll=document.querySelector('.matrix-scroll')?.scrollTop||0;
   const items=app.filtered();
   document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===state.view);b.setAttribute('aria-current',b.dataset.view===state.view?'page':'false');});
-  document.querySelector('#year').value=state.year;document.querySelector('#borough').value=state.borough;
+  renderODYears();
+  document.querySelector('#borough').value=state.borough;
   document.querySelector('#search').value=state.query;
   const periodLabel=document.querySelector('#period-label');if(periodLabel)periodLabel.textContent=`${state.year}`;
-  document.querySelector('#cohort-count').textContent=`${items.length} / ${data.stations.length} complejos`;
+  document.querySelector('#cohort-count').textContent=`${items.length} / ${data.stations.length} ${dataset.stationLabel}`;
   const rangeNotes=[...(state.tvMin>0||state.tvMax<100?[`TV ${fmt(state.tvMin)}–${fmt(state.tvMax)} pp`]:[]),...Object.entries(state.ranges).filter(([,r])=>r).map(([k,r])=>`${{deltaAM:'AM',deltaWeekend:'Fin de semana',recovery:'Volumen'}[k]} ${fmt(r[0])}–${fmt(r[1])} ${k==='recovery'?'%':'pp'}`)];
   const groupNote=state.cohort?'Grupo de complejos seleccionado':state.preset==='morning'?'Cambio AM menor que −2 pp':state.preset==='weekend'?'Cambio de fin de semana mayor que +2 pp':state.preset==='decoupled'?'Índice volumen entre 80–120 % y cambio de forma ≥10 pp':state.query?'Resultados de búsqueda':state.borough==='all'?'Todos los complejos de subway':state.borough;
   document.querySelector('#cohort-note').textContent=[...rangeNotes,groupNote].join(' · ');
@@ -117,27 +195,45 @@ function render(){
   document.body.classList.add('has-inspector');
   document.querySelector('#selection-label').textContent=selected?`${selected.name}${items.some(s=>s.id===selected.id)?'':' · fuera del grupo activo'}`:'';
   const host=document.querySelector('#content');host.replaceChildren();host.dataset.view=state.view;
+  app.updateFlowHour=null;
   views[state.view](host,app,items);
   if(state.view==='atlas'&&previousScroll)document.querySelector('.matrix-scroll').scrollTop=previousScroll;
   renderInspector(app);
   if(focusId)document.getElementById(focusId)?.focus({preventScroll:true});
-  document.querySelector('#footer-status').textContent=`${data.meta.comparison} · MTA / Open NY · referencia GTFS MTA 2026`;
+  document.querySelector('#footer-status').textContent=`${dataset.comparison} · ${dataset.credit}`;
   updateURL();
 }
 
 function exportCSV(){
-  const contrast=inspectorContrast(app,normalizeContrastBase(state.contrastBase??BASE,state.year,BASE),state.year);
+  if(isODMap(state)&&activeODCompareBase(state,flows)===null){
+    const rows=app.filtered().flatMap(s=>{
+      const m=annualMeasures(s,state.year);
+      return m?[['od',s.id,s.name,s.borough,state.year,m.daily,m.peakShare,Math.floor(m.peak/24)+1,m.peak%24]]:[];
+    });
+    return downloadCSV(['measure_source','complex_id','name','borough','year','avg_daily_trips','peak_hour_weekly_share_pct','peak_weekday_iso','peak_hour'],
+      rows,`evidencia-od-${state.year}.csv`);
+  }
+  const contrast=inspectorContrast(app,activeContrastBase(state,flows,BASE,dataset),state.year);
   const contrastBase=contrast.contrast.base;
   const columns=['measure_source','complex_id','name','borough','baseline','target','change_tv_pp','delta_am_pp','delta_weekend_pp','volume_index_pct','observed_cells_baseline','observed_cells_target','retrieved_at_utc'];
+  const rows=contrast.filtered().map(s=>{const m=contrastMeasures(s,contrastBase,state.year);return [contrast.contrast.kind,s.id,s.name,s.borough,'Jan-Dec '+contrastBase,`Jan-Dec ${state.year}`,m.change,m.deltaAM,m.deltaWeekend,m.recovery,profile(s,contrastBase).observedCells,profile(s).observedCells,contrast.contrast.meta.built_at_utc||data.meta.retrieved];});
+  downloadCSV(columns,rows,`evidencia-${contrast.contrast.kind}-${contrastBase}-${state.year}.csv`);
+}
+function downloadCSV(columns,rows,filename){
   const quote=v=>'"'+String(v).replaceAll('"','""')+'"';
-  const rows=contrast.filtered().map(s=>{const m=contrastMeasures(s,contrastBase,state.year);return [contrast.contrast.kind,s.id,s.name,s.borough,'Jan-Dec '+contrastBase,`Jan-Dec ${state.year}`,m.change,m.deltaAM,m.deltaWeekend,m.recovery,profile(s,contrastBase).observedCells,profile(s).observedCells,contrast.contrast.meta.built_at_utc||data.meta.retrieved].map(quote).join(',');});
-  const blob=new Blob(['\ufeff'+columns.join(',')+'\n'+rows.join('\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=`evidencia-${contrast.contrast.kind}-${contrastBase}-${state.year}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  const csv=rows.map(row=>row.map(quote).join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+columns.join(',')+'\n'+csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
 hydrate();
-Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json('data/lineas.geojson').catch(()=>null),d3.json('data/flows.json')]).then(async([a,g,l,f])=>{
-  if(!a.stations?.length||a.stations.some(s=>!s.profiles[String(BASE)]||!s.profiles['2024']||Object.values(s.profiles).filter(Boolean).some(p=>p.p.length!==168||p.p.some(v=>!Number.isFinite(v)||v<0))))throw Error('Los perfiles no cumplen la estructura esperada.');
+const loadData=name=>d3.json(new URL(name,dataset.dataURL));
+Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),dataset.id==='nyc'?loadData('lineas.geojson').catch(()=>null):null,loadData('flows.json')]).then(async([a,g,l,f])=>{
+  if(!a.stations?.length)throw Error('Falta el catálogo de estaciones.');
+  if(dataset.id==='nyc'&&a.stations.some(s=>!s.profiles?.['2021']||!s.profiles['2024']||
+    Object.values(s.profiles).filter(Boolean).some(p=>p.p.length!==168||p.p.some(v=>!Number.isFinite(v)||v<0)))){
+    throw Error('Los perfiles no cumplen la estructura esperada.');
+  }
   if(!f?.starts||!f?.flows||!f?.meta?.years?.includes(BASE)||!f.meta.years.includes(state.year))throw Error('Faltan los agregados OD para esta comparación. No se usarán datos de entradas como reemplazo.');
   data=a;geo=g;lineas=l;flows=f;
   // Métricas exclusivamente desde el OD: los perfiles de 168 celdas de cada complejo se derivan de los
@@ -156,14 +252,45 @@ Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json
       }
       s.series=[];
     }
-    data.meta.comparison='Semana representativa del OD estimado de la MTA (los doce meses completos, ponderados por el calendario); viajes iniciados por complejo, día y hora.';
+    data.meta.comparison=dataset.comparison;
   }
   state.pins=state.pins.filter(id=>app.station(id));
   if(!app.station(state.selected))state.selected=null;
-  if(state.contrastBase<2021)await loadHistoricalProfiles();
+  if(!isODMap(state)&&state.contrastBase!==null&&!dataset.years.includes(state.contrastBase))await loadHistoricalProfiles();
+  document.querySelector('.brand small').textContent=`ATLAS DE RITMOS · ${dataset.name.toUpperCase()}`;
+  if(dataset.id==='bart')document.title='Fractal · Área de la Bahía · BART';
+  document.querySelector('#borough').replaceChildren(
+    new Option(dataset.territoryLabel,'all'),
+    ...dataset.areas.map(area=>new Option(area,area))
+  );
+  if(dataset.id==='bart')document.querySelector('#search').placeholder='Buscar estación';
   document.querySelector('#loading').hidden=true;
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>app.set({view:b.dataset.view})));
-  document.querySelector('#year').addEventListener('change',e=>{const y=+e.target.value;if(y<=BASE)setBase(Math.max(2021,y-1));app.set({year:y});});
+  const yearStrip=document.querySelector('#od-years');
+  yearStrip.style.setProperty('--year-count',f.meta.years.length);
+  for(const year of f.meta.years){
+    const button=document.createElement('button');
+    button.type='button';
+    button.dataset.odYear=year;
+    const caption=document.createElement('span');
+    caption.className='od-year-caption';
+    caption.append(String(year),document.createElement('small'));
+    const canvas=document.createElement('canvas');
+    canvas.setAttribute('aria-hidden','true');
+    button.append(canvas,caption);
+    button.addEventListener('click',event=>chooseODYear(event,year));
+    yearStrip.append(button);
+  }
+  app.updateODYearMaps=createODYearMaps(yearStrip,g,f);
+  document.querySelector('#od-compare').addEventListener('click',()=>{
+    if(!choosingODYears&&state.odCompareBase!==null){
+      app.set({odCompareBase:null});
+      return;
+    }
+    choosingODYears=!choosingODYears;
+    pendingODYear=null;
+    renderODYears();
+  });
   // Entradas al análisis: un selector en el panel del mapa (se delega porque la vista se redibuja).
   document.addEventListener('change',e=>{if(e.target.id==='preset-select')app.set({preset:e.target.value||null,cohort:null,query:'',sort:'change'});});
   document.querySelector('#borough').addEventListener('change',e=>app.set({borough:e.target.value}));
@@ -173,15 +300,13 @@ Promise.all([d3.json('data/atlas.json'),d3.json('data/boroughs.geojson'),d3.json
   document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>app.set({preset:b.dataset.preset,cohort:null,query:'',sort:'change'})));
   document.querySelector('#reset').addEventListener('click',()=>app.set({cohort:null,preset:null,query:'',borough:'all',tvMin:0,tvMax:100,ranges:{deltaAM:null,deltaWeekend:null,recovery:null}}));
   document.querySelector('#save').addEventListener('click',()=>{
-    const saved=app.saved();saved.unshift({name:`${labels[state.view]} · ${state.borough==='all'?'NYC':state.borough} · ${app.filtered().length} complejos`,url:location.search,date:new Date().toISOString()});
+    const params=new URLSearchParams(location.search);
+    if(state.selected)params.set('inspect',state.selected);
+    const saved=app.saved();saved.unshift({name:`${labels[state.view]} · ${state.borough==='all'?'NYC':state.borough} · ${app.filtered().length} complejos`,url:`?${params}`,date:new Date().toISOString()});
     try{localStorage.setItem('rhythm-atlas-saved',JSON.stringify(saved.slice(0,12)));app.toast('Exploración guardada en este navegador. Encuéntrala en Evidencia.');if(state.view==='evidence')render();}catch{app.toast('Este navegador no permite guardar; puedes copiar la URL.');}
   });
   document.querySelector('#export').addEventListener('click',exportCSV);
-  const guide=document.querySelector('#guide');
-  document.querySelector('#help').addEventListener('click',()=>{renderProject(document.querySelector('#guide-body'),app);guide.showModal();});
-  document.querySelector('#close-guide').addEventListener('click',()=>guide.close());
-  guide.addEventListener('keydown',e=>{if(e.key==='Escape')e.stopPropagation();});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.selected&&!guide.open)app.set({selected:null});});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.selected)app.set({selected:null});});
   // Chart dimensions depend on width. Height-only changes (mobile browser chrome,
   // screenshots) must not destroy a brush or a pending interaction.
   let rt,lastWidth=innerWidth;window.addEventListener('resize',()=>{if(innerWidth===lastWidth)return;lastWidth=innerWidth;clearTimeout(rt);rt=setTimeout(render,160);});

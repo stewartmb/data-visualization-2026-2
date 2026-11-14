@@ -1,7 +1,7 @@
-import {makeScene,bundle,bundleFree} from './raeb-core.mjs?v=gpu4';
+import {makeScene,makeRailKernelEstimator,bundle,bundleFree} from './raeb-core.mjs?v=free-years1';
 const layouts=new Map();
 let network=null,sourceId=0,requestId=0,scene=null,pending=null,processing=false,warming=false,weights=null,selected=-1;
-let sentLevels=new Set();
+let sentLevels=new Set(),calibrateRail;
 async function decompress(url,json=false){
   const response=await fetch(url);if(!response.ok)throw Error(`No se pudo leer ${url}: ${response.status}`);
   const decoded=new Response(response.body.pipeThrough(new DecompressionStream('gzip')));
@@ -27,7 +27,7 @@ async function solveLatest(){
         if(current!==sourceId||job.id!==requestId)continue;
         const options={cancelled:()=>current!==sourceId||job.id!==requestId,
           progress:(points,stats)=>{if(current===sourceId&&job.id===requestId)send('progress',points,{id:job.id,stats});}};
-        result=job.fidelity===0&&job.strength===1?await bundleFree(scene,options):await bundle(scene,job.fidelity,job.strength,options);
+        result=!scene.paper&&job.fidelity===0&&job.strength===1?await bundleFree(scene,options):await bundle(scene,job.fidelity,job.strength,options);
         if(result&&current===sourceId&&job.id===requestId){
           layouts.set(key,{points:result.points.slice(),stats:result.stats});
           if(layouts.size>2)layouts.delete(layouts.keys().next().value);
@@ -44,7 +44,10 @@ onmessage=async({data})=>{
       sourceId=data.sourceId;requestId++;scene=null;weights=null;pending=null;layouts.clear();selected=data.selected;warming=true;const current=sourceId;
       network??=await decompress(data.networkUrl,true);
       const buffer=await decompress(data.frameUrl);if(current!==sourceId)return;weights=new Float32Array(buffer);if(current!==sourceId)return;
-      scene=makeScene(data.nodes,data.links,network.paths,weights,data.width,data.height,data.samples);
+      if(data.paper)calibrateRail??=makeRailKernelEstimator(data.links,data.latitude);
+      scene=makeScene(data.nodes,data.links,network.paths,weights,data.width,data.height,data.samples,{
+        paper:data.paper,calibrate:data.paper?calibrateRail:null,metersPerPixel:data.metersPerPixel
+      });
       selection();
       const free=scene.seed(0).slice(),reference=scene.seed(5).slice(),metadata=scene.metadata.slice(),retention=scene.sampleLevels.slice();
       const railInfo=new Float32Array(scene.routes.length*8),vertices=[];
@@ -58,12 +61,15 @@ onmessage=async({data})=>{
     }else if(data.type==='gpuParameters'){
       if(data.sourceId!==sourceId||!scene)return;
       requestId=data.id;
-      for(const level of new Set([Math.floor(data.fidelity*5),Math.ceil(data.fidelity*5)]))if(!sentLevels.has(level)){
+      const k=data.fidelity*5;
+      for(const level of (scene.paper?[Math.round(k)]:new Set([Math.floor(k),Math.ceil(k)])))if(!sentLevels.has(level)){
         const points=scene.seed(level).slice();sentLevels.add(level);postMessage({type:'gpuLevel',sourceId,level,points:points.buffer},[points.buffer]);
       }
       postMessage({type:'gpuJob',sourceId,id:data.id,fidelity:data.fidelity,strength:data.strength});
     }else if(data.type==='parameters'){
       requestId=data.id;pending=data;solveLatest();
     }
-  }catch(error){postMessage({type:'error',sourceId,message:error.message});}
+  }catch(error){
+    if(data.sourceId===sourceId)postMessage({type:'error',sourceId,message:error.message});
+  }
 };

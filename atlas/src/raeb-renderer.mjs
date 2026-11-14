@@ -1,5 +1,7 @@
-// Instanced WebGL2 line strips: one vertex per trail sample, never a DOM path
-// per OD. Slider previews change uniforms only; no routing or panel rebuild.
+import {FLOW_COLOR_MAX, GLSL_FLOW_COLOR, SELECTED_FLOW_EXPRESSION} from './raeb-gpu-shaders.mjs?v=flow-gray1';
+
+// Instanced WebGL2 draws one strip per OD curve. The paper view uses a
+// triangle strip to keep the stroke width constant in CSS pixels.
 const VERTEX=`#version 300 es
 precision highp float;
 precision highp int;
@@ -18,7 +20,10 @@ uniform vec3 uCamera;
 uniform vec2 uParameters;
 uniform float uTween;
 uniform bool uPreview;
+uniform bool uPaper;
+uniform int uFlowPass;
 uniform float uSelected;
+uniform float uColorMax;
 out vec4 vColor;
 vec4 at(sampler2D source,int i){return texelFetch(source,ivec2(i%uTextureWidth,i/uTextureWidth),0);}
 vec2 previewAt(int point,int curve,int sampleIndex,vec4 anchor,vec2 parameters){
@@ -29,24 +34,42 @@ vec2 previewAt(int point,int curve,int sampleIndex,vec4 anchor,vec2 parameters){
   vec2 bundled=mix(anchor.xy,anchor.zw,parameters.x);
   return mix(seed,bundled,parameters.y);
 }
-void main(){
-  int curve=gl_InstanceID;
-  int sampleIndex=int(round(float(gl_VertexID)*float(uSamples-1)/float(uRenderSamples-1)));
+int sampleAt(int vertex){
+  return int(round(float(vertex)*float(uSamples-1)/float(uRenderSamples-1)));
+}
+vec2 positionAt(int curve,int sampleIndex){
   int point=curve*uSamples+sampleIndex;
   vec4 anchor=at(uAnchors,point);
-  vec2 position;
-  if(uPreview){position=previewAt(point,curve,sampleIndex,anchor,uParameters);}
-  else{
-    vec2 from=uFromPreview?previewAt(point,curve,sampleIndex,anchor,uFromParameters):at(uFromLayout,point).xy;
-    position=mix(from,at(uLayout,point).xy,uTween);
-  }
+  if(uPreview)return previewAt(point,curve,sampleIndex,anchor,uParameters);
+  vec2 from=uFromPreview?previewAt(point,curve,sampleIndex,anchor,uFromParameters):at(uFromLayout,point).xy;
+  return mix(from,at(uLayout,point).xy,uTween);
+}
+${GLSL_FLOW_COLOR}
+void main(){
+  int curve=gl_InstanceID;
+  int vertex=uPaper?gl_VertexID/2:gl_VertexID;
+  int sampleIndex=sampleAt(vertex);
+  int point=curve*uSamples+sampleIndex;
+  vec2 position=positionAt(curve,sampleIndex);
   vec4 metadata=at(uMetadata,curve);
   bool focus=uSelected>=0.0&&abs(metadata.y-uSelected)<0.1;
-  float retained=clamp(uParameters.x*5.0-at(uRetention,point).x+1.0,0.0,1.0);
-  float alpha=1.0-exp(-metadata.x*(1.0-retained)/800.0);
-  if(uSelected>=0.0)alpha*=focus?1.0:0.18;
-  vColor=focus?vec4(.78,.32,.15,alpha):vec4(.055,.33,.43,alpha);
+  float retained=uPaper?0.0:clamp(uParameters.x*5.0-at(uRetention,point).x+1.0,0.0,1.0);
+  float trips=metadata.x*(1.0-retained);
+  float alpha=1.0-exp(-trips*(uPaper?1.4:1.0)/800.0);
+  float maximum=uColorMax;
+  vec3 ink=flowColor(trips,maximum);
+  if(uFlowPass==1)alpha=${SELECTED_FLOW_EXPRESSION};
+  if(uSelected>=0.0&&!focus)alpha=0.0;
+  vColor=vec4(uFlowPass==1?ink*alpha:ink,alpha);
   vec2 screen=position*uCamera.x+uCamera.yz;
+  if(uPaper){
+    vec2 start=positionAt(curve,sampleAt(max(0,vertex-1)));
+    vec2 end=positionAt(curve,sampleAt(min(uRenderSamples-1,vertex+1)));
+    vec2 tangent=end-start;
+    vec2 normal=vec2(-tangent.y,tangent.x)/max(length(tangent),0.001);
+    float side=gl_VertexID%2==0?-1.0:1.0;
+    screen+=normal*side*1.5;
+  }
   gl_Position=vec4(screen.x/uViewport.x*2.0-1.0,1.0-screen.y/uViewport.y*2.0,0,1);
 }`;
 const FRAGMENT=`#version 300 es
@@ -64,7 +87,7 @@ export class RaebRenderer{
     const shader=(type,source)=>{const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;};
     this.program=gl.createProgram();gl.attachShader(this.program,shader(gl.VERTEX_SHADER,VERTEX));gl.attachShader(this.program,shader(gl.FRAGMENT_SHADER,FRAGMENT));gl.linkProgram(this.program);
     if(!gl.getProgramParameter(this.program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(this.program));
-    this.uniforms=Object.fromEntries(['uAnchors','uLayout','uMetadata','uFromLayout','uRetention','uFromPreview','uFromParameters','uTextureWidth','uSamples','uRenderSamples','uViewport','uCamera','uParameters','uTween','uPreview','uSelected'].map(k=>[k,gl.getUniformLocation(this.program,k)]));
+    this.uniforms=Object.fromEntries(['uAnchors','uLayout','uMetadata','uFromLayout','uRetention','uFromPreview','uFromParameters','uTextureWidth','uSamples','uRenderSamples','uViewport','uCamera','uParameters','uTween','uPreview','uPaper','uFlowPass','uSelected','uColorMax'].map(k=>[k,gl.getUniformLocation(this.program,k)]));
     this.textures=Array.from({length:5},()=>gl.createTexture());
     this.textureWidth=1024;this.camera={k:1,x:0,y:0};this.parameters={fidelity:.9,strength:.65};this.selected=-1;this.preview=true;this.count=0;
     gl.enable(gl.BLEND);gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);
@@ -101,7 +124,7 @@ export class RaebRenderer{
     // 74 MB from/to buffer on the UI thread for every worker update.
     this.upload(1,target,2);this.hasLayout=true;this.transitionStart=performance.now();this.preview=false;this.schedule();
   }
-  setParameters(fidelity,strength){this.parameters={fidelity,strength};this.preview=true;this.inputAt=performance.now();this.qualityUntil=performance.now()+160;this.schedule();}
+  setParameters(fidelity,strength){this.parameters={fidelity,strength};this.preview=!this.paper||!this.hasLayout;this.inputAt=performance.now();this.qualityUntil=performance.now()+160;this.schedule();}
   setCamera(camera){this.camera=camera;this.inputAt=performance.now();this.qualityUntil=performance.now()+160;this.schedule();}
   schedule(){if(!this.pending)this.pending=requestAnimationFrame(()=>{this.pending=0;this.draw();});}
   draw(){
@@ -115,10 +138,22 @@ export class RaebRenderer{
     gl.uniform2f(u.uViewport,this.width,this.height);gl.uniform3f(u.uCamera,this.camera.k,this.camera.x,this.camera.y);
     gl.uniform2f(u.uParameters,this.parameters.fidelity,this.parameters.strength);
     const t=Math.min(1,(performance.now()-(this.transitionStart||0))/90);
-    gl.uniform1f(u.uTween,t);gl.uniform1i(u.uPreview,this.preview?1:0);gl.uniform1f(u.uSelected,this.selected);
+    gl.uniform1f(u.uTween,t);gl.uniform1i(u.uPreview,this.preview?1:0);gl.uniform1i(u.uPaper,this.paper?1:0);gl.uniform1f(u.uSelected,this.selected);
+    gl.uniform1f(u.uColorMax,this.colorMax||FLOW_COLOR_MAX);
     const reduced=performance.now()<(this.qualityUntil||0)||(!this.preview&&t<1),renderSamples=reduced?Math.min(8,this.samples):this.samples;
     gl.uniform1i(u.uRenderSamples,renderSamples);
-    gl.drawArraysInstanced(gl.LINE_STRIP,0,renderSamples,this.count);
+    const primitive=this.paper?gl.TRIANGLE_STRIP:gl.LINE_STRIP;
+    const vertexCount=this.paper?2*renderSamples:renderSamples;
+    if(this.selected>=0&&this.colorMax){
+      // The selected pass preserves local contrast without stacking opacity.
+      gl.uniform1i(u.uFlowPass,1);
+      gl.blendEquation(gl.MAX);
+      gl.drawArraysInstanced(primitive,0,vertexCount,this.count);
+      gl.blendEquation(gl.FUNC_ADD);
+    }else{
+      gl.uniform1i(u.uFlowPass,0);
+      gl.drawArraysInstanced(primitive,0,vertexCount,this.count);
+    }
     this.canvas.dataset.glError=String(gl.getError());this.canvas.dataset.renderSamples=String(renderSamples);
     this.canvas.dataset.submitMs=(performance.now()-start).toFixed(2);
     if(this.inputAt){this.canvas.dataset.inputToPaintMs=(performance.now()-this.inputAt).toFixed(2);this.inputAt=0;}

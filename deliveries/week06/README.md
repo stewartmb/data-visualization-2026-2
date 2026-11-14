@@ -34,4 +34,4 @@ Las seis preguntas anteriores se sustituyen por redistribución territorial, dep
 
 Se mantiene el panel integrado con mapa, dispersión y reloj. RAEB/KDEEB informan las curvas y el refinamiento; Dhont el reloj; Gleicher la comparación; Brehmer–Munzner las tareas; Shneiderman el recorrido. Las demos MBTA/Tube Heartbeat aportan referencias de interacción, sin copiar datos operativos ausentes.
 
-`PresentationWeek06.pptx`, el análisis y el boceto se regeneran con esta revisión. Las versiones originales se conservan en `history/`; sus cifras no se trasladan al alcance nuevo. La aplicación, sus adquisiciones de datos y sus avances pertenecen a [Semana 12](../week12/README.md).
+`PresentationWeek06.pptx`, el análisis y el boceto se regeneran con esta revisión. La [nota del 13 de noviembre sobre RAEB](referencias.md#p1-raeb--relaciones-con-contexto-de-la-red) explica la calibración del radio para el metro. Las versiones originales se conservan en `history/`; sus cifras no se trasladan al alcance nuevo. La aplicación, sus adquisiciones de datos y sus avances pertenecen a [Semana 12](../week12/README.md).

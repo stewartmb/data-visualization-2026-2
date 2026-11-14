@@ -31,4 +31,17 @@ assert(shared>0);
 const high=await bundle(scene,.99,1),bindings=scene.retention(.99);
 for(let i=0;i<bindings.length;i++)if(bindings[i]===1){assert(Math.abs(high.points[i*2]-reference[i*2])<1e-3);assert(Math.abs(high.points[i*2+1]-reference[i*2+1])<1e-3);}
 assert(high.stats.deviationPx<layouts[0].stats.deviationPx);
+// In the paper mode the most detailed level still bundles. It preserves the
+// OD endpoints, but the route influences the density instead of locking points.
+const paper=makeScene(nodes,links,paths,weights,200,200,16,{paper:true});
+assert.deepEqual(paper.seedAt(.59),paper.seed(3));
+assert(paper.guide(0).every(x=>x===0));
+assert(paper.guide(1).some(x=>x===1));
+const paperReference=paper.css(paper.seed(5));
+const paperHigh=await bundle(paper,1,1);
+assert(paperHigh.stats.iterations>=2);
+assert(paperHigh.points.some((v,i)=>Math.abs(v-paperReference[i])>1e-3));
+for(let c=0;c<paper.active.length;c++)for(const i of [c*32,c*32+1,c*32+30,c*32+31]){
+ assert(Math.abs(paperHigh.points[i]-paperReference[i])<1e-3);
+}
 console.log('PASS: radial kernel, Fréchet, NMI, finite layouts, OD endpoints, reference extreme, symmetric multiplicity, conserved weights cancellation, aligned hierarchy samples and retained real geometry.');

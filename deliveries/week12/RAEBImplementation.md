@@ -1,6 +1,6 @@
 # RAEB ferroviario: método, reproducción y límites
 
-Actualizado el 28 de octubre de 2026. Fuente primaria: Zeng, Shen, Jiang y Telea, *Route-Aware Edge Bundling for Visualizing Origin-Destination Trails in Urban Traffic*, EuroVis 2019, [PDF](https://zeng-wei.com/publication/papers/2019_RAEB.pdf).
+Actualizado el 13 de noviembre de 2026. Fuente primaria: Zeng, Shen, Jiang y Telea, *Route-Aware Edge Bundling for Visualizing Origin-Destination Trails in Urban Traffic*, EuroVis 2019, [PDF](https://zeng-wei.com/publication/papers/2019_RAEB.pdf).
 
 ## Qué utiliza la interfaz
 
@@ -12,26 +12,71 @@ La referencia GTFS 2026 contiene 424 complejos y 549 enlaces: 547 ferroviarios y
 
 El balance semanal de 2023 incluye 0,133315 viajes representativos no mapeados; queda registrado, no absorbido por los haces. Los otros tres años tienen balance completamente asignado. El volumen de origen conserva sus cantidades disponibles antes de normalizar las 168 celdas. No interpretar la carga como ocupación o congestión.
 
+## Mapa principal con RAEB
+
+El mapa abre con `raeb=paper`, fidelidad 3 y radio automático. `raeb=atlas` abre el agrupamiento anterior desde el enlace bajo los controles. El selector discreto `p_ra` va de 0 (semillas rectas y agrupamiento libre) a 5 (toda la red guía el agrupamiento). RAEB conserva los extremos de cada curva y modifica la densidad sobre los tramos de la jerarquía seleccionada. Con radio 0 muestra las semillas. En nivel 5 y radio 0 suma la demanda asignada por tramo y la dibuja sobre la geometría GTFS.
+
+El color de las curvas agrupadas muestra demanda OD estimada. La red aparece en gris. Al seleccionar un complejo se muestran sus conexiones salientes y los demás complejos quedan como puntos grises de navegación. La app conserva el remuestreo de 32 puntos por par ponderado, la cuadrícula de cálculo reducida, WebGPU con respaldo CPU y un tope operativo de 150 iteraciones. El paper utiliza sus propias trayectorias, resolución y muestreo.
+
+## Jerarquía y niveles de fidelidad
+
+La [§4.3 del paper](https://zeng-wei.com/publication/papers/2019_RAEB.pdf#page=5) calcula el puntaje de cada vía como `0,30 × longitud relativa + 0,10 × categoría vial + 0,60 × flujo relativo`. La longitud se divide por la de la vía más larga y el flujo asignado por el mayor flujo de la red. La categoría de OpenStreetMap aporta 1, 0,75, 0,5 o 0,25 según el tipo de vía. Los autores eligieron los pesos experimentalmente. Ordenaron las vías por puntaje descendente y fijaron los cortes acumulados del 5, 10, 20, 40 y 100 %. El artículo presenta los cortes como una elección práctica y no especifica un cálculo para derivarlos.
+
+En el Atlas cada elemento del ranking es un enlace del grafo GTFS. La categoría vale 1 para todos los enlaces, por lo que su aporte de 0,10 es constante y el orden depende de la longitud y del flujo. Para la franja seleccionada, el flujo de cada enlace suma el peso OD de los caminos asignados que lo recorren, en ambos sentidos. Al cambiar de franja puede cambiar qué enlaces entran en el grupo, aunque la cantidad seleccionada siga siendo la misma.
+
+| Nivel | Porcentaje acumulado del ranking | Enlaces que guían el agrupamiento |
+|---:|---:|---:|
+| 0 | 0 % | 0 |
+| 1 | 5 % | 28 |
+| 2 | 10 % | 55 |
+| 3 | 20 % | 110 |
+| 4 | 40 % | 220 |
+| 5 | 100 % | 549 |
+
+La app redondea hacia arriba el producto del porcentaje por los 549 enlaces. En el nivel 4, el trazado inicial conserva la geometría de los enlaces seleccionados y une con rectas los huecos del recorrido. En el 5, los **329 enlaces adicionales** aportan su geometría al trazado inicial y a la guía de densidad. Con radio positivo, las curvas todavía se desplazan al agruparse. El caso «Sobre la vía» con nivel 5 y radio cero es una decisión del Atlas. La [figura 11 del paper](https://zeng-wei.com/publication/papers/2019_RAEB.pdf#page=10) compara 0, 1, 3 y 5 para taxis en Manhattan, por lo que no muestra directamente la transición 4 → 5. [Implementación de jerarquía, trazado inicial y guía](atlas/src/raeb-core.mjs)
+
+## Calibración del radio para el subway
+
+1. Usar el ranking de enlaces de la franja, calculado según la jerarquía anterior.
+2. Comparar las polilíneas completas mediante Fréchet discreta. Para cada par se usa el menor valor entre los dos sentidos de digitalización, ya que el objeto comparado es el enlace físico. Las coordenadas métricas usan Mercator local con escala en la latitud 40,7° N.
+3. Ejecutar DBSCAN con un mínimo de ocho rutas y una vecindad de **1.000 m**. Ese valor equivale a cinco unidades de 200 m, una escala cercana a la de cinco celdas de cálculo en el encuadre de referencia del Atlas. Es una elección de calibración ferroviaria. Se prueba el 1 % del paper y, cuando ese conjunto es insuficiente, se amplía a 5, 10, 20, 40 y 100 %. Se usa el primer conjunto que produce un grupo.
+4. Tomar el grupo con más enlaces y calcular la mitad de la distancia media de Fréchet entre sus pares. El cálculo ocurre en metros y el solver lo convierte a celdas. Si una franja futura carece de grupo, la interfaz informa que falta una referencia automática y deja el radio en cero.
+
+| Franja representativa | Candidatos | Mayor grupo | Radio inicial |
+|---|---:|---:|---:|
+| 2024 · lunes · 8 a. m. | 220 | 36 | 944,47 m |
+| 2024 · lunes · 5 p. m. | 110 | 14 | 661,68 m |
+| 2024 · domingo · 8 a. m. | 220 | 23 | 865,49 m |
+| 2021 · lunes · 8 a. m. | 220 | 24 | 852,94 m |
+
+La comprobación de las 672 franjas de 2021–2024 encontró un grupo en cada una. El radio automático varió de **480,23 m a 1.523,48 m**. La estimación de cada franja es el máximo del deslizador. **Automático** aplica ese valor. Puedes reducirlo hasta cero o fijar un radio manual en metros. Si otra franja tiene un máximo menor que el radio manual, el control baja a ese máximo. La regla bajo el minimapa cambia con el zoom y el círculo usa la misma escala. El radio representa distancia en línea recta en la primera iteración. En las siguientes se reduce por un factor de 0,9.
+
+Reproducción del valor inicial y verificación de las franjas desde la raíz:
+
+```sh
+node deliveries/week12/tests/validate-raeb-data.mjs
+```
+
 ## Correspondencia con RAEB
 
 | Parte | Implementación | Adaptación explícita |
 |---|---|---|
-| §4.3, jerarquía | Importancia 0,3 longitud + 0,1 clase + 0,6 flujo; niveles 5/10/20/40/100 % | Cada enlace GTFS es una ruta de referencia; clase=1; importancia estable con todos los años |
-| §4.4, abstracción | Conservar segmentos seleccionados y conectar huecos por cuerdas | `p_ra=5f`, interpolación entre niveles |
-| §5.1, kernel | Fréchet discreto, DBSCAN ε=5 px/minNum=8, mitad de distancia media del mayor grupo | Raster reducido; pool mínimo16 y fallback declarado cuando DBSCAN no encuentra grupo; radio acotado |
+| §4.3, jerarquía | Importancia 0,3 longitud + 0,1 clase + 0,6 flujo; niveles 5/10/20/40/100 % | Cada enlace GTFS es una ruta de referencia con clase 1. En el mapa principal se ordena con el flujo de la franja |
+| §4.4, abstracción | Conservar segmentos seleccionados y conectar huecos por cuerdas | Selector discreto 0–5 en el mapa principal. La vista anterior interpola entre niveles |
+| §5.1, kernel | Fréchet discreta, DBSCAN con ocho rutas y mitad de la distancia media del mayor grupo | Vecindad métrica de 1 km y ampliación por niveles de la muestra cuando el 1 % resulta insuficiente |
 | §3.1, KDEEB | Kernel radial Epanechnikov, advección, suavizado laplaciano; λ=0,9 | Raster de 192–320 columnas; 32 muestras fijas; ponderación por demanda agregada |
-| §5.2, guía | Densidad reforzada en los segmentos conservados, θ=1,1 maxρ | Membresía continua al interpolar jerarquías |
-| §6.1, estabilidad | NMI de imágenes de curvas sucesivas; umbral0,8 | Raster reducido, máximo48 iteraciones; reportar `converged=false` si no llega |
+| §5.2, guía | Densidad reforzada en los segmentos conservados, θ=1,1 maxρ | La vista anterior usa membresía continua al interpolar jerarquías |
+| §6.1, estabilidad | NMI de imágenes de curvas sucesivas con umbral 0,8 | Raster reducido. Tope de 150 iteraciones en RAEB y 48 en la vista anterior |
 | §6.2, desviación | Fréchet contra el camino mapeado | Muestra determinista de hasta128 curvas; diagnóstico, no error completo |
-| Interacción | WebGPU para cálculo y raster; worker para preparar caminos; CPU/WebGL2 como respaldo | Caché de dos resultados por cohorte; geometría GTFS completa en f=1 |
+| Interacción | WebGPU para cálculo y raster; worker para preparar caminos; CPU/WebGL2 como respaldo | Caché de dos resultados por cohorte. Geometría GTFS completa con nivel 5 y radio 0 |
 
-Esto es una **adaptación ferroviaria implementada de los componentes de RAEB**, no una reproducción idéntica de los experimentos ni del ejecutable original. La dirección no participa en el campo de agrupamiento; se conserva en las entidades OD y al resaltar los salientes de un origen. En f=0 se resuelven una vez las curvas O→D y D→O equivalentes, sumando pesos; después se expanden todas las entidades dirigidas. No hay muestreo de pares.
+La **adaptación ferroviaria** aplica estos componentes de RAEB a datos OD estimados y a la red GTFS. La dirección no participa en el campo de agrupamiento; se conserva en las entidades OD y al resaltar los salientes de un origen. En el respaldo CPU de la vista anterior, con f=0 y agrupación al máximo, las curvas O→D y D→O equivalentes se resuelven una vez sumando sus pesos. Después se reconstruyen todas las entidades dirigidas.
 
-La barra de agrupación multiplica el radio estimado, y b=0 desactiva advección. La de fidelidad controla cuánta referencia conserva la semilla y el campo guía: f=0 produce haces libres que pueden cruzar el agua; f=1 muestra los shapes completos. La geometría libre es abstracción visual y nunca se devuelve al grafo como infraestructura.
+En la vista anterior (`raeb=atlas`), la barra de agrupación multiplica el radio estimado, y b=0 desactiva advección. La de fidelidad controla cuánta referencia conserva la semilla y el campo guía: f=0 produce haces libres que pueden cruzar el agua; f=1 muestra los shapes completos. La geometría libre es abstracción visual y nunca se devuelve al grafo como infraestructura.
 
 En el respaldo CPU, la guía de enlaces conservados se dibuja en SVG. El worker entrega primero una semilla del nivel elegido y después su refinamiento; no se interpola una maraña libre para simular alta fidelidad. Las curvas libres conservan WebGL. La vista previa no equivale a una solución convergida y el estado lo indica. El zoom transforma la cámara y las capas SVG: no recalcula KDE ni OD. Durante el movimiento se reduce el muestreo de dibujo a8 vértices y se recuperan32 al estabilizarse; los datos y la solución no cambian.
 
-Campo óptico canónico: `τ=Σ(q/800)` por píxel de trazo; en el respaldo CPU se representa por opacidad. WebGPU representa ese campo como bandas fusionadas, descritas al final de este documento. En f=1 se agrega la carga de enlaces coincidentes sobre su geometría completa. Nodos: área proporcional a viajes iniciados, con radio mínimo1,8px para valores positivos pequeños y1,6px para cero; la escala superior fija corresponde a13px. No confundir tamaño mínimo con volumen observado.
+Campo óptico canónico: `τ=Σ(q/800)` por píxel de trazo; en el respaldo CPU se representa por opacidad. En el mapa principal, WebGPU dibuja trazos de 3 px y representa la densidad por intensidad. Para un origen seleccionado, la opacidad de pantalla es `0,92 × clamp(q/Q, 0, 1)`, donde `q` es el flujo dibujado y `Q` es el total estimado que inicia en el complejo en la franja activa. Así los tramos que concentran una parte grande de las salidas destacan incluso en complejos pequeños. Ambas vistas usan una escala continua de raíz cuadrada, de gris claro a amarillo y rojo, con referencias de 0, 4.500 y 18.000 viajes OD estimados por día. El extremo rojo se fijó redondeando el percentil 95 (17.572) de los 536 enlaces con flujo positivo del lunes representativo de 2024 a las 17:00. La vista general y los minimapas mantienen esa escala entre horas y años. Al seleccionar un complejo, el color del mapa principal usa como extremo superior sus viajes iniciados en la franja activa. La leyenda muestra ese total y se actualiza con complejo, día, hora y año. El cálculo de caminos y las cantidades se conservan. WebGPU colorea la demanda acumulada localmente al dibujar el haz. WebGL2 colorea cada curva por separado y los enlaces exactos en SVG usan su carga asignada. La opacidad se aplica sobre la densidad acumulada en WebGPU y con mezcla por máximo entre curvas seleccionadas en WebGL2. La imagen usada para medir NMI conserva la transferencia óptica original. La vista anterior usa las bandas fusionadas descritas al final de este documento. Con nivel 5 y radio 0 se agrega la carga sobre la geometría completa de los enlaces. Nodos: área proporcional a viajes iniciados, con radio mínimo1,8px para valores positivos pequeños y1,6px para cero; la escala superior fija corresponde a13px. No confundir tamaño mínimo con volumen observado.
 
 ## Reproducir
 
@@ -47,9 +92,11 @@ node deliveries/week12/tests/validate-raeb-data.mjs
 python3 -m http.server 8774
 ```
 
-Abrir `/deliveries/week12/atlas/?view=map&year=2024&base=2021&layer=flows&hour=8&fidelity=0&bundling=1`. Comparar f=0, intermedio y1, b=0 y1; cambiar manualmente hora y día, seleccionar un origen y ampliar el mapa. No existe avance temporal automático. El nuevo procesamiento sincroniza los datos de raíz y Semana12; mantener también sincronizados sus módulos de interfaz.
+Abrir `/deliveries/week12/atlas/?raeb=paper&year=2024&layer=flows&day=0&hour=8&pra=3`. Comparar niveles 0, 3 y 5, radio automático, manual y 0. Cambiar la hora y acercar el mapa para comprobar la regla. No existe avance temporal automático. El nuevo procesamiento sincroniza los datos de raíz y Semana12; mantener también sincronizados sus módulos de interfaz.
 
 ## Corrección del 28 de octubre: fidelidad y latencia
+
+Esta sección y la de WebGPU del 28 de octubre documentan la implementación anterior, hoy disponible como `raeb=atlas`. El mapa principal `raeb=paper` usa la jerarquía discreta y el trazado descritos arriba.
 
 Se corrigieron dos fallos: cada nivel se remuestreaba por su propia longitud y la advección podía alejar incluso los tramos conservados. Ahora los niveles comparten el parámetro de longitud del recorrido original. Las muestras conservadas quedan vinculadas a la referencia; para membresía parcial, el anclaje es gradual y el paso se limita a0,45píxeles del raster. Es una estabilización adicional de esta adaptación, no una propiedad atribuida al algoritmo publicado.
 
@@ -89,11 +136,11 @@ Falta una auditoría numérica de múltiples iteraciones y de todas las cohortes
 
 Cambio de presentación en WebGPU: los centros de los trazos mantienen su geometría y pesos. La pasada final obtiene una envolvente alrededor del campo óptico acumulado, uniendo visualmente trazos próximos. Para cada píxel toma la máxima cobertura de las bandas vecinas, en lugar de acumular de nuevo sus opacidades. No es una extracción de un grafo simplificado ni una nueva asignación de rutas: la proximidad visual puede unir envolventes sin representar una conexión ferroviaria o un transbordo.
 
-Si `τ` es el peso óptico acumulado del trazo (`q/800`), el semiancho es `r = 0,5 + b × min(4; 1,25√τ)` píxeles CSS, con antialiasing. El grosor nominal máximo es 9 px. La escala es fija entre cohortes, incluye saturación y representa peso **local** acumulado, no una medición exacta de carga por corredor extraído. El naranja sigue destacando los viajes de la selección y el contexto se atenúa sin reducir su ancho por esa atenuación. Con `b=0` se conserva la representación fina anterior.
+Si `τ` es el peso óptico acumulado del trazo (`q/800`), el semiancho es `r = 0,5 + b × min(4; 1,25√τ)` píxeles CSS, con antialiasing. El grosor nominal máximo es 9 px. La escala es fija entre cohortes, incluye saturación y representa peso **local** acumulado, no una medición exacta de carga por corredor extraído. La selección conserva solo la carga del origen elegido y aplica la misma escala de color. Con `b=0` se conserva la representación fina anterior.
 
-El solver, los valores OD, las semillas y el NMI canónico no cambian por este estilo. Por tanto, el NMI no es una comparación de capturas finales con bandas. La leyenda del mapa indica la escala raíz y la fusión visual. El respaldo CPU conserva su dibujo anterior.
+El solver, los valores OD, las semillas y el NMI canónico no cambian por este estilo. Por tanto, el NMI no es una comparación de capturas finales con bandas. La leyenda muestra el gradiente y sus valores de referencia.
 
-Prueba reproducible: servir `tests/webgpu-bands.html` por HTTP. Comprueba que mayor peso produce mayor ancho, nueve aportes coincidentes equivalen exactamente a su suma, la opacidad central queda acotada, `b=0` conserva un píxel y la selección es naranja. Resultado observado: anchos de 5 y 9 píxeles en el fixture, 1 píxel sin agrupación y alfa central máximo 0,8196. La prueba CPU/GPU de una iteración continúa pasando. Comprobación visual adicional en la escena completa, zoom y fidelidad=1.
+Prueba reproducible: servir `tests/webgpu-bands.html` por HTTP. Comprueba que mayor peso produce mayor ancho, nueve aportes coincidentes equivalen exactamente a su suma, la opacidad central queda acotada, `b=0` conserva un píxel y el foco conserva el color de volumen del origen seleccionado. Resultado observado: anchos de 5 y 9 píxeles en el fixture, 1 píxel sin agrupación y alfa central máximo 0,8196. La prueba CPU/GPU de una iteración continúa pasando. Comprobación visual adicional en la escena completa, zoom y fidelidad=1.
 
 
 ## Controles y retorno a la vista general

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {inspectorContrast,contrastMeasures,contrastCell,normalizeContrastBase} from '../atlas/src/contrast-model.mjs';
+import {activeContrastBase,annualMeasures,availableContrastYears,inspectorContrast,contrastMeasures,contrastCell,normalizeContrastBase} from '../atlas/src/contrast-model.mjs';
 const load=name=>JSON.parse(fs.readFileSync(new URL('../atlas/data/'+name,import.meta.url)));
 const historical=load('historical_contrast.json'),f=load('flows.json'),atlas=load('atlas.json');
 assert.equal(historical.meta.status,'PASS');
@@ -19,6 +19,12 @@ const map={data:{stations},flows:f,historicalProfiles:historical,state,filtered:
 const before=JSON.stringify({state,stations});
 const od=inspectorContrast(map,2021,2024),pre=inspectorContrast(map,2019,2024),covid=inspectorContrast(map,2020,2024);
 assert.equal(od.contrast.kind,'od');assert.equal(od.data.stations,stations);
+const annual=inspectorContrast({...map,historicalProfiles:null},null,2024);
+assert.equal(annual.contrast.kind,'od');
+assert.equal(annual.contrast.base,null);
+assert.equal(annual.filtered().length,424);
+const peak=annualMeasures({profiles:{2024:{daily:10,p:[0.15,0.5,0.35]}}},2024);
+assert.deepEqual(peak,{daily:10,peak:1,peakShare:50});
 for(const view of [pre,covid]){
  assert.equal(view.contrast.kind,'entries');assert.equal(view.data.stations.length,424);
  assert.equal(view.station('301').profiles['2024'],historical.profiles['301']['2024']);
@@ -29,7 +35,16 @@ assert.equal(JSON.stringify({state,stations}),before);
 assert.equal(map.station('301').profiles['2019'],undefined);
 assert.notEqual(contrastMeasures(pre.station('301'),2019,2024).recovery,contrastMeasures(od.station('301'),2021,2024).recovery);
 assert.throws(()=>inspectorContrast({...map,historicalProfiles:null},2019,2024),/Faltan/);
-assert.equal(normalizeContrastBase(2023,2022,2021),2021);
+assert.equal(normalizeContrastBase(2023,2022,2021),2023);
+assert.equal(normalizeContrastBase(null,2021,2021),2022);
+assert.equal(normalizeContrastBase(2024,2024,2021),2021);
+const dataset={years:f.meta.years,contrastYears:historical.meta.years};
+const odState={view:'map',layer:'flows',year:2021,contrastBase:2019};
+assert.deepEqual(availableContrastYears(odState,dataset),[2021,2022,2023,2024]);
+assert.equal(activeContrastBase(odState,f,2021,dataset),2022);
+assert.equal(activeContrastBase({...odState,layer:'points'},f,2021,dataset),2019);
+assert.equal(activeContrastBase({...odState,contrastBase:2023},f,2021,dataset),2023);
+assert.equal(activeContrastBase({...odState,odCompareBase:2024},f,2021,dataset),2024);
 const a={p:Array(168).fill(1/168),daily:10,weekly:70,am:20,weekend:20},b={...a,daily:20,weekly:140};
 const proportional={profiles:{2019:a,2024:b}};
 assert.equal(contrastMeasures(proportional,2019,2024).change,0);assert.equal(contrastMeasures(proportional,2019,2024).recovery,200);

@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';import zlib from 'node:zlib';import crypto from 'node:crypto';
+import {makeRailKernelEstimator,routeHierarchy} from '../atlas/src/raeb-core.mjs';
 const root=new URL('../atlas/data/',import.meta.url),read=name=>fs.readFileSync(new URL(name,root)),hash=b=>crypto.createHash('sha256').update(b).digest('hex');
 const F=JSON.parse(read('flows.json')),manifest=JSON.parse(read('raeb/manifest.json')),networkBuffer=read('raeb/network.json.gz'),{paths}=JSON.parse(zlib.gunzipSync(networkBuffer)),n=F.nodes.length;
 assert.equal(hash(read('flows.json')),manifest.flows_sha256);assert.equal(hash(networkBuffer),manifest.network_sha256);
@@ -9,6 +10,8 @@ for(let pair=0;pair<paths.length;pair++){
  for(const arc of paths[pair]){const link=F.links[arc>>1],direction=arc&1;assert(link?.allowed[direction]);assert.equal(current,direction?link.b:link.a);current=direction?link.a:link.b;}
  assert.equal(current,destination); // self OD deliberately has no loop
 }
+const estimateRadius=makeRailKernelEstimator(F.links);
+const radio={minimum:Infinity,maximum:0,monday2024:null};
 let bytes=0,checkedFrames=0,maxRowDifference=0;
 for(const year of F.meta.years){
  assert.deepEqual(F.meta.months_present[year],Array.from({length:12},(_,i)=>i+1));let matrixTotal=0,startsTotal=0;
@@ -21,8 +24,18 @@ for(const year of F.meta.years){
   // A full route incidence sum for one cohort per year independently checks
   // the directed arc-load table used by the exact-reference renderer.
   if(day===0&&hour===8){const loads=new Float64Array(F.links.length*2);for(let pair=0;pair<values.length;pair++)for(const arc of paths[pair])loads[arc]+=values[pair];loads.forEach((v,i)=>assert(Math.abs(v-F.flows[year][day][hour][i])<.005+v*1e-6));}
+  const loads=F.flows[year][day][hour];
+  const {ranked}=routeHierarchy(F.links.map((link,i)=>({...link,reference_flow:loads[2*i]+loads[2*i+1]})));
+  const kernel=estimateRadius(ranked);
+  assert(kernel.radiusMeters>0 && Number.isFinite(kernel.radiusMeters),`Sin radio automático en ${key}`);
+  radio.minimum=Math.min(radio.minimum,kernel.radiusMeters);
+  radio.maximum=Math.max(radio.maximum,kernel.radiusMeters);
+  if(year===2024&&day===0&&hour===8)radio.monday2024=kernel;
   checkedFrames++;
  }
  assert(Math.abs(matrixTotal-balance.assigned-balance.same_origin_destination)<.5);assert(Math.abs(startsTotal-balance.input)<.5);
 }
-console.log(JSON.stringify({status:'PASS',frames:checkedFrames,nodes:n,links:F.links.length,compressedMatricesBytes:bytes,maxOriginRowDifference:maxRowDifference,checks:'SHA-256, finite/nonnegative full matrices, twelve months, directed path continuity, no inferred edges, demand balance, origin totals, arc loads'},null,2));
+assert.equal(radio.monday2024.clusterSize,36);
+assert.equal(radio.monday2024.routePool,220);
+assert(Math.abs(radio.monday2024.radiusMeters-944.47)<.02);
+console.log(JSON.stringify({status:'PASS',frames:checkedFrames,nodes:n,links:F.links.length,compressedMatricesBytes:bytes,radioMeters:radio,maxOriginRowDifference:maxRowDifference,checks:'SHA-256, finite/nonnegative full matrices, twelve months, directed path continuity, no inferred edges, demand balance, origin totals, arc loads'},null,2));

@@ -1,0 +1,131 @@
+{
+  "status": "PASS",
+  "acquisition_sha256": "2ba6ae9311575fb1c2a6024f4d0fac8cad3e8f41b397f5c7717b32f63da5aa36",
+  "months": {
+    "2025-01": {
+      "rows": 9665750,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-01.parquet",
+      "parquet_sha256": "a50df379ab255d4f21ae8a8f71de1ed4b7ceb8547a661321afdcd1401bcffc6c",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:17:46.956934+00:00"
+    },
+    "2025-02": {
+      "rows": 9528359,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-02.parquet",
+      "parquet_sha256": "3b07c894123a0db0177e89f3cf370b1b629d53d178e7525bd2fa08329e8cfb4f",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:17:55.042904+00:00"
+    },
+    "2025-03": {
+      "rows": 10086044,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-03.parquet",
+      "parquet_sha256": "6117e81d7fa96db54b0ab7bd2f296fe9c4bb8b518939021f250d53e6a4ced8b3",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:18:03.336648+00:00"
+    },
+    "2025-04": {
+      "rows": 10084297,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-04.parquet",
+      "parquet_sha256": "e159b671e9412e428b8058c49d918ec7209d5424555a74a04ad728c83f044628",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:18:11.580105+00:00"
+    },
+    "2025-05": {
+      "rows": 10448294,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-05.parquet",
+      "parquet_sha256": "1b97274dd18950726740f1a43164f03af94273e4bf58eb361d8ddb865c97b389",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:18:20.063205+00:00"
+    },
+    "2025-06": {
+      "rows": 10405300,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-06.parquet",
+      "parquet_sha256": "d56cc2ada25a6cab86a06001609eec8417f3af83ce9d88645a63b7519edc8269",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:18:28.631503+00:00"
+    },
+    "2025-07": {
+      "rows": 9868373,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-07.parquet",
+      "parquet_sha256": "e6eed486d458e0e4a79a848ea1f271f7edf51ee6c4fa7faa80b5a130de8db3a5",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:18:36.686443+00:00"
+    },
+    "2025-08": {
+      "rows": 10084286,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-08.parquet",
+      "parquet_sha256": "be87af20e06bfac4247161b6daa6cc38789d70499dc336ffb43d6b416df8010a",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:18:44.938134+00:00"
+    },
+    "2025-09": {
+      "rows": 10332355,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-09.parquet",
+      "parquet_sha256": "3b0f4790668fd021aaf3924a0115850acae9f9a28b9bbf193c65152da7d744cc",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:18:53.814493+00:00"
+    },
+    "2025-10": {
+      "rows": 10319756,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-10.parquet",
+      "parquet_sha256": "f8114f9672710e7b954ad646f5d3b4f952f1bee4cce9aba419e11175dacd5315",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:19:02.294966+00:00"
+    },
+    "2025-11": {
+      "rows": 10201776,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-11.parquet",
+      "parquet_sha256": "758659b6fd198f15b75f235e12081e1a6985d45f730ceb954bd745894888fd8a",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:19:11.341369+00:00"
+    },
+    "2025-12": {
+      "rows": 10185384,
+      "original_fields": 16,
+      "parquet_file": "data/raw/od_2025_2026/parquet/2025-12.parquet",
+      "parquet_sha256": "de8ca04e026a2a8f483b8e42969ffd79b6a3bba67472146e47d5c9830a9cc0d2",
+      "official_control_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "official_control_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "official_control_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "checked_at_utc": "2026-11-13T22:19:19.677811+00:00"
+    }
+  },
+  "meaning": "Checksums of estimated averages are controls, not monthly trip totals.",
+  "started_at_utc": "2026-11-13T22:17:38.911901+00:00",
+  "months_validated": 12,
+  "records": 121209974,
+  "finished_at_utc": "2026-11-13T22:19:19.678968+00:00"
+}

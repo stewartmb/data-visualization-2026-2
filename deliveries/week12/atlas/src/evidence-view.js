@@ -12,7 +12,12 @@ export function renderEvidence(host,app,items){
   <div class="source-row"><b>4. Límite de interpretación · operación nocturna en 2021</b><br>El cierre nocturno explica que no debamos equiparar ausencia de entradas con falta de demanda. El servicio de 24 horas se reanudó el 17 de mayo de 2021.<br><a href="https://www.mta.info/press-release/mta-partners-dining-dignitaries-welcome-back-247-subway-service-and-100-percent" target="_blank" rel="noopener">Comunicado MTA ↗</a></div>
   <p class="method-note">La forma se calcula a partir de un promedio por lunes, martes, etc., y después se normaliza a 100 %. Distancia TV = ½Σ|p<sub>a</sub> − p<sub>b</sub>| × 100. Las celdas sin registros se representan como cero entradas; no prueban servicio disponible. No se infieren viajes, causas ni frecuencias óptimas.</p><p><a href="../redesign/03-datos-y-metodos.md">Metodología completa ↗</a> · <a href="../redesign/02-investigacion-y-diseno.md">Papers y decisiones de diseño ↗</a></p>`;
   host.querySelectorAll('[data-station]').forEach(b=>b.onclick=()=>app.select(b.dataset.station));
-  host.querySelectorAll('[data-saved]').forEach(b=>b.onclick=()=>location.search=saved[+b.dataset.saved].url);
+  host.querySelectorAll('[data-saved]').forEach(b=>b.onclick=()=>{
+    const params=new URLSearchParams(saved[+b.dataset.saved].url);
+    if(params.has('station')&&!params.has('inspect'))params.set('inspect',params.get('station'));
+    params.delete('station');
+    location.search=params.toString();
+  });
   const section=document.createElement('div');section.className='source-row';section.innerHTML=`<b>5. Contexto adicional revisado: base 2020 y obras en 2024</b>${(app.data.events||[]).filter(e=>e.scope!=='all').map(e=>`<p><a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.title)} ↗</a><br>${esc(e.description)}</p>`).join('')}<small>Selección manual de casos; no es un inventario exhaustivo de interrupciones. Las reglas de vinculación están publicadas en context_events.json.</small>`;
   host.querySelector('.method-note').before(section);
 }

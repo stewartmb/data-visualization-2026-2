@@ -1,15 +1,15 @@
-import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=backend-first';
-import {RaebRenderer} from './raeb-renderer.mjs';
-import {RaebWebGPU} from './raeb-webgpu.mjs?v=bands1';
+import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=flow-gray1';
+import {RaebRenderer} from './raeb-renderer.mjs?v=flow-gray1';
+import {RaebWebGPU} from './raeb-webgpu.mjs?v=flow-gray1';
 
 // D3 retains interaction and linked panels. CPU prepares route hierarchies;
 // density, motion, convergence and flow rasterization stay on the GPU.
 export class RaebOverlay extends RaebCPUOverlay{
- constructor(data){
+ constructor(data,{paper=false,dataURL,latitude}={}){
   // Do not create a WebGL context until the preferred WebGPU backend fails.
   const disabled=new URLSearchParams(location.search).get('compute')==='cpu';
   const renderer=disabled?new RaebRenderer():new RaebWebGPU();
-  super(data,{renderer});
+  super(data,{renderer,paper,dataURL,latitude});
   this.gpu=!disabled;this.cpuRenderer=disabled?renderer:null;this.failed=false;
   if(disabled){renderer.canvas.dataset.backend='cpu';this.backendReady=Promise.resolve(false);return;}
   const gpu=this.gpuRenderer=renderer;
@@ -28,7 +28,8 @@ export class RaebOverlay extends RaebCPUOverlay{
    old.canvas.dataset.backend='unavailable';old.canvas.dataset.gpuFallback=error.message;old.canvas.dataset.webglError=fallbackError.message;
    this.backendError=message;this.status(message);console.error(message,{webgpu:error.message,webgl2:fallbackError.message});return false;
   }
-  cpu.selected=old.selected;cpu.canvas.style.cssText=old.canvas.style.cssText;
+  this.rendererMode(cpu);cpu.selected=old.selected;cpu.canvas.style.cssText=old.canvas.style.cssText;
+  cpu.colorMax=old.colorMax;
   if(old.canvas.parentNode)old.canvas.replaceWith(cpu.canvas);
   this.renderer=cpu;old.dispose();
   cpu.canvas.dataset.backend='cpu';cpu.canvas.dataset.gpuFallback=error.message;
@@ -46,11 +47,15 @@ export class RaebOverlay extends RaebCPUOverlay{
   if(this.failed)return;
   if(!this.gpu)return super.paintReference();
   if(this.exactGroup)this.exactGroup.style.display='none';
+  if(this.paper&&!this.onTracks)return;
   this.renderer.setRailLoads(this.data.flows[String(this.year)]?.[this.day]?.[this.hour],this.selectedLinks);
  }
  request(){
   if(this.failed)return;
-  if(!this.gpu)return super.request();if(!this.renderer.count)return;
+  if(!this.gpu)return super.request();
+  clearTimeout(this.parameterTimer);
+  if(this.onTracks)return this.status('Sobre la vía');
+  if(!this.renderer.count)return;
   this.worker.postMessage({type:'gpuParameters',sourceId:this.sourceId,id:++this.requestId,fidelity:this.fidelity??.9,strength:this.strength??.65});
  }
  async message(m){
@@ -62,7 +67,8 @@ export class RaebOverlay extends RaebCPUOverlay{
    try{
     if(this.solverTask)await this.solverTask;if(m.sourceId!==this.sourceId)return;
     await this.renderer.setScene({...m,free:new Float32Array(m.free),reference:new Float32Array(m.reference),metadata:new Float32Array(m.metadata),retention:new Float32Array(m.retention),railInfo:new Float32Array(m.railInfo),railVertices:new Float32Array(m.railVertices)});
-    if(m.sourceId!==this.sourceId)return;this.paintReference();this.request();
+    if(m.sourceId!==this.sourceId)return;
+    this.kernel=m.kernel;this.onKernel?.(this.kernel);this.paintReference();this.request();
    }catch(error){this.fallback(error);}return;
   }
   if(!this.gpu)return super.message(m);

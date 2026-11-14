@@ -4,29 +4,37 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Fractal · Atlas de ritmos</title>
   <meta name="description" content="Explora cómo cambiaron los ritmos de entrada al metro de Nueva York, con entradas 2019–2024, OD 2021–2024 y perfiles de 168 horas.">
-  <link rel="stylesheet" href="src/style.css?v=20261028-release1">
+  <link rel="stylesheet" href="src/style.css?v=scatter-reading1">
 </head>
 <body>
-<div id="loading" role="status"><span class="loading-mark">▥</span> Preparando el atlas de ritmos…</div>
+<div id="loading" role="status"><span class="map-spinner" aria-hidden="true"></span> Preparando el atlas de ritmos…</div>
 <header class="masthead">
   <a href="./" class="brand" aria-label="Inicio"><span class="brand-icon" aria-hidden="true">▥</span><span>Fractal<small>ATLAS DE RITMOS · NUEVA YORK</small></span></a>
-  <button id="help" class="quiet" style="margin-left:auto" title="Qué es, con qué datos y cómo se lee">Acerca</button>
 </header>
 <div class="app-shell">
   <main id="main">
-    <div class="context-bar"><label for="year">Flujos OD</label>
-      <select id="year" aria-label="Año del mapa y objetivo del contraste"><option value="2024">2024</option><option value="2023">2023</option><option value="2022">2022</option><option value="2021">2021</option></select>
+    <div class="context-bar">
       <select id="borough" aria-label="Zona"><option value="all">Todos los boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option></select>
       <input id="search" type="search" placeholder="Buscar complejo" aria-label="Buscar complejo" autocomplete="off">
       <span class="context-divider">/</span><b id="cohort-count">—</b> <span id="cohort-note" aria-live="polite">Todo el sistema</span> <button id="reset" class="text-button">↺</button>
       <span id="selection-label">Selecciona un complejo para investigar</span></div>
-    <div id="content"></div>
+    <div class="map-workspace">
+      <div id="content"></div>
+      <div class="od-year-strip" aria-label="Años del mapa">
+        <div id="od-years" class="od-years" role="group" aria-label="Elegir año"></div>
+        <div class="od-year-controls">
+          <span id="od-preview-period" class="od-year-period"></span>
+          <span class="od-preview-key">Carga OD por tramo <i aria-hidden="true"></i><span>Menos a más</span></span>
+          <button type="button" id="od-compare" class="od-compare" aria-describedby="od-compare-status">Comparar</button>
+          <span id="od-compare-status" class="od-compare-status" aria-live="polite"></span>
+        </div>
+      </div>
+    </div>
     <footer class="main-footer"><span id="footer-status" role="status"></span><span><button id="save" class="text-button">Guardar exploración</button> · <button id="export" class="text-button">Exportar CSV</button></span></footer>
   </main>
 </div>
 <aside id="inspector" class="inspector" aria-label="Detalle del complejo"></aside>
 <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
 <div id="toast" class="toast" role="status" hidden></div>
-<dialog id="guide"><button id="close-guide" class="close" aria-label="Cerrar">×</button><div id="guide-body"></div></dialog>
-<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=20261028-backend-first"></script>
+<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=nyc-only1"></script>
 </body></html>

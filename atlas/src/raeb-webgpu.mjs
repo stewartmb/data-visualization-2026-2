@@ -1,4 +1,5 @@
-import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=bands1';
+import {initialKernelRadius} from './raeb-core.mjs?v=raeb-rail1';
+import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=flow-gray1';
 const ENTRIES={initialize:[0,1,3,4,7,8],splat:[0,1,8,9],decodeDensity:[0,9,10],convolve:[0,10,11],maximum:[0,11,13],maximumFinal:[13,14],boost:[0,11,12,14],advect:[0,1,2,3,4,5,6,11],smoothPoints:[0,1,2,3,4,5,6],rasterCurves:[0,1,6,7,15],rasterRails:[0,15,23,24],rasterGuide:[0,12,23,24],image:[0,15,17],histogram:[0,16,17,18,19,20],mutualInformation:[0,18,19,20,21],mutualInformationFinal:[21,22]};
 export class RaebWebGPU{
  constructor(){
@@ -21,7 +22,7 @@ export class RaebWebGPU{
   this.uniformCompute=this.create(96,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST,'compute parameters');
   this.uniformDraw=this.create(96,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST,'drawing parameters');
   this.statsRead=this.create(16,GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ,'NMI readback');
-  this.canvas.dataset.renderer='WebGPU compute + merged ribbons';this.canvas.dataset.bundleStyle='merged-ribbons';this.canvas.dataset.backend='webgpu';return this;
+  this.canvas.dataset.renderer=this.paper?'WebGPU compute + optical density':'WebGPU compute + merged ribbons';this.canvas.dataset.bundleStyle=this.paper?'optical-density':'merged-ribbons';this.canvas.dataset.backend='webgpu';return this;
  }
  create(size,usage,label){
   if(size>this.device.limits.maxBufferSize)throw Error(`La GPU no admite el buffer ${label} (${size} bytes)`);
@@ -50,7 +51,9 @@ export class RaebWebGPU{
    const rx=this.canvas.width/this.width,ry=this.canvas.height/this.height,c=this.camera;
    f.set([c.k*s.gridToCss[0]*rx,c.k*s.gridToCss[1]*ry,(c.x-c.k*s.gridToCss[0])*rx,(c.y-c.k*s.gridToCss[1])*ry],12);
   }
-  f.set([this.width,this.height,...s.gridToCss],16);u[20]=analysis?0:1;return data;
+  f.set([this.width,this.height,...s.gridToCss],16);u[20]=analysis?0:1;u[21]=this.paper?1:0;
+  if(!analysis)f[22]=this.colorMax||0;
+  return data;
  }
  resources(uniform=this.uniformCompute,extra={}){return new Map([[0,uniform],...this.buffers,...Object.entries(extra).map(([k,v])=>[+k,v])]);}
  pass(encoder,key,resources,x,y=1){
@@ -79,21 +82,29 @@ export class RaebWebGPU{
   this.device.queue.writeBuffer(this.buffers.get(24),0,this.railData);this.schedule();
  }
  raster(encoder,resources,{image=false}={}){
-  encoder.clearBuffer(resources.get(15));this.pass(encoder,'rasterCurves',resources,Math.ceil(this.count/64));this.pass(encoder,'rasterRails',resources,Math.ceil(this.linkCount/64));
+  const onTracks=this.paper&&!image&&this.parameters.fidelity===1&&this.parameters.strength===0;
+  encoder.clearBuffer(resources.get(15));
+  if(!onTracks)this.pass(encoder,'rasterCurves',resources,Math.ceil(this.count/64));
+  if(onTracks||!this.paper)this.pass(encoder,'rasterRails',resources,Math.ceil(this.linkCount/64));
   if(image)this.pass(encoder,'image',resources,Math.ceil(this.scene.width*this.scene.height/256));
  }
- async solve(fidelity,strength,{cancelled=()=>false,onIteration=()=>{},maxIterations=48,stability=.8}={}){
+ async solve(fidelity,strength,{cancelled=()=>false,onIteration=()=>{},maxIterations=this.paper?150:48,stability=.8}={}){
+  if(this.paper)fidelity=Math.round(fidelity*5)/5;
   const generation=this.generation,started=performance.now(),key=`${fidelity}/${strength}`;this.parameters={fidelity,strength};
   const cached=this.layouts.get(key);
   if(cached){const e=this.device.createCommandEncoder();e.copyBufferToBuffer(cached.buffer,0,this.buffers.get(1),0,this.pointBytes);this.device.queue.submit([e.finish()]);await this.device.queue.onSubmittedWorkDone();this.schedule();return {...cached.stats,cacheHit:true,ms:performance.now()-started};}
-  this.bindLevel(Math.floor(fidelity*5),Math.ceil(fidelity*5));
-  let radius=Math.max(.05,this.scene.kernel.radius*strength),iterations=0,nmi=1;
+  const level=fidelity*5;this.bindLevel(this.paper?Math.round(level):Math.floor(level),this.paper?Math.round(level):Math.ceil(level));
+  const initialRadius=strength>0?initialKernelRadius(this.scene.kernel,strength):0;
+  let radius=initialRadius,iterations=0,nmi=1;
   this.device.queue.writeBuffer(this.uniformCompute,0,this.params({fidelity,strength,radius,analysis:true}));
   let e=this.device.createCommandEncoder();let resources=this.resources();this.pass(e,'initialize',resources,Math.ceil(this.count/256));e.clearBuffer(this.buffers.get(12));this.pass(e,'rasterGuide',resources,Math.ceil(this.linkCount/64));
-  this.raster(e,resources,{image:true});this.device.queue.submit([e.finish()]);await this.device.queue.onSubmittedWorkDone();
+  if(!this.paper)this.raster(e,resources,{image:true});
+  this.device.queue.submit([e.finish()]);await this.device.queue.onSubmittedWorkDone();
   // Initial image becomes the previous image. The same rasterizer draws the map.
-  let prev=this.buffers.get(16);this.buffers.set(16,this.buffers.get(17));this.buffers.set(17,prev);this.schedule();
-  if(strength>0&&fidelity<1&&this.count){
+  let prev=this.buffers.get(16);
+  if(!this.paper){this.buffers.set(16,this.buffers.get(17));this.buffers.set(17,prev);}
+  this.schedule();
+  if(strength>0&&(this.paper||fidelity<1)&&this.count){
    for(let iteration=0;iteration<maxIterations;iteration++){
     if(cancelled()||generation!==this.generation)return null;
     this.device.queue.writeBuffer(this.uniformCompute,0,this.params({fidelity,strength,radius,analysis:true}));e=this.device.createCommandEncoder();resources=this.resources();
@@ -101,16 +112,18 @@ export class RaebWebGPU{
     this.pass(e,'convolve',resources,Math.ceil(this.scene.width/8),Math.ceil(this.scene.height/8));this.pass(e,'maximum',resources,Math.ceil(this.scene.width*this.scene.height/256));this.pass(e,'maximumFinal',resources,1);this.pass(e,'boost',resources,Math.ceil(this.scene.width*this.scene.height/256));
     this.pass(e,'advect',resources,Math.ceil(this.count*this.samples/256));this.pass(e,'smoothPoints',resources,Math.ceil(this.count*this.samples/256));
     this.raster(e,resources,{image:true});for(const binding of [18,19,20])e.clearBuffer(this.buffers.get(binding));
-    this.pass(e,'histogram',resources,Math.ceil(this.scene.width*this.scene.height/256));this.pass(e,'mutualInformation',resources,256);this.pass(e,'mutualInformationFinal',resources,1);
-    e.copyBufferToBuffer(this.buffers.get(22),0,this.statsRead,0,16);this.device.queue.submit([e.finish()]);
-    await this.statsRead.mapAsync(GPUMapMode.READ);nmi=new Float32Array(this.statsRead.getMappedRange())[0];this.statsRead.unmap();
+    if(!this.paper||iteration>0){
+     this.pass(e,'histogram',resources,Math.ceil(this.scene.width*this.scene.height/256));this.pass(e,'mutualInformation',resources,256);this.pass(e,'mutualInformationFinal',resources,1);
+     e.copyBufferToBuffer(this.buffers.get(22),0,this.statsRead,0,16);this.device.queue.submit([e.finish()]);
+     await this.statsRead.mapAsync(GPUMapMode.READ);nmi=new Float32Array(this.statsRead.getMappedRange())[0];this.statsRead.unmap();
+    }else{this.device.queue.submit([e.finish()]);await this.device.queue.onSubmittedWorkDone();nmi=0;}
     if(cancelled()||generation!==this.generation)return null;
     iterations=iteration+1;prev=this.buffers.get(16);this.buffers.set(16,this.buffers.get(17));this.buffers.set(17,prev);radius*=.9;
     onIteration({iterations,nmi});this.schedule();if(nmi>=stability)break;
    }
   }
   if(cancelled()||generation!==this.generation)return null;
-  const result={backend:'webgpu',iterations,nmi,converged:nmi>=stability||strength<=0||fidelity===1,ms:performance.now()-started,kernel:this.scene.kernel,stabilityImage:'canonical optical density before ribbon styling',pointReadbacks:0};
+  const result={backend:'webgpu',iterations,nmi,converged:nmi>=stability||strength<=0||(!this.paper&&fidelity===1),ms:performance.now()-started,kernel:this.scene.kernel,initialRadiusPx:iterations?initialRadius:0,mode:this.paper?'paper':'atlas',stabilityImage:this.paper?'optical density of grouped curves':'canonical optical density before ribbon styling',pointReadbacks:0};
   const buffer=this.storage(this.pointBytes,'cached layout');e=this.device.createCommandEncoder();e.copyBufferToBuffer(this.buffers.get(1),0,buffer,0,this.pointBytes);this.device.queue.submit([e.finish()]);this.layouts.set(key,{buffer,stats:result});
   if(this.layouts.size>2){const oldest=this.layouts.keys().next().value;this.layouts.get(oldest).buffer.destroy();this.layouts.delete(oldest);}this.canvas.dataset.layoutStats=JSON.stringify(result);this.schedule();return result;
  }

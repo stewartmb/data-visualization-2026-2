@@ -1,6 +1,9 @@
 // RAEB/KDEEB numerical core. Paper sections 3.1, 4.3–5.2 and 6.1.
-// Rail adaptation: hier(r)=1 (no fictitious road classes); controls normalize
-// route awareness to [0,1] and multiply the automatically estimated kernel.
+// Rail adaptation: hier(r)=1, since GTFS has no road categories.
+import {metersPerRadian} from './raeb-scale.mjs?v=free-years1';
+
+export const RAIL_DBSCAN_METERS = 1_000;
+const MIN_CLUSTER_ROUTES = 8;
 export const LEVELS=[0,.05,.10,.20,.40,1];
 export const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 
@@ -29,37 +32,114 @@ export function discreteFrechet(a,b){
 }
 
 export function routeHierarchy(links){
-  const maxLen=Math.max(1,...links.map(l=>l.len)),maxFlow=Math.max(1,...links.map(l=>l.reference_flow||0));
+  const maxLen=Math.max(0,...links.map(l=>l.len))||1,maxFlow=Math.max(0,...links.map(l=>l.reference_flow||0))||1;
   const ranked=links.map((l,i)=>({i,score:.3*l.len/maxLen+.1+.6*(l.reference_flow||0)/maxFlow})).sort((a,b)=>b.score-a.score||a.i-b.i);
   const level=new Uint8Array(links.length);
   for(let k=1;k<LEVELS.length;k++)for(let j=0;j<Math.ceil(LEVELS[k]*ranked.length);j++)if(!level[ranked[j].i])level[ranked[j].i]=k;
   return {ranked,level};
 }
 
-export function estimateKernel(routes,ranked,width,height){
-  // Algorithm 1: Frechet distances, DBSCAN and half the largest cluster's
-  // average distance. A small rail graph needs a declared minimum pool.
-  const size=Math.min(routes.length,Math.max(16,Math.ceil(routes.length*.01)));
-  const selected=ranked.slice(0,size).map(r=>resample(routes[r.i],12));
-  const distances=Array.from({length:size},()=>new Float64Array(size));
-  for(let i=0;i<size;i++)for(let j=i+1;j<size;j++)distances[i][j]=distances[j][i]=discreteFrechet(selected[i],selected[j]);
-  const epsilon=5,minNum=Math.min(8,size),visited=new Uint8Array(size),labels=new Int32Array(size).fill(-1),clusters=[];
-  const neighbors=i=>Array.from({length:size},(_,j)=>j).filter(j=>distances[i][j]<=epsilon);
-  for(let i=0;i<size;i++){
-    if(visited[i])continue;visited[i]=1;const near=neighbors(i);if(near.length<minNum)continue;
-    const cluster=[],queue=[...near],id=clusters.length;
-    for(let q=0;q<queue.length;q++){
-      const j=queue[q];if(!visited[j]){visited[j]=1;const nn=neighbors(j);if(nn.length>=minNum)for(const k of nn)if(!queue.includes(k))queue.push(k);}
-      if(labels[j]<0){labels[j]=id;cluster.push(j);}
+function largestCluster(size, distance, epsilon, minimum) {
+  const visited = new Uint8Array(size);
+  const assigned = new Uint8Array(size);
+  const neighbors = Array.from({length:size}, () => []);
+  for (let i = 0; i < size; i++) {
+    for (let j = i; j < size; j++) {
+      if (distance(i, j) > epsilon) continue;
+      neighbors[i].push(j);
+      if (i !== j) neighbors[j].push(i);
     }
-    clusters.push(cluster);
   }
-  const largest=clusters.sort((a,b)=>b.length-a.length)[0];
-  const pool=largest?.length>1?largest:Array.from({length:size},(_,i)=>i);
-  let total=0,pairs=0;
-  for(const i of pool)for(const j of pool)if(i!==j){total+=distances[i][j];pairs++;}
-  const raw=pairs?total/pairs/2:Math.min(width,height)*.04;
-  return {radius:clamp(raw,2,Math.min(width,height)*.10),rawRadius:raw,dbscanFallback:!largest,routePool:size};
+  let largest = [];
+  for (let i = 0; i < size; i++) {
+    if (visited[i]) continue;
+    visited[i] = 1;
+    if (neighbors[i].length < minimum) continue;
+    const queue = new Set(neighbors[i]);
+    const cluster = [];
+    for (const j of queue) {
+      if (!visited[j]) {
+        visited[j] = 1;
+        if (neighbors[j].length >= minimum) {
+          for (const k of neighbors[j]) queue.add(k);
+        }
+      }
+      if (!assigned[j]) {
+        assigned[j] = 1;
+        cluster.push(j);
+      }
+    }
+    if (cluster.length > largest.length) largest = cluster;
+  }
+  return largest;
+}
+
+function halfMeanDistance(group, distance) {
+  let sum = 0;
+  for (let i = 0; i < group.length; i++) {
+    for (let j = i + 1; j < group.length; j++) sum += distance(group[i], group[j]);
+  }
+  return group.length > 1 ? sum / (group.length * (group.length - 1)) : 0;
+}
+
+// Evaluate Algorithm 1 in local metric coordinates so the calibration does
+// not change with viewport size. The cache depends only on GTFS geometry.
+export function makeRailKernelEstimator(links, latitude) {
+  const size = links.length;
+  const radians = Math.PI / 180;
+  const scale = metersPerRadian(latitude);
+  const lon0 = links[0]?.coords[0]?.[0] ?? 0;
+  const geometry = links.map(link => {
+    const xy = link.coords.map(([lon, lat]) => [
+      scale * (lon - lon0) * radians,
+      scale * Math.log(Math.tan(Math.PI / 4 + lat * radians / 2))
+    ]);
+    return [Float64Array.from(xy.flat()), Float64Array.from(xy.slice().reverse().flat())];
+  });
+  const distances = new Float64Array(size * size).fill(-1);
+  function routeDistance(a, b) {
+    if (a === b) return 0;
+    const i = Math.min(a, b);
+    const j = Math.max(a, b);
+    const offset = i * size + j;
+    if (distances[offset] < 0) {
+      const [forward, reverse] = geometry[j];
+      // A physical segment can carry both directions. Its digitization
+      // direction should not affect the distance used by DBSCAN.
+      distances[offset] = Math.min(discreteFrechet(geometry[i][0], forward), discreteFrechet(geometry[i][0], reverse));
+    }
+    return distances[offset];
+  }
+  return ranked => {
+    for (const fraction of [.01, ...LEVELS.slice(1)]) {
+      const routePool = Math.ceil(fraction * ranked.length);
+      if (routePool < MIN_CLUSTER_ROUTES) continue;
+      const distance = (i, j) => routeDistance(ranked[i].i, ranked[j].i);
+      const cluster = largestCluster(routePool, distance, RAIL_DBSCAN_METERS, MIN_CLUSTER_ROUTES);
+      if (cluster.length) {
+        return {radiusMeters:halfMeanDistance(cluster, distance), routePool, fraction, clusterSize:cluster.length};
+      }
+    }
+    return {radiusMeters:null, routePool:ranked.length, fraction:1, clusterSize:0};
+  };
+}
+
+function estimateAtlasKernel(routes, ranked, width, height) {
+  const routePool = Math.min(routes.length, Math.max(16, Math.ceil(routes.length * .01)));
+  const selected = ranked.slice(0, routePool).map(route => resample(routes[route.i], 12));
+  const distances = Array.from({length:routePool}, () => new Float64Array(routePool));
+  for (let i = 0; i < routePool; i++) {
+    for (let j = i + 1; j < routePool; j++) distances[i][j] = distances[j][i] = discreteFrechet(selected[i], selected[j]);
+  }
+  const distance = (i, j) => distances[i][j];
+  const cluster = largestCluster(routePool, distance, 5, Math.min(8, routePool));
+  const group = cluster.length > 1 ? cluster : Array.from({length:routePool}, (_, i) => i);
+  const rawRadius = group.length > 1 ? halfMeanDistance(group, distance) : Math.min(width, height) * .04;
+  return {radius:clamp(rawRadius, 2, Math.min(width, height) * .10), rawRadius, dbscanFallback:!cluster.length, routePool};
+}
+
+export function initialKernelRadius(kernel, strength) {
+  return kernel.gridPerMeter ? strength * kernel.gridPerMeter : Math.max(.05, kernel.radius * strength);
 }
 
 export function normalizedMI(a,b){
@@ -130,13 +210,25 @@ export function trailImage(points,weights,samples,width,height){
   return Uint8Array.from(optical,v=>Math.round(255*(1-Math.exp(-v))));
 }
 
-export function makeScene(nodes,links,paths,weights,width,height,samples=32){
-  const gw=clamp(Math.round(width/4),192,320),gh=Math.max(96,Math.round(height*gw/width)),sx=(gw-3)/width,sy=(gh-3)/height;
+export function makeScene(nodes,links,paths,weights,width,height,samples=32,{paper=false,calibrate,metersPerPixel}={}){
+  const gw=clamp(Math.round(width/4),192,320),gh=Math.max(96,Math.round(height*gw/width)),gridX=(gw-3)/width,gridY=(gh-3)/height;
+  const sx=paper?Math.min(gridX,gridY):gridX,sy=paper?sx:gridY;
   const project=p=>[p[0]*sx+1,p[1]*sy+1];
   const nodeXY=nodes.map(project),routes=links.map(l=>l.points.map(project));
-  const hierarchy=routeHierarchy(links),kernel=estimateKernel(routes,hierarchy.ranked,gw,gh);
   const n=nodes.length,active=[];
   for(let pair=0;pair<weights.length;pair++)if(weights[pair]>0&&paths[pair]?.length)active.push(pair);
+  // RAEB ranks routes by the traffic in the trails being bundled.
+  const traffic=paper?new Float64Array(links.length):null;
+  if(traffic)for(const pair of active)for(const arc of paths[pair])traffic[arc>>1]+=weights[pair];
+  const hierarchy=routeHierarchy(traffic?links.map((l,i)=>({...l,reference_flow:traffic[i]})):links);
+  let kernel;
+  if (paper && calibrate) {
+    const calibration = calibrate(hierarchy.ranked);
+    const gridPerMeter = sx / metersPerPixel;
+    kernel = {...calibration, gridPerMeter, radius:calibration.radiusMeters * gridPerMeter};
+  } else {
+    kernel = estimateAtlasKernel(routes, hierarchy.ranked, gw, gh);
+  }
   const metadata=new Float32Array(active.length*4),seedCache=new Map();
   for(let i=0;i<active.length;i++){const pair=active[i];metadata.set([weights[pair],Math.floor(pair/n),pair%n,0],i*4);}
   const sampleLevels=new Float32Array(active.length*samples);
@@ -153,9 +245,10 @@ export function makeScene(nodes,links,paths,weights,width,height,samples=32){
         else for(const p of r){poly.push(p);tags.push(tag);}
       }
       poly.push(destination);tags.push(tags.at(-1));
+      const kept=[0];for(let j=1;j<poly.length-1;j++)if(tags[j]<=level)kept.push(j);kept.push(poly.length-1);
+      if(paper){points.set(resample(kept.map(j=>poly[j]),samples),i*samples*2);continue;}
       const lengths=new Float64Array(poly.length);
       for(let j=1;j<poly.length;j++)lengths[j]=lengths[j-1]+Math.hypot(poly[j][0]-poly[j-1][0],poly[j][1]-poly[j-1][1]);
-      const kept=[0];for(let j=1;j<poly.length-1;j++)if(tags[j]<=level)kept.push(j);kept.push(poly.length-1);
       let next=1,original=1;const total=lengths.at(-1);
       for(let j=0;j<samples;j++){
         // All hierarchy levels use the ORIGINAL route arc-length parameter.
@@ -188,6 +281,7 @@ export function makeScene(nodes,links,paths,weights,width,height,samples=32){
     return field;
   }
   function seedAt(f){
+    if(paper)return seed(Math.round(f*5)).slice();
     const k=f*5,lo=Math.floor(k),hi=Math.ceil(k),a=seed(lo);if(lo===hi)return a.slice();
     const b=seed(hi),out=new Float32Array(a.length),t=k-lo;
     for(let i=0;i<out.length;i++)out[i]=a[i]+t*(b[i]-a[i]);return out;
@@ -196,20 +290,22 @@ export function makeScene(nodes,links,paths,weights,width,height,samples=32){
     const result=new Float32Array(points.length);
     for(let i=0;i<result.length;i+=2){result[i]=(points[i]-1)/sx;result[i+1]=(points[i+1]-1)/sy;}return result;
   }
-  return {gridToCss:[1/sx,1/sy],hierarchy,nodeCount:n,width:gw,height:gh,samples,active,metadata,kernel,routes,seed,seedAt,guide,retention,sampleLevels,css,weights:active.map(p=>weights[p]),scale:Math.max(1/sx,1/sy)};
+  return {paper,gridToCss:[1/sx,1/sy],hierarchy,nodeCount:n,width:gw,height:gh,samples,active,metadata,kernel,routes,seed,seedAt,guide,retention,sampleLevels,css,weights:active.map(p=>weights[p]),scale:Math.max(1/sx,1/sy)};
 }
 
-export async function bundle(scene,fidelity,strength,{cancelled=()=>false,progress=()=>{},maxIterations=48}={}){
-  const started=performance.now(),{width,height,samples}=scene;
+export async function bundle(scene,fidelity,strength,{cancelled=()=>false,progress=()=>{},maxIterations=scene.paper?150:48}={}){
+  const started=performance.now(),{width,height,samples,paper}=scene;
+  if(paper)fidelity=Math.round(fidelity*5)/5;
   const reference=scene.seed(5),points=scene.seedAt(fidelity);
-  if(strength<=0||fidelity>=1||!scene.active.length)return {points:scene.css(points),stats:{iterations:0,nmi:1,converged:true,ms:performance.now()-started,kernel:scene.kernel}};
-  const seed=points.slice(),guide=scene.guide(fidelity),retained=scene.retention(fidelity);
+  if(strength<=0||(!paper&&fidelity>=1)||!scene.active.length)return {points:scene.css(points),stats:{iterations:0,nmi:1,converged:true,ms:performance.now()-started,kernel:scene.kernel,initialRadiusPx:0}};
+  const seed=points.slice(),guide=scene.guide(fidelity),retained=paper?null:scene.retention(fidelity);
   const masses=new Float32Array(scene.active.length);
   for(let c=0;c<masses.length;c++){
     let len=0;for(let j=1;j<samples;j++){const k=(c*samples+j)*2;len+=Math.hypot(points[k]-points[k-2],points[k+1]-points[k-1]);}
-    masses[c]=scene.weights[c]*Math.max(1,len/(samples-1));
+    masses[c]=scene.weights[c]*(paper?len/(samples-1):Math.max(1,len/(samples-1)));
   }
-  let radius=Math.max(.05,scene.kernel.radius*strength),previous=trailImage(points,scene.weights,samples,width,height),nmi=0,iterations=0;
+  const initialRadius=initialKernelRadius(scene.kernel,strength);
+  let radius=initialRadius,previous=paper?null:trailImage(points,scene.weights,samples,width,height),nmi=0,iterations=0;
   let next=new Float32Array(points.length);
   for(let iteration=0;iteration<maxIterations;iteration++){
     if(cancelled())return null;
@@ -217,20 +313,30 @@ export async function bundle(scene,fidelity,strength,{cancelled=()=>false,progre
     let max=0;for(const v of field)max=Math.max(max,v);
     for(let i=0;i<field.length;i++)field[i]+=1.1*max*guide[i];
 
+    function gradient(index,offset){
+      return field[index+offset]-field[index-offset];
+    }
     for(let c=0;c<masses.length;c++)for(let j=0;j<samples;j++){
       const k=(c*samples+j)*2,x=points[k],y=points[k+1];
       if(j===0||j===samples-1){next[k]=seed[k];next[k+1]=seed[k+1];continue;}
-      const binding=retained[c*samples+j];
+      const binding=retained?.[c*samples+j]??0;
       if(binding===1){next[k]=reference[k];next[k+1]=reference[k+1];continue;}
       const ix=clamp(Math.round(x),1,width-2),iy=clamp(Math.round(y),1,height-2),p=iy*width+ix;
-      const dx=field[p+1]-field[p-1],dy=field[p+width]-field[p-width],len=Math.hypot(dx,dy)||1;
+      let dx=gradient(p,1),dy=gradient(p,width);
+      if(paper){
+        const qx=clamp(x,1,width-2),qy=clamp(y,1,height-2),ax=qx|0,ay=qy|0,fx=qx-ax,fy=qy-ay;
+        const bx=Math.min(ax+1,width-2),by=Math.min(ay+1,height-2);
+        const g=offset=>gradient(ay*width+ax,offset)*(1-fx)*(1-fy)+gradient(ay*width+bx,offset)*fx*(1-fy)+gradient(by*width+ax,offset)*(1-fx)*fy+gradient(by*width+bx,offset)*fx*fy;
+        dx=g(1);dy=g(width);
+      }
+      const len=Math.hypot(dx,dy)||1;
       const step=binding>0?Math.min(radius,.45):radius;
       next[k]=clamp(x+step*dx/len,1,width-2);next[k+1]=clamp(y+step*dy/len,1,height-2);
     }
     // Laplacian smoothing, with fixed endpoints. No graph edge is added here.
     for(let c=0;c<masses.length;c++)for(let j=1;j<samples-1;j++){
       const k=(c*samples+j)*2;
-      const binding=retained[c*samples+j];
+      const binding=retained?.[c*samples+j]??0;
       const px=.25*next[k-2]+.5*next[k]+.25*next[k+2],py=.25*next[k-1]+.5*next[k+1]+.25*next[k+3];
       points[k]=(1-binding)*px+binding*reference[k];points[k+1]=(1-binding)*py+binding*reference[k+1];
     }
@@ -244,7 +350,7 @@ export async function bundle(scene,fidelity,strength,{cancelled=()=>false,progre
   let deviation=0,checked=0;
   const step=Math.max(1,Math.ceil(scene.active.length/128));
   for(let c=0;c<scene.active.length;c+=step){const start=c*samples*2;deviation+=discreteFrechet(points.subarray(start,start+samples*2),reference.subarray(start,start+samples*2));checked++;}
-  return {points:scene.css(points),stats:{iterations,nmi,converged:nmi>=.8,ms:performance.now()-started,kernel:scene.kernel,deviationPx:checked?deviation/checked*scene.scale:0,deviationSample:checked}};
+  return {points:scene.css(points),stats:{iterations,nmi,converged:nmi>=.8,ms:performance.now()-started,kernel:scene.kernel,initialRadiusPx:initialRadius,deviationPx:checked?deviation/checked*scene.scale:0,deviationSample:checked}};
 }
 
 // KDEEB is direction independent: at f=0, O→D and D→O have identical

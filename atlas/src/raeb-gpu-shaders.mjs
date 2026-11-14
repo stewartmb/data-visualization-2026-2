@@ -1,5 +1,46 @@
 // WebGPU compute and drawing share the same optical rasterizer. All totals
 // accumulate in two u32 words (carry addition), avoiding float-atomic extensions.
+const SELECTED_FLOW_MAX_OPACITY = 0.92;
+export function selectedFlowOpacity(trips, maximum) {
+  return SELECTED_FLOW_MAX_OPACITY * Math.max(0,Math.min(trips/maximum,1));
+}
+export const SELECTED_FLOW_EXPRESSION = `${SELECTED_FLOW_MAX_OPACITY}*clamp(trips/maximum,0.0,1.0)`;
+// Rounded from the 95th percentile of link loads on the representative
+// Monday at 5 p.m. in 2024. Keep the scale fixed when exploring the map.
+export const FLOW_COLOR_MAX = 18_000;
+
+export const FLOW_COLOR_STOPS = [
+  {trips:0, color:'#c8cdd0'},
+  {trips:FLOW_COLOR_MAX/4, color:'#ba8500'},
+  {trips:FLOW_COLOR_MAX, color:'#c23b32'}
+];
+const flowChannels = FLOW_COLOR_STOPS.map(({color}) =>
+  color.slice(1).match(/../g).map(channel => parseInt(channel,16))
+);
+
+export function flowColor(trips, maximum=FLOW_COLOR_MAX) {
+  const position = 2*Math.sqrt(Math.max(0,Math.min(trips/maximum,1)));
+  const lower = position < 1 ? 0 : 1;
+  const channels = flowChannels[lower].map((start, index) =>
+    Math.round(start+(flowChannels[lower+1][index]-start)*(position-lower))
+  );
+  return `rgb(${channels.join(',')})`;
+}
+
+function shaderFlowColor(vector, signature) {
+  const [gray,yellow,red] = flowChannels.map(color =>
+    `${vector}(${color.map(channel => (channel/255).toFixed(6)).join(',')})`
+  );
+  return `${signature}{
+  float position=2.0*sqrt(clamp(trips/maximum,0.0,1.0));
+  if(position<1.0){return mix(${gray},${yellow},position);}
+  return mix(${yellow},${red},position-1.0);
+}`;
+}
+
+export const GLSL_FLOW_COLOR = shaderFlowColor('vec3', 'vec3 flowColor(float trips,float maximum)');
+const WGSL_FLOW_COLOR = shaderFlowColor('vec3f', 'fn flowColor(trips:f32,maximum:f32)->vec3f').replace('float position=', 'let position=');
+
 export const COMPUTE = /* wgsl */ `
 struct Params {
  dims:vec4u, raster:vec4u, control:vec4f, project:vec4f, conversion:vec4f, flags:vec4u,
@@ -42,12 +83,12 @@ fn addWide(accumulator:ptr<storage,Wide,read_write>,amount:f32){
 fn readWide(accumulator:ptr<storage,Wide,read_write>)->f32{
  return (f32(atomicLoad(&(*accumulator).hi))*4294967296.0+f32(atomicLoad(&(*accumulator).lo)))/65536.0;
 }
-fn retained(i:u32)->f32{return clamp(p.control.x*5.0-levels[i]+1.0,0.0,1.0);}
+fn retained(i:u32)->f32{if(p.flags.y==1u){return 0.0;}return clamp(p.control.x*5.0-levels[i]+1.0,0.0,1.0);}
 fn seed(i:u32)->vec2f{return mix(lowSeed[i],highSeed[i],p.control.w);}
 @compute @workgroup_size(256) fn initialize(@builtin(global_invocation_id) id:vec3u){
  let c=id.x;if(c>=p.dims.z){return;}let base=c*p.dims.w;var len=0.0;
  for(var j=0u;j<p.dims.w;j++){points[base+j]=seed(base+j);if(j>0u){len+=distance(seed(base+j),seed(base+j-1u));}}
- masses[c]=metadata[c].x*max(1.0,len/f32(p.dims.w-1u));
+ masses[c]=metadata[c].x*select(max(1.0,len/f32(p.dims.w-1u)),len/f32(p.dims.w-1u),p.flags.y==1u);
 }
 @compute @workgroup_size(256) fn splat(@builtin(global_invocation_id) id:vec3u){
  let i=id.x;if(i>=p.dims.z*p.dims.w){return;}
@@ -85,12 +126,21 @@ var<workgroup> maxWork:array<f32,256>;
 @compute @workgroup_size(256) fn boost(@builtin(global_invocation_id) id:vec3u){
  if(id.x<p.dims.x*p.dims.y){field[id.x]+=1.1*fieldMax[0]*f32(atomicLoad(&guide[id.x]))/65535.0;}
 }
+fn gradientAt(cell:vec2u)->vec2f{
+ let k=cell.y*p.dims.x+cell.x;
+ return vec2f(field[k+1u]-field[k-1u],field[k+p.dims.x]-field[k-p.dims.x]);
+}
 @compute @workgroup_size(256) fn advect(@builtin(global_invocation_id) id:vec3u){
  let i=id.x;if(i>=p.dims.z*p.dims.w){return;}let j=i%p.dims.w;
  if(j==0u||j==p.dims.w-1u){advected[i]=seed(i);return;}
  let binding=retained(i);if(binding==1.0){advected[i]=reference[i];return;}
  let xy=points[i];let cell=vec2u(clamp(floor(xy+vec2f(.5)),vec2f(1),vec2f(p.dims.xy)-vec2f(2)));
- let k=cell.y*p.dims.x+cell.x;let gradient=vec2f(field[k+1u]-field[k-1u],field[k+p.dims.x]-field[k-p.dims.x]);
+ var gradient=gradientAt(cell);
+ if(p.flags.y==1u){
+  let q=clamp(xy,vec2f(1),vec2f(p.dims.xy)-vec2f(2));let a=vec2u(q);
+  let b=min(a+vec2u(1),p.dims.xy-vec2u(2));let f=fract(q);
+  gradient=mix(mix(gradientAt(a),gradientAt(vec2u(b.x,a.y)),f.x),mix(gradientAt(vec2u(a.x,b.y)),gradientAt(b),f.x),f.y);
+ }
  let magnitude=length(gradient);var delta=vec2f(0);if(magnitude>0.0){delta=gradient/magnitude;}
  let step=select(p.control.z,min(p.control.z,.45),binding>0.0);
  advected[i]=clamp(xy+step*delta,vec2f(1),vec2f(p.dims.xy)-vec2f(2));
@@ -114,12 +164,15 @@ fn clip(a:vec2f,b:vec2f)->Clipped{
 }
 fn screen(v:vec2f)->vec2f{return v*p.project.xy+p.project.zw;}
 fn putOptical(index:u32,amount:f32,focused:bool){
+ if(amount<=0.0){return;}
  if(focused){addWide(&optical[index].orange,amount);}else{addWide(&optical[index].blue,amount);}
 }
 @compute @workgroup_size(64) fn rasterCurves(@builtin(global_invocation_id) id:vec3u){
  let c=id.x;if(c>=p.dims.z){return;}let base=c*p.dims.w;
  let focus=p.raster.w>0u&&u32(metadata[c].y)+1u==p.raster.w;
- let dim=select(1.0,.18,p.raster.w>0u&&!focus);var previous=0xffffffffu;
+ // The analysis pass has no selected origin. Screen rendering isolates it.
+ if(p.raster.w>0u&&!focus){return;}
+ var previous=0xffffffffu;
  for(var j=1u;j<p.dims.w;j++){
   let a=screen(points[base+j-1u]);let b=screen(points[base+j]);let segment=clip(a,b);if(segment.valid==0u){previous=0xffffffffu;continue;}
   let count=u32(max(1.0,ceil(max(abs(segment.b.x-segment.a.x),abs(segment.b.y-segment.a.y)))));
@@ -128,14 +181,16 @@ fn putOptical(index:u32,amount:f32,focused:bool){
    let f=f32(t)/f32(count);let xy=vec2u(clamp(floor(mix(segment.a,segment.b,f)+vec2f(.5)),vec2f(0),vec2f(p.raster.xy)-vec2f(1)));
    let index=xy.y*p.raster.x+xy.x;if(index!=previous){
     let original=mix(segment.t0,segment.t1,f);let weight=1.0-mix(r0,r1,original);
-    putOptical(index,metadata[c].x*weight*dim/800.0,focus);previous=index;
+    putOptical(index,metadata[c].x*weight/800.0,focus);previous=index;
    }
   }
  }
 }
 @compute @workgroup_size(64) fn rasterRails(@builtin(global_invocation_id) id:vec3u){
  let l=id.x;if(l>=p.raster.z){return;}let row=rails[l*2u];let selected=rails[l*2u+1u].x;
- let membership=clamp(p.control.x*5.0-row.z+1.0,0.0,1.0);if(membership==0.0){return;}
+ let membership=clamp(p.control.x*5.0-row.z+1.0,0.0,1.0);
+ let focused=p.raster.w>0u;let trips=select(row.w,selected,focused);
+ if(membership==0.0||trips<=0.0){return;}
  var previous=0xffffffffu;
  for(var j=1u;j<u32(row.y);j++){
   let a=screen(railVertices[u32(row.x)+j-1u]);let b=screen(railVertices[u32(row.x)+j]);let segment=clip(a,b);if(segment.valid==0u){previous=0xffffffffu;continue;}
@@ -143,8 +198,7 @@ fn putOptical(index:u32,amount:f32,focused:bool){
   for(var t=0u;t<=count;t++){
    let xy=vec2u(clamp(floor(mix(segment.a,segment.b,f32(t)/f32(count))+vec2f(.5)),vec2f(0),vec2f(p.raster.xy)-vec2f(1)));
    let index=xy.y*p.raster.x+xy.x;if(index!=previous){
-    if(p.raster.w>0u){putOptical(index,max(0.0,row.w-selected)*.18*membership/800.0,false);putOptical(index,selected*membership/800.0,true);}
-    else{putOptical(index,row.w*membership/800.0,false);}previous=index;
+    putOptical(index,trips*membership/800.0,focused);previous=index;
    }
   }
  }
@@ -191,32 +245,49 @@ fn tau(v:Wide)->f32{return (f32(v.hi)*4294967296.0+f32(v.lo))/65536.0;}
 // One compositing decision per output pixel. Nearby centerlines form a
 // continuous envelope; opacity is never accumulated again during display.
 // Width encodes local accumulated OD weight, with a fixed square-root scale.
-fn coverage(delta:vec2f,weight:f32,pixelRatio:f32)->f32{
+fn bandEdge(delta:vec2f,weight:f32,pixelRatio:f32)->f32{
  let radius=(.5+min(4.0,1.25*sqrt(max(0.0,weight)))*p.control.y)*pixelRatio;
  let edge=clamp(radius+.5-length(delta),0.0,1.0);
- return edge*edge*(3.0-2.0*edge)*.82*(1.0-exp(-weight/.2));
+ return edge*edge*(3.0-2.0*edge);
 }
+// The display stroke has a fixed width in CSS pixels. Use the maximum
+// contribution across neighboring centerlines so widening adds no OD volume.
+fn opticalWeight(index:u32)->f32{
+ let v=optical[index];
+ return select(tau(v.blue),tau(v.orange),p.raster.w>0u);
+}
+${WGSL_FLOW_COLOR}
 @fragment fn fragment(@builtin(position) xy:vec4f)->@location(0) vec4f{
  let cell=vec2i(xy.xy);let index=u32(cell.y)*p.raster.x+u32(cell.x);
- let blue=vec3f(.055,.33,.43);let orange=vec3f(.78,.32,.15);
- // b=0 retains the individual thin relationships rather than widening them.
- if(p.control.y<=0.0||p.flags.x==0u){
-  let b=1.0-exp(-tau(optical[index].blue));let o=1.0-exp(-tau(optical[index].orange));
-  return vec4f(orange*o+blue*b*(1.0-o),o+b*(1.0-o));
+ let paper=p.flags.y==1u;
+ let focused=p.raster.w>0u&&p.flags.z!=0u;
+ let maximum=select(${FLOW_COLOR_MAX}.0,bitcast<f32>(p.flags.z),focused);
+ if(!paper&&(p.control.y<=0.0||p.flags.x==0u)){
+  let weight=opticalWeight(index);let trips=weight*800.0;
+  let alpha=select(1.0-exp(-weight),${SELECTED_FLOW_EXPRESSION},focused);
+  return vec4f(flowColor(trips,maximum)*alpha,alpha);
  }
  let ratio=f32(p.raster.x)/p.conversion.x;
- let extent=i32(ceil(4.5*ratio+.5));let focused=p.raster.w>0u;
- let dim=select(1.0,.18,focused);var b=0.0;var o=0.0;
+ let extent=i32(ceil(select(4.5,1.5,paper)*ratio+.5));
+ var alpha=0.0;
+ var flow=0.0;
  for(var dy=-extent;dy<=extent;dy++){
-  let y=cell.y+dy;if(y<0||y>=i32(p.raster.y)){continue;}
   for(var dx=-extent;dx<=extent;dx++){
-   let x=cell.x+dx;if(x<0||x>=i32(p.raster.x)){continue;}
-   let at=u32(y)*p.raster.x+u32(x);let delta=vec2f(f32(dx),f32(dy));
-   let tb=tau(optical[at].blue)/dim;let to=tau(optical[at].orange);
-   if(tb>0.0){b=max(b,coverage(delta,tb,ratio)*dim);}
-   if(to>0.0){o=max(o,coverage(delta,to,ratio));}
+   let delta=vec2i(dx,dy);let at=cell+delta;
+   if(any(at<vec2i(0))||any(at>=vec2i(p.raster.xy))){continue;}
+   let weight=opticalWeight(u32(at.y)*p.raster.x+u32(at.x));if(weight<=0.0){continue;}
+   let trips=weight*800.0;
+   let selectedAlpha=${SELECTED_FLOW_EXPRESSION};
+   var candidate=0.0;
+   if(paper){
+    let edge=clamp(1.5*ratio+.5-length(vec2f(delta)),0.0,1.0);
+    candidate=select(pow(1.0-exp(-1.4*weight),.6),selectedAlpha,focused)*edge;
+   }else{
+    candidate=select(.82*(1.0-exp(-weight/.2)),selectedAlpha,focused)*bandEdge(vec2f(delta),weight,ratio);
+   }
+   if(candidate>alpha||(candidate==alpha&&weight>flow)){alpha=candidate;flow=weight;}
   }
  }
- return vec4f(orange*o+blue*b*(1.0-o),o+b*(1.0-o));
+ return vec4f(flowColor(flow*800.0,maximum)*alpha,alpha);
 }
 `;

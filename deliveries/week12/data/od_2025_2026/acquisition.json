@@ -1,0 +1,822 @@
+{
+  "schema_version": 1,
+  "status": "DOWNLOADED_UNVERIFIED",
+  "pid": 89090,
+  "started_at_utc": "2026-11-13T21:15:33.393440+00:00",
+  "years": [
+    2025
+  ],
+  "months_expected": 12,
+  "months_downloaded": 12,
+  "validation_status": "PENDING",
+  "scope": "All published origin-destination pairs and all original fields; no station filter; no sampling.",
+  "semantic_note": "MTA estimates of average ridership by month, weekday and hour; timestamps are representative, not individual trip dates.",
+  "sources": {
+    "2025": {
+      "dataset": "y2qv-fytt",
+      "name": "MTA Subway Origin-Destination Ridership Estimate: 2025",
+      "landing": "https://data.ny.gov/d/y2qv-fytt",
+      "metadata_url": "https://data.ny.gov/api/views/y2qv-fytt.json",
+      "metadata_file": "data/od_2025_2026/metadata_y2qv-fytt.json",
+      "metadata_sha256": "61d01f74435d2c3d2413a33c5f5fe1c70506538b6da6b781957e74047d9546e5",
+      "retrieved_at_utc": "2026-11-13T21:15:37.010916+00:00",
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ]
+    }
+  },
+  "months": {
+    "2025-05": {
+      "file": "data/raw/od_2025_2026/2025-05.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 5,
+      "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+5&%24limit=100000000",
+      "retrieved_at_utc": "2026-11-13T19:35:16.260492+00:00",
+      "sha256": "875beb9bafb19d400dd99d8e627ea3222d79ea8671ebacfecb6aafb85aeb954d",
+      "bytes": 373235668,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 10448294
+    },
+    "2025-10": {
+      "file": "data/raw/od_2025_2026/2025-10.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 10,
+      "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+10&%24limit=100000000",
+      "retrieved_at_utc": "2026-11-13T21:02:54.207801+00:00",
+      "sha256": "92fa997cb99fa1f2c576619bffdf4f33f90b616f3100e2926a532388b1b856b6",
+      "bytes": 369298423,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 10319756
+    },
+    "2025-12": {
+      "file": "data/raw/od_2025_2026/2025-12.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 12,
+      "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+12&%24limit=100000000",
+      "retrieved_at_utc": "2026-11-13T21:13:56.592745+00:00",
+      "sha256": "94e56bc8614ab111548ac8d625dd79173b5c186d9e1591bec7bfaedee09046a2",
+      "bytes": 365225856,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 10185384
+    },
+    "2025-03": {
+      "file": "data/raw/od_2025_2026/2025-03.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 3,
+      "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+3&%24limit=100000000",
+      "retrieved_at_utc": "2026-11-13T20:36:06.418092+00:00",
+      "sha256": "8d66ba1cf9811601064a91b05f731624e4394b9b9488e998873f3af8241e635e",
+      "bytes": 359062457,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 10086044
+    },
+    "2025-04": {
+      "file": "data/raw/od_2025_2026/2025-04.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 4,
+      "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+4&%24limit=100000000",
+      "retrieved_at_utc": "2026-11-13T19:28:13.440942+00:00",
+      "sha256": "04c303b4087ad967ae4e999249d5208fb471c3df5c0889d834a960e2033fb584",
+      "bytes": 359475161,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 10084297
+    },
+    "2025-08": {
+      "file": "data/raw/od_2025_2026/2025-08.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 8,
+      "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+8&%24limit=100000000",
+      "retrieved_at_utc": "2026-11-13T20:13:20.496807+00:00",
+      "sha256": "8233c908ab9fb441e3c0d3a67dd8cb90f5dd079e2ec9aeafec1cdf4a15d70d26",
+      "bytes": 360935857,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 10084286
+    },
+    "2025-07": {
+      "file": "data/raw/od_2025_2026/2025-07.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 7,
+      "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+7&%24limit=100000000",
+      "retrieved_at_utc": "2026-11-13T20:03:59.704440+00:00",
+      "sha256": "85d8ce074c123f0229cf15e8be7530f411323280c3b5a720485abf0b359c2fe9",
+      "bytes": 352759547,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 9868373
+    },
+    "2025-01": {
+      "file": "data/raw/od_2025_2026/2025-01.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 1,
+      "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+1&%24limit=100000000",
+      "retrieved_at_utc": "2026-11-13T19:17:40.043694+00:00",
+      "sha256": "4f8d507d295aff26d12841f1423da1160e69ed16288faf0e0ec6d81e83ee83d2",
+      "bytes": 344063095,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 9665750
+    },
+    "2025-02": {
+      "file": "data/raw/od_2025_2026/2025-02.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 2,
+      "retrieved_at_utc": "2026-11-13T21:36:23.022422+00:00",
+      "sha256": "a8212ae2332fefa264e397933f0a9ccd5c59a0d29d22f9d48544319dada6fecd",
+      "bytes": 419282198,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 9528359,
+      "blocks": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+0+and+1&%24limit=100000000",
+          "rows": 291474,
+          "official_month_rows": 9528359,
+          "sha256": "ef2e091026801bb0e7d7e08fd782f3bc4aac1e9104e2d16c8955909175908582",
+          "retrieved_at_utc": "2026-11-13T21:18:03.177029+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/00-01.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+2+and+3&%24limit=100000000",
+          "rows": 162092,
+          "official_month_rows": 9528359,
+          "sha256": "604f8b7027e15e86dda1fb99ee3664cee763d636d9bfaaaeec1f8dfb43f7c97f",
+          "retrieved_at_utc": "2026-11-13T21:19:02.117133+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/02-03.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+4+and+5&%24limit=100000000",
+          "rows": 417715,
+          "official_month_rows": 9528359,
+          "sha256": "a84123f21ffa40f86b2b20d0e9a75c12da193d29f541a8c1f8b943cadf92e13c",
+          "retrieved_at_utc": "2026-11-13T21:20:29.399585+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/04-05.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+6+and+7&%24limit=100000000",
+          "rows": 924030,
+          "official_month_rows": 9528359,
+          "sha256": "9bbbf1eb5fdcfaef52dc836a5bf6ec5e1e3229a04ed9112f359c4c3f3d80f564",
+          "retrieved_at_utc": "2026-11-13T21:23:27.752167+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/06-07.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+8+and+9&%24limit=100000000",
+          "rows": 986376,
+          "official_month_rows": 9528359,
+          "sha256": "f50302af577a02f6e4a15931f77593e9750b2140bb0ce42c50274195757b5fe0",
+          "retrieved_at_utc": "2026-11-13T21:24:28.227022+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/08-09.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+10+and+11&%24limit=100000000",
+          "rows": 920091,
+          "official_month_rows": 9528359,
+          "sha256": "b3e4bff72402f98fe243dd8726374a190794f11feebafd61f65f54a6d9a35103",
+          "retrieved_at_utc": "2026-11-13T21:25:54.240625+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/10-11.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+12+and+13&%24limit=100000000",
+          "rows": 1019179,
+          "official_month_rows": 9528359,
+          "sha256": "ccb2283d9c7d99785d70c599a6cb50af15125e7ebe71642b4ddc6f3889c5f280",
+          "retrieved_at_utc": "2026-11-13T21:27:02.141462+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/12-13.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+14+and+15&%24limit=100000000",
+          "rows": 1153318,
+          "official_month_rows": 9528359,
+          "sha256": "11cc2e466011b5874bf2a64b5d3503bcdd8741e917bf751be6392d6815387f30",
+          "retrieved_at_utc": "2026-11-13T21:28:54.841680+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/14-15.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+16+and+17&%24limit=100000000",
+          "rows": 1219099,
+          "official_month_rows": 9528359,
+          "sha256": "a8fd6e45ca5c0e1760fb9f325e5bd2328d71a60723f70c322619104a20e857d3",
+          "retrieved_at_utc": "2026-11-13T21:30:37.536099+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/16-17.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+18+and+19&%24limit=100000000",
+          "rows": 1014492,
+          "official_month_rows": 9528359,
+          "sha256": "e3be270e3f24d1a446f1ce24752972d677df9d84c446ad72ba32978d4ff5f325",
+          "retrieved_at_utc": "2026-11-13T21:32:57.497858+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/18-19.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+20+and+21&%24limit=100000000",
+          "rows": 805104,
+          "official_month_rows": 9528359,
+          "sha256": "b401db8c06672fc5a059e16956eb30eb659f06a11f0871e2b20943976f875ab6",
+          "retrieved_at_utc": "2026-11-13T21:34:09.844258+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/20-21.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+22+and+23&%24limit=100000000",
+          "rows": 615389,
+          "official_month_rows": 9528359,
+          "sha256": "bd0ff389eeb997cfd3e95b813032ac4b2e3019c34fcbbccba28e8891317775df",
+          "retrieved_at_utc": "2026-11-13T21:36:02.252689+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-02/22-23.csv.gz"
+        }
+      ]
+    },
+    "2025-06": {
+      "file": "data/raw/od_2025_2026/2025-06.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 6,
+      "retrieved_at_utc": "2026-11-13T21:41:00.096243+00:00",
+      "sha256": "2df3a98f2345ec7017bf03c8703e82ef85bed5dad5ef6fcfb86c42f6dba274de",
+      "bytes": 461132316,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 10405300,
+      "blocks": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+0+and+1&%24limit=100000000",
+          "rows": 356502,
+          "official_month_rows": 10405300,
+          "sha256": "b4e34abeeb80be1e1a30829c937d7245fcc379b5da36d8dca4d811085329f622",
+          "retrieved_at_utc": "2026-11-13T21:16:52.208989+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/00-01.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+2+and+3&%24limit=100000000",
+          "rows": 201722,
+          "official_month_rows": 10405300,
+          "sha256": "51b9797b98df7b435b19086a058caa0b375b759e68e6c4f573056aad69c4aeee",
+          "retrieved_at_utc": "2026-11-13T21:17:51.024684+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/02-03.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+4+and+5&%24limit=100000000",
+          "rows": 463506,
+          "official_month_rows": 10405300,
+          "sha256": "0d4ac91e3abfefa246bd9ba0ac73e6f33c5480140f158b1a16a53648d17b0b68",
+          "retrieved_at_utc": "2026-11-13T21:18:56.266930+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/04-05.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+6+and+7&%24limit=100000000",
+          "rows": 976515,
+          "official_month_rows": 10405300,
+          "sha256": "c3236ec11b857434cf9b56df5d12a4d0cf9c7d8eb1a59642deedb4dcd1928544",
+          "retrieved_at_utc": "2026-11-13T21:20:35.775379+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/06-07.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+8+and+9&%24limit=100000000",
+          "rows": 1046405,
+          "official_month_rows": 10405300,
+          "sha256": "f74f470b00e947888b4a647db3fd1596d59a912b1e3850a77ac0001743ca880b",
+          "retrieved_at_utc": "2026-11-13T21:21:39.767374+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/08-09.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+10+and+11&%24limit=100000000",
+          "rows": 999188,
+          "official_month_rows": 10405300,
+          "sha256": "7475b043d33d9896233fb3d73cbd295d0392bcd1953ac9b3eaae59f7790a04ee",
+          "retrieved_at_utc": "2026-11-13T21:22:34.879387+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/10-11.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+12+and+13&%24limit=100000000",
+          "rows": 1098839,
+          "official_month_rows": 10405300,
+          "sha256": "d070a42df8f456cd96e026a14dc6fff83930c64b73a22cd6d4dd7c763481a84c",
+          "retrieved_at_utc": "2026-11-13T21:27:35.504589+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/12-13.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+14+and+15&%24limit=100000000",
+          "rows": 1227849,
+          "official_month_rows": 10405300,
+          "sha256": "8d7c536430d3f35e3c182d9115ea0b042e3e206babcb8eefd7bd2c48c3351238",
+          "retrieved_at_utc": "2026-11-13T21:32:49.835764+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/14-15.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+16+and+17&%24limit=100000000",
+          "rows": 1293238,
+          "official_month_rows": 10405300,
+          "sha256": "b2c9522c3bb7f6eb42650155dbc6d93b37b877e87cc5e53ca32813868f7a54fb",
+          "retrieved_at_utc": "2026-11-13T21:34:04.671055+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/16-17.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+18+and+19&%24limit=100000000",
+          "rows": 1105658,
+          "official_month_rows": 10405300,
+          "sha256": "039af00316382360aef2823332ef9912e52d21f9553eff075a0e89e673e11cc3",
+          "retrieved_at_utc": "2026-11-13T21:35:44.961294+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/18-19.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+20+and+21&%24limit=100000000",
+          "rows": 926110,
+          "official_month_rows": 10405300,
+          "sha256": "cbfc2e1116058b4631fa7c1b3b03a4bf9691ab9ef5c7ad5ebba8c615ef677f2c",
+          "retrieved_at_utc": "2026-11-13T21:38:43.604563+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/20-21.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+22+and+23&%24limit=100000000",
+          "rows": 709768,
+          "official_month_rows": 10405300,
+          "sha256": "1c8a9b101b513d8c29b7031649de8b62decc02de967c59767fac87eb8e8419e6",
+          "retrieved_at_utc": "2026-11-13T21:40:37.211925+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-06/22-23.csv.gz"
+        }
+      ]
+    },
+    "2025-09": {
+      "file": "data/raw/od_2025_2026/2025-09.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 9,
+      "retrieved_at_utc": "2026-11-13T21:53:03.375457+00:00",
+      "sha256": "195d0158455af381792c99a95fdc1b7cffe4e3636c9ce632e756e9edbcb8d542",
+      "bytes": 457602797,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 10332355,
+      "blocks": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+0+and+1&%24limit=100000000",
+          "rows": 345536,
+          "official_month_rows": 10332355,
+          "sha256": "98cca2c18c3bdd79f582be3bfc27cbb6cbd92aca605619641e3029f945d1af8c",
+          "retrieved_at_utc": "2026-11-13T21:16:43.330905+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/00-01.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+2+and+3&%24limit=100000000",
+          "rows": 200262,
+          "official_month_rows": 10332355,
+          "sha256": "888661be8617a6aff7e01b884db8040bcf7e45de6fcbad27c57c64f074d5406b",
+          "retrieved_at_utc": "2026-11-13T21:17:16.101021+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/02-03.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+4+and+5&%24limit=100000000",
+          "rows": 457948,
+          "official_month_rows": 10332355,
+          "sha256": "82f55dded279803f55734bdf635c0b9d162dcb417119c2c8ec309e02eba0a9fc",
+          "retrieved_at_utc": "2026-11-13T21:19:36.783348+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/04-05.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+6+and+7&%24limit=100000000",
+          "rows": 990153,
+          "official_month_rows": 10332355,
+          "sha256": "0bb70147f2cc42325c0824b33ce76c8b981c271d6f60f4b2bc8eff01fd4b8310",
+          "retrieved_at_utc": "2026-11-13T21:23:41.315364+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/06-07.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+8+and+9&%24limit=100000000",
+          "rows": 1053797,
+          "official_month_rows": 10332355,
+          "sha256": "9d5b43b4f6881f65f470425e9320bc3c71d6f33279322a3eec81ef3147f78c8a",
+          "retrieved_at_utc": "2026-11-13T21:29:40.473420+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/08-09.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+10+and+11&%24limit=100000000",
+          "rows": 990889,
+          "official_month_rows": 10332355,
+          "sha256": "6e4a818540c53594419d36a39aee45e52842a91b060452f18a10748a2473ebb8",
+          "retrieved_at_utc": "2026-11-13T21:32:10.269191+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/10-11.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+12+and+13&%24limit=100000000",
+          "rows": 1089882,
+          "official_month_rows": 10332355,
+          "sha256": "6766f132ea8a19196f7462cd11679d8cf238eaac1608c5ed9a0a49d4125c3a3c",
+          "retrieved_at_utc": "2026-11-13T21:33:34.305397+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/12-13.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+14+and+15&%24limit=100000000",
+          "rows": 1228284,
+          "official_month_rows": 10332355,
+          "sha256": "e1742cb85775ad5c738c0a5d51801726373f1251ac349e5862e0c55a0a4b5e86",
+          "retrieved_at_utc": "2026-11-13T21:46:01.689582+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/14-15.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+16+and+17&%24limit=100000000",
+          "rows": 1293492,
+          "official_month_rows": 10332355,
+          "sha256": "83945b5e8d6e3966142efbb2fba3d651fe842fee3ad473a1bc76b1447d01066a",
+          "retrieved_at_utc": "2026-11-13T21:47:46.240620+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/16-17.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+18+and+19&%24limit=100000000",
+          "rows": 1112762,
+          "official_month_rows": 10332355,
+          "sha256": "7903163441bada6cf5811b487c0c0a368dcc4367bc93f8567b3fb2d58c2a8352",
+          "retrieved_at_utc": "2026-11-13T21:50:04.866520+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/18-19.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+20+and+21&%24limit=100000000",
+          "rows": 894463,
+          "official_month_rows": 10332355,
+          "sha256": "4f2a6e6ca0ecc02bb0bbe21ade5307c9b57e43537b278b409d5e80763e542f3e",
+          "retrieved_at_utc": "2026-11-13T21:51:49.162990+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/20-21.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+22+and+23&%24limit=100000000",
+          "rows": 674887,
+          "official_month_rows": 10332355,
+          "sha256": "403982a16de1e3a0072852f07f8a91990b3376e7b25bb488bd2542f500762b00",
+          "retrieved_at_utc": "2026-11-13T21:52:40.240826+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-09/22-23.csv.gz"
+        }
+      ]
+    },
+    "2025-11": {
+      "file": "data/raw/od_2025_2026/2025-11.csv.gz",
+      "dataset": "y2qv-fytt",
+      "year": 2025,
+      "month": 11,
+      "retrieved_at_utc": "2026-11-13T22:17:38.092357+00:00",
+      "sha256": "f6d783e2cfb246241e6c170a3682abd7571efc3ac643e5dd282588de9a0f2cb7",
+      "bytes": 452467931,
+      "fields": [
+        "year",
+        "month",
+        "day_of_week",
+        "hour_of_day",
+        "timestamp",
+        "origin_station_complex_id",
+        "origin_station_complex_name",
+        "origin_latitude",
+        "origin_longitude",
+        "destination_station_complex_id",
+        "destination_station_complex_name",
+        "destination_latitude",
+        "destination_longitude",
+        "estimated_average_ridership",
+        "origin_point",
+        "destination_point"
+      ],
+      "validation_status": "PENDING",
+      "request_row_limit": 100000000,
+      "official_rows": 10201776,
+      "blocks": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+0+and+1&%24limit=100000000",
+          "rows": 348060,
+          "official_month_rows": 10201776,
+          "sha256": "375d9261d5e4295eed0d8f1379b9abfafe14a4fc7dfc6ff15d12788f8d9d5c79",
+          "retrieved_at_utc": "2026-11-13T21:37:03.800580+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/00-01.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+2+and+3&%24limit=100000000",
+          "rows": 199839,
+          "official_month_rows": 10201776,
+          "sha256": "d1f07dcfa00784eb9094116c64acd8d3c7fd904a15bc9ea81a2a4c5e32f8282a",
+          "retrieved_at_utc": "2026-11-13T21:37:55.062508+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/02-03.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+4+and+5&%24limit=100000000",
+          "rows": 454469,
+          "official_month_rows": 10201776,
+          "sha256": "f957045ffb16d87c1634bd2157d5653d566068be4fc2d640e50df73860aecb7b",
+          "retrieved_at_utc": "2026-11-13T21:38:39.303790+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/04-05.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+6+and+7&%24limit=100000000",
+          "rows": 977312,
+          "official_month_rows": 10201776,
+          "sha256": "25d3893806a33c90185144ff3ba16a41078eab37f0e557a03c53a278119fdc07",
+          "retrieved_at_utc": "2026-11-13T21:41:27.933091+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/06-07.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+8+and+9&%24limit=100000000",
+          "rows": 1044924,
+          "official_month_rows": 10201776,
+          "sha256": "89ab53b4cb893558825d65fd0f338bcebe86149ee1815f6c50e10fcaf4d23450",
+          "retrieved_at_utc": "2026-11-13T21:45:08.484664+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/08-09.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+10+and+11&%24limit=100000000",
+          "rows": 987642,
+          "official_month_rows": 10201776,
+          "sha256": "05a17b16a119857d5e89fbed1369bbf5ff13ad7c98c709945fea2d1de7bf3665",
+          "retrieved_at_utc": "2026-11-13T21:46:41.661605+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/10-11.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+12+and+13&%24limit=100000000",
+          "rows": 1089035,
+          "official_month_rows": 10201776,
+          "sha256": "ee01f8e42de3c779d88efcc6bdd63df2ab38617fdfa6ea4bd629ef808a2e071d",
+          "retrieved_at_utc": "2026-11-13T21:51:03.213794+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/12-13.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+14+and+15&%24limit=100000000",
+          "rows": 1222253,
+          "official_month_rows": 10201776,
+          "sha256": "13ddc82e65ea8344b01a9b3af4f625176dd493239f589253f0eb3d504648d31f",
+          "retrieved_at_utc": "2026-11-13T21:59:17.105492+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/14-15.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+16+and+17&%24limit=100000000",
+          "rows": 1288949,
+          "official_month_rows": 10201776,
+          "sha256": "7ec5040c60fe617cce8c92b0d845abe3156d9a3b000f6e27525271d55a2d1ca6",
+          "retrieved_at_utc": "2026-11-13T22:06:11.840553+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/16-17.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+18+and+19&%24limit=100000000",
+          "rows": 1064234,
+          "official_month_rows": 10201776,
+          "sha256": "e15ff6fef6c6249f26568bc50952bcf385507a1db1410c1ec261328da2676f68",
+          "retrieved_at_utc": "2026-11-13T22:09:04.386471+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/18-19.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+20+and+21&%24limit=100000000",
+          "rows": 862960,
+          "official_month_rows": 10201776,
+          "sha256": "7259d7da0cd743cd1d65e4b657b78f20c78447c18c0dda067f9032160d5bc061",
+          "retrieved_at_utc": "2026-11-13T22:15:45.835546+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/20-21.csv.gz"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+22+and+23&%24limit=100000000",
+          "rows": 662099,
+          "official_month_rows": 10201776,
+          "sha256": "49a0f30bf68a1c8d30b248ea9c79f89103141158d2924fa3fe65af41fe01fa25",
+          "retrieved_at_utc": "2026-11-13T22:17:15.591215+00:00",
+          "file": "data/raw/od_2025_2026/blocks/2025-11/22-23.csv.gz"
+        }
+      ]
+    }
+  },
+  "active": {},
+  "errors": {},
+  "partitions": {
+    "2025-01": 9665750,
+    "2025-02": 9528359,
+    "2025-03": 10086044,
+    "2025-04": 10084297,
+    "2025-05": 10448294,
+    "2025-06": 10405300,
+    "2025-07": 9868373,
+    "2025-08": 10084286,
+    "2025-09": 10332355,
+    "2025-10": 10319756,
+    "2025-11": 10201776,
+    "2025-12": 10185384
+  },
+  "updated_at_utc": "2026-11-13T22:17:38.483193+00:00"
+}
