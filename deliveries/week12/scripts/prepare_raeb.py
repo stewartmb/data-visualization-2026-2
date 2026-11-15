@@ -22,6 +22,8 @@ import zipfile
 import duckdb
 import numpy as np
 
+from prepare_annual_od import prepare_annual_od
+
 P = Path(__file__).resolve().parents[1]
 DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
@@ -294,6 +296,7 @@ def reroute_existing(source, stations, links, net_meta, paths, incidence_pair, i
     manifest.update(network_sha256=sha(out/'network.json.gz'),
                     flows_sha256=sha(data_dir/'flows.json'), metadata=metadata)
     write_json(out/'manifest.json', manifest)
+    prepare_annual_od(data_dir, source_dir/'raeb')
 
 
 def main():
@@ -398,8 +401,9 @@ def main():
             'links':links,'starts':starts,'incoming':incoming,'through':through,'flows':flows,'origins':{},'manhattanShare':{}}
     write_json(P/'atlas/data/flows.json',data)
     write_json(out/'manifest.json',{'status':'PASS','frames':len(assets),'assets':assets,'network_sha256':sha(out/'network.json.gz'),'flows_sha256':sha(P/'atlas/data/flows.json'),'metadata':metadata})
+    prepare_annual_od(P/'atlas/data')
     root = P.parents[1]/'atlas/data'
-    for f in [P/'atlas/data/flows.json',*out.rglob('*')]:
+    for f in [P/'atlas/data/flows.json',P/'atlas/data/annual-od.json',*out.rglob('*')]:
         if not f.is_file():continue
         dest = root/f.relative_to(P/'atlas/data');dest.parent.mkdir(parents=True,exist_ok=True)
         if dest.exists():dest.unlink()

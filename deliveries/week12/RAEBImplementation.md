@@ -14,9 +14,9 @@ El balance semanal de 2023 incluye 0,133315 viajes representativos no mapeados; 
 
 ## Mapa principal con RAEB
 
-El mapa abre con `raeb=paper`, fidelidad 5 y radio cero, mostrando las cargas asignadas sobre la vía. `raeb=atlas` abre el agrupamiento anterior desde el enlace bajo los controles. El selector discreto `p_ra` va de 0 (semillas rectas y agrupamiento libre) a 5 (toda la red guía el agrupamiento). RAEB conserva los extremos de cada curva y modifica la densidad sobre los tramos de la jerarquía seleccionada. Con radio 0 muestra las semillas. En nivel 5 y radio 0 suma la demanda asignada por tramo y la dibuja sobre la geometría GTFS.
+El mapa de Nueva York abre en **Todo el año**, con `raeb=paper`, fidelidad 5 y radio cero. Muestra las cargas asignadas sobre la vía en un día promedio del año. Cada una de las 168 matrices de origen–destino aporta su valor multiplicado por la proporción real del día de la semana en ese año. La misma ponderación se aplica a tramos y complejos. El reloj permite elegir una franja o regresar a Todo el año desde el centro. Vista general restablece el alcance geográfico y temporal. El selector discreto `p_ra` va de 0 (semillas rectas y agrupamiento libre) a 5 (toda la red guía el agrupamiento). RAEB conserva los extremos de cada curva y modifica la densidad sobre los tramos de la jerarquía seleccionada. Con radio 0 muestra las semillas. En nivel 5 y radio 0 suma la demanda asignada por tramo y la dibuja sobre la geometría GTFS.
 
-Grosor y una escala secuencial petróleo muestran la demanda estimada. Al seleccionar un complejo, el grosor de las ramas muestra las salidas que comparten un tramo y el tamaño de cada destino muestra sus viajes. La vista anual usa una escala por hora/origen en el detalle y una escala común de hasta 17.000 en la vista general. Los círculos opcionales de afluencia muestran salidas más viajes que terminan allí, clasificados por la hora de entrada del viaje. La app conserva el remuestreo de 32 puntos por par ponderado, la cuadrícula de cálculo reducida, WebGPU con respaldo CPU y un tope operativo de 150 iteraciones. El paper utiliza sus propias trayectorias, resolución y muestreo.
+Grosor y una escala secuencial petróleo muestran la demanda estimada. Al seleccionar un complejo, el grosor de las ramas muestra las salidas que comparten un tramo y el tamaño de cada destino muestra sus viajes. La vista general anual comparte una escala entre los cuatro años, basada en la mayor carga diaria por tramo. Para una franja el límite es 17.000. El detalle usa una escala relativa al origen. Los círculos opcionales de afluencia muestran salidas más viajes que terminan allí, clasificados por la hora de entrada del viaje. La app conserva el remuestreo de 32 puntos por par ponderado, la cuadrícula de cálculo reducida, WebGPU con respaldo CPU y un tope operativo de 150 iteraciones. El paper utiliza sus propias trayectorias, resolución y muestreo.
 
 ## Lectura de escenarios
 
@@ -48,7 +48,7 @@ En el Atlas el ranking usa los enlaces ferroviarios del grafo GTFS. Los transbor
 | 4 | 40 % | 223 |
 | 5 | 100 % | 556 |
 
-La app redondea hacia arriba el producto del porcentaje por los 556 enlaces ferroviarios. En el nivel 4, el trazado inicial conserva la geometría de los enlaces seleccionados y une con rectas los huecos del recorrido. En el 5, los **333 enlaces adicionales** aportan su geometría al trazado inicial y a la guía de densidad. Con radio positivo, las curvas todavía se desplazan al agruparse. El caso «Sobre la vía» con nivel 5 y radio cero es una decisión del Atlas. La [figura 11 del paper](https://zeng-wei.com/publication/papers/2019_RAEB.pdf#page=10) compara 0, 1, 3 y 5 para taxis en Manhattan, por lo que no muestra directamente la transición 4 → 5. [Implementación de jerarquía, trazado inicial y guía](atlas/src/raeb-core.mjs)
+La app redondea hacia arriba el producto del porcentaje por los 556 enlaces ferroviarios. En el nivel 4, el trazado inicial conserva la geometría de los enlaces seleccionados y une con rectas los huecos del recorrido. En el 5, los **333 enlaces adicionales** aportan su geometría al trazado inicial y a la guía de densidad. Con radio positivo, las curvas todavía se desplazan al agruparse. El trazado exacto con nivel 5 y radio cero es una decisión del Atlas. La [figura 11 del paper](https://zeng-wei.com/publication/papers/2019_RAEB.pdf#page=10) compara 0, 1, 3 y 5 para taxis en Manhattan, por lo que no muestra directamente la transición 4 → 5. [Implementación de jerarquía, trazado inicial y guía](atlas/src/raeb-core.mjs)
 
 ## Calibración del radio para el subway
 
@@ -64,7 +64,7 @@ La app redondea hacia arriba el producto del porcentaje por los 556 enlaces ferr
 | 2024 · domingo · 8 a. m. | 56 | 12 | 629,96 m |
 | 2021 · lunes · 8 a. m. | 56 | 10 | 531,15 m |
 
-La comprobación de las 672 franjas de 2021–2024 encontró un grupo en cada una. El radio automático varió de **392,69 m a 878,08 m**. La estimación de cada franja es el máximo del deslizador. **Automático** aplica ese valor. Puedes reducirlo hasta cero o fijar un radio manual en metros. Si otra franja tiene un máximo menor que el radio manual, el control baja a ese máximo. La regla bajo el minimapa cambia con el zoom y el círculo usa la misma escala. El radio representa distancia en línea recta en la primera iteración. En las siguientes se reduce por un factor de 0,9.
+La comprobación de las 672 franjas de 2021–2024 encontró un grupo en cada una. El radio automático varió de **392,69 m a 878,08 m**. **Automático** propone el radio de la franja activa. Pulsa **Calcular** para fijar ese valor o el que elijas manualmente. El radio aplicado se conserva al cambiar de franja. El máximo del deslizador cubre tanto la referencia de la franja como el valor que ya estaba aplicado. La regla bajo el minimapa cambia con el zoom y el círculo usa la misma escala. El radio representa distancia en línea recta en la primera iteración. En las siguientes se reduce por un factor de 0,9.
 
 Reproducción del valor inicial y verificación de las franjas desde la raíz:
 
@@ -91,7 +91,7 @@ En la vista anterior (`raeb=atlas`), la barra de agrupación multiplica el radio
 
 En el respaldo CPU, la guía de enlaces conservados se dibuja en SVG. El worker entrega primero una semilla del nivel elegido y después su refinamiento; no se interpola una maraña libre para simular alta fidelidad. Las curvas libres conservan WebGL. La vista previa no equivale a una solución convergida y el estado lo indica. El zoom transforma la cámara y las capas SVG: no recalcula KDE ni OD. Durante el movimiento se reduce el muestreo de dibujo a8 vértices y se recuperan32 al estabilizarse; los datos y la solución no cambian.
 
-Campo óptico canónico `τ=Σ(q/800)` por píxel de trazo. WebGPU estiliza la densidad acumulada localmente con grosor e intensidad. WebGL2 colorea cada curva y puede mostrar un solapamiento distinto. La imagen de convergencia NMI conserva la transferencia óptica original. Sobre la vía, el SVG dibuja una marca por tramo ferroviario, con ancho entre 0,85 y 4 píxeles y escala de raíz cuadrada. En la vista general el máximo fijo es 17.000 viajes. El detalle por origen usa la proporción de todas sus salidas en la franja. Los minimapas usan una escala divergente compartida por franja y referencia. El área de los puntos de afluencia usa salidas más llegadas según hora de inicio, con tope de radio de 13 px. Los puntos de destino utilizan su propia escala dentro de la selección.
+Campo óptico canónico `τ=Σ(q/800)` por píxel de trazo. WebGPU estiliza la densidad acumulada localmente con grosor e intensidad. WebGL2 colorea cada curva y puede mostrar un solapamiento distinto. La imagen de convergencia NMI conserva la transferencia óptica original. Sobre la vía, el SVG dibuja una marca por tramo ferroviario, con ancho entre 0,85 y 4 píxeles y escala de raíz cuadrada. El detalle por origen usa la proporción de todas sus salidas durante el período activo. Los minimapas usan una escala divergente compartida por período y referencia. El área de los puntos de afluencia usa salidas más llegadas según hora de inicio, con tope de radio de 13 px. Los puntos de destino utilizan su propia escala dentro de la selección.
 
 ## Reproducir
 
@@ -102,6 +102,8 @@ python3 -m venv .venv
 .venv/bin/python deliveries/week12/scripts/prepare_raeb.py
 # Para reutilizar una adquisición validada en otra copia:
 .venv/bin/python deliveries/week12/scripts/prepare_raeb.py --source-package /ruta/copia/deliveries/week12
+# Con las matrices verificadas, se puede regenerar solo el resumen diario anual:
+.venv/bin/python deliveries/week12/scripts/prepare_annual_od.py deliveries/week12/atlas/data
 node deliveries/week12/tests/raeb-core.test.mjs
 node deliveries/week12/tests/validate-raeb-data.mjs
 python3 -m http.server 8774
@@ -158,11 +160,15 @@ El solver, los valores OD, las semillas y el NMI canónico no cambian por este e
 Prueba reproducible: servir `tests/webgpu-bands.html` por HTTP. Comprueba que mayor peso produce mayor ancho, nueve aportes coincidentes equivalen exactamente a su suma, la opacidad central queda acotada, `b=0` conserva un píxel y el foco conserva el color de volumen del origen seleccionado. Resultado observado: anchos de 5 y 9 píxeles en el fixture, 1 píxel sin agrupación y alfa central máximo 0,8196. La prueba CPU/GPU de una iteración continúa pasando. Comprobación visual adicional en la escena completa, zoom y fidelidad=1.
 
 
+## Selección espacial
+
+**Dibujar área** conserva los complejos cuyos círculos caen dentro del contorno libre. **Entre dos zonas** pide dos contornos consecutivos y muestra solo pares OD que cruzan entre los grupos, en ambos sentidos. Los dos grupos deben tener complejos distintos. Los recorridos pueden extenderse fuera de los contornos. La distancia por la red y la distancia en línea recta se promedian ponderadas por viajes asignables de la franja. Los minimapas y la comparación anual de tramos mantienen las dos zonas. En este modo, el panel derecho rotula sus perfiles como contexto del sistema.
+
 ## Controles y retorno a la vista general
 
 El estado visible del cálculo usa tres mensajes normales: `Procesando…`, `Completado` y `Completado (parcial)`. El último conserva el significado previo: finalizó el presupuesto de iteraciones sin cumplir el umbral de NMI. Los detalles técnicos quedan en el título del estado y en los atributos de diagnóstico del canvas; los errores reales siguen mostrándose como errores. Se aplica tanto a WebGPU como al respaldo CPU.
 
-Agrupación y fidelidad geométrica ocupan filas separadas con sliders de ancho completo. `Vista general ↺` elimina el complejo seleccionado y restablece el zoom; pulsar el mismo nodo de nuevo o el fondo del mapa elimina la selección manteniendo la cámara. También se conserva Escape. La dispersión y el reloj vuelven al sujeto general, sin cambiar año, hora ni año de contraste.
+El panel izquierdo separa día y hora, agrupamiento y fidelidad, y navegación. Los deslizadores de agrupamiento y fidelidad ocupan todo el ancho de su bloque. Ajusta el radio de agrupamiento y la fidelidad, y pulsa **Calcular** para aplicar ambos. Mientras haya ajustes pendientes, se indican el radio y la fidelidad aplicados al mapa. `Vista general ↺` elimina el complejo seleccionado y restablece el zoom; pulsar el mismo nodo de nuevo o el fondo del mapa elimina la selección manteniendo la cámara. También se conserva Escape. La dispersión y el reloj vuelven al sujeto general, sin cambiar año, hora ni año de contraste.
 
 En el diseño estrecho, la capa de curvas y el fondo geográfico se posicionan sobre el rectángulo real del SVG del mapa, debajo de los controles. Se comprobó que canvas y SVG comparten ubicación y tamaño después de apilar los sliders.
 

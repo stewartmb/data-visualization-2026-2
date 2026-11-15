@@ -1,20 +1,20 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=zoom-width1';
-import {createODYearMaps} from './od-year-maps.js?v=linked-scope1';
+import {renderMap} from './map-view.js?v=activity-labels1';
+import {createODYearMaps} from './od-year-maps.js?v=annual-overview1';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=overview1';
-import {renderInspector} from './inspector.js?v=linked-scope1';
+import {renderInspector} from './inspector.js?v=direct-toggles1';
 import {renderProject} from './project-view.js?v=20261028-release1';
 
 import {activeContrastBase,activeODCompareBase,availableContrastYears,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=annual-od1';
 import {dataset} from './datasets.mjs?v=rail-reading1';
-import {createRoutingData} from './od-routing.mjs?v=linked-scope1';
+import {createRoutingData} from './od-routing.mjs?v=annual-overview1';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
 const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia',project:'Proyecto'};
 let data,geo,lineas,flows,toastTimer,historicalProfiles,historicalPromise;
-let choosingODYears=false,pendingODYear=null;
+let choosingODYears=false,pendingODYear=null,searchTimer;
 const stationIndices=new Map();
 const scopeKeys=['borough','query','cohort','preset','tvMin','tvMax','ranges'];
 async function loadHistoricalProfiles(){
@@ -35,6 +35,9 @@ function hydrate(){
   if(['all',...dataset.areas].includes(p.get('borough')))state.borough=p.get('borough');
   state.selected=p.get('inspect')||null;state.query=p.get('q')||'';
   if(['morning','weekend','change','decoupled'].includes(p.get('preset')))state.preset=p.get('preset');
+  const zoneA=new Set((p.get('zoneA')??'').split(',').filter(Boolean));
+  const zoneB=new Set((p.get('zoneB')??'').split(',').filter(id=>id&&!zoneA.has(id)));
+  state.odZones=zoneA.size&&zoneB.size&&!state.selected?{a:zoneA,b:zoneB}:null;
   if(p.has('cohort'))state.cohort=new Set(p.get('cohort')?p.get('cohort').split(','):[]);
   if(p.get('pins'))state.pins=p.get('pins').split(',').slice(0,3);
   for(const [key,allowed] of Object.entries({mode:['delta','current','base'],sort:['change','similar','borough','morning','morningUp','afternoon','night','weekend','volume','volumeDown'],day:['all','0','1','2','3','4','5','6'],mapMetric:['change','deltaAM','deltaWeekend','recovery'],inspectorTab:['fingerprint','compare','evolution','source'],layer:['points','flows'],flowShow:['volume','change']}))if(allowed.includes(p.get(key)))state[key]=p.get(key);
@@ -42,8 +45,13 @@ function hydrate(){
   if(state.tvMin>state.tvMax)[state.tvMin,state.tvMax]=[state.tvMax,state.tvMin];
   for(const key of ['deltaAM','deltaWeekend','recovery']){const lo=p.get(key+'Min'),hi=p.get(key+'Max');if(lo!==null&&hi!==null&&Number.isFinite(+lo)&&Number.isFinite(+hi))state.ranges[key]=[Math.min(+lo,+hi),Math.max(+lo,+hi)];}
   for(const key of ['detail','clock','pathsFocus'])if(p.has(key))state[key]=p.get(key)==='true';
-  if(p.has('hour')&&Number.isInteger(+p.get('hour')))state.flowHour=Math.max(0,Math.min(23,+p.get('hour')));
-  if(p.has('day')&&Number.isInteger(+p.get('day')))state.flowDay=Math.max(0,Math.min(6,+p.get('day')));
+  if(p.has('hour')&&Number.isInteger(+p.get('hour'))){
+    state.flowHour=Math.max(0,Math.min(23,+p.get('hour')));
+    if(p.has('day')&&Number.isInteger(+p.get('day')))state.flowDay=Math.max(0,Math.min(6,+p.get('day')));
+  }else if(dataset.id==='nyc'){
+    state.flowDay=null;
+    state.flowHour=null;
+  }
   setBase(normalizeContrastBase(p.get('base'),state.year,dataset.defaultBase,dataset.years));
   const contrastBase=+p.get('contrastBase');
   state.contrastBase=availableContrastYears(state,dataset).includes(contrastBase)?contrastBase:null;
@@ -62,12 +70,18 @@ function updateURL(){
   if(state.borough!=='all')p.set('borough',state.borough);
   if(state.query)p.set('q',state.query);
   if(state.preset)p.set('preset',state.preset);
+  if(state.odZones){
+    p.set('zoneA',[...state.odZones.a].join(','));
+    p.set('zoneB',[...state.odZones.b].join(','));
+  }
   if(state.cohort)p.set('cohort',[...state.cohort].join(','));
   if(state.tvMin>0)p.set('tvMin',state.tvMin);
   if(state.tvMax<100)p.set('tvMax',state.tvMax);
   for(const [key,range] of Object.entries(state.ranges))if(range){p.set(key+'Min',range[0]);p.set(key+'Max',range[1]);}
   if(state.pins.length)p.set('pins',state.pins.join(','));
-  for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus','layer','flowShow'])p.set(key,state[key]);p.set('hour',state.flowHour);p.set('day',state.flowDay);p.set('base',BASE);p.set('fidelity',state.fidelity);p.set('bundling',state.bundling);
+  for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus','layer','flowShow'])p.set(key,state[key]);
+  if(state.flowDay!==null){p.set('hour',state.flowHour);p.set('day',state.flowDay);}
+  p.set('base',BASE);p.set('fidelity',state.fidelity);p.set('bundling',state.bundling);
   if(availableContrastYears(state,dataset).includes(state.contrastBase))p.set('contrastBase',state.contrastBase);
   if(state.paperRAEB){
     p.set('raeb','paper');p.set('pra',state.paperLevel);
@@ -85,6 +99,7 @@ const app={
   updateFlowHour:null,
   updateClosure:null,
   setFlowTime(day,hour){
+    if(day===state.flowDay&&hour===state.flowHour)return;
     if(day===state.flowDay&&app.updateFlowHour){
       state.flowHour=hour;
       app.updateFlowHour(hour);
@@ -123,16 +138,22 @@ const app={
     if(['mode','sort','day','year'].some(k=>k in patch&&patch[k]!==state[k])){
       const scroller=document.querySelector('.matrix-scroll');if(scroller)scroller.scrollTop=0;
     }
+    if(!('odZones' in patch)&&(patch.selected||scopeKeys.some(key=>key in patch)))state.odZones=null;
+    if('cohort' in patch&&!('areaOutline' in patch))state.areaOutline=null;
     Object.assign(state,patch);
     if(state.selected&&scopeKeys.some(key=>key in patch)&&!app.filtered().some(s=>s.id===state.selected))state.selected=null;
     render();
   },
-  resetScope(){
+  resetScope({annual=false}={}){
+    clearTimeout(searchTimer);
     document.querySelector('#search').value='';
-    app.set({selected:null,cohort:null,preset:null,query:'',borough:'all',tvMin:0,tvMax:100,
-      ranges:{deltaAM:null,deltaWeekend:null,recovery:null}});
+    if(annual){choosingODYears=false;pendingODYear=null;}
+    const period=annual&&flows.annual?{flowDay:null,flowHour:null}:{};
+    app.set({selected:null,odZones:null,cohort:null,preset:null,query:'',borough:'all',tvMin:0,tvMax:100,
+      ranges:{deltaAM:null,deltaWeekend:null,recovery:null},...period});
   },
-  select(id){state.selected=id;render();},
+  select(id){app.set({selected:id});},
+  toggleStation(id){app.select(state.selected===id?null:id);},
   pin(id){
     if(state.pins.includes(id))state.pins=state.pins.filter(x=>x!==id);
     else if(state.pins.length<3)state.pins.push(id);
@@ -157,9 +178,9 @@ function renderODYears(){
     pendingODYear=null;
   }
   const a=canCompare?(choosingODYears?pendingODYear:state.odCompareBase):null;
-  app.odPreviewBase=a??state.year;
-  if(canCompare)app.updateODYearMaps?.(state.flowDay,state.flowHour,app.odPreviewBase,app.odScope);
   const comparing=canCompare&&state.odCompareBase!==null;
+  app.odPreviewBase=(comparing?state.odCompareBase:a)??state.year;
+  if(canCompare)app.updateODYearMaps?.(state.flowDay,state.flowHour,app.odPreviewBase,app.odScope,comparing);
   const button=document.querySelector('#od-compare');
   button.hidden=!canCompare;
   button.textContent=choosingODYears?'Cancelar':comparing?'Salir de comparación':'Comparar';
@@ -189,7 +210,11 @@ function chooseODYear(event,year){
       renderODYears();
       return;
     }
-    if(year===pendingODYear)return;
+    if(year===pendingODYear){
+      pendingODYear=null;
+      renderODYears();
+      return;
+    }
     const odCompareBase=pendingODYear;
     choosingODYears=false;
     pendingODYear=null;
@@ -209,9 +234,13 @@ function render(){
   const items=app.filtered();
   const selected=app.station(state.selected);
   const scoped=!!selected||items.length!==data.stations.length;
+  const toIndices=ids=>Array.from(ids,id=>stationIndices.get(id)).filter(Number.isInteger);
+  const zones=state.layer==='flows'&&state.odZones?[state.odZones.a,state.odZones.b].map(toIndices):null;
+  const between=zones?.every(ids=>ids.length)?zones:null;
   app.odScope={
-    origins:scoped?(selected?[selected]:items).map(s=>stationIndices.get(s.id)).filter(Number.isInteger):null,
-    label:selected?selected.name.replace(/ \([^)]*\)/g,''):state.cohort?'Área seleccionada':state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:scoped?'Grupo filtrado':'Toda la red'
+    zones:between,
+    origins:between?between.flat():scoped?toIndices((selected?[selected]:items).map(s=>s.id)):null,
+    label:between?'Zona A ↔ Zona B':selected?selected.name.replace(/ \([^)]*\)/g,''):state.cohort?'Área seleccionada':state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:scoped?'Grupo filtrado':'Toda la red'
   };
   document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===state.view);b.setAttribute('aria-current',b.dataset.view===state.view?'page':'false');});
   renderODYears();
@@ -223,6 +252,7 @@ function render(){
   const rangeNotes=[...(state.tvMin>0||state.tvMax<100?[`TV ${fmt(state.tvMin)}–${fmt(state.tvMax)} pp`]:[]),...Object.entries(state.ranges).filter(([,r])=>r).map(([k,r])=>`${{deltaAM:'AM',deltaWeekend:'Fin de semana',recovery:'Volumen'}[k]} ${fmt(r[0])}–${fmt(r[1])} ${k==='recovery'?'%':'pp'}`)];
   const groupNote=state.cohort?'Grupo de complejos seleccionado':state.preset==='morning'?'Cambio AM menor que −2 pp':state.preset==='weekend'?'Cambio de fin de semana mayor que +2 pp':state.preset==='change'?'Cambio de forma ≥10 pp':state.preset==='decoupled'?'Índice volumen entre 80–120 % y cambio de forma ≥10 pp':state.query?'Resultados de búsqueda':state.borough==='all'?'Todos los complejos de subway':state.borough;
   document.querySelector('#cohort-note').textContent=[...rangeNotes,groupNote].join(' · ');
+  document.querySelector('#reset').hidden=!(state.borough!=='all'||state.query||state.cohort||state.preset||state.odZones||selected||rangeNotes.length);
   document.body.classList.add('has-inspector');
   document.querySelector('#selection-label').textContent=selected?`${selected.name}${items.some(s=>s.id===selected.id)?'':' · fuera del grupo activo'}`:'';
   const host=document.querySelector('#content');host.replaceChildren();host.dataset.view=state.view;
@@ -235,8 +265,25 @@ function render(){
   updateURL();
 }
 
-function exportCSV(){
-  if(isODMap(state)&&activeODCompareBase(state,flows)===null){
+async function exportCSV(){
+  const base=activeODCompareBase(state,flows);
+  if(isODMap(state)&&app.odScope.zones){
+    const {year,flowDay,flowHour,odZones}=state;
+    const scope=app.odScope.zones;
+    const zones=[[...odZones.a].join('|'),[...odZones.b].join('|')];
+    const years=base===null?[year]:[base,year];
+    try{
+      const rows=await Promise.all(years.map(async y=>{
+        const flow=await app.routing.zoneFlow(y,flowDay,flowHour,scope);
+        return [y,flowDay===null?'':flowDay+1,flowHour??'',...zones,flow.trips,flow.routeKm,flow.directKm,flowDay===null?'annual_daily_mean':'weekday_hour'];
+      }));
+      return downloadCSV(['year','weekday_iso','departure_hour','zone_a_complex_ids','zone_b_complex_ids','assigned_trips','mean_route_km','mean_straight_km','period'],
+        rows,`viajes-entre-zonas-${years.join('-')}.csv`);
+    }catch{
+      return app.toast('No se pudieron exportar los viajes entre zonas.');
+    }
+  }
+  if(isODMap(state)&&base===null){
     const rows=app.filtered().flatMap(s=>{
       const m=annualMeasures(s,state.year);
       return m?[['od',s.id,s.name,s.borough,state.year,m.daily,m.peakShare,Math.floor(m.peak/24)+1,m.peak%24]]:[];
@@ -259,13 +306,18 @@ function downloadCSV(columns,rows,filename){
 
 hydrate();
 const loadData=name=>d3.json(new URL(name==='flows.json'?'flows.json?v=rail-reading1':name,dataset.dataURL));
-Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),dataset.id==='nyc'?loadData('lineas.geojson').catch(()=>null):null,loadData('flows.json')]).then(async([a,g,l,f])=>{
+const nyc=dataset.id==='nyc';
+Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),nyc?loadData('lineas.geojson').catch(()=>null):null,
+  loadData('flows.json'),nyc?loadData('annual-od.json'):null]).then(async([a,g,l,f,annual])=>{
   if(!a.stations?.length)throw Error('Falta el catálogo de estaciones.');
   if(dataset.id==='nyc'&&a.stations.some(s=>!s.profiles?.['2021']||!s.profiles['2024']||
     Object.values(s.profiles).filter(Boolean).some(p=>p.p.length!==168||p.p.some(v=>!Number.isFinite(v)||v<0)))){
     throw Error('Los perfiles no cumplen la estructura esperada.');
   }
   if(!f?.starts||!f?.flows||!f?.meta?.years?.includes(BASE)||!f.meta.years.includes(state.year))throw Error('Faltan los agregados OD para esta comparación. No se usarán datos de entradas como reemplazo.');
+  if(nyc&&(!annual?.volume_limit||!f.meta.years.every(y=>annual.years[y]?.starts.length===f.nodes.length&&
+    annual.years[y]?.loads.length===2*f.links.length)))throw Error('Faltan los agregados anuales OD.');
+  f.annual=annual;
   data=a;geo=g;lineas=l;flows=f;
   app.routing=createRoutingData(f,dataset.dataURL);
   // Métricas exclusivamente desde el OD: los perfiles de 168 celdas de cada complejo se derivan de los
@@ -280,7 +332,8 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),dataset.id==='n
         const v=u.flat(),V=d3.sum(v);
         if(V<=0){s.profiles[String(y)]=null;continue;}
         const p=v.map(x=>x/V),work=d3.sum(p.slice(0,120));
-        s.profiles[String(y)]={p,am:work?100*d3.sum(d3.range(5),d=>d3.sum(p.slice(d*24+6,d*24+10)))/work:0,pm:work?100*d3.sum(d3.range(5),d=>d3.sum(p.slice(d*24+16,d*24+20)))/work:0,weekend:100*d3.sum(p.slice(120)),daily:V/7,weekly:V,actualDaily:V/7,observedCells:v.filter(x=>x>0).length};
+        const daily=f.annual?.years[y]?.starts[i]??V/7;
+        s.profiles[String(y)]={p,am:work?100*d3.sum(d3.range(5),d=>d3.sum(p.slice(d*24+6,d*24+10)))/work:0,pm:work?100*d3.sum(d3.range(5),d=>d3.sum(p.slice(d*24+16,d*24+20)))/work:0,weekend:100*d3.sum(p.slice(120)),daily,weekly:V,actualDaily:daily,observedCells:v.filter(x=>x>0).length};
       }
       s.series=[];
     }
@@ -330,7 +383,6 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),dataset.id==='n
   document.addEventListener('change',e=>{if(e.target.id==='preset-select')app.set({preset:e.target.value||null,cohort:null,query:'',sort:'change'});});
   document.querySelector('#borough').addEventListener('change',e=>app.set({borough:e.target.value}));
   const search=document.querySelector('#search');
-  let searchTimer;
   search.addEventListener('input',()=>{
     clearTimeout(searchTimer);
     searchTimer=setTimeout(()=>app.set({query:search.value}),180);
@@ -343,7 +395,7 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),dataset.id==='n
     app.set({query,selected:first?.id??null});
   });
   document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>app.set({preset:b.dataset.preset,cohort:null,query:'',sort:'change'})));
-  document.querySelector('#reset').addEventListener('click',()=>{clearTimeout(searchTimer);app.resetScope();});
+  document.querySelector('#reset').addEventListener('click',()=>app.resetScope());
   document.querySelector('#save').addEventListener('click',()=>{
     const params=new URLSearchParams(location.search);
     if(state.selected)params.set('inspect',state.selected);

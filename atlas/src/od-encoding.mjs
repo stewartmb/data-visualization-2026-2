@@ -5,6 +5,10 @@ export function railChange(delta, limit=OD_CHANGE_LIMIT) {
   return Math.sqrt(Math.min(Math.abs(delta)/limit,1));
 }
 
+export function odDelta(before, after) {
+  return Math.round((after-before)*1000)/1000;
+}
+
 export function flowStrength(trips, maximum) {
   return Math.sqrt(Math.max(0,Math.min(trips/maximum,1)));
 }
@@ -30,7 +34,8 @@ export async function readGzip(url,json=false) {
 }
 
 export function frameURL(dataURL,year,day,hour) {
-  return new URL(`raeb/${year}/${day}-${String(hour).padStart(2,'0')}.f32.gz`,dataURL);
+  const period=day===null?'annual':`${day}-${String(hour).padStart(2,'0')}`;
+  return new URL(`raeb/${year}/${period}.f32.gz`,dataURL);
 }
 
 export function networkURL(dataURL,meta) {

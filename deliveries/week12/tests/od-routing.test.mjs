@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import {bundleAt,closureImpact,connectionImpact,originBranches,originLoads} from '../atlas/src/od-routing.mjs';
 
-const nodes=['A','B','C','D'].map(id=>({id}));
+import {zoneFlow} from '../atlas/src/od-zones.mjs';
+
+const nodes=['A','B','C','D'].map((id,i)=>({id,lat:0,lon:i*.001}));
 const routeNodes=Object.fromEntries(nodes.map(({id})=>[id,{complex:id}]));
 const edges=[['A','B',2],['B','C',2],['A','C',8],['B','D',3]];
 const links=edges.map(([a,b,len])=>({a,b,stop_a:a,stop_b:b,len,allowed:[true,true]}));
@@ -11,6 +13,14 @@ for(const [pair,trips,path] of [[1,3,[0]],[2,10,[0,2]],[3,4,[0,6]],[8,2,[3,1]],[
   matrix[pair]=trips;paths[pair]=path;
 }
 const graph={nodes,routeNodes,links,matrix,paths};
+const cross=zoneFlow({...graph,zones:[[0],[2]]});
+assert.equal(cross.trips,12);
+assert.deepEqual([...cross.loads],[10,2,10,2,0,0,0,0]);
+assert.equal(cross.routeKm,.004);
+assert.ok(Math.abs(cross.directKm-.22239)<.00001);
+assert.deepEqual(zoneFlow({...graph,zones:[[2],[3]]}),{
+  loads:new Float64Array(8),trips:0,routeKm:0,directKm:0
+});
 const branches=originBranches(paths,matrix,0,links.length);
 assert.deepEqual([...branches.links],[17,10,0,4]);
 assert.deepEqual([...branches.destinations],[0,3,10,4]);
@@ -24,6 +34,8 @@ assert.equal(result.pairs,2);
 assert.deepEqual([...result.changes],[-12,-12,0,0]);
 assert.equal(connectionImpact({...graph,from:'A',to:'C',length:4}).redirected,0);
 assert.equal(connectionImpact({...graph,from:'A',to:'C',length:1,origins:[0]}).redirected,10);
+assert.equal(connectionImpact({...graph,from:'A',to:'C',length:1,zones:[[0],[2]]}).redirected,12);
+assert.equal(connectionImpact({...graph,from:'A',to:'C',length:1,zones:[[0],[1]]}).redirected,0);
 const layout={samples:2,points:new Float32Array([0,0,10,0, 0,2,10,2, 0,20,10,20]),
   metadata:new Float32Array([5,0,1,0, 2,0,2,0, 9,2,3,0])};
 const found=bundleAt(layout,5,1,2);

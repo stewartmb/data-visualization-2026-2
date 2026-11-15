@@ -1,14 +1,17 @@
+import {bindMapLasso} from './map-lasso.js?v=direct-toggles1';
+import {bindFlowScale,bindCircleScale} from './flow-scale.js?v=circle-legend1';
+import {odLoads,odStarts,odIncoming,odPeriodLabel} from './od-period.mjs';
 import {state,BASE,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats,passesMetricRanges,cohortProfile} from './model.js?v=20261028-4';
-import {RaebOverlay} from './raeb-overlay.mjs?v=zoom-width1';
-import {setRaebStatus} from './raeb-cpu-overlay.mjs?v=zoom-width1';
+import {RaebOverlay} from './raeb-overlay.mjs?v=annual-overview1';
+import {setRaebStatus} from './raeb-cpu-overlay.mjs?v=annual-overview1';
 import {FLOW_COLOR_MAX,FLOW_COLOR_STOPS,flowColor} from './raeb-gpu-shaders.mjs?v=zoom-width1';
 import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
 import {activeODCompareBase} from './contrast-model.mjs?v=annual-od1';
-import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,railChange,railFlowWidth,zoomStrokeScale,flowStrength,flowCount} from './od-encoding.mjs?v=zoom-width1';
-import {originBranches,bundleAt,distanceToLines} from './od-routing.mjs?v=linked-scope1';
-import {updateClockTime} from './inspector.js?v=linked-scope1';
-let transform=d3.zoomIdentity, previousFrame;
-const mapZoomLimits=[1,12];
+import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,railChange,railFlowWidth,zoomStrokeScale,flowStrength,flowCount,odDelta} from './od-encoding.mjs?v=shared-change1';
+import {originBranches,bundleAt,distanceToLines} from './od-routing.mjs?v=annual-overview1';
+import {updateClockTime} from './inspector.js?v=direct-toggles1';
+let transform=d3.zoomIdentity, previousFrame, pendingFidelity=null, pendingGrouping;
+const mapZoomLimits=[1,32];
 const names={change:'Cambio de forma · distancia TV (pp)',deltaAM:'Cambio del peso AM · puntos porcentuales',deltaWeekend:'Cambio del peso de fin de semana · puntos porcentuales',recovery:'Índice de volumen · referencia = 100 %'};
 
 const formulas=()=>({
@@ -34,9 +37,23 @@ const stationMetricLabels={
 export function renderMap(host,app,items){
   const {dataset}=app;
   const bart=dataset.id==='bart';
+  const annual=state.flowDay===null;
+  const volumeLimit=annual?app.flows.annual.volume_limit:FLOW_COLOR_MAX;
   const changeLimit=app.flows?.meta.change_limit??OD_CHANGE_LIMIT;
   const flujos=state.layer==='flows'&&!!app.flows&&!!app.flows.flows[String(state.year)];
+  const routeNodes=flujos?app.flows.meta.network?.route_nodes:null;
+  const stopsByComplex=d3.group(Object.values(routeNodes??{}),stop=>stop.complex);
+  const anchors=new Map();
+  for(const station of app.data.stations){
+    const stops=stopsByComplex.get(station.id);
+    if(!stops?.length)continue;
+    const origin=[station.lon,station.lat];
+    anchors.set(station.id,d3.least(stops,stop=>d3.geoDistance(origin,stop.coords)).coords);
+  }
+  const stationCoords=station=>anchors.get(station.id)??[station.lon,station.lat];
   const paper=state.paperRAEB;
+  const fidelityKey=paper?'paperLevel':'fidelity';
+  const formatFidelity=value=>paper?`${value} / 5`:value.toFixed(2);
   const odBase=activeODCompareBase(state,app.flows);
   const cambio=odBase!==null;
   let onTracks=flujos&&!cambio&&(paper
@@ -45,8 +62,15 @@ export function renderMap(host,app,items){
   let originData=null, originBase=null, originRequest=0;
   const focusOrigin=flujos?app.station(state.selected):null;
   const scope=app.odScope;
+  const between=flujos&&scope.zones;
+  const drawnZones=between?state.odZones:null;
+  const circleLabel=cambio?(focusOrigin?'Círculos de cambio por destino':'Círculos de cambio')
+    :focusOrigin?'Círculos de destino':'Círculos de afluencia';
+  const zoneOf=station=>drawnZones?.a.has(station.id)?'a':drawnZones?.b.has(station.id)?'b':null;
+  let zoneStats=null;
   const scopedGroup=flujos&&!focusOrigin&&scope.origins!==null;
-  let scopeLoads=null,scopeBaseLoads=null,scopeRequest=0;
+  let scopeLoads=null,scopeRequest=0;
+  let comparisonFrame=null,comparisonRequest=0;
   const metric=state.mapMetric,unit=metric==='recovery'?'%':'pp',title={change:'distancia TV',deltaAM:'cambio del peso AM',deltaWeekend:'cambio del peso de fin de semana',recovery:'índice de volumen'}[metric];
   const values=app.data.stations.filter(s=>profile(s)).map(s=>metricValue(s,metric));
   const activeRange=metric==='change'?(state.tvMin>0||state.tvMax<100?[state.tvMin,state.tvMax<100?state.tvMax:Math.max(state.tvMin,Math.ceil(d3.max(values)))]:null):state.ranges[metric];
@@ -66,24 +90,51 @@ export function renderMap(host,app,items){
   <div class="map-stage">
     <div class="map-sidebar" role="region" aria-label="Controles y leyenda del mapa">
     <div class="map-panel map-panel-controls">
-      <div class="eyebrow">01 · CONEXIONES Y RITMOS</div>
-      ${app.flows?`<div class="segmented map-layer" role="group" aria-label="Capa del mapa"><button data-layer="points" class="${!flujos?'active':''}">Cambio por complejo</button><button data-layer="flows" class="${flujos?'active':''}">Flujos por hora</button></div>`:''}
+      ${flujos?'':'<div class="eyebrow">01 · CONEXIONES Y RITMOS</div>'}
+      ${app.flows?`<div class="segmented map-layer" role="group" aria-label="Capa del mapa"><button data-layer="points" class="${!flujos?'active':''}">Cambio por complejo</button><button data-layer="flows" class="${flujos?'active':''}">Flujos de la red</button></div>`:''}
       ${flujos?`<div class="flow-controls">
-        <div class="flow-hour-row"><span class="flow-day-current">${DAYS_LONG[state.flowDay]}</span><output id="flow-hour-label" class="flow-hour-label">${ampm(state.flowHour)}</output><div class="segmented flow-day">${DAYS.map((d,i)=>`<button data-flowday="${i}" aria-pressed="${state.flowDay===i}" class="${state.flowDay===i?'active':''}" title="${DAYS_LONG[i]}">${d.slice(0,2)}</button>`).join('')}</div></div>
-        <svg id="flow-profile" class="flow-profile" aria-label="Distribución de viajes OD por hora en el año seleccionado"></svg>
-        <input id="flow-hour" class="flow-slider" type="range" min="0" max="23" step="1" value="${state.flowHour}" aria-label="${dataset.hourLabel}">
-        <div class="flow-ticks"><span>12 am</span><span>6 am</span><span>12 pm</span><span>6 pm</span><span>11 pm</span></div>
-        ${cambio?'':`<div id="raeb-status" role="status" class="raeb-status">${onTracks?'Sobre la vía':'Procesando…'}</div>
-        ${paper?`<div class="fidelity radius-control">
-          <label for="bundling">Radio inicial de agrupamiento <output id="bundling-out" for="bundling">—</output></label>
-          <input id="bundling" type="range" min="0" max="0" step="any" value="0" disabled>
-          <div class="radius-actions"><button type="button" id="radius-auto" class="text-button" aria-pressed="true" disabled>Automático</button><small id="radius-reference">Calculando la referencia…</small></div>
-        </div>`:`<label class="fidelity"><span>Agrupación <output id="bundling-out">${state.bundling.toFixed(2)}</output></span><input id="bundling" type="range" min="0" max="1" step="0.01" value="${state.bundling}" aria-label="Agrupación de recorridos"><small>0: sin atracción entre curvas · 1: agrupamiento con el radio estimado por RAEB. Actúa sobre todos los pares OD de esta hora.</small></label>`}
-        ${paper?`<label class="fidelity"><span>Fidelidad a la red <output id="pra-out">${state.paperLevel} / 5</output></span><input id="pra" type="range" min="0" max="5" step="1" value="${state.paperLevel}" aria-label="Nivel de fidelidad a la red" title="0: agrupación libre. 5: toda la red guía los haces. Con radio 0, los flujos siguen la vía asignada."><small>0: agrupación libre · 5: toda la red guía los haces.</small></label>`:`
-        <label class="fidelity"><span>Fidelidad geométrica <output id="fidelity-out">${state.fidelity.toFixed(2)}</output></span><input id="fidelity" type="range" min="0" max="1" step="0.01" value="${state.fidelity}" aria-label="Fidelidad geométrica de los trazos"><small>0: abstracción libre, puede cruzar el agua · 1: recorridos de referencia. Los trazos intermedios son una abstracción visual; los viajes OD no cambian.</small></label>`}
-        <a class="text-button" id="raeb-mode" href="#" title="Abrir el mismo día y hora con el otro agrupamiento">${paper?'Volver al agrupamiento del Atlas':'Probar RAEB del paper'}</a>`}
-        <button id="inspect-bundle" type="button" class="text-button" aria-pressed="false" hidden>Explorar un haz</button>
-        <div id="bundle-evidence" class="bundle-evidence" aria-live="polite" hidden></div>
+        ${bart?`<section class="flow-control-group flow-control-time" aria-labelledby="map-time-heading">
+          <h3 id="map-time-heading">Día y hora</h3>
+          <div class="flow-hour-row"><span class="flow-day-current">${DAYS_LONG[state.flowDay]}</span><output id="flow-hour-label" class="flow-hour-label">${ampm(state.flowHour)}</output><div class="segmented flow-day">${DAYS.map((d,i)=>`<button data-flowday="${i}" aria-pressed="${state.flowDay===i}" class="${state.flowDay===i?'active':''}" title="${DAYS_LONG[i]}">${d.slice(0,2)}</button>`).join('')}</div></div>
+          <svg id="flow-profile" class="flow-profile"${between?' style="display:none"':''} aria-label="Distribución de viajes OD por hora en el año seleccionado"></svg>
+          <input id="flow-hour" class="flow-slider" type="range" min="0" max="23" step="1" value="${state.flowHour}" aria-label="${dataset.hourLabel}">
+          <div class="flow-ticks"><span>12 am</span><span>6 am</span><span>12 pm</span><span>6 pm</span><span>11 pm</span></div>
+        </section>`:`<div class="flow-control-group map-time-context"><output id="flow-period" aria-live="polite">${odPeriodLabel(state.flowDay,state.flowHour)}</output></div>`}
+        ${cambio?'':`<section class="flow-control-group flow-control-grouping" aria-labelledby="map-grouping-heading">
+          <h3 id="map-grouping-heading">Agrupamiento y fidelidad</h3>
+          ${paper?`<div class="fidelity radius-control">
+            <label for="bundling">Radio inicial de agrupamiento <output id="bundling-out" for="bundling">—</output></label>
+            <input id="bundling" type="range" min="0" max="0" step="any" value="0" disabled>
+            <div class="radius-actions"><button type="button" id="radius-auto" class="text-button" title="Preparar el radio sugerido para el período activo" disabled>Automático</button><small id="radius-reference">Calculando la referencia…</small></div>
+          </div>`:`<label class="fidelity"><span>Agrupación <output id="bundling-out">${state.bundling.toFixed(2)}</output></span><input id="bundling" type="range" min="0" max="1" step="0.01" value="${state.bundling}" aria-label="Agrupación de recorridos"><small>0: sin atracción entre curvas · 1: agrupamiento con el radio estimado por RAEB. Actúa sobre todos los pares OD del período activo.</small></label>`}
+          ${paper?`<label class="fidelity"><span>Fidelidad a la red <output id="pra-out">${state.paperLevel} / 5</output></span><input id="pra" type="range" min="0" max="5" step="1" value="${state.paperLevel}" aria-label="Nivel de fidelidad a la red" title="0: agrupación libre. 5: toda la red guía los haces. Con radio 0, los flujos siguen la vía asignada."><small>0: agrupación libre · 5: toda la red guía los haces.</small></label>`:`
+          <label class="fidelity"><span>Fidelidad geométrica <output id="fidelity-out">${state.fidelity.toFixed(2)}</output></span><input id="fidelity" type="range" min="0" max="1" step="0.01" value="${state.fidelity}" aria-label="Fidelidad geométrica de los trazos"><small>0: abstracción libre, puede cruzar el agua · 1: recorridos de referencia. Los trazos intermedios son una abstracción visual; los viajes OD no cambian.</small></label>`}
+          <div class="map-control fidelity-actions">
+            <button type="button" id="calculate-fidelity" aria-label="Calcular agrupamiento y fidelidad" disabled>Calcular</button>
+          </div>
+          <div class="fidelity-status">
+            <div id="raeb-status" role="status" class="raeb-status">${onTracks?'':'Procesando…'}</div>
+            <small id="applied-fidelity" role="status" hidden></small>
+          </div>
+          <button id="inspect-bundle" type="button" class="text-button" aria-pressed="false" hidden>Explorar un haz</button>
+          <div id="bundle-evidence" class="bundle-evidence" aria-live="polite" hidden></div>
+        </section>`}
+        <section class="flow-control-group flow-control-navigation" aria-labelledby="map-navigation-heading">
+          <div class="map-explore-heading">
+            <h3 id="map-navigation-heading">Explorar</h3>
+            <button id="map-center" class="text-button map-reset" type="button" hidden title="Quitar filtros y selección y mostrar toda la red${bart?'':' para todo el año'}"><span aria-hidden="true">↺</span> Vista general</button>
+          </div>
+          <div class="map-selection-tools">
+            <button id="map-select" type="button" aria-pressed="false">Dibujar área</button>
+            <button id="map-select-pair" type="button" aria-pressed="false">Entre dos zonas</button>
+          </div>
+          <p id="map-selection-hint" class="map-selection-hint" role="status" hidden></p>
+          ${between?'':`<label class="flow-node-toggle">
+            <span>${circleLabel}</span>
+            <input id="flow-nodes" type="checkbox" role="switch"${state.showFlowNodes?' checked':''}>
+            <span class="flow-node-switch" aria-hidden="true"></span>
+          </label>`}
+        </section>
       </div>`:''}
       <div class="points-controls"${flujos?' hidden':''}>
       <label class="map-field">Color de los puntos<select id="map-metric">${Object.entries(names).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label>
@@ -95,16 +146,29 @@ export function renderMap(host,app,items){
         ${filters.length?`<div class="metric-filter-chips">${filters.map(([key,label])=>`<button data-clear-metric="${key}" title="Quitar este filtro">${esc(label)} ×</button>`).join('')}</div>`:''}
       </details>
       </div>
-      ${flujos?`<label class="flow-node-toggle" title="Cambia el tamaño de los puntos según la afluencia en la franja activa."><input id="flow-nodes" type="checkbox"${state.showFlowNodes?' checked':''}> Círculos de afluencia</label>`:''}
-      <div class="map-control"><button id="map-select">Seleccionar área</button><button id="map-center" title="Quitar filtros y selección y mostrar toda la red">Vista general ↺</button></div>
+      ${flujos?'':`<div class="map-control"><button id="map-select" type="button" aria-pressed="false">Dibujar área</button><button id="map-center" title="Quitar filtros y selección y mostrar toda la red">Vista general ↺</button></div>`}
+      ${flujos?'':'<p id="map-selection-hint" class="map-selection-hint" role="status" hidden></p>'}
     </div>
     <div class="map-panel map-legend" aria-label="Leyenda">
-      ${flujos?`<div class="map-legend-title">${cambio?'Cambio por tramo':focusOrigin?'Salidas desde '+esc(focusOrigin.name.replace(/ \([^)]*\)/g,'')):scopedGroup?'Salidas · '+esc(scope.label):'Flujo de la red'} · <span id="flow-legend-hour">${ampm(state.flowHour)}</span> · ${DAYS_LONG[state.flowDay]}</div>
-      <div class="map-legend-what">${cambio?`${odBase} → ${state.year} · ${focusOrigin?'Salidas de '+esc(focusOrigin.name.replace(/ \([^)]*\)/g,'')):scopedGroup?'Salidas · '+esc(scope.label):'Toda la red, ambos sentidos'}`:`${state.year} · Promedio por día, según ${dataset.hourLabel.toLowerCase()}.`}</div>
+      ${flujos?`<div class="map-legend-title">${cambio?'Cambio por tramo':focusOrigin?'Salidas desde '+esc(focusOrigin.name.replace(/ \([^)]*\)/g,'')):between?scope.label:scopedGroup?'Salidas · '+esc(scope.label):'Flujo de la red'}</div>
+      <div class="map-legend-what">${cambio?`${odBase} → ${state.year} · ${focusOrigin?'Salidas de '+esc(focusOrigin.name.replace(/ \([^)]*\)/g,'')):between?scope.label:scopedGroup?'Salidas · '+esc(scope.label):'Toda la red, ambos sentidos'}`:`${state.year} · ${annual?'Promedio diario de todo el año.':`Promedio por día, según ${dataset.hourLabel.toLowerCase()}.`}`}</div>
       <div id="map-key"></div>
-      <div class="map-legend-marks" id="flow-node-key">${cambio?`Área del círculo = ${focusOrigin?'viajes al destino':'afluencia'} en ${state.year}.`:focusOrigin?'Tamaño del punto = viajes que terminan en ese destino.':`Área del círculo = ${app.flows.incoming?'viajes que empiezan o terminan aquí':'viajes iniciados'}. Selecciona un punto para ver sus conexiones.`}</div>
-      ${paper||cambio?`<div class="map-complex-key" hidden><i aria-hidden="true"></i> ${app.flows?.meta.network?.route_nodes?'Transbordo declarado · esquema':'Parada del mismo complejo'}</div>
-      <div class="map-track-key" hidden><i aria-hidden="true"></i> Vía de referencia sin color de flujo</div>`:''}
+      ${between?`<div class="map-legend-marks map-zone-summary"><span class="zone-label-a">Zona A · ${drawnZones.a.size}</span><span class="zone-label-b">Zona B · ${drawnZones.b.size}</span></div><div id="zone-flow-summary" class="map-key-note" role="status"></div>`:''}
+      ${between?'':`<div class="map-legend-marks" id="flow-node-key"${state.showFlowNodes?'':' hidden'}>
+        <div>${cambio?`El área indica cuánto cambiaron ${focusOrigin?'los viajes a cada destino':'los viajes por complejo'}.`
+          :focusOrigin?'El área indica cuántos viajes del origen seleccionado llegan a cada destino.'
+          :`El área indica cuántos viajes ${app.flows.incoming?'empiezan o terminan':'empiezan'} en cada complejo.`}</div>
+        <div id="flow-circle-scale" hidden>
+          <div class="map-circle-samples${cambio?' compare':''}">
+            ${Array.from({length:3},()=>'<span class="map-circle-sample" role="img" tabindex="0"><span aria-hidden="true"></span></span>').join('')}
+          </div>
+          <div class="map-key-words">${cambio?'<span>Menor cambio</span><span>Mayor cambio</span>':'<span>Menos actividad</span><span>Más actividad</span>'}</div>
+        </div>
+        ${cambio?'<div class="map-key-note">Azul si bajó · terracota si subió · gris si quedó igual.</div>':''}
+      </div>`}
+      ${routeNodes?`<div class="map-footprint-key" hidden><i aria-hidden="true"></i> Estaciones del mismo complejo · área esquemática</div>
+      <div class="map-complex-key" hidden><i aria-hidden="true"></i> Transbordo entre complejos · esquema</div>`:''}
+      ${paper||cambio?`<div class="map-track-key" hidden><i aria-hidden="true"></i> Vía de referencia sin color de flujo</div>`:''}
       <div class="map-legend-foot" id="flow-legend-foot">${cambio?'Recorridos asignados sobre la misma red GTFS. Pasa por un tramo para ver A, B y la diferencia.':paper?'RAEB (2019) aplicado a viajes OD. Las curvas son haces; pueden apartarse de la red.':'Las curvas agrupan relaciones OD; no muestran trenes ni rutas observadas.'}</div>`:`<div class="map-legend-title">${L.titulo}</div>
       <div class="map-legend-what">${L.que}</div>
       <div id="map-key"></div>
@@ -121,19 +185,6 @@ export function renderMap(host,app,items){
     </div>
     <div class="map-credit">${esc(dataset.credit)}</div>
   </div>`;
-  const modeLink=host.querySelector('#raeb-mode');
-  const modeHref=()=>{
-    const url=new URL(location.href);
-    url.searchParams.set('layer','flows');
-    url.searchParams.set('hour',state.flowHour);
-    url.searchParams.set('day',state.flowDay);
-    url.searchParams.set('raeb',paper?'atlas':'paper');
-    if(paper){
-      for(const key of ['pra','paperBundling','paperRadius'])url.searchParams.delete(key);
-    }else url.searchParams.set('pra','3');
-    return url.href;
-  };
-  if(modeLink){modeLink.href=modeHref();modeLink.onclick=()=>{modeLink.href=modeHref();};}
   host.querySelector('.map-stage').classList.toggle('od-stage',flujos);
   host.querySelector('#bundling')?.closest('.fidelity')?.setAttribute('title',paper?'Distancia en línea recta que usa la primera iteración. Con 0 se muestran las curvas iniciales.':'Controla cuánto se aproximan las curvas.');
   host.querySelector('#fidelity')?.closest('label').setAttribute('title','0: geometría libre; 1: red de referencia. Intermedio: se conservan los tramos principales.');
@@ -206,16 +257,21 @@ export function renderMap(host,app,items){
     .attr('class','map-bg').attr('data-borough',feature=>feature.properties.name)
     .classed('borough-context',feature=>!!borough&&feature!==borough)
     .attr('fill-rule','evenodd').attr('vector-effect','non-scaling-stroke').attr('d',path);
+  const footprintLayer=routeNodes?baseG.append('g').attr('aria-hidden','true'):null;
+  const zoneLayer=baseG.append('g').attr('aria-hidden','true').attr('pointer-events','none');
+  const stationPosition=station=>projection(stationCoords(station));
   // Trazado del metro (GTFS de la MTA, simplificado): contexto recesivo en gris bajo los puntos.
   if(app.lineas&&!flujos)g.append('g').attr('class','map-lines').selectAll('path').data(app.lineas.features).join('path').attr('d',path).attr('fill','none').attr('vector-effect','non-scaling-stroke');
   // Every positive OD relation participates. Curves are calculated off the UI
   // thread; the camera and continuous slider preview are WebGL uniforms.
-  let pintarFlujos=null,nodeR=null,stationStarts=null,stationUse=null,updateRadiusGuide=null;
-  let updateComplexConnections=null,highlightComplexConnections=null, inspectCorridor=null, resizeScenarioStops=null;
+  let pintarFlujos=null,stationStarts=null,stationUse=null,updateRadiusGuide=null;
+  let setFlowScale;
+  let nodeVolumeMax=1,nodeChangeMax=1;
+  let updateComplexContext=null,hoveredComplex=null,inspectCorridor=null,resizeScenarioStops=null;
   if(flujos){
     const F=app.flows,ni=new Map(F.nodes.map((n,i)=>[n.id,i]));
-    stationStarts=(s,h=state.flowHour,year=state.year)=>F.starts[year]?.[ni.get(s.id)]?.[state.flowDay]?.[h];
-    stationUse=(s,h=state.flowHour,year=state.year)=>(stationStarts(s,h,year)??0)+(F.incoming?.[year]?.[state.flowDay][h][ni.get(s.id)]??0);
+    stationStarts=(s,h=state.flowHour,year=state.year,day=state.flowDay)=>odStarts(F,year,day,h,ni.get(s.id));
+    stationUse=(s,h=state.flowHour,year=state.year,day=state.flowDay)=>(stationStarts(s,h,year,day)??0)+(odIncoming(F,year,day,h,ni.get(s.id))??0);
     if(!F._smax){
       let maximum=0;
       for(const year of F.meta.years)for(let i=0;i<F.nodes.length;i++){
@@ -225,8 +281,27 @@ export function renderMap(host,app,items){
       }
       F._smax=maximum;
     }
-    const rNode=d3.scaleSqrt().domain([0,F._smax]).range([0,13]);
-    nodeR=(s,h)=>Math.max(2.3,rNode(stationUse(s,h)));
+    const annualNodeMax=annual?d3.max(F.meta.years,year=>d3.max(F.nodes,station=>stationUse(station,null,year))):null;
+    nodeVolumeMax=annualNodeMax??F._smax;
+    if(cambio&&!focusOrigin){
+      // Keep the scale stable while changing hours or filtering complexes.
+      const pairKey=[odBase,state.year].sort().join('-')+(annual?'/annual':'');
+      const pairScales=F._nodeChangeScales??=new Map();
+      if(!pairScales.has(pairKey)){
+        let maximum=1;
+        for(const station of F.nodes){
+          if(annual){
+            maximum=Math.max(maximum,Math.abs(stationUse(station,null,state.year)-stationUse(station,null,odBase)));
+          }else for(let day=0;day<7;day++)for(let hour=0;hour<24;hour++){
+            const before=stationUse(station,hour,odBase,day);
+            const after=stationUse(station,hour,state.year,day);
+            maximum=Math.max(maximum,Math.abs(after-before));
+          }
+        }
+        pairScales.set(pairKey,maximum);
+      }
+      nodeChangeMax=pairScales.get(pairKey);
+    }
     const rail=F.links.flatMap((link,index)=>link.kind==='rail'?[{link,index}]:[]);
     baseG.append('g').attr('class','rail-reference').selectAll('path').data(rail).join('path')
       .attr('d',({link})=>d3.line()(link.coords.map(projection))).attr('fill','none')
@@ -235,6 +310,10 @@ export function renderMap(host,app,items){
     const grouping=host.querySelector('#bundling');
     const groupingOut=host.querySelector('#bundling-out');
     const autoButton=host.querySelector('#radius-auto');
+    const fidelity=host.querySelector(paper?'#pra':'#fidelity');
+    const fidelityOut=host.querySelector(paper?'#pra-out':'#fidelity-out');
+    const calculate=host.querySelector('#calculate-fidelity');
+    const applied=host.querySelector('#applied-fidelity');
     const referenceText=host.querySelector('#radius-reference');
     const trackKey=host.querySelector('.map-track-key');
     const stage=svgNode.closest('.map-stage');
@@ -254,7 +333,7 @@ export function renderMap(host,app,items){
         showTooltip(`<div class="station-tooltip">
           <strong class="station-tooltip-name">${esc(stationNames.get(link.a))} ↔ ${esc(stationNames.get(link.b))}</strong>
           <span class="station-tooltip-context">${esc(link.routes.join(' · '))}${cambio?` · ${odBase}: ${fmt(a)} · ${state.year}: ${fmt(b)}`:''}</span>
-          <div class="station-tooltip-metric"><span>${cambio?'Cambio de viajes':'Viajes asignados al tramo'}</span><strong>${cambio?signed(b-a):esc(flowCount(trips,fmt))}</strong></div>
+          <div class="station-tooltip-metric"><span>${cambio?'Cambio de viajes por día':'Viajes por día en el tramo'}</span><strong>${cambio?signed(b-a):esc(flowCount(trips,fmt))}</strong></div>
           ${focusOrigin&&!cambio?`<div class="station-tooltip-context">${esc(flowCount(share,fmt))} % de las salidas del origen</div>`:''}
         </div>`,event);
       }).on('pointerleave',hideTooltip);
@@ -323,7 +402,7 @@ export function renderMap(host,app,items){
       scenarioLine.attr('d',drawRail([from.point,to.point])).attr('display',null);
       instructions.textContent='Reasignando los viajes con el enlace hipotético…';
       const length=d3.geoDistance(from.coords,to.coords)*6371008.8;
-      app.routing.scenario(state.year,state.flowDay,state.flowHour,{connection:{from:from.id,to:to.id,length,origins:scope.origins}}).then(result=>{
+      app.routing.scenario(state.year,state.flowDay,state.flowHour,{connection:{from:from.id,to:to.id,length,origins:scope.origins,zones:scope.zones}}).then(result=>{
         if(request!==evidenceSerial||!svgNode.isConnected)return;
         let relief=-1;
         for(const {index} of rail)if(result.changes[index]<0&&(relief<0||result.changes[index]<result.changes[relief]))relief=index;
@@ -398,11 +477,7 @@ export function renderMap(host,app,items){
       railPaths.attr('display',show||cambio?null:'none');
       if(trackKey)trackKey.hidden=!(show||cambio);
       if(inspectButton)inspectButton.hidden=show||!!focusOrigin;
-      if(show){
-        host.querySelector('.map-loading').hidden=true;
-        svgNode.setAttribute('aria-busy','false');
-        host.querySelector('#raeb-status').textContent='Sobre la vía';
-      }
+      if(show)setRaebStatus('');
       host.querySelector('#flow-legend-foot').textContent=show
         ? 'Tramos de referencia GTFS. Pasa por la vía para ver la carga estimada.'
         : cambio?'Recorridos asignados sobre la misma red GTFS. Pasa por un tramo para ver A, B y la diferencia.'
@@ -412,30 +487,23 @@ export function renderMap(host,app,items){
         ?show?'Ramas · porcentaje de las salidas':'Haces · intensidad de las salidas'
         :show?'Viajes estimados por tramo':'Flujo estimado en los haces';
       clearCandidate();
-      updateComplexConnections?.();
+      updateComplexContext?.();
     }
     showTracks(onTracks);
     function paintExact(hour){
       if(!onTracks&&!cambio)return;
-      if(scopedGroup&&!scopeLoads){
+      if(cambio?!comparisonFrame:scopedGroup&&!scopeLoads){
         railPaths.attr('display','none');
-        const counts=host.querySelector('#od-change-counts');
-        if(counts)counts.textContent='';
         return;
       }
-      if(cambio&&focusOrigin&&(!originData||!originBase)){
-        railPaths.attr('display','none');
-        host.querySelector('#od-change-counts').textContent='Cargando salidas de ambos años…';
-        return;
-      }
-      const deltaLimit=activeChangeLimit();
+      const deltaLimit=comparisonFrame?.limit;
       let gains=0,losses=0,unchanged=0;
       const order=new Map();
       railPaths.each(function({index}){
         const [a,b]=comparisonLoads(index,hour);
         const path=d3.select(this);
         if(cambio){
-          const delta=Math.round((b-a)*1000)/1000;
+          const delta=odDelta(a,b);
           if((focusOrigin||scopedGroup)&&!a&&!b){path.attr('display','none');order.set(index,0);return;}
           if(delta>0)gains++;
           else if(delta<0)losses++;
@@ -448,95 +516,154 @@ export function renderMap(host,app,items){
           return;
         }
         const trips=focusOrigin?(originData?.links[index]??0):b;
-        const maximum=focusOrigin?originData?.total||1:FLOW_COLOR_MAX;
+        const maximum=between?Math.max(1,zoneStats?.trips??0):focusOrigin?originData?.total||1:volumeLimit;
         order.set(index,trips);
         path.attr('display',trips>0?null:'none')
           .attr('stroke',flowColor(trips,maximum)).style('--flow-variation',`${railFlowWidth(trips,maximum)-.85}px`);
       });
       railPaths.sort((a,b)=>order.get(a.index)-order.get(b.index));
       if(cambio){
-        const ticks=host.querySelector('.flow-color-ticks');
-        ticks.innerHTML=`<span>≤ −${fmt(deltaLimit)}</span><span>0</span><span>≥ +${fmt(deltaLimit)}</span>`;
+        const scale=host.querySelector('#od-track-scale');
+        setFlowScale(deltaLimit);
+        scale.hidden=false;
         host.querySelector('#od-change-counts').textContent=`${fmt(gains)} subieron · ${fmt(losses)} bajaron · ${fmt(unchanged)} sin cambio`;
       }
     }
-    function activeChangeLimit(){
-      if(!cambio||!focusOrigin||!originData||!originBase)return changeLimit;
-      const peak=d3.max(rail,({index})=>Math.abs(originData.links[index]-originBase.links[index]));
-      return Math.max(1,Math.ceil(peak||0));
-    }
     function comparisonLoads(index,hour){
-      if(focusOrigin&&cambio)return [originBase?.links[index]??0,originData?.links[index]??0];
-      const a=scopedGroup?scopeBaseLoads:F.flows[odBase]?.[state.flowDay][hour];
-      const b=scopedGroup?scopeLoads:F.flows[state.year][state.flowDay][hour];
+      const comparisonLoadsByYear=comparisonFrame?.loadsByYear;
+      const a=comparisonLoadsByYear?.get(odBase);
+      const b=cambio?comparisonLoadsByYear?.get(state.year):scopedGroup?scopeLoads:odLoads(F,state.year,state.flowDay,hour);
       const forward=2*index;
       const reverse=forward+1;
       return [a?a[forward]+a[reverse]:0,b?b[forward]+b[reverse]:0];
     }
     const radiusGuide=paper&&!cambio?svg.append('circle').attr('class','radius-guide').attr('display','none'):null;
-    const selectedCenter=focusOrigin?projection([focusOrigin.lon,focusOrigin.lat]):null;
-    let kernel=null,activeRadius=0,showRadius=false;
+    const selectedCenter=focusOrigin?stationPosition(focusOrigin):null;
+    let kernel=null,activeRadius=state.paperRadius??0,showRadius=false;
     const radiusLimit=()=>kernel?.radiusMeters??(bart?3000:0);
+    const formatGrouping=value=>paper?`${fmt(Math.round(value))} m`:value.toFixed(2);
     if(radiusGuide)updateRadiusGuide=()=>{
       const [x,y]=selectedCenter?transform.apply(selectedCenter):[width/2,height/2];
       const px=activeRadius*transform.k/metersPerPixel;
       radiusGuide.attr('display',showRadius&&px>0?null:'none').attr('cx',x).attr('cy',y).attr('r',px);
     };
+    function updateGroupingControls(){
+      const hasDraft=pendingGrouping!==undefined||pendingFidelity!==null;
+      calculate.disabled=!hasDraft||(paper&&!kernel);
+      applied.hidden=!hasDraft;
+      if(hasDraft)applied.textContent=`En el mapa: ${formatGrouping(paper?activeRadius:state.bundling)} · ${formatFidelity(state[fidelityKey])}`;
+      fidelityOut.value=formatFidelity(pendingFidelity??state[fidelityKey]);
+      if(!paper){
+        grouping.value=String(pendingGrouping??state.bundling);
+        groupingOut.value=formatGrouping(grouping.valueAsNumber);
+        return;
+      }
+      grouping.max=String(Math.max(radiusLimit(),activeRadius));
+      grouping.value=String(pendingGrouping??activeRadius);
+      groupingOut.value=kernel?formatGrouping(grouping.valueAsNumber):'—';
+      grouping.setAttribute('aria-valuetext',kernel?`${Math.round(grouping.valueAsNumber)} metros`:'Calculando la referencia');
+      updateRadiusGuide?.();
+    }
     function updateGrouping(){
-      if(!paper){showTracks(state.fidelity===1);paintExact(state.flowHour);app.raeb?.parameters(state.fidelity,state.bundling);return;}
+      if(!paper){
+        showTracks(state.fidelity===1);
+        paintExact(state.flowHour);
+        app.raeb?.parameters(state.fidelity,state.bundling);
+        return;
+      }
       if(!kernel)return;
-      const reference=kernel.radiusMeters;
-      const automatic=state.paperRadius===null&&state.paperBundling===null;
-      const limit=radiusLimit();
-      activeRadius=Math.min(state.paperRadius??(reference??0)*(state.paperBundling??1),limit);
-      grouping.max=String(limit);
-      grouping.value=String(activeRadius);
-      groupingOut.value=`${fmt(Math.round(activeRadius))} m`;
-      grouping.setAttribute('aria-valuetext',`${Math.round(activeRadius)} metros`);
-      autoButton.setAttribute('aria-pressed',String(automatic));
-      referenceText.textContent=reference===null
-        ? limit>0?'Sin radio automático · ajuste manual':'Sin grupo para estimar el radio'
-        : `Máximo RAEB: ${fmt(Math.round(reference))} m`;
-      updateRadiusGuide();
+      if(state.paperRadius===null){
+        // Resolve older links that store a relative or automatic radius once.
+        state.paperRadius=Math.min((kernel.radiusMeters??0)*(state.paperBundling??1),radiusLimit());
+        state.paperBundling=null;
+        app.syncURL?.();
+      }
+      activeRadius=state.paperRadius;
+      updateGroupingControls();
       showTracks(state.paperLevel===5&&activeRadius===0);
       paintExact(state.flowHour);
       app.raeb?.parameters(state.paperLevel/5,activeRadius);
     }
     function receiveKernel(value){
-      if(!paper)return;
+      if(!paper||!svgNode.isConnected)return;
       if(value===kernel&&value)return;
       kernel=value;
       const reference=kernel?.radiusMeters;
-      grouping.disabled=!kernel||radiusLimit()===0;
+      const limit=radiusLimit();
+      grouping.disabled=!kernel||Math.max(limit,activeRadius)===0;
       autoButton.disabled=!(reference>0);
       autoButton.hidden=bart&&!!kernel&&reference===null;
-      if(kernel){
-        updateGrouping();
+      if(!kernel){
+        referenceText.textContent='Calculando la referencia…';
+        updateGroupingControls();
         return;
       }
-      activeRadius=0;
-      groupingOut.value='—';
-      referenceText.textContent='Calculando la referencia…';
-      updateRadiusGuide();
+      referenceText.textContent=reference===null
+        ? limit>0?'Sin radio automático · ajuste manual':'Sin grupo para estimar el radio'
+        : `Referencia RAEB: ${fmt(Math.round(reference))} m`;
+      updateGrouping();
     }
     if(!cambio)try{
-      app.raeb??=new RaebOverlay(F,{paper,dataURL:dataset.dataURL,latitude:dataset.latitude});
+      app.raeb??=new RaebOverlay({
+        ...F,nodes:F.nodes.map(node=>{
+          const [lon,lat]=stationCoords(node);
+          return {...node,lon,lat};
+        })
+      },{paper,dataURL:dataset.dataURL,latitude:dataset.latitude});
       app.raeb.attach(g.node(),width,height,projection,transform,receiveKernel);
       if(!paper)updateGrouping();
     }catch(error){setRaebStatus(error.message);console.error(error);}
     pintarFlujos=h=>{
-      host.querySelector('#flow-hour-label').value=ampm(h);host.querySelector('#flow-legend-hour').textContent=ampm(h);
+      if(bart)host.querySelector('#flow-hour-label').value=ampm(h);
+      else host.querySelector('#flow-period').value=odPeriodLabel(state.flowDay,h);
       hideTooltip();
-      app.updateODYearMaps?.(state.flowDay,h,app.odPreviewBase,scope);
-      if(scopedGroup){
+      const year=state.year,day=state.flowDay;
+      if(between){
+        zoneStats=null;
+        scopeLoads=null;
+        const summary=host.querySelector('#zone-flow-summary');
+        summary.textContent='Calculando viajes entre zonas…';
+        if(!cambio)host.querySelector('#od-volume-scale').hidden=true;
+        const current=()=>svgNode.isConnected&&state.flowHour===h&&state.flowDay===day;
+        const report=app.routing.zoneFlow(year,day,h,between);
+        Promise.all([report,cambio?app.routing.zoneFlow(odBase,day,h,between):null]).then(([target,base])=>{
+          if(!current())return;
+          zoneStats=target;
+          if(!cambio){
+            scopeLoads=target.loads;
+            setFlowScale(Math.max(1,target.trips));
+            host.querySelector('#od-volume-scale').hidden=target.trips===0;
+            paintExact(h);
+          }
+          const trips=base?`${fmt(base.trips)} → ${fmt(target.trips)} viajes · ${signed(target.trips-base.trips)}`:`${fmt(target.trips)} viajes por día entre ambas zonas`;
+          const distances=target.trips?`<br>${fmt(target.routeKm)} km por la red · ${fmt(target.directKm)} km en línea recta (por viaje en ${year}).`:'';
+          summary.innerHTML=trips+distances;
+        }).catch(()=>{if(current())summary.textContent='No se pudieron cargar los viajes entre zonas.';});
+      }
+      const yearMaps=app.updateODYearMaps(state.flowDay,h,app.odPreviewBase,scope,cambio);
+      if(cambio){
+        const request=++comparisonRequest;
+        comparisonFrame=null;
+        const status=host.querySelector('#od-change-counts');
+        host.querySelector('#od-track-scale').hidden=true;
+        status.textContent='Calculando cambios por tramo…';
+        yearMaps.then(frame=>{
+          if(request!==comparisonRequest||!svgNode.isConnected)return;
+          if(!frame){
+            status.textContent='No se pudo calcular el cambio por tramo.';
+            return;
+          }
+          comparisonFrame=frame;
+          paintExact(h);
+        });
+      }else if(scopedGroup&&!between){
         const request=++scopeRequest;
-        scopeLoads=scopeBaseLoads=null;
+        scopeLoads=null;
         const status=host.querySelector('#od-scope-status');
         status.textContent=scope.origins.length?'Cargando salidas…':'Sin complejos en este grupo.';
-        Promise.all([app.routing.loads(state.year,state.flowDay,h,scope.origins),
-          cambio?app.routing.loads(odBase,state.flowDay,h,scope.origins):null]).then(([loads,reference])=>{
+        app.routing.loads(state.year,state.flowDay,h,scope.origins).then(loads=>{
           if(request!==scopeRequest||!svgNode.isConnected)return;
-          scopeLoads=loads;scopeBaseLoads=reference;
+          scopeLoads=loads;
           if(scope.origins.length)status.textContent='';
           paintExact(h);
         }).catch(()=>{
@@ -544,8 +671,7 @@ export function renderMap(host,app,items){
         });
       }
       clearCandidate();
-      g.selectAll('.map-dot').attr('r',s=>rOf(s,h)/transform.k);
-      updateComplexConnections?.();
+      if(!focusOrigin)paintFlowNodes();
       updateClockTime(state.flowDay,h);
       if(focusOrigin){
         const request=++originRequest;
@@ -554,12 +680,10 @@ export function renderMap(host,app,items){
         const key=host.querySelector('#map-key');
         const summary=key.querySelector('.flow-selection-total');
         if(!cambio){
-          key.querySelector('.map-key-bar').hidden=total===0;
-          key.querySelector('.flow-color-ticks').hidden=total===0;
-          key.querySelector('.flow-color-ticks').innerHTML=[0,25,100].map(value=>`<span>${value} %</span>`).join('');
-          summary.textContent=`${fmt(total)} viajes iniciados`;
+          key.querySelector('#od-volume-scale').hidden=total===0;
+          summary.textContent=`${fmt(total)} viajes iniciados por día`;
         }
-        paintDestinations();
+        paintFlowNodes();
         Promise.all([app.routing.network(),app.routing.frame(state.year,state.flowDay,h),
           cambio?app.routing.frame(odBase,state.flowDay,h):null]).then(([network,matrix,reference])=>{
           if(request!==originRequest||!svgNode.isConnected)return;
@@ -567,49 +691,50 @@ export function renderMap(host,app,items){
           originData=originBranches(network.paths,matrix,origin,F.links.length);
           if(reference)originBase=originBranches(network.paths,reference,origin,F.links.length);
           const count=originData.destinations.filter(v=>v>0).length;
-          if(summary)summary.textContent=`${fmt(total)} viajes iniciados · ${count} destinos con ruta`;
-          paintExact(h);
-          paintDestinations();
+          if(summary)summary.textContent=`${fmt(total)} viajes iniciados por día · ${count} destinos con ruta`;
+          if(!cambio)paintExact(h);
+          paintFlowNodes();
         }).catch(()=>{
           if(request!==originRequest||!svgNode.isConnected)return;
-          const status=summary??host.querySelector('#od-change-counts');
-          status.textContent='No se pudieron cargar los viajes del complejo.';
+          if(summary)summary.textContent='No se pudieron cargar los viajes del complejo.';
         });
       }
       paintExact(h);
-      if(!cambio)app.raeb?.frame(state.year,state.flowDay,h,state.selected,scope.origins);
+      if(!cambio)app.raeb?.frame(state.year,state.flowDay,h,state.selected,scope.origins,scope.zones);
       app.syncURL?.();
     };
-    const profileStations=focusOrigin?[focusOrigin]:items;
-    const series=year=>d3.range(24).map(h=>d3.sum(profileStations,s=>stationStarts(s,h,year)));
-    const porHora=series(state.year), porHoraBase=cambio?series(odBase):[];
-    const profileNode=host.querySelector('#flow-profile');
-    const svgP=d3.select(profileNode),PW=profileNode.clientWidth||222,PH=46;
-    svgP.attr('viewBox',`0 0 ${PW} ${PH}`);
-    const px=d3.scaleLinear().domain([0,23]).range([7,PW-7]),py=d3.scaleLinear().domain([0,d3.max([...porHora,...porHoraBase])||1]).range([PH-2,12]);
-    svgP.append('path').attr('d',d3.area().x((v,i)=>px(i)).y0(PH-2).y1(v=>py(v)).curve(d3.curveMonotoneX)(porHora)).attr('fill','#1d6f8d').attr('opacity',.14);
-    svgP.append('path').attr('d',d3.line().x((v,i)=>px(i)).y(v=>py(v)).curve(d3.curveMonotoneX)(porHora)).attr('fill','none').attr('stroke','#1d6f8d').attr('stroke-width',1.2);
-    if(cambio)profileNode.setAttribute('aria-label',`Distribución por hora. A ${odBase}, línea discontinua. B ${state.year}, línea continua.`);
-    if(cambio)svgP.append('path').attr('d',d3.line().x((v,i)=>px(i)).y(v=>py(v)).curve(d3.curveMonotoneX)(porHoraBase))
-      .attr('fill','none').attr('stroke','#64747c').attr('stroke-width',1.1).attr('stroke-dasharray','3 2')
-      .append('title').text(`A · ${odBase}`);
-    const marca=svgP.append('g');marca.append('line').attr('y1',4).attr('y2',PH-2).attr('stroke','#1b2a33');marca.append('circle').attr('r',2.6).attr('fill','#1b2a33');
-    const slider=host.querySelector('#flow-hour');
-    const pintarBase=pintarFlujos;
-    pintarFlujos=h=>{
-      slider.value=h;
-      marca.attr('transform',`translate(${px(h)},0)`);
-      marca.select('circle').attr('cy',py(porHora[h]));
-      pintarBase(h);
-    };
+    if(bart){
+      const profileStations=between?[]:focusOrigin?[focusOrigin]:items;
+      const series=year=>d3.range(24).map(h=>d3.sum(profileStations,s=>stationStarts(s,h,year)));
+      const porHora=series(state.year), porHoraBase=cambio?series(odBase):[];
+      const profileNode=host.querySelector('#flow-profile');
+      const svgP=d3.select(profileNode),PW=profileNode.clientWidth||222,PH=46;
+      svgP.attr('viewBox',`0 0 ${PW} ${PH}`);
+      const px=d3.scaleLinear().domain([0,23]).range([7,PW-7]),py=d3.scaleLinear().domain([0,d3.max([...porHora,...porHoraBase])||1]).range([PH-2,12]);
+      svgP.append('path').attr('d',d3.area().x((v,i)=>px(i)).y0(PH-2).y1(v=>py(v)).curve(d3.curveMonotoneX)(porHora)).attr('fill','#1d6f8d').attr('opacity',.14);
+      svgP.append('path').attr('d',d3.line().x((v,i)=>px(i)).y(v=>py(v)).curve(d3.curveMonotoneX)(porHora)).attr('fill','none').attr('stroke','#1d6f8d').attr('stroke-width',1.2);
+      if(cambio)profileNode.setAttribute('aria-label',`Distribución por hora. A ${odBase}, línea discontinua. B ${state.year}, línea continua.`);
+      if(cambio)svgP.append('path').attr('d',d3.line().x((v,i)=>px(i)).y(v=>py(v)).curve(d3.curveMonotoneX)(porHoraBase))
+        .attr('fill','none').attr('stroke','#64747c').attr('stroke-width',1.1).attr('stroke-dasharray','3 2')
+        .append('title').text(`A · ${odBase}`);
+      const marca=svgP.append('g');marca.append('line').attr('y1',4).attr('y2',PH-2).attr('stroke','#1b2a33');marca.append('circle').attr('r',2.6).attr('fill','#1b2a33');
+      const slider=host.querySelector('#flow-hour');
+      const pintarBase=pintarFlujos;
+      pintarFlujos=h=>{
+        slider.value=h;
+        marca.attr('transform',`translate(${px(h)},0)`);
+        marca.select('circle').attr('cy',py(porHora[h]));
+        pintarBase(h);
+      };
+      slider.oninput=()=>app.setFlowTime(state.flowDay,+slider.value);
+      svgP.style('cursor','pointer').on('click',event=>{
+        const [x]=d3.pointer(event,profileNode);
+        const hour=Math.round(Math.max(0,Math.min(23,px.invert(x))));
+        app.setFlowTime(state.flowDay,hour);
+      });
+      host.querySelectorAll('[data-flowday]').forEach(b=>b.onclick=()=>app.setFlowTime(+b.dataset.flowday,state.flowHour));
+    }
     app.updateFlowHour=pintarFlujos;
-    slider.oninput=()=>app.setFlowTime(state.flowDay,+slider.value);
-    svgP.style('cursor','pointer').on('click',event=>{
-      const [x]=d3.pointer(event,profileNode);
-      const hour=Math.round(Math.max(0,Math.min(23,px.invert(x))));
-      app.setFlowTime(state.flowDay,hour);
-    });
-    host.querySelectorAll('[data-flowday]').forEach(b=>b.onclick=()=>app.setFlowTime(+b.dataset.flowday,state.flowHour));
     if(!cambio&&paper){
       const reveal=visible=>{showRadius=visible;updateRadiusGuide();};
       grouping.onfocus=()=>reveal(true);
@@ -617,36 +742,39 @@ export function renderMap(host,app,items){
       grouping.onpointerenter=()=>reveal(true);
       grouping.onpointerleave=()=>reveal(document.activeElement===grouping);
       autoButton.onclick=()=>{
-        state.paperRadius=null;
-        state.paperBundling=null;
-        updateGrouping();
-        app.syncURL?.();
+        const suggested=kernel.radiusMeters;
+        pendingGrouping=suggested===activeRadius?undefined:suggested;
+        updateGroupingControls();
       };
     }
     if(!cambio){
+      fidelity.value=String(pendingFidelity??state[fidelityKey]);
+      updateGroupingControls();
       grouping.oninput=()=>{
-        if(paper){
-          state.paperRadius=grouping.valueAsNumber;
-          state.paperBundling=null;
-        }else{
-          state.bundling=grouping.valueAsNumber;
-          groupingOut.value=state.bundling.toFixed(2);
-        }
-        updateGrouping();
+        const draft=grouping.valueAsNumber;
+        const appliedGrouping=paper?activeRadius:state.bundling;
+        pendingGrouping=draft===appliedGrouping?undefined:draft;
+        updateGroupingControls();
       };
-      grouping.onchange=()=>app.syncURL?.();
-      const fidelity=host.querySelector(paper?'#pra':'#fidelity');
       fidelity.oninput=()=>{
-        if(paper){
-          state.paperLevel=fidelity.valueAsNumber;
-          host.querySelector('#pra-out').value=`${state.paperLevel} / 5`;
-        }else{
-          state.fidelity=fidelity.valueAsNumber;
-          host.querySelector('#fidelity-out').value=state.fidelity.toFixed(2);
-        }
-        updateGrouping();
+        const value=fidelity.valueAsNumber;
+        pendingFidelity=value===state[fidelityKey]?null:value;
+        updateGroupingControls();
       };
-      fidelity.onchange=()=>app.syncURL?.();
+      calculate.onclick=()=>{
+        if(pendingGrouping!==undefined){
+          if(paper){
+            state.paperRadius=grouping.valueAsNumber;
+            state.paperBundling=null;
+          }else state.bundling=pendingGrouping;
+        }
+        if(pendingFidelity!==null)state[fidelityKey]=pendingFidelity;
+        pendingGrouping=undefined;
+        pendingFidelity=null;
+        updateGrouping();
+        updateGroupingControls();
+        app.syncURL?.();
+      };
       app._relane=()=>app.raeb?.transform(transform);
     }else app._relane=null;
   }else{app._relane=null;}
@@ -664,110 +792,185 @@ export function renderMap(host,app,items){
   // Volumen: divergente alrededor de la mediana del sistema (todos crecieron frente a 2021; lo informativo es quién creció más o menos que el conjunto).
   let medianaVol=null;
   if(metric==='recovery'){const ord=values.slice().sort(d3.ascending);medianaVol=Math.round(d3.median(ord));const lo=Math.floor(d3.quantile(ord,0.05)),hi=Math.ceil(d3.quantile(ord,0.95));color=d3.scaleDiverging([lo,medianaVol,hi],t=>t<=.5?d3.interpolateRgb('#176c91','#f5f5ef')(2*t):d3.interpolateRgb('#f5f5ef','#b6532c')(2*t-1)).clamp(true);}
-  const contextPoints=g.selectAll('.context-point').data(app.data.stations.filter(s=>!ids.has(s.id)&&profile(s)&&passesMetricRanges(s))).join('circle').attr('class','context-point').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',1.6).attr('fill','#b8c7c1').attr('opacity',.45);
+  const contextPoints=g.selectAll('.context-point').data(app.data.stations.filter(s=>!ids.has(s.id)&&profile(s)&&passesMetricRanges(s))).join('circle').attr('class','context-point').attr('cx',s=>stationPosition(s)[0]).attr('cy',s=>stationPosition(s)[1]).attr('r',1.6).attr('fill','#b8c7c1').attr('opacity',.45);
   const R=flujos?2.4:5.2;
   const destinationIndex=new Map(app.flows?.nodes.map((station,i)=>[station.id,i]));
-  const destinationTrips=s=>originData?.destinations[destinationIndex.get(s.id)]??0;
-  const rOf=(s,h)=>focusOrigin&&s.id!==focusOrigin.id
-    ? destinationTrips(s)>0?.85+7.5*flowStrength(destinationTrips(s),destinationMax):1.35
-    : flujos&&state.showFlowNodes?nodeR(s,h):R;
-  let destinationMax=1;
-  const paintDestinations=()=>{
-    if(!focusOrigin)return;
-    destinationMax=originData?d3.max(originData.destinations)||1:1;
-    points.attr('r',station=>rOf(station)/transform.k)
-      .classed('destination-mark',station=>destinationTrips(station)>0)
-      .attr('fill',station=>station.id===focusOrigin.id?'#093f53':destinationTrips(station)>0?flowColor(destinationTrips(station),destinationMax):'#85979c')
-      .attr('opacity',station=>station.id===focusOrigin.id||destinationTrips(station)>0?1:.35);
-    points.sort((a,b)=>destinationTrips(a)-destinationTrips(b));
+  const isDestination=station=>!!focusOrigin&&station.id!==focusOrigin.id;
+  const destinationTrips=(station,data=originData)=>data?.destinations[destinationIndex.get(station.id)]??0;
+  const nodeChange=station=>{
+    const destination=isDestination(station);
+    if(destination&&(!originData||!originBase))return null;
+    const totals=year=>focusOrigin?stationStarts(station,state.flowHour,year)??0:stationUse(station,state.flowHour,year);
+    const before=destination?destinationTrips(station,originBase):totals(odBase);
+    const after=destination?destinationTrips(station):totals(state.year);
+    return {before,after,delta:odDelta(before,after)};
   };
-  if(flujos&&(paper||cambio)){
-    const complexes=new Map(items.map(station=>[station.id,station]));
-    if(focusOrigin)complexes.set(focusOrigin.id,focusOrigin);
-    const connections=new Map();
-    const addConnection=(id,coords)=>{
-      const station=complexes.get(id);
-      if(!station||(focusOrigin&&id!==focusOrigin.id))return;
-      const key=`${id}:${coords.join(',')}`;
-      if(connections.has(key))return;
-      const [x1,y1]=projection(coords);
-      const [x2,y2]=projection([station.lon,station.lat]);
-      const length=Math.hypot(x2-x1,y2-y1);
-      if(length*12>=4)connections.set(key,{station,x1,y1,x2,y2,length});
-    };
-    // The displayed connector links two locations of the same complex.
-    // Keep it separate from the GTFS polylines and from the flow renderer.
-    const physical=app.flows.meta.network?.route_nodes;
-    for(const link of app.flows.links){
-      if(physical){
-        if(link.kind!=='declared_walk_transfer')continue;
-        const station=focusOrigin??complexes.get(link.a)??complexes.get(link.b);
-        if(!station||(focusOrigin&&link.a!==focusOrigin.id&&link.b!==focusOrigin.id))continue;
-        const [[x1,y1],[x2,y2]]=link.coords.map(projection);
-        connections.set(link.stop_a+'/'+link.stop_b,{station,x1,y1,x2,y2,length:Math.hypot(x2-x1,y2-y1),transfer:true});
-      }else if(link.kind==='rail'){
-        addConnection(link.a,link.coords[0]);
-        addConnection(link.b,link.coords.at(-1));
+  let nodeChanges=new Map(),destinationMax=1;
+  const volumeRadius=trips=>Math.max(2.3,13*flowStrength(trips,nodeVolumeMax));
+  const destinationRadius=trips=>trips>0?.85+7.5*flowStrength(trips,destinationMax):1.35;
+  function changeRadius(delta,destination){
+    const limit=destination?destinationMax:nodeChangeMax;
+    const min=destination?1.35:2.3,max=destination?8.35:13;
+    return Math.sqrt(min**2+(max**2-min**2)*railChange(delta,limit)**2);
+  }
+  const setCircleScale=flujos&&!between?bindCircleScale(host.querySelector('#flow-circle-scale'),cambio):null;
+  const rOf=(station,h)=>{
+    if(between)return zoneOf(station)?3.8:1.5;
+    if(flujos&&!state.showFlowNodes)return R;
+    if(cambio){
+      if(focusOrigin?.id===station.id)return 4;
+      return changeRadius(nodeChanges.get(station.id)?.delta??0,isDestination(station));
+    }
+    if(isDestination(station))return destinationRadius(destinationTrips(station));
+    return flujos?volumeRadius(stationUse(station,h)):R;
+  };
+  const paintFlowNodes=()=>{
+    let peak=0;
+    if(cambio){
+      nodeChanges=new Map(points.data().map(station=>[station.id,nodeChange(station)]));
+      if(focusOrigin){
+        peak=d3.max(points.data(),station=>isDestination(station)?Math.abs(nodeChanges.get(station.id)?.delta??0):0)||0;
+        destinationMax=peak||1;
+      }
+      points.attr('r',station=>rOf(station)/transform.k)
+        .attr('fill',station=>{
+          if(station.id===focusOrigin?.id)return '#093f53';
+          const delta=nodeChanges.get(station.id)?.delta??0;
+          return OD_CHANGE_COLORS[!state.showFlowNodes||delta===0?'neutral':delta<0?'loss':'gain'];
+        })
+        .attr('opacity',station=>{
+          const values=nodeChanges.get(station.id);
+          return !isDestination(station)||values?.before||values?.after?1:.35;
+        });
+      points.sort((a,b)=>Math.abs(nodeChanges.get(a.id)?.delta??0)-Math.abs(nodeChanges.get(b.id)?.delta??0));
+    }else{
+      peak=d3.max(originData?.destinations??[])||0;
+      destinationMax=peak||1;
+      points.attr('r',station=>rOf(station)/transform.k);
+      if(focusOrigin){
+        points.classed('destination-mark',station=>destinationTrips(station)>0)
+          .attr('fill',station=>{
+            if(station.id===focusOrigin.id)return '#093f53';
+            return state.showFlowNodes&&destinationTrips(station)>0?flowColor(destinationTrips(station),destinationMax):'#85979c';
+          })
+          .attr('opacity',station=>station.id===focusOrigin.id||destinationTrips(station)>0?1:.35);
+        points.sort((a,b)=>destinationTrips(a)-destinationTrips(b));
       }
     }
-    const group=g.append('g').attr('class','map-complex-connections')
-      .attr('aria-hidden','true').attr('display','none');
-    const lines=group.selectAll('line').data(connections.values()).join('line')
-      .attr('data-station-id',connection=>connection.station.id)
-      .attr('vector-effect','non-scaling-stroke')
-      .attr('x1',connection=>connection.x1).attr('y1',connection=>connection.y1)
-      .attr('x2',connection=>connection.x2).attr('y2',connection=>connection.y2);
-    const key=host.querySelector('.map-complex-key');
-    const byComplex=d3.group(lines.nodes(),line=>line.dataset.stationId);
-    let highlightedId=focusOrigin?.id;
-    let highlighted=[];
-    highlightComplexConnections=id=>{
-      highlightedId=id??focusOrigin?.id;
-      for(const line of highlighted)line.classList.remove('is-highlighted');
-      highlighted=byComplex.get(highlightedId)??[];
-      for(const line of highlighted)line.classList.add('is-highlighted');
-      updateComplexConnections?.();
-    };
-    updateComplexConnections=()=>{
-      let show=false;
-      if(onTracks||cambio){
-        lines.attr('display',connection=>{
-          const highlighted=connection.station.id===highlightedId;
-          const visibleGap=connection.length*transform.k-(connection.transfer?0:rOf(connection.station));
-          const visible=visibleGap>=(highlighted?2:4);
-          show||=visible;
-          return visible?null:'none';
-        });
-      }
-      group.attr('display',show?null:'none');
-      key.hidden=!show;
-    };
-    highlightComplexConnections();
-  }
+    if(state.selected)points.filter(station=>station.id===state.selected).raise();
+    updateComplexContext?.();
+    const limit=focusOrigin?peak:cambio?nodeChangeMax:nodeVolumeMax;
+    const radius=cambio?delta=>changeRadius(delta,!!focusOrigin):focusOrigin?destinationRadius:volumeRadius;
+    const fill=focusOrigin?trips=>flowColor(trips,destinationMax):()=> '#1d6f8dcc';
+    setCircleScale?.(limit,radius,fill);
+  };
   const dotItems=focusOrigin?app.data.stations:items;
+  if(footprintLayer){
+    const visibleIds=new Set(dotItems.map(station=>station.id));
+    const footprints=dotItems.flatMap(station=>{
+      const stops=stopsByComplex.get(station.id);
+      if(!stops||stops.length<2)return [];
+      const points=stops.map(stop=>projection(stop.coords));
+      const hull=d3.polygonHull(points);
+      const [left,right]=d3.extent(points,p=>p[0]);
+      const [top,bottom]=d3.extent(points,p=>p[1]);
+      return [{station,stops,span:Math.hypot(right-left,bottom-top),outline:d3.line()(hull??points)+(hull?'Z':'')}];
+    });
+    const areas=footprintLayer.selectAll('path').data(footprints).join('path')
+      .attr('class','map-complex-footprint')
+      .attr('data-complex-id',area=>area.station.id)
+      .attr('d',area=>area.outline)
+      .attr('stroke-width',60/metersPerPixel);
+    const secondaryStops=g.append('g').attr('aria-hidden','true').attr('pointer-events','none')
+      .selectAll('circle').data(footprints.flatMap(({station,stops})=>{
+        const anchor=anchors.get(station.id);
+        const [x,y]=stationPosition(station);
+        return stops.filter(stop=>stop.coords!==anchor).map(stop=>{
+          const p=projection(stop.coords);
+          return {id:station.id,p,gap:Math.hypot(p[0]-x,p[1]-y)};
+        });
+      })).join('circle')
+      .attr('class','map-complex-stop').attr('data-complex-id',stop=>stop.id)
+      .attr('vector-effect','non-scaling-stroke')
+      .attr('cx',stop=>stop.p[0]).attr('cy',stop=>stop.p[1]);
+    const externalTransfers=app.flows.links.filter(link=>link.kind==='declared_walk_transfer'&&link.a!==link.b&&
+      (focusOrigin?[link.a,link.b].includes(focusOrigin.id):visibleIds.has(link.a)||visibleIds.has(link.b)));
+    const transferLines=g.append('g').attr('class','map-complex-connections').attr('aria-hidden','true')
+      .selectAll('line').data(externalTransfers.map(link=>{
+        const [a,b]=link.coords.map(projection);
+        return {a,b,span:Math.hypot(b[0]-a[0],b[1]-a[1])};
+      })).join('line').attr('vector-effect','non-scaling-stroke')
+      .attr('x1',link=>link.a[0]).attr('y1',link=>link.a[1])
+      .attr('x2',link=>link.b[0]).attr('y2',link=>link.b[1]);
+    const footprintKey=host.querySelector('.map-footprint-key');
+    const transferKey=host.querySelector('.map-complex-key');
+    updateComplexContext=()=>{
+      const highlighted=id=>id===hoveredComplex||id===state.selected;
+      let hasFootprints=false,hasTransfers=false;
+      areas.attr('display',({station,span})=>{
+        const visible=span*transform.k>=(highlighted(station.id)?10:24);
+        hasFootprints||=visible;
+        return visible?null:'none';
+      });
+      secondaryStops.attr('display',stop=>highlighted(stop.id)&&stop.gap*transform.k>=12?null:'none')
+        .attr('r',3/transform.k);
+      transferLines.attr('display',link=>{
+        const visible=(onTracks||cambio)&&link.span*transform.k>=8;
+        hasTransfers||=visible;
+        return visible?null:'none';
+      });
+      footprintKey.hidden=!hasFootprints;
+      transferKey.hidden=!hasTransfers;
+    };
+    updateComplexContext();
+  }
   if(focusOrigin)contextPoints.remove();
-  const points=g.selectAll('.map-dot').data(dotItems).join('circle').attr('class','map-dot'+(flujos?' quiet':'')).attr('data-station-id',s=>s.id).attr('vector-effect','non-scaling-stroke').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',s=>rOf(s)).attr('fill',s=>flujos?(focusOrigin&&s.id!==focusOrigin.id?'#87969d':'#1d6f8dcc'):color(metricValue(s,state.mapMetric)))
+  const points=g.selectAll('.map-dot').data(dotItems).join('circle').attr('class','map-dot'+(flujos?' quiet':'')).attr('data-station-id',s=>s.id).attr('vector-effect','non-scaling-stroke').attr('cx',s=>stationPosition(s)[0]).attr('cy',s=>stationPosition(s)[1]).attr('r',s=>rOf(s)).attr('fill',s=>flujos?(focusOrigin&&s.id!==focusOrigin.id?'#87969d':'#1d6f8dcc'):color(metricValue(s,state.mapMetric)))
+    .classed('map-zone-a',s=>zoneOf(s)==='a')
+    .classed('map-zone-b',s=>zoneOf(s)==='b')
+    .classed('map-zone-context',s=>!!between&&!zoneOf(s))
     .on('click',(event,station)=>{
       event.stopPropagation();
       if(inspectCorridor?.(event))return;
       if(event.shiftKey)app.pin(station.id);
-      else app.select(state.selected===station.id?null:station.id);
+      else app.toggleStation(station.id);
     });
   const tooltip=document.querySelector('#tooltip');
   function showStationTooltip(event,station){
     if(event.pointerType==='touch'||event.buttons)return;
-    highlightComplexConnections?.(station.id);
+    hoveredComplex=station.id;
+    updateComplexContext?.();
     const name=station.name.replace(/ \([^)]*\)/g,'');
     const context=[station.borough,station.routes.join(' · ')].filter(Boolean).join('  /  ');
-    const isDestination=focusOrigin&&station.id!==focusOrigin.id;
-    const value=isDestination?destinationTrips(station):flujos?focusOrigin?stationStarts(station):stationUse(station):metricValue(station,metric);
-    const time=flujos?DAYS_LONG[state.flowDay]+' · '+ampm(state.flowHour):'';
+    if(between){
+      const zone=zoneOf(station);
+      showTooltip(`<div class="station-tooltip"><strong class="station-tooltip-name">${esc(name)}</strong>
+        <span class="station-tooltip-context">${zone?`Zona ${zone.toUpperCase()} · `:''}${esc(context)}</span></div>`,event);
+      return;
+    }
+    const destination=isDestination(station);
+    const time=flujos?odPeriodLabel(state.flowDay,state.flowHour)+(annual?' · promedio por día':''):'';
+    if(cambio){
+      const values=nodeChanges.get(station.id)??nodeChange(station);
+      const label=destination?'Cambio de viajes hacia este destino':focusOrigin?'Cambio de viajes iniciados':'Cambio de afluencia del complejo';
+      const delta=values?.delta;
+      const change=delta===undefined?'Sin datos':delta!==0&&Math.abs(delta)<.1
+        ?delta.toLocaleString('es-PE',{maximumFractionDigits:3,signDisplay:'exceptZero'})
+        :signed(delta);
+      showTooltip(`<div class="station-tooltip">
+        <strong class="station-tooltip-name">${esc(name)}</strong>
+        <span class="station-tooltip-context">${esc(context)}</span>
+        <div class="station-tooltip-metric"><span>${esc(label)}<small>${esc(time)}</small></span><strong>${esc(change)}</strong></div>
+        ${values?`<div class="station-tooltip-context">${odBase} · ${esc(flowCount(values.before,fmt))} &nbsp;→&nbsp; ${state.year} · ${esc(flowCount(values.after,fmt))}</div>`:''}
+      </div>`,event);
+      return;
+    }
+    const value=destination?destinationTrips(station):flujos?focusOrigin?stationStarts(station):stationUse(station):metricValue(station,metric);
     let label=stationMetricLabels[metric];
     let displayValue='Sin datos';
-    if(isDestination)label='Viajes hacia este destino';
+    if(destination)label='Viajes hacia este destino';
     else if(flujos){
-      const name=!focusOrigin&&app.flows.incoming?'Afluencia del complejo':dataset.startsLabel;
-      label=cambio?`${name} · ${state.year}`:name;
+      label=!focusOrigin&&app.flows.incoming?'Afluencia del complejo':dataset.startsLabel;
     }
     else if(metric==='recovery')label+=' '+BASE;
     if(Number.isFinite(value)){
@@ -781,7 +984,7 @@ export function renderMap(host,app,items){
         <span>${label}${time?`<small>${esc(time)}</small>`:''}</span>
         <strong>${esc(displayValue)}</strong>
       </div>
-      ${isDestination&&originData?.total?`<div class="station-tooltip-context">${esc(flowCount(value*100/originData.total,fmt))} % de las salidas del origen</div>`:''}
+      ${destination&&originData?.total?`<div class="station-tooltip-context">${esc(flowCount(value*100/originData.total,fmt))} % de las salidas del origen</div>`:''}
     </div>`,event);
   }
   for(const stations of [points,contextPoints]){
@@ -789,7 +992,8 @@ export function renderMap(host,app,items){
       .on('pointermove',(event,station)=>{if(tooltip.hidden)showStationTooltip(event,station);})
       .on('pointerleave',()=>{
         hideTooltip();
-        highlightComplexConnections?.();
+        hoveredComplex=null;
+        updateComplexContext?.();
       });
   }
   // Entrada animada: al cambiar medida, filtro o año, los puntos aparecen en vez de saltar.
@@ -820,28 +1024,34 @@ export function renderMap(host,app,items){
   function clear(key){if(key==='change')app.set({tvMin:0,tvMax:100});else app.set({ranges:{...state.ranges,[key]:null}});}
   host.querySelectorAll('[data-clear-metric]').forEach(b=>b.onclick=()=>clear(b.dataset.clearMetric));
   const active=app.data.stations.filter(s=>s.id===state.selected||(!focusOrigin&&state.pins.includes(s.id)));
-  const rings=g.selectAll('.selected-ring').data(active).join('circle').attr('class','selected-ring').attr('vector-effect','non-scaling-stroke').attr('cx',s=>projection([s.lon,s.lat])[0]).attr('cy',s=>projection([s.lon,s.lat])[1]).attr('r',8.5).attr('fill','none').attr('stroke',s=>s.id===state.selected?'#102937':'#c96035').attr('stroke-width',2).style('pointer-events','none');
+  const rings=g.selectAll('.selected-ring').data(active).join('circle').attr('class','selected-ring').attr('vector-effect','non-scaling-stroke').attr('cx',s=>stationPosition(s)[0]).attr('cy',s=>stationPosition(s)[1]).attr('r',8.5).attr('fill','none').attr('stroke',s=>s.id===state.selected?'#102937':'#c96035').attr('stroke-width',2).style('pointer-events','none');
   if(flujos){
     const toggle=host.querySelector('#flow-nodes');
     const legend=host.querySelector('#flow-node-key');
     const setNodeVisibility=()=>{
-      points.attr('r',station=>rOf(station)/transform.k);
-      legend.hidden=!state.showFlowNodes&&!focusOrigin;
-      highlightComplexConnections?.();
+      paintFlowNodes();
+      legend.hidden=!state.showFlowNodes;
     };
-    toggle.onchange=()=>{
+    if(toggle)toggle.onchange=()=>{
       state.showFlowNodes=toggle.checked;
       setNodeVisibility();
       hideTooltip();
       app.syncURL();
     };
-    setNodeVisibility();
+    if(toggle)setNodeVisibility();
   }
+  const reset=host.querySelector('#map-center');
+  const scopeFiltered=state.borough!=='all'||state.query||state.cohort||state.preset||state.selected||drawnZones||filters.length;
+  const hourSelected=flujos&&!!app.flows.annual&&!annual;
   const boroughLabels=g.selectAll('.borough-name');
   let boroughsHidden=null;
   const zoom=d3.zoom().scaleExtent(borough?[Math.min(1,districtCamera.k),mapZoomLimits[1]]:mapZoomLimits).translateExtent(panExtent).on('zoom',event=>{
     transform=event.transform;
-    if(flujos)svgNode.closest('.map-stage').style.setProperty('--flow-width-scale',zoomStrokeScale(transform.k));
+    if(flujos){
+      const cameraMoved=transform.k!==1||Math.abs(transform.x)>.01||Math.abs(transform.y)>.01;
+      reset.hidden=!(scopeFiltered||hourSelected||cameraMoved);
+      svgNode.closest('.map-stage').style.setProperty('--flow-width-scale',zoomStrokeScale(transform.k));
+    }
     g.attr('transform',transform);
     resizeScenarioStops?.();
     if(baseG!==g)baseG.attr('transform',transform);
@@ -854,14 +1064,15 @@ export function renderMap(host,app,items){
       boroughLabels.attr('display',hideBoroughs?'none':null);
       boroughsHidden=hideBoroughs;
     }
-    if(highlightComplexConnections)highlightComplexConnections();
+    hoveredComplex=null;
+    updateComplexContext?.();
     hideTooltip();
   });
   // Contexto al acercar: miniatura fija con los boroughs, los complejos del grupo y el rectángulo de lo
   // que se ve; debajo, cuántos complejos del grupo hay en cada borough.
   const mini=d3.select(host.querySelector('.minimap-svg')),miniProj=d3.geoMercator().fitExtent([[3,3],[147,109]],extent),miniPath=d3.geoPath(miniProj);
   mini.selectAll('.mini-bg').data(cubiertos).join('path').attr('class','mini-bg').attr('d',miniPath);
-  mini.selectAll('.mini-dot').data(items).join('circle').attr('class','mini-dot').attr('cx',s=>miniProj([s.lon,s.lat])[0]).attr('cy',s=>miniProj([s.lon,s.lat])[1]).attr('r',1).attr('fill','#6f7d86');
+  mini.selectAll('.mini-dot').data(items).join('circle').attr('class','mini-dot').attr('cx',s=>miniProj(stationCoords(s))[0]).attr('cy',s=>miniProj(stationCoords(s))[1]).attr('r',1).attr('fill','#6f7d86');
   const miniRect=mini.append('rect').attr('class','mini-view').attr('fill','none').attr('stroke','#102937').attr('stroke-width',1);
   function pintarMini(tr){
     const [x0,y0]=tr.invert([0,0]),[x1,y1]=tr.invert([width,height]);
@@ -877,46 +1088,41 @@ export function renderMap(host,app,items){
     updateRadiusGuide?.();
   });
   svg.call(zoom).call(zoom.transform,transform);
-  host.querySelector('#map-center').onclick=()=>{transform=d3.zoomIdentity;app.resetScope();};
+  reset.onclick=()=>{transform=d3.zoomIdentity;app.resetScope({annual:flujos});};
   svg.on('click.clear-selection',event=>{
     if(event.defaultPrevented)return;
     if(inspectCorridor?.(event))return;
     if(state.selected)app.set({selected:null});
   });
-  let brushLayer=null;
-  host.querySelector('#map-select').onclick=e=>{
-    const b=e.currentTarget;
-    if(brushLayer){brushLayer.remove();brushLayer=null;b.classList.remove('active');b.textContent='Seleccionar área';svg.call(zoom);return;}
-    svg.on('.zoom',null);b.classList.add('active');b.textContent='Cancelar selección';
-    const brush=d3.brush().extent([[0,0],[width,height]]).on('end',event=>{
-      if(!event.sourceEvent||!event.selection)return;
-      const [[x0,y0],[x1,y1]]=event.selection;
-      const cohort=new Set(items.filter(s=>{const [x,y]=transform.apply(projection([s.lon,s.lat]));return x>=x0&&x<=x1&&y>=y0&&y<=y1;}).map(s=>s.id));
-      app.set({cohort,preset:null,selected:null});
-    });
-    brushLayer=svg.append('g').attr('class','map-brush').call(brush);
-  };
+  bindMapLasso({svg,outlines:zoneLayer,zoom,width,height,projection,stations:items,
+    position:stationPosition,app,twoZones:drawnZones});
   if(flujos){
     if(cambio){
       host.querySelector('#map-key').innerHTML=`
-        <div class="map-key-note">Viajes OD por día (B − A)</div>
-        <div class="map-key-bar" style="background:linear-gradient(90deg,${OD_CHANGE_COLORS.loss},${OD_CHANGE_COLORS.neutral},${OD_CHANGE_COLORS.gain})" aria-hidden="true"></div>
-        <div class="flow-color-ticks"><span>≤ −${fmt(changeLimit)}</span><span>0</span><span>≥ +${fmt(changeLimit)}</span></div>
-        <div class="map-key-words"><span>Bajó</span><span>Subió</span></div>
-        <div id="od-change-counts" class="map-key-note"></div>
-        ${scopedGroup?'<div id="od-scope-status" class="map-key-note" role="status"></div>':''}`;
+        <div class="map-key-note">Viajes por día (B − A) · mapa y minimapas</div>
+        <div id="od-track-scale" hidden>
+          <div class="map-key-bar" style="background:linear-gradient(90deg,${OD_CHANGE_COLORS.loss},${OD_CHANGE_COLORS.neutral},${OD_CHANGE_COLORS.gain})"></div>
+          <div class="map-key-words"><span>Bajó</span><span>Subió</span></div>
+        </div>
+        <div id="od-change-counts" class="map-key-note"></div>`;
+      setFlowScale=bindFlowScale(host.querySelector('#od-track-scale .map-key-bar'),{diverging:true});
       pintarFlujos(state.flowHour);
       return;
     }
     const colors=FLOW_COLOR_STOPS.map(({color})=>color).join(',');
-    const ticks=FLOW_COLOR_STOPS.map(({trips})=>`<span>${fmt(trips)}${trips===FLOW_COLOR_MAX?'+':''}</span>`).join('');
     host.querySelector('#map-key').innerHTML=`
       <div class="map-key-note">${focusOrigin?(onTracks?'Ramas · porcentaje de las salidas':'Haces · intensidad de las salidas'):onTracks?'Viajes estimados por tramo':'Flujo estimado en los haces'}</div>
-      <div class="map-width-key" aria-hidden="true"><i></i><i></i><i></i></div>
-      <div class="map-key-bar" style="background:linear-gradient(90deg,${colors})" aria-hidden="true"></div>
-      <div class="flow-color-ticks">${ticks}</div>
+      <div id="od-volume-scale"${between?' hidden':''}>
+        <div class="map-width-key" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="map-key-bar" style="background:linear-gradient(90deg,${colors})"></div>
+        <div class="map-key-words"><span>Menos tránsito</span><span>Más tránsito</span></div>
+      </div>
       ${focusOrigin?'<div class="map-key-note flow-selection-total"></div>':''}
-      ${scopedGroup?'<div id="od-scope-status" class="map-key-note" role="status"></div>':''}`;
+      ${scopedGroup&&!between?'<div id="od-scope-status" class="map-key-note" role="status"></div>':''}`;
+    setFlowScale=bindFlowScale(host.querySelector('#od-volume-scale .map-key-bar'),{
+      unit:focusOrigin?'% de las salidas':'viajes por día',capped:!focusOrigin&&!between
+    });
+    if(!between)setFlowScale(focusOrigin?100:volumeLimit);
     pintarFlujos(state.flowHour);
     if(!items.length)app.toast('El grupo está vacío.');
     return;

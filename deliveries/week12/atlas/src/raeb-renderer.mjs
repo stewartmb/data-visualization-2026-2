@@ -149,8 +149,8 @@ export class RaebRenderer{
     gl.uniform1i(u.uRenderSamples,renderSamples);
     const primitive=this.paper?gl.TRIANGLE_STRIP:gl.LINE_STRIP;
     const vertexCount=this.paper?2*renderSamples:renderSamples;
-    if(this.selected>=0&&this.colorMax){
-      // The selected pass preserves local contrast without stacking opacity.
+    if(this.colorMax){
+      // Keep a sparse selection legible without stacking opacity.
       gl.uniform1i(u.uFlowPass,1);
       gl.blendEquation(gl.MAX);
       gl.drawArraysInstanced(primitive,0,vertexCount,this.count);

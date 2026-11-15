@@ -1,7 +1,8 @@
 import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
 import {routeHierarchy} from './raeb-core.mjs?v=rail-reading1';
-import {RaebRenderer} from './raeb-renderer.mjs?v=zoom-width1';
-import {frameURL,networkURL} from './od-encoding.mjs?v=rail-reading1';
+import {RaebRenderer} from './raeb-renderer.mjs?v=zone-visibility1';
+import {frameURL,networkURL} from './od-encoding.mjs?v=annual-overview1';
+import {odLoads,odStarts} from './od-period.mjs';
 import {flowColor, selectedFlowOpacity} from './raeb-gpu-shaders.mjs?v=zoom-width1';
 
 export function setRaebStatus(message) {
@@ -20,7 +21,7 @@ export class RaebCPUOverlay{
     this.data=data;this.paper=paper;this.rendererMode(renderer);this.levels=routeHierarchy(data.links).level;this.renderer=renderer;this.sourceId=0;this.requestId=0;this.currentKey=null;
     this.dataURL=dataURL;
     this.latitude=latitude;
-    this.worker=new Worker(new URL('./raeb-worker.mjs?v=linked-scope1',import.meta.url),{type:'module'});
+    this.worker=new Worker(new URL('./raeb-worker.mjs?v=zone-visibility1',import.meta.url),{type:'module'});
     this.worker.onmessage=({data:m})=>this.message(m);
     this.worker.onerror=e=>this.status('No se pudo calcular el agrupamiento: '+e.message);
   }
@@ -47,11 +48,13 @@ export class RaebCPUOverlay{
     this.width=width;this.height=height;this.projection=projection;this.transform(camera);
   }
   status(message){if(!this.stage||(this.stage.isConnected&&!this.stage.classList.contains('svg-exact-rails')))setRaebStatus(message);}
-  frame(year,day,hour,selected,origins=null){
-    const p=this.projection,key=`${year}/${day}/${hour}/${this.width}/${this.height}/${p.scale()}/${p.translate()}/${origins?.join(',')??'all'}`;
-    this.origins=origins;
+  frame(year,day,hour,selected,origins=null,zones=null){
+    const p=this.projection,key=`${year}/${day}/${hour}/${this.width}/${this.height}/${p.scale()}/${p.translate()}/${origins?.join(',')??'all'}/${zones?.map(group=>group.join(',')).join('/')??''}`;
+    this.origins=origins;this.zones=zones;
     const selectedIndex=this.data.nodes.findIndex(n=>n.id===selected);
-    this.renderer.colorMax=this.data.starts?.[year]?.[selectedIndex]?.[day]?.[hour]||undefined;
+    if(!zones||key!==this.currentKey){
+      this.renderer.colorMax=odStarts(this.data,year,day,hour,selectedIndex)||(day===null?this.data.annual.volume_limit:undefined);
+    }
     if(selectedIndex!==this.renderer.selected){this.selectedLinks=null;this.worker.postMessage({type:'selection',sourceId:this.sourceId,selected:selectedIndex});}
     if(key!==this.currentKey){this.selectedLinks=null;this.layoutContext=null;this.currentLayout=null;}
     this.renderer.selected=selectedIndex;this.year=year;this.day=day;this.hour=hour;this.paintReference();this.renderer.schedule();
@@ -62,7 +65,7 @@ export class RaebCPUOverlay{
     const frameUrl=frameURL(this.dataURL,year,day,hour).href;
     const nodes=this.data.nodes.map(n=>p([n.lon,n.lat]));
     const links=this.data.links.map(l=>({...l,points:l.coords.map(c=>p(c))}));
-    this.worker.postMessage({type:'source',sourceId:this.sourceId,networkUrl,frameUrl,nodes,links,width:this.width,height:this.height,samples:32,paper:this.paper,latitude:this.latitude,metersPerPixel:metersPerProjectedPixel(p,this.latitude),selected:selectedIndex,origins});
+    this.worker.postMessage({type:'source',sourceId:this.sourceId,networkUrl,frameUrl,nodes,links,width:this.width,height:this.height,samples:32,paper:this.paper,latitude:this.latitude,metersPerPixel:metersPerProjectedPixel(p,this.latitude),selected:selectedIndex,origins,zones});
   }
   transform(camera){
     this.renderer.setCamera(camera);this.renderer.canvas.dataset.camera=JSON.stringify({k:camera.k,x:camera.x,y:camera.y});
@@ -72,7 +75,7 @@ export class RaebCPUOverlay{
   parameters(fidelity,strength){
     this.currentLayout=null;this.requestId++;this.parameterStarted=performance.now();this.renderer.awaitingSeed=!this.paper&&fidelity>0&&fidelity<1;this.fidelity=fidelity;this.strength=strength;this.paintReference();this.renderer.setParameters(fidelity,strength);
     const status=document.querySelector('#raeb-status');if(status)status.removeAttribute('title');
-    this.status(this.onTracks?'Sobre la vía':'Procesando…');
+    this.status(this.onTracks?'':'Procesando…');
     clearTimeout(this.parameterTimer);
     this.parameterTimer=setTimeout(()=>this.request(),75);
   }
@@ -86,7 +89,7 @@ export class RaebCPUOverlay{
     const show=this.onTracks||(!this.paper&&(this.fidelity??0)>0);
     this.exactGroup.style.display=show?'':'none';
     if(!show)return;
-    const loads=this.data.flows[String(this.year)]?.[this.day]?.[this.hour];if(!loads)return;
+    const loads=odLoads(this.data,this.year,this.day,this.hour);if(!loads)return;
     const focused=this.renderer.selected>=0;
     this.exactPaths.forEach((el,i)=>{
       const filtered=this.origins!==null;
@@ -103,15 +106,21 @@ export class RaebCPUOverlay{
   }
   request(){
     clearTimeout(this.parameterTimer);
-    if(this.onTracks)return this.status('Sobre la vía');
+    if(this.onTracks)return this.status('');
     if(!this.renderer.count)return this.status('Completado');
     const id=++this.requestId;
     this.worker.postMessage({type:'parameters',id,fidelity:this.fidelity??.9,strength:this.strength??.65});
   }
+  receiveSelection({loads,zoneTrips}){
+    this.selectedLinks=new Float32Array(loads);
+    if(Number.isFinite(zoneTrips))this.renderer.colorMax=Math.max(1,zoneTrips);
+    this.paintReference();
+    this.renderer.schedule();
+  }
   message(m){
     if(m.sourceId!==this.sourceId)return;
     const r=this.renderer;
-    if(m.type==='selection'){this.selectedLinks=new Float32Array(m.loads);this.paintReference();
+    if(m.type==='selection'){this.receiveSelection(m);
     }else if(m.type==='scene'){
       this.kernel=m.kernel;this.onKernel?.(this.kernel);
       this.layoutContext={metadata:new Float32Array(m.metadata),samples:m.samples,grid:m.grid};

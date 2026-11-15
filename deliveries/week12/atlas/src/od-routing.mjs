@@ -1,4 +1,6 @@
-import {frameURL,networkURL,readGzip} from './od-encoding.mjs?v=rail-reading1';
+import {betweenZonePairs} from './od-zones.mjs?v=zone-lasso1';
+import {frameURL,networkURL,readGzip} from './od-encoding.mjs?v=annual-overview1';
+import {odLoads} from './od-period.mjs';
 
 export function createRoutingData(flows,dataURL){
   let graph,worker,sequence=0;
@@ -23,7 +25,7 @@ export function createRoutingData(flows,dataURL){
       return frames.get(url.href);
     },
     loads(year,day,hour,origins){
-      if(origins===null)return Promise.resolve(flows.flows[year][day][hour]);
+      if(origins===null)return Promise.resolve(odLoads(flows,year,day,hour));
       if(!origins.length)return Promise.resolve(new Float64Array(flows.links.length*2));
       const key=`${year}/${day}/${hour}/${origins.join(',')}`;
       if(!scopedLoads.has(key)){
@@ -33,10 +35,19 @@ export function createRoutingData(flows,dataURL){
       }
       return scopedLoads.get(key);
     },
+    zoneFlow(year,day,hour,zones){
+      const key=`zones/${year}/${day}/${hour}/${zones[0].join(',')}/${zones[1].join(',')}`;
+      if(!scopedLoads.has(key)){
+        const task=this.scenario(year,day,hour,{zones}).catch(error=>{scopedLoads.delete(key);throw error;});
+        scopedLoads.set(key,task);
+        if(scopedLoads.size>24)scopedLoads.delete(scopedLoads.keys().next().value);
+      }
+      return scopedLoads.get(key);
+    },
     async scenario(year,day,hour,options){
       const [network,matrix]=await Promise.all([this.network(),this.frame(year,day,hour)]);
       if(!worker){
-        worker=new Worker(new URL('./od-scenario-worker.mjs?v=linked-scope1',import.meta.url),{type:'module'});
+        worker=new Worker(new URL('./od-scenario-worker.mjs?v=zone-lasso1',import.meta.url),{type:'module'});
         worker.onmessage=({data})=>{
           const task=pending.get(data.id);
           if(!task)return;
@@ -179,7 +190,7 @@ export function closureImpact({nodes,links,routeNodes,paths,matrix,closed}){
   return affected;
 }
 
-export function connectionImpact({nodes,links,routeNodes,paths,matrix,from,to,length,origins=null}){
+export function connectionImpact({nodes,links,routeNodes,paths,matrix,from,to,length,origins=null,zones=null}){
   const {index,endpoints,forward,reverse}=routingGraph(nodes,links,routeNodes);
   const a=index.get(from),b=index.get(to);
   if(a===undefined||b===undefined||a===b||!(length>0))throw Error('Los extremos del enlace deben ser paradas distintas.');
@@ -198,7 +209,9 @@ export function connectionImpact({nodes,links,routeNodes,paths,matrix,from,to,le
     }
   }
   const activeOrigins=origins===null?null:new Set(origins);
+  const activePairs=zones?new Set(betweenZonePairs(zones,n)):null;
   for(let pair=0;pair<matrix.length;pair++){
+    if(activePairs&&!activePairs.has(pair))continue;
     const origin=Math.floor(pair/n);
     if(activeOrigins&&!activeOrigins.has(origin))continue;
     const trips=matrix[pair],path=paths[pair];

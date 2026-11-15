@@ -1,6 +1,7 @@
-import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=zoom-width1';
-import {RaebRenderer} from './raeb-renderer.mjs?v=zoom-width1';
-import {RaebWebGPU} from './raeb-webgpu.mjs?v=zoom-width1';
+import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=annual-overview1';
+import {odLoads} from './od-period.mjs';
+import {RaebRenderer} from './raeb-renderer.mjs?v=zone-visibility1';
+import {RaebWebGPU} from './raeb-webgpu.mjs?v=zone-visibility1';
 
 // D3 retains interaction and linked panels. CPU prepares route hierarchies;
 // density, motion, convergence and flow rasterization stay on the GPU.
@@ -38,7 +39,7 @@ export class RaebOverlay extends RaebCPUOverlay{
   this.currentKey=null;this.paintReference();
   // At startup, a worker scene may already be waiting on backendReady. Reuse
   // it; after a running GPU fails, request a fresh scene for the CPU renderer.
-  if(restart&&this.projection&&this.year!==undefined)this.frame(this.year,this.day,this.hour,this.data.nodes[cpu.selected]?.id,this.origins);
+  if(restart&&this.projection&&this.year!==undefined)this.frame(this.year,this.day,this.hour,this.data.nodes[cpu.selected]?.id,this.origins,this.zones);
   console.warn('RAEB: respaldo CPU activo:',error.message);return false;
  }
  frame(...args){if(this.failed)return this.status(this.backendError);return super.frame(...args);}
@@ -50,7 +51,7 @@ export class RaebOverlay extends RaebCPUOverlay{
   this.renderer.exact=this.onTracks||(!this.paper&&this.fidelity===1);
   this.renderer.schedule();
   if(this.paper&&!this.onTracks)return;
-  const all=this.data.flows[String(this.year)]?.[this.day]?.[this.hour];
+  const all=odLoads(this.data,this.year,this.day,this.hour);
   const loads=this.origins==null?all:Float32Array.from({length:this.data.links.length*2},(_,i)=>i%2?0:this.selectedLinks?.[i>>1]??0);
   this.renderer.setRailLoads(loads,this.selectedLinks);
  }
@@ -70,7 +71,7 @@ export class RaebOverlay extends RaebCPUOverlay{
   if(this.failed)return;
   if(!this.gpu)return super.request();
   clearTimeout(this.parameterTimer);
-  if(this.onTracks)return this.status('Sobre la vía');
+  if(this.onTracks)return this.status('');
   if(!this.renderer.count)return this.status('Completado');
   this.worker.postMessage({type:'gpuParameters',sourceId:this.sourceId,id:++this.requestId,fidelity:this.fidelity??.9,strength:this.strength??.65});
  }
@@ -89,7 +90,7 @@ export class RaebOverlay extends RaebCPUOverlay{
    }catch(error){this.fallback(error);}return;
   }
   if(!this.gpu)return super.message(m);
-  if(m.type==='selection'){this.selectedLinks=new Float32Array(m.loads);this.paintReference();return;}
+  if(m.type==='selection'){this.receiveSelection(m);return;}
   if(m.type==='gpuLevel'){this.renderer.setLevel(m.level,new Float32Array(m.points));return;}
   if(m.type==='gpuJob'){
    if(m.id!==this.requestId)return;this.gpuPending=m;if(!this.solverTask){this.solverTask=this.solveGPU().finally(()=>{this.solverTask=null;});}return;

@@ -1,7 +1,8 @@
+import {betweenZonePairs} from './od-zones.mjs?v=zone-lasso1';
 import {makeScene,makeRailKernelEstimator,bundle,bundleFree} from './raeb-core.mjs?v=rail-reading1';
 const layouts=new Map();
 let network=null,sourceId=0,requestId=0,scene=null,pending=null,processing=false,warming=false,weights=null,selected=-1;
-let sentLevels=new Set(),calibrateRail,origins=null;
+let sentLevels=new Set(),calibrateRail,origins=null,zoneTrips=null;
 async function decompress(url,json=false){
   const response=await fetch(url);if(!response.ok)throw Error(`No se pudo leer ${url}: ${response.status}`);
   const decoded=new Response(response.body.pipeThrough(new DecompressionStream('gzip')));
@@ -15,7 +16,7 @@ function selection(){
     const pair=origin*n+d;
     if(weights[pair]>0)for(const arc of network.paths[pair])loads[arc>>1]+=weights[pair];
   }
-  postMessage({type:'selection',sourceId,loads:loads.buffer},[loads.buffer]);
+  postMessage({type:'selection',sourceId,loads:loads.buffer,zoneTrips},[loads.buffer]);
 }
 async function solveLatest(){
   if(processing||warming||!scene||!pending)return;processing=true;
@@ -48,7 +49,17 @@ onmessage=async({data})=>{
       sourceId=data.sourceId;requestId++;scene=null;weights=null;pending=null;layouts.clear();selected=data.selected;origins=data.origins??null;warming=true;const current=sourceId;
       network??=await decompress(data.networkUrl,true);
       const buffer=await decompress(data.frameUrl);if(current!==sourceId)return;weights=new Float32Array(buffer);if(current!==sourceId)return;
-      if(origins!==null){
+      zoneTrips=null;
+      if(data.zones){
+        const filtered=new Float32Array(weights.length);
+        zoneTrips=0;
+        for(const pair of betweenZonePairs(data.zones,data.nodes.length)){
+          if(!network.paths[pair]?.length)continue;
+          filtered[pair]=weights[pair];
+          zoneTrips+=filtered[pair];
+        }
+        weights=filtered;
+      }else if(origins!==null){
         const n=data.nodes.length,allowed=new Set(origins);
         for(let origin=0;origin<n;origin++)if(!allowed.has(origin))weights.fill(0,origin*n,(origin+1)*n);
       }

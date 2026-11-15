@@ -260,11 +260,11 @@ ${WGSL_FLOW_COLOR}
 @fragment fn fragment(@builtin(position) xy:vec4f)->@location(0) vec4f{
  let cell=vec2i(xy.xy);let index=u32(cell.y)*p.raster.x+u32(cell.x);
  let paper=p.flags.y==1u;
- let focused=p.raster.w>0u&&p.flags.z!=0u;
- let maximum=select(${FLOW_COLOR_MAX}.0,bitcast<f32>(p.flags.z),focused);
+ let hasLocalScale=p.flags.z!=0u;
+ let maximum=select(${FLOW_COLOR_MAX}.0,bitcast<f32>(p.flags.z),hasLocalScale);
  if(!paper&&(p.control.y<=0.0||p.flags.x==0u)){
   let weight=opticalWeight(index);let trips=weight*800.0;
-  let alpha=select(0.0,select(1.0-exp(-weight),${SELECTED_FLOW_EXPRESSION},focused),trips>0.0);
+  let alpha=select(0.0,select(1.0-exp(-weight),${SELECTED_FLOW_EXPRESSION},hasLocalScale),trips>0.0);
   return vec4f(flowColor(trips,maximum)*alpha,alpha);
  }
  let ratio=f32(p.raster.x)/p.conversion.x;
@@ -283,9 +283,9 @@ ${WGSL_FLOW_COLOR}
    if(paper){
     let radius=.55+1.45*zoomWidth*sqrt(clamp(trips/maximum,0.0,1.0));
     let edge=clamp(radius*ratio+.5-length(vec2f(delta)),0.0,1.0);
-    candidate=select(.06+.9*pow(1.0-exp(-trips/1150.0),.65),selectedAlpha,focused)*edge;
+    candidate=select(.06+.9*pow(1.0-exp(-trips/1150.0),.65),selectedAlpha,hasLocalScale)*edge;
    }else{
-    candidate=select(.82*(1.0-exp(-weight/.2)),selectedAlpha,focused)*bandEdge(vec2f(delta),weight,ratio,zoomWidth);
+    candidate=select(.82*(1.0-exp(-weight/.2)),selectedAlpha,hasLocalScale)*bandEdge(vec2f(delta),weight,ratio,zoomWidth);
    }
    if(candidate>alpha||(candidate==alpha&&weight>flow)){alpha=candidate;flow=weight;}
   }

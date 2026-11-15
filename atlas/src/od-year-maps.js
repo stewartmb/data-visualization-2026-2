@@ -1,5 +1,7 @@
-import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,railChange} from './od-encoding.mjs?v=rail-reading1';
-import {fmt,signed,dayShort} from './model.js?v=20261028-4';
+import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,railChange,odDelta} from './od-encoding.mjs?v=shared-change1';
+import {signed} from './model.js?v=20261028-4';
+import {odLoads,odPeriodLabel} from './od-period.mjs';
+import {bindFlowScale} from './flow-scale.js';
 
 export function createODYearMaps(host,geo,flows,routing){
   const width=100,height=120;
@@ -14,12 +16,13 @@ export function createODYearMaps(host,geo,flows,routing){
   const names=new Map(flows.nodes.map(s=>[s.id,s.name.replace(/ \([^)]*\)/g,'')]));
   const period=document.querySelector('#od-preview-period');
   const referenceLabel=document.querySelector('#od-preview-base');
-  const range=document.querySelector('#od-preview-range');
+  const legend=document.querySelector('#od-preview-legend');
   const scopeLabel=document.querySelector('#od-preview-scope');
-  const legend=document.querySelector('.od-preview-key i');
+  const swatch=document.querySelector('#od-preview-swatch');
+  const setScale=bindFlowScale(swatch,{diverging:true});
   const {loss,gain,neutral}=OD_CHANGE_COLORS;
   const interpolate={loss:d3.interpolateRgb(neutral,loss),gain:d3.interpolateRgb(neutral,gain)};
-  legend.style.background=`linear-gradient(90deg,${loss},${neutral},${gain})`;
+  swatch.style.background=`linear-gradient(90deg,${loss},${neutral},${gain})`;
   const slots=Array.from(host.querySelectorAll('button[data-od-year]'),button=>{
     const canvas=button.querySelector('canvas');
     const ratio=Math.max(2,window.devicePixelRatio||1);
@@ -39,42 +42,53 @@ export function createODYearMaps(host,geo,flows,routing){
     context.strokeStyle='#bcc6c2';
     context.lineWidth=.43;
     context.stroke(land);
-    context.strokeStyle='#b4bec1';
+    context.strokeStyle=neutral;
     context.lineWidth=.52;
     for(const rail of rails)context.stroke(rail.path);
   }
-  let previous,requestId=0;
-  return async (day,hour,reference,{origins,label})=>{
-    const key=`${day}/${hour}/${reference}/${origins?.join(',')??'all'}/${label}`;
-    if(key===previous)return;
-    previous=key;
-    const request=++requestId;
-    period.textContent=`${dayShort[day]} · ${String(hour).padStart(2,'0')}:00`;
+  let previous,pending,requestId=0,comparisonActive=false,scaleReady=false;
+  function showScale(ready){
+    scaleReady=ready;
+    legend.hidden=comparisonActive||!scaleReady;
+  }
+  return (day,hour,reference,scope,comparing)=>{
+    comparisonActive=comparing;
+    showScale(scaleReady);
+    const key=`${day}/${hour}/${reference}/${scope.origins?.join(',')??'all'}/${scope.zones?.[0].length??0}/${scope.label}`;
+    if(key!==previous){
+      previous=key;
+      pending=drawFrames(day,hour,reference,scope,++requestId);
+    }
+    return pending;
+  };
+  async function drawFrames(day,hour,reference,{origins,label,zones},request){
+    period.textContent=odPeriodLabel(day,hour,true);
     referenceLabel.textContent=`Cambio frente a ${reference}`;
     scopeLabel.hidden=origins===null;
-    scopeLabel.textContent=origins===null?'':`Salidas · ${label}`;
+    scopeLabel.textContent=origins===null?'':zones?label:`Salidas · ${label}`;
     let loadsByYear;
     if(origins===null){
-      loadsByYear=new Map(slots.map(({year})=>[year,flows.flows[year][day][hour]]));
+      loadsByYear=new Map(slots.map(({year})=>[year,odLoads(flows,year,day,hour)]));
     }else{
       host.setAttribute('aria-busy','true');
-      range.textContent='Calculando…';
+      showScale(false);
       for(const {context,button} of slots){
         drawBase(context);
         button.removeAttribute('title');
         button.querySelector('.od-year-change').textContent='Actualizando…';
       }
       try{
-        loadsByYear=new Map(await Promise.all(slots.map(async({year})=>[year,await routing.loads(year,day,hour,origins)])));
+        loadsByYear=new Map(await Promise.all(slots.map(async({year})=>[
+          year,zones?(await routing.zoneFlow(year,day,hour,zones)).loads:await routing.loads(year,day,hour,origins)
+        ])));
       }catch{
-        if(request!==requestId)return;
+        if(request!==requestId)return null;
         previous=null;
         host.removeAttribute('aria-busy');
-        range.textContent='';
         for(const {button} of slots)button.querySelector('.od-year-change').textContent='Sin datos';
-        return;
+        return null;
       }
-      if(request!==requestId)return;
+      if(request!==requestId)return null;
     }
     host.removeAttribute('aria-busy');
     const base=loadsByYear.get(reference);
@@ -82,7 +96,7 @@ export function createODYearMaps(host,geo,flows,routing){
       const loads=loadsByYear.get(slot.year);
       const changes=rails.map(rail=>{
         const i=rail.index*2;
-        return {...rail,delta:loads[i]+loads[i+1]-base[i]-base[i+1]};
+        return {...rail,delta:odDelta(base[i]+base[i+1],loads[i]+loads[i+1])};
       }).sort((a,b)=>Math.abs(a.delta)-Math.abs(b.delta));
       return {...slot,changes};
     });
@@ -90,7 +104,8 @@ export function createODYearMaps(host,geo,flows,routing){
     const peak=d3.max(acrossYears)||0;
     const step=peak>0?10**Math.floor(Math.log10(peak/2)):1;
     const limit=peak>0?Math.max(1,Math.ceil(peak/step)*step):(flows.meta.change_limit??OD_CHANGE_LIMIT);
-    range.textContent=`−${fmt(limit)} · 0 · +${fmt(limit)}`;
+    setScale(limit);
+    showScale(true);
     for(const {year,button,context,changes} of frames){
       drawBase(context);
       for(const {path,delta} of changes){
@@ -110,5 +125,6 @@ export function createODYearMaps(host,geo,flows,routing){
       button.dataset.previewReference=reference;
       button.dataset.previewScope=label;
     }
-  };
+    return {loadsByYear,limit};
+  }
 }

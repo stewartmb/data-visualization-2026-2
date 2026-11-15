@@ -1,6 +1,7 @@
 import {state,BASE as MAP_BASE,esc,fmt,signed,profile,deltaColor,shareColor,showTooltip,hideTooltip,dayShort,relevantEvents,cohortProfile} from './model.js?v=20261028-4';
 
 import {scatterDomain,comparisonContext} from './scatter-domain.mjs';
+import {odPeriodLabel} from './od-period.mjs';
 import {activeODCompareBase,activeContrastBase,availableContrastYears,inspectorContrast,contrastMeasures,contrastCell,annualMeasures,isODMap} from './contrast-model.mjs?v=annual-od1';
 let BASE=2021;
 const closureCache=new Map();
@@ -10,14 +11,15 @@ const hourLabel=h=>h===0?'12 am':h<12?`${h} am`:h===12?'12 pm':`${h-12} pm`;
 const days=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
 
 export function updateClockTime(day,hour){
-  const active=day*24+hour;
+  const active=day===null?null:day*24+hour;
   d3.selectAll('#inspector [data-clock-cell]')
     .attr('stroke',i=>i===active?'#102937':null)
     .attr('stroke-width',i=>i===active?1.6:null)
     .attr('aria-pressed',i=>String(i===active))
     .filter(i=>i===active).raise();
   const time=document.querySelector('#clock-current-time');
-  if(time)time.value=`${days[day]} · ${hourLabel(hour)}`;
+  if(time)time.value=odPeriodLabel(day,hour);
+  document.querySelector('#clock-annual')?.setAttribute('aria-pressed',String(day===null));
 }
 
 export const BOROUGH_COLOR={Manhattan:'#1d6f8d',Brooklyn:'#b08a3e',Queens:'#7a5aa6',Bronx:'#5a8a4a'};
@@ -52,16 +54,16 @@ export function renderInspector(mapApp){
   const contrastControl=annual?'':paired
     ? `<strong>Comparación OD</strong><span>A ${BASE} → B ${state.year}</span>`
     : `<label for="contrast-base" style="font-weight:700">Año de referencia</label><select id="contrast-base" aria-label="Año de contraste de los gráficos de la derecha" style="font:inherit;padding:2px 5px;width:auto">${availableContrastYears(state,dataset).filter(y=>y!==state.year).map(y=>`<option value="${y}"${y===BASE?' selected':''}>${y}</option>`).join('')}</select><span>→ ${state.year}</span>`;
-  host.innerHTML=`<header class="linked-heading"><div class="eyebrow">${selected?`${dataset.id==='bart'?'ESTACIÓN':'COMPLEJO'} ${esc(selected.id)} · ${esc(selected.borough)}`:items.length+' '+dataset.stationLabel.toUpperCase()}</div><h2 title="${esc(nombre)}">${esc(nombre)}</h2><div class="contrast-context" style="display:flex;align-items:center;gap:7px;margin-top:5px;font-size:12px">${contrastControl}</div><p style="font-size:9px;margin-top:3px" id="contrast-source">${esc(app.contrast.label)} · ${esc(coverageLabel(app))}</p>${selected?'<button class="close" id="clear-subject" aria-label="Volver a la vista general">×</button>':''}</header>
+  host.innerHTML=`<header class="linked-heading"><div class="eyebrow">${selected?`${dataset.id==='bart'?'ESTACIÓN':'COMPLEJO'} ${esc(selected.id)} · ${esc(selected.borough)}`:items.length+' '+dataset.stationLabel.toUpperCase()}</div><h2 title="${esc(nombre)}">${esc(nombre)}</h2><div class="contrast-context" style="display:flex;align-items:center;gap:7px;margin-top:5px;font-size:12px">${contrastControl}</div><p style="font-size:9px;margin-top:3px" id="contrast-source">${mapApp.odScope?.zones?'Contexto del sistema · ':''}${esc(app.contrast.label)} · ${esc(coverageLabel(app))}</p>${selected?'<button class="close" id="clear-subject" aria-label="Volver a la vista general">×</button>':''}</header>
   <section id="scatter-host" aria-label="${annual?'Afluencia y concentración horaria':'Volumen frente a forma semanal'}"></section>
   ${selected&&annual&&mapApp.flows.meta.network?.route_nodes?`<details class="inline-evidence od-closure" id="od-closure" data-station="${esc(selected.id)}">
     <summary>Dependencia de la red · simular cierre</summary>
-    <div><p>Retira todas las paradas del complejo en la red de referencia para la franja del mapa.</p>
+    <div><p>Retira todas las paradas del complejo en la red de referencia para el período del mapa.</p>
     <dl class="closure-values" aria-live="polite"></dl>
     <p>Demanda fija. El escenario también interrumpe el paso por esas paradas.</p></div>
   </details>`:''}
   <section class="clock-panel"  aria-label="Reloj semanal de la selección"><div id="detail-body"></div></section>
-  <details class="inline-evidence"><summary>Datos, cobertura y modelo ⓘ</summary><div><b>${esc(coverageLabel(app))}</b><p>El mapa representa viajes que comienzan en la hora activa. La dispersión y el reloj resumen la semana representativa del período disponible.</p><p>Origen–destino estimado por MTA; los recorridos son asignados por un modelo sobre una red de referencia, no trayectorias observadas. Se utilizan los doce meses completos de cada año, ponderados por la cantidad de cada día de la semana.</p><p>Gráficos de la derecha: ${esc(app.contrast.label)}, usando la misma fuente para ambos años. ${app.contrast.kind==='entries'?'2019 y 2020 se incorporan solo como referencia de afluencia; no hay OD reconstruido para esos años.':'Los años de contraste OD son 2021–2024.'}</p><p>Volumen: ${esc(app.contrast.unit)}. Forma: redistribución de sus 168 pesos semanales; TV=0 significa mismo patrón. Un grupo se calcula sumando cantidades antes de normalizar.</p><p>La referencia GTFS corresponde a 2026; no representa el servicio histórico. Las curvas libres son abstracciones visuales, no nuevas vías. El modelo minimiza un costo basado en longitud de vía y transbordos GTFS declarados. Usa una red fija a todas las horas. El balance conserva aparte 0,1333 viajes semanales representativos no mapeados en 2023.</p></div></details>`;
+  <details class="inline-evidence"><summary>Datos, cobertura y modelo ⓘ</summary><div><b>${esc(coverageLabel(app))}</b><p>El mapa muestra el promedio diario anual o los viajes que comienzan en la hora seleccionada. La dispersión y el reloj resumen la semana representativa del período disponible.</p><p>Origen–destino estimado por MTA; los recorridos son asignados por un modelo sobre una red de referencia, no trayectorias observadas. Se utilizan los doce meses completos de cada año, ponderados por la cantidad de cada día de la semana.</p><p>Gráficos de la derecha: ${esc(app.contrast.label)}, usando la misma fuente para ambos años. ${app.contrast.kind==='entries'?'2019 y 2020 se incorporan solo como referencia de afluencia; no hay OD reconstruido para esos años.':'Los años de contraste OD son 2021–2024.'}</p><p>Volumen: ${esc(app.contrast.unit)}. Forma: redistribución de sus 168 pesos semanales; TV=0 significa mismo patrón. Un grupo se calcula sumando cantidades antes de normalizar.</p><p>La referencia GTFS corresponde a 2026; no representa el servicio histórico. Las curvas libres son abstracciones visuales, no nuevas vías. El modelo minimiza un costo basado en longitud de vía y transbordos GTFS declarados. Usa una red fija a todas las horas. El balance conserva aparte 0,1333 viajes semanales representativos no mapeados en 2023.</p></div></details>`;
   if(dataset.id==='bart'){
     const description=annual?'La dispersión muestra el promedio diario y el peso de la hora pico de cada estación.':'La dispersión compara volumen y forma. Si una estación carece de viajes en uno de los años, queda fuera de esa comparación.';
     host.querySelector('.inline-evidence:not(.od-closure)>div').innerHTML=`<p>${esc(dataset.evidence)}</p><p>El reloj muestra el peso de cada hora en la semana. ${description}</p>`;
@@ -111,13 +113,13 @@ function bindClosure(details,app,station){
       }));
     };
     if(closureCache.has(key)){draw(closureCache.get(key));return;}
-    values.textContent='Calculando para la franja activa…';
+    values.textContent='Calculando para el período activo…';
     try{
       const result=await app.routing.scenario(year,flowDay,flowHour,{closed:station.id});
       closureCache.set(key,result);
       if(closureCache.size>24)closureCache.delete(closureCache.keys().next().value);
       draw(result);
-    }catch(error){if(stillCurrent())values.textContent='No se pudo simular el cierre para esta franja.';}
+    }catch(error){if(stillCurrent())values.textContent='No se pudo simular el cierre para este período.';}
   };
   details.addEventListener('toggle',update);
   return update;
@@ -153,6 +155,7 @@ function drawFingerprint(host,s,app,annual){
   const mode=annual?'current':state.mode;
   const delta=mode==='delta';
   const shownYear=mode==='base'?BASE:state.year;
+  const annualMap=!!app.flows?.annual;
   const current=profile(s);
   const reference=annual?null:profile(s,BASE);
   const controls=annual?'':`<div class="segmented" id="detail-mode"><button data-mode="delta" class="${delta?'active':''}">Δ</button><button data-mode="current" class="${mode==='current'?'active':''}">${state.year}</button><button data-mode="base" class="${mode==='base'?'active':''}">${BASE}</button></div>`;
@@ -166,7 +169,7 @@ function drawFingerprint(host,s,app,annual){
           aria-label="${delta?'Cambio de −0,65 a +0,65 puntos porcentuales.':'Peso de 0 a 1,5 % del total semanal.'}"></span>
         <span>${delta?'Perdió peso semanal':'Menor peso semanal'}</span><span style="text-align:right">${delta?'Ganó peso semanal':'Mayor peso semanal'}</span>
       </div>
-      <p class="clock-hint">Lunes adentro · domingo afuera. Clic en una celda para mover el mapa a ese día y hora.</p>
+      <p class="clock-hint">Lunes adentro · domingo afuera. Selecciona una celda para ver esa hora.${annualMap?' Vuelve a pulsarla o pulsa el centro para ver todo el año.':''}</p>
       <details class="clock-help"><summary>Cómo leer el reloj ⓘ</summary><p>24 horas en sentido horario, medianoche arriba. Cada anillo es un día. Cada celda representa un porcentaje del total de su año.${delta?' En Δ, el azul indica que el horario perdió peso y la terracota que ganó peso. El color satura en ±0,65 pp.':' El color satura en 1,5 % del total semanal.'} Pasa por una celda para ver sus valores.</p></details>
     </div>`;
   host.querySelectorAll('[data-mode]').forEach(btn=>btn.onclick=()=>app.set({mode:btn.dataset.mode}));
@@ -178,8 +181,20 @@ function drawFingerprint(host,s,app,annual){
     .attr('d',i=>arc({innerRadius:rIn(Math.floor(i/24)),outerRadius:rOut(Math.floor(i/24)),startAngle:(i%24)*Math.PI/12+.008,endAngle:(i%24+1)*Math.PI/12-.008}))
     .attr('fill',fill);
   g.append('circle').attr('r',(rOut(4)+rIn(5))/2).attr('fill','none').attr('stroke','#1b2a33').attr('stroke-width',.8).attr('stroke-dasharray','3,3').attr('opacity',.45);
-  g.append('circle').attr('r',29).attr('fill','#f1f4ee');
-  g.append('text').attr('text-anchor','middle').attr('y',4).attr('fill','#49636b').attr('font-size',14).text(delta?'Δ':shownYear);
+  const center=g.append('g');
+  center.append('circle').attr('r',29).attr('fill','#f1f4ee');
+  const text=center.append('text').attr('text-anchor','middle').attr('fill','#49636b');
+  if(annualMap){
+    const selectYear=()=>app.setFlowTime(null,null);
+    center.attr('id','clock-annual').attr('tabindex',0).attr('role','button').attr('aria-label','Todo el año')
+      .on('click',selectYear)
+      .on('keydown',event=>{
+        if(event.key==='Enter'||event.key===' '){event.preventDefault();selectYear();}
+      });
+    text.attr('font-size',9);
+    text.append('tspan').attr('x',0).attr('y',-2).text('Todo');
+    text.append('tspan').attr('x',0).attr('y',9).text('el año');
+  }else text.attr('y',4).attr('font-size',14).text(delta?'Δ':shownYear);
   g.selectAll('.ring-label').data(dayShort).join('text').attr('class','ring-label')
     .attr('x',(d,k)=>Math.sin(-0.5*Math.PI/12)*((rIn(k)+rOut(k))/2))
     .attr('y',(d,k)=>-Math.cos(-0.5*Math.PI/12)*((rIn(k)+rOut(k))/2)+2.8)
@@ -190,9 +205,13 @@ function drawFingerprint(host,s,app,annual){
     g.append('text').attr('x',Math.sin(angle)*r).attr('y',-Math.cos(angle)*r+4)
       .attr('text-anchor','middle').attr('font-size',10).attr('fill','#60747b').text(hourLabel(h));
   }
-  const setTime=i=>app.setFlowTime(Math.floor(i/24),i%24);
-  marks.attr('data-clock-cell',i=>i).attr('tabindex',0).attr('role','button')
-    .attr('aria-label',i=>`${days[Math.floor(i/24)]}, ${hourLabel(i%24)}. Fijar día y hora del mapa.`)
+  const setTime=i=>{
+    const day=Math.floor(i/24),hour=i%24;
+    if(annualMap&&day===state.flowDay&&hour===state.flowHour)app.setFlowTime(null,null);
+    else app.setFlowTime(day,hour);
+  };
+  marks.attr('data-clock-cell',i=>i).attr('id',i=>`clock-cell-${i}`).attr('tabindex',0).attr('role','button')
+    .attr('aria-label',i=>odPeriodLabel(Math.floor(i/24),i%24))
     .style('cursor','pointer').on('click',(e,i)=>setTime(i))
     .on('keydown',(e,i)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();setTime(i);}});
   updateClockTime(state.flowDay,state.flowHour);
@@ -338,14 +357,27 @@ function drawScatter(host,app,annual){
   svg.append('text').attr('class','scatter-axis-label')
     .attr('x',M.l).attr('y',M.t-10).text('↑ '+yLabel);
   const ordered=[...plotted].sort((a,b)=>(items.has(a.id)?1:0)-(items.has(b.id)?1:0));
-  svg.append('g').selectAll('circle').data(ordered,s=>s.id).join('circle')
+  const marks=svg.append('g').selectAll('circle').data(ordered,s=>s.id).join('circle')
     .attr('data-scatter-station',s=>s.id)
+    .attr('id',s=>`scatter-station-${s.id}`)
+    .attr('tabindex',0).attr('role','button')
+    .attr('aria-pressed',s=>String(s.id===state.selected))
+    .attr('aria-label',s=>s.station.name.replace(/ \(.*/,''))
     .attr('cx',s=>x(s.recovery)).attr('cy',s=>y(s.change)).attr('r',s=>items.has(s.id)?3:2.2)
     .attr('fill','#1d6f8d').attr('opacity',s=>items.has(s.id)?.55:.1).style('cursor','pointer')
     .on('pointerenter',(event,row)=>showPoint(row))
     .on('pointerleave',()=>showPoint(selected))
-    .on('click',(e,s)=>app.select(state.selected===s.id?null:s.id));
+    .on('focus',(_,row)=>showPoint(row))
+    .on('blur',()=>showPoint(selected))
+    .on('click',(_,row)=>app.toggleStation(row.id))
+    .on('keydown',(event,row)=>{
+      if(event.key==='Enter'||event.key===' '){
+        event.preventDefault();
+        app.toggleStation(row.id);
+      }
+    });
   if(selected){
+    marks.filter(row=>row.id===selected.id).raise();
     const cx=x(selected.recovery),cy=y(selected.change),alignRight=cx>W*.7;
     svg.append('circle').attr('cx',cx).attr('cy',cy).attr('r',6.5).attr('fill','none').attr('stroke','#102937').attr('stroke-width',1.8).style('pointer-events','none');
     svg.append('text').attr('x',cx+(alignRight?-9:9)).attr('y',cy+3).attr('text-anchor',alignRight?'end':'start')
