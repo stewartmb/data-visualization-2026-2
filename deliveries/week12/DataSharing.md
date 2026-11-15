@@ -1,6 +1,6 @@
 # Compartir y reproducir la versión actual
 
-Clonar `https://github.com/stewartmb/data-visualization-2026-2.git` y usar `main` después de la publicación. La app funciona con los JSON y los 672 frames OD preparados: no necesita descargar los originales para verla. Hay datos de entradas **2019–2024** para la columna derecha y OD **2021–2024** para el mapa. El grafo GTFS de referencia es **2026**.
+Clonar `https://github.com/stewartmb/data-visualization-2026-2.git` y usar la rama `atlas-2.0` para abrir esta versión. La aplicación incluye 840 matrices horarias y cinco matrices anuales preparadas para el mapa OD de **2021–2025**. El contraste histórico usa entradas de **2019–2024** y el mapa usa el grafo GTFS de referencia de **2026**.
 
 ```bash
 python3 -m http.server 8775

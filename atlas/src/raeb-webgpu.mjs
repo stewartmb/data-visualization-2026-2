@@ -1,5 +1,5 @@
 import {initialKernelRadius} from './raeb-core.mjs?v=rail-reading1';
-import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=zone-visibility1';
+import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=line-render1';
 import {zoomStrokeScale} from './od-encoding.mjs?v=zoom-width1';
 const ENTRIES={initialize:[0,1,3,4,7,8],splat:[0,1,8,9],decodeDensity:[0,9,10],convolve:[0,10,11],maximum:[0,11,13],maximumFinal:[13,14],boost:[0,11,12,14],advect:[0,1,2,3,4,5,6,11],smoothPoints:[0,1,2,3,4,5,6],rasterCurves:[0,1,6,7,15],rasterRails:[0,15,23,24],rasterGuide:[0,12,23,24],image:[0,15,17],histogram:[0,16,17,18,19,20],mutualInformation:[0,18,19,20,21],mutualInformationFinal:[21,22]};
 export class RaebWebGPU{
@@ -52,7 +52,9 @@ export class RaebWebGPU{
    const rx=this.canvas.width/this.width,ry=this.canvas.height/this.height,c=this.camera;
    f.set([c.k*s.gridToCss[0]*rx,c.k*s.gridToCss[1]*ry,(c.x-c.k*s.gridToCss[0])*rx,(c.y-c.k*s.gridToCss[1])*ry],12);
   }
-  f.set([this.width,this.height,...s.gridToCss],16);u[20]=analysis?0:1;u[21]=this.paper?1:0;
+  f.set([this.width,this.height,...s.gridToCss],16);
+  // Display flags distinguish a screen raster from a locally rescaled selection.
+  u[20]=analysis?0:this.localScale?3:1;u[21]=this.paper?1:0;
   if(!analysis){
    f[22]=this.colorMax||0;
    f[23]=zoomStrokeScale(this.camera.k);

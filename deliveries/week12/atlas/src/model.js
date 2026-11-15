@@ -1,4 +1,4 @@
-export let BASE=2021; // año base de la comparación (par base → objetivo, 2021–2024)
+export let BASE=2021; // Año base de la comparación OD
 export function setBase(y){BASE=y;}
 export const state = {view:'atlas',year:2024,borough:'all',query:'',preset:null,cohort:null,selected:null,pins:[],mode:'delta',sort:'change',day:'all',detail:false,mapMetric:'change',tvMin:0,tvMax:100,ranges:{deltaAM:null,deltaWeekend:null,recovery:null},inspectorTab:'fingerprint',clock:true,pathsFocus:true,layer:'flows',flowHour:8,flowDay:0,flowShow:'volume',fidelity:0.9,bundling:0.65};
 export const dayShort=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];

@@ -1,14 +1,14 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=activity-labels1';
-import {createODYearMaps} from './od-year-maps.js?v=annual-overview1';
+import {renderMap} from './map-view.js?v=summary-top1';
+import {createODYearMaps} from './od-year-maps.js?v=map-layout2';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=overview1';
-import {renderInspector} from './inspector.js?v=direct-toggles1';
-import {renderProject} from './project-view.js?v=20261028-release1';
+import {renderInspector} from './inspector.js?v=summary-top1';
+import {renderProject} from './project-view.js?v=od-2025-1';
 
-import {activeContrastBase,activeODCompareBase,availableContrastYears,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=annual-od1';
-import {dataset} from './datasets.mjs?v=rail-reading1';
+import {activeContrastBase,activeODCompareBase,availableContrastYears,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=od-2025-1';
+import {dataset} from './datasets.mjs?v=od-2025-1';
 import {createRoutingData} from './od-routing.mjs?v=annual-overview1';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
@@ -112,7 +112,7 @@ const app={
     if(year===state.year||!availableContrastYears(state,dataset).includes(year))return;
     if(!dataset.years.includes(year))await loadHistoricalProfiles();
     state.contrastBase=year;
-    // Re-render only the right column: no camera, map metric, OD frame, node
+    // Re-render only the linked analysis: no camera, map metric, OD frame, node
     // sizes, year, or bundling job is changed by a historical contrast.
     renderInspector(app);updateURL();
   },
@@ -172,7 +172,9 @@ const app={
 
 function renderODYears(){
   const canCompare=state.view==='map'&&state.layer==='flows';
-  document.querySelector('.od-year-strip').classList.toggle('has-year-maps',canCompare);
+  const strip=document.querySelector('.od-year-strip');
+  strip.hidden=!canCompare;
+  strip.closest('aside').setAttribute('aria-label',canCompare?'Comparación entre años':'Detalle de la selección');
   if(!canCompare){
     choosingODYears=false;
     pendingODYear=null;
@@ -184,10 +186,9 @@ function renderODYears(){
   const button=document.querySelector('#od-compare');
   button.hidden=!canCompare;
   button.textContent=choosingODYears?'Cancelar':comparing?'Salir de comparación':'Comparar';
-  document.querySelector('#od-compare-status').textContent=canCompare
-    ? choosingODYears
-      ? a===null?'Elige A, el año de referencia.':`A · ${a}. Elige B, un año distinto.`
-      : comparing?`A ${a} → B ${state.year}`:`Mapa principal · ${state.year}`
+  const status=document.querySelector('#od-compare-status');
+  status.textContent=canCompare&&choosingODYears
+    ? a===null?'Elige A, el año de referencia.':'Elige un año distinto para B.'
     : '';
   document.querySelectorAll('[data-od-year]').forEach(yearButton=>{
     const year=+yearButton.dataset.odYear;
@@ -237,7 +238,18 @@ function render(){
   const toIndices=ids=>Array.from(ids,id=>stationIndices.get(id)).filter(Number.isInteger);
   const zones=state.layer==='flows'&&state.odZones?[state.odZones.a,state.odZones.b].map(toIndices):null;
   const between=zones?.every(ids=>ids.length)?zones:null;
+  const rangeNotes=[...(state.tvMin>0||state.tvMax<100?[`TV ${fmt(state.tvMin)}–${fmt(state.tvMax)} pp`]:[]),...Object.entries(state.ranges).filter(([,r])=>r).map(([k,r])=>`${{deltaAM:'AM',deltaWeekend:'Fin de semana',recovery:'Volumen'}[k]} ${fmt(r[0])}–${fmt(r[1])} ${k==='recovery'?'%':'pp'}`)];
+  const presetNote={morning:'Cambio AM menor que −2 pp',weekend:'Cambio de fin de semana mayor que +2 pp',change:'Cambio de forma ≥10 pp',decoupled:'Índice volumen entre 80–120 % y cambio de forma ≥10 pp'}[state.preset];
+  const scopeNotes=[
+    ...(state.borough!=='all'&&(selected||state.cohort||state.query||between)?[state.borough]:[]),
+    ...(state.query.trim()?[`Búsqueda: «${state.query.trim()}»`]:[]),
+    ...(state.cohort&&selected?['Grupo seleccionado']:[]),
+    ...(presetNote?[presetNote]:[]),...rangeNotes
+  ];
+  const groupNote=state.cohort?'Grupo de complejos seleccionado':presetNote??(state.query?'Resultados de búsqueda':state.borough==='all'?'Todos los complejos de subway':state.borough);
+  document.querySelector('#cohort-note').textContent=[...rangeNotes,groupNote].join(' · ');
   app.odScope={
+    notes:scopeNotes,
     zones:between,
     origins:between?between.flat():scoped?toIndices((selected?[selected]:items).map(s=>s.id)):null,
     label:between?'Zona A ↔ Zona B':selected?selected.name.replace(/ \([^)]*\)/g,''):state.cohort?'Área seleccionada':state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:scoped?'Grupo filtrado':'Toda la red'
@@ -249,10 +261,9 @@ function render(){
   if(search!==document.activeElement)search.value=state.query;
   const periodLabel=document.querySelector('#period-label');if(periodLabel)periodLabel.textContent=`${state.year}`;
   document.querySelector('#cohort-count').textContent=`${items.length} / ${data.stations.length} ${dataset.stationLabel}`;
-  const rangeNotes=[...(state.tvMin>0||state.tvMax<100?[`TV ${fmt(state.tvMin)}–${fmt(state.tvMax)} pp`]:[]),...Object.entries(state.ranges).filter(([,r])=>r).map(([k,r])=>`${{deltaAM:'AM',deltaWeekend:'Fin de semana',recovery:'Volumen'}[k]} ${fmt(r[0])}–${fmt(r[1])} ${k==='recovery'?'%':'pp'}`)];
-  const groupNote=state.cohort?'Grupo de complejos seleccionado':state.preset==='morning'?'Cambio AM menor que −2 pp':state.preset==='weekend'?'Cambio de fin de semana mayor que +2 pp':state.preset==='change'?'Cambio de forma ≥10 pp':state.preset==='decoupled'?'Índice volumen entre 80–120 % y cambio de forma ≥10 pp':state.query?'Resultados de búsqueda':state.borough==='all'?'Todos los complejos de subway':state.borough;
-  document.querySelector('#cohort-note').textContent=[...rangeNotes,groupNote].join(' · ');
-  document.querySelector('#reset').hidden=!(state.borough!=='all'||state.query||state.cohort||state.preset||state.odZones||selected||rangeNotes.length);
+  const reset=document.querySelector('#map-center');
+  reset.hidden=!(state.borough!=='all'||state.query||state.cohort||state.preset||state.odZones||selected||rangeNotes.length);
+  reset.onclick=()=>app.resetScope();
   document.body.classList.add('has-inspector');
   document.querySelector('#selection-label').textContent=selected?`${selected.name}${items.some(s=>s.id===selected.id)?'':' · fuera del grupo activo'}`:'';
   const host=document.querySelector('#content');host.replaceChildren();host.dataset.view=state.view;
@@ -261,7 +272,6 @@ function render(){
   if(state.view==='atlas'&&previousScroll)document.querySelector('.matrix-scroll').scrollTop=previousScroll;
   renderInspector(app);
   if(focusId)document.getElementById(focusId)?.focus({preventScroll:true});
-  document.querySelector('#footer-status').textContent=`${dataset.comparison} · ${dataset.credit}`;
   updateURL();
 }
 
@@ -305,7 +315,7 @@ function downloadCSV(columns,rows,filename){
 }
 
 hydrate();
-const loadData=name=>d3.json(new URL(name==='flows.json'?'flows.json?v=rail-reading1':name,dataset.dataURL));
+const loadData=name=>d3.json(new URL(['flows.json','annual-od.json'].includes(name)?name+'?v=od-2025-1':name,dataset.dataURL));
 const nyc=dataset.id==='nyc';
 Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),nyc?loadData('lineas.geojson').catch(()=>null):null,
   loadData('flows.json'),nyc?loadData('annual-od.json'):null]).then(async([a,g,l,f,annual])=>{
@@ -353,7 +363,6 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),nyc?loadData('l
   document.querySelector('#loading').hidden=true;
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>app.set({view:b.dataset.view})));
   const yearStrip=document.querySelector('#od-years');
-  yearStrip.style.setProperty('--year-count',f.meta.years.length);
   for(const year of f.meta.years){
     const button=document.createElement('button');
     button.type='button';
@@ -365,6 +374,8 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),nyc?loadData('l
     canvas.setAttribute('aria-hidden','true');
     const change=document.createElement('span');
     change.className='od-year-change';
+    change.id=`od-year-detail-${year}`;
+    button.setAttribute('aria-describedby',change.id);
     button.append(canvas,caption,change);
     button.addEventListener('click',event=>chooseODYear(event,year));
     yearStrip.append(button);
@@ -395,7 +406,6 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),nyc?loadData('l
     app.set({query,selected:first?.id??null});
   });
   document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>app.set({preset:b.dataset.preset,cohort:null,query:'',sort:'change'})));
-  document.querySelector('#reset').addEventListener('click',()=>app.resetScope());
   document.querySelector('#save').addEventListener('click',()=>{
     const params=new URLSearchParams(location.search);
     if(state.selected)params.set('inspect',state.selected);

@@ -1,4 +1,5 @@
 export const OD_CHANGE_LIMIT = 1700;
+export const OD_RAIL_MAX_WIDTH = 5;
 export const OD_CHANGE_COLORS = {loss:'#176c91', neutral:'#aab3b7', gain:'#b6532c'};
 
 export function railChange(delta, limit=OD_CHANGE_LIMIT) {
@@ -19,7 +20,7 @@ export function zoomStrokeScale(zoom) {
 }
 
 export function railFlowWidth(trips, maximum) {
-  return .85+3.15*flowStrength(trips,maximum);
+  return .85+(OD_RAIL_MAX_WIDTH-.85)*flowStrength(trips,maximum);
 }
 
 export function flowCount(value, formatter) {

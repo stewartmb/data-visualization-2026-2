@@ -1,7 +1,6 @@
-# Adquisición OD 2021–2024
+# Adquisición y preparación OD 2021–2025
 
-Descarga completa de los 48 meses y todos los pares publicados, sin muestras,
-sin filtrar estaciones y conservando los 16 campos originales. Fuentes MTA:
+La base de 2021–2024 cubre 48 meses. La ampliación de 2025 añade 12 meses. Se conservan los 16 campos originales y todos los pares publicados en la adquisición.
 
 Para otra computadora, consulta [DataSharing.md](DataSharing.md): explica qué
 archivos incluye Git, dónde colocar los originales compartidos y cómo obtener
@@ -13,10 +12,11 @@ el GTFS sin depender de las rutas locales del autor.
 | 2022 | https://data.ny.gov/d/nqnz-e9z9 |
 | 2023 | https://data.ny.gov/d/uhf3-t34z |
 | 2024 | https://data.ny.gov/d/jsu2-fbtj |
+| 2025 | https://data.ny.gov/d/y2qv-fytt |
 
 Es OD **estimado por MTA**, agregado por mes, día de semana y hora. El timestamp
 es representativo de una semana del mes, no la fecha de un viaje individual.
-`estimated_average_ridership` es un promedio: no sumar los 48 meses y llamar
+`estimated_average_ridership` es un promedio: no sumar los promedios mensuales y llamar
 al resultado viajes. Para totales mensuales se necesitan exposiciones de calendario.
 
 ## Ejecutar y reanudar
@@ -60,7 +60,7 @@ campo. Los metadatos originales y sus huellas se conservan en la misma carpeta.
 
 `DOWNLOADING` significa en curso. `DOWNLOADED_UNVERIFIED` significa que llegaron
 los 48 archivos; **no equivale a validación completa**. Solo `validation.json`
-con `status: PASS` confirma los controles posteriores. La validación completa está en este repositorio con `status: PASS`: 48 meses y 446.399.011 registros. El mapa actual ya utiliza los artefactos OD preparados (672 cohortes), sus caminos y perfiles 2021–2024. El estado del manifiesto de adquisición conserva la fase de descarga; el informe de validación posterior es el que acredita los controles.
+con `status: PASS` confirma los controles posteriores. La validación completa está en este repositorio con `status: PASS`: 48 meses y 446.399.011 registros. Ese período aporta 672 cohortes al mapa. Las otras 168 provienen de 2025. El estado del manifiesto de adquisición conserva la fase de descarga; el informe de validación posterior es el que acredita los controles.
 
 ## Completar OD de 2025
 
@@ -87,4 +87,19 @@ diccionarios, metadatos y manifiestos quedan en `data/od_2025_2026/`. Para
 este período, el recuento por mes publicado en los metadatos oficiales es
 el control externo de cobertura. La preparación también comprueba el esquema, el
 período y los valores de afluencia; la suma de promedios se registra como
-control local. Los años de la interfaz se amplían en un paso posterior.
+control local. El informe de 2025 registró 121.209.974 filas y los doce meses completos.
+
+Para preparar y sincronizar 2025 en el Atlas después de generar la base
+2021–2024 con `prepare_raeb.py`, ejecutar desde la raíz:
+
+```bash
+.venv/bin/python deliveries/week12/scripts/prepare_od_2025.py
+node deliveries/week12/tests/validate-raeb-data.mjs
+```
+
+El script verifica los SHA-256 de los doce Parquet y de la red preparada, conserva
+el orden de los 424 complejos y calcula 168 matrices y el promedio diario anual
+de 2025. Se registran aparte cuatro filas con un extremo fuera de la red
+(Tompkinsville y St George, de Staten Island Railway). Los meses sin pares
+publicados para parte de Rockaways coinciden con [las obras de la línea A](https://www.mta.info/document/150141).
+Los recorridos se modelan sobre el GTFS de referencia de 2026.

@@ -1,7 +1,8 @@
 const params=new URLSearchParams(location.search);
 // The pilot reads local files. Published links always open New York.
 const bart=['localhost','127.0.0.1','[::1]'].includes(location.hostname)&&params.get('system')==='bart';
-const nyYears=[2021,2022,2023,2024];
+const nyYears=[2021,2022,2023,2024,2025];
+const nyHistoricalYears=[2019,2020,2021,2022,2023,2024];
 const bartYears=[2019,2020,2021,2022,2023,2024,2025];
 const repository=new URL('../../',import.meta.url);
 const root=repository.pathname.endsWith('/deliveries/week12/')?new URL('../../',repository):repository;
@@ -18,10 +19,10 @@ export const dataset=bart?{
   latitude:37.8
 }:{
   id:'nyc',name:'Nueva York',stationLabel:'complejos',territoryLabel:'Todos los boroughs',
-  years:nyYears,contrastYears:[2019,2020,...nyYears],defaultYear:2024,defaultBase:2021,
+  years:nyYears,contrastYears:nyHistoricalYears,defaultYear:2025,defaultBase:2021,
   areas:['Manhattan','Brooklyn','Queens','Bronx'],dataURL:new URL('../data/',import.meta.url),
   odLabel:'OD estimado MTA',hourLabel:'Hora de entrada',startsLabel:'Viajes OD iniciados',
-  credit:'OD estimado MTA 2021–2024 · recorridos modelados · red de referencia GTFS 2026 · contornos NYC DCP',
+  credit:'OD estimado MTA 2021–2025 · recorridos modelados · red de referencia GTFS 2026 · contornos NYC DCP',
   comparison:'Semana representativa del OD estimado de la MTA (los doce meses completos, ponderados por el calendario); viajes iniciados por complejo, día y hora.',
   latitude:40.7
 };

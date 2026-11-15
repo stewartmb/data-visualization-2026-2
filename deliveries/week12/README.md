@@ -15,7 +15,7 @@ Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino · Re
 
 ## Datos y ejecución
 
-**Entradas 2019–2024:** 72 meses, 141.836.156 registros fuente, 12 campos originales. Fuentes MTA/Open NY `t69i-h2me` (solo 2019) y `wujg-7c2s` (2020–2024). **OD estimado 2021–2024:** 48 meses, 446.399.011 registros, 16 campos; fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z` y `jsu2-fbtj`. **Red:** GTFS de referencia 2026, 424 complejos OD, 475 paradas padre GTFS, 556 enlaces ferroviarios y 75 transbordos declarados. **Territorio:** borough y NTA 2020 según ubicación del complejo.
+**Entradas 2019–2024:** 72 meses, 141.836.156 registros fuente, 12 campos originales. Fuentes MTA/Open NY `t69i-h2me` (solo 2019) y `wujg-7c2s` (2020–2024). **OD estimado 2021–2025** · 60 meses, 567.608.985 registros y 16 campos. Fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z`, `jsu2-fbtj` y `y2qv-fytt`. **Red:** GTFS de referencia 2026, 424 complejos OD, 475 paradas padre GTFS, 556 enlaces ferroviarios y 75 transbordos declarados. **Territorio:** borough y NTA 2020 según ubicación del complejo.
 
 ```bash
 python3 -m http.server 8775

@@ -1,22 +1,22 @@
 # RAEB ferroviario: método, reproducción y límites
 
-Actualizado el 13 de noviembre de 2026. Fuente primaria: Zeng, Shen, Jiang y Telea, *Route-Aware Edge Bundling for Visualizing Origin-Destination Trails in Urban Traffic*, EuroVis 2019, [PDF](https://zeng-wei.com/publication/papers/2019_RAEB.pdf).
+Actualizado el 14 de noviembre de 2026. Fuente primaria: Zeng, Shen, Jiang y Telea, *Route-Aware Edge Bundling for Visualizing Origin-Destination Trails in Urban Traffic*, EuroVis 2019, [PDF](https://zeng-wei.com/publication/papers/2019_RAEB.pdf).
 
 ## Qué utiliza la interfaz
 
-Los doce meses de 2021, 2022, 2023 y 2024, procedentes de los cuatro datasets MTA identificados en `ODData.md`. La adquisición previa validada contiene 446.399.011 registros. Los originales se mantienen fuera de Git. La interfaz consume agregados y una matriz de la cohorte activa; no carga todos esos registros ni los 283 MB de matrices a la vez.
+Los doce meses de cada año entre 2021 y 2025 provienen de los cinco datasets MTA detallados en [ODData](ODData.md). La adquisición completa contiene 567.608.985 registros. Los originales se mantienen fuera de Git. La interfaz carga los agregados y solicita las matrices de los períodos usados en la exploración.
 
 Para cada mes y tipo de día, `a` es `estimated_average_ridership`; `n` es el número de ese día en el mes. El promedio anual comparable es `q = Σ(n × a)/Σ n`. No se promedian indiscriminadamente doce promedios mensuales. La ausencia de un par dentro de un mes validado completo se considera cero; un mes faltante provoca rechazo. Se conserva el detalle de procedencia en `flows.json.meta` y SHA-256 por artefacto en `data/raeb/manifest.json`.
 
 La referencia GTFS 2026 contiene **424 complejos OD, 475 paradas padre GTFS, 556 enlaces ferroviarios y 75 transbordos declarados**. Los recorridos se construyen desde las secuencias de paradas, con extremos comunes por parada padre. El máximo ajuste entre extremos proyectados en este archivo fue 0,04 m. El ruteo elige cualquier parada del complejo para salir o llegar. Para pasar entre paradas intermedias exige el enlace ferroviario o el transbordo dirigido declarado en GTFS. Cada arco ferroviario cuesta su longitud. Para un transbordo se usa el máximo de 1 m, su separación geométrica y los segundos mínimos declarados multiplicados por 8 m/s. La conversión es un supuesto del modelo y el resultado se describe en distancia equivalente cuando combina ambas partes. Se utiliza una unión fija de patrones de servicio.
 
-El balance semanal de 2023 incluye 0,133315 viajes representativos no mapeados; queda registrado, no absorbido por los haces. Los otros tres años tienen balance completamente asignado. El volumen de origen conserva sus cantidades disponibles antes de normalizar las 168 celdas. No interpretar la carga como ocupación o congestión.
+El balance semanal de 2023 incluye 0,133315 viajes representativos no mapeados; queda registrado, no absorbido por los haces. Para 2025, cuatro filas de Staten Island Railway quedan fuera de la red y aportan 0,082129 viajes estimados por semana representativa al balance no mapeado. El volumen de origen conserva sus cantidades disponibles antes de normalizar las 168 celdas. No interpretar la carga como ocupación o congestión.
 
 ## Mapa principal con RAEB
 
 El mapa de Nueva York abre en **Todo el año**, con `raeb=paper`, fidelidad 5 y radio cero. Muestra las cargas asignadas sobre la vía en un día promedio del año. Cada una de las 168 matrices de origen–destino aporta su valor multiplicado por la proporción real del día de la semana en ese año. La misma ponderación se aplica a tramos y complejos. El reloj permite elegir una franja o regresar a Todo el año desde el centro. Vista general restablece el alcance geográfico y temporal. El selector discreto `p_ra` va de 0 (semillas rectas y agrupamiento libre) a 5 (toda la red guía el agrupamiento). RAEB conserva los extremos de cada curva y modifica la densidad sobre los tramos de la jerarquía seleccionada. Con radio 0 muestra las semillas. En nivel 5 y radio 0 suma la demanda asignada por tramo y la dibuja sobre la geometría GTFS.
 
-Grosor y una escala secuencial petróleo muestran la demanda estimada. Al seleccionar un complejo, el grosor de las ramas muestra las salidas que comparten un tramo y el tamaño de cada destino muestra sus viajes. La vista general anual comparte una escala entre los cuatro años, basada en la mayor carga diaria por tramo. Para una franja el límite es 17.000. El detalle usa una escala relativa al origen. Los círculos opcionales de afluencia muestran salidas más viajes que terminan allí, clasificados por la hora de entrada del viaje. La app conserva el remuestreo de 32 puntos por par ponderado, la cuadrícula de cálculo reducida, WebGPU con respaldo CPU y un tope operativo de 150 iteraciones. El paper utiliza sus propias trayectorias, resolución y muestreo.
+Grosor y una escala secuencial petróleo muestran la demanda estimada. Al seleccionar un complejo, el grosor de las ramas muestra las salidas que comparten un tramo y el tamaño de cada destino muestra sus viajes. La vista general anual comparte una escala entre los cinco años, basada en la mayor carga diaria por tramo. Para una franja el límite es 17.000. El detalle usa una escala relativa al origen. Los círculos opcionales de afluencia muestran salidas más viajes que terminan allí, clasificados por la hora de entrada del viaje. La app conserva el remuestreo de 32 puntos por par ponderado, la cuadrícula de cálculo reducida, WebGPU con respaldo CPU y un tope operativo de 150 iteraciones. El paper utiliza sus propias trayectorias, resolución y muestreo.
 
 ## Lectura de escenarios
 
@@ -64,7 +64,7 @@ La app redondea hacia arriba el producto del porcentaje por los 556 enlaces ferr
 | 2024 · domingo · 8 a. m. | 56 | 12 | 629,96 m |
 | 2021 · lunes · 8 a. m. | 56 | 10 | 531,15 m |
 
-La comprobación de las 672 franjas de 2021–2024 encontró un grupo en cada una. El radio automático varió de **392,69 m a 878,08 m**. **Automático** propone el radio de la franja activa. Pulsa **Calcular** para fijar ese valor o el que elijas manualmente. El radio aplicado se conserva al cambiar de franja. El máximo del deslizador cubre tanto la referencia de la franja como el valor que ya estaba aplicado. La regla bajo el minimapa cambia con el zoom y el círculo usa la misma escala. El radio representa distancia en línea recta en la primera iteración. En las siguientes se reduce por un factor de 0,9.
+La comprobación de las 840 franjas de 2021–2025 encontró un grupo en cada una. El radio automático varió de **392,69 m a 878,08 m**. **Sugerido** propone el radio de la franja activa. Pulsa **Calcular** para fijar ese valor o el que elijas manualmente. El radio aplicado se conserva al cambiar de franja. El máximo del deslizador cubre tanto la referencia de la franja como el valor que ya estaba aplicado. La regla bajo el minimapa cambia con el zoom y el círculo usa la misma escala. El radio representa distancia en línea recta en la primera iteración. En las siguientes se reduce por un factor de 0,9.
 
 Reproducción del valor inicial y verificación de las franjas desde la raíz:
 
@@ -102,6 +102,8 @@ python3 -m venv .venv
 .venv/bin/python deliveries/week12/scripts/prepare_raeb.py
 # Para reutilizar una adquisición validada en otra copia:
 .venv/bin/python deliveries/week12/scripts/prepare_raeb.py --source-package /ruta/copia/deliveries/week12
+# Con la base preparada y los doce meses de 2025 validados mediante --2025:
+.venv/bin/python deliveries/week12/scripts/prepare_od_2025.py
 # Con las matrices verificadas, se puede regenerar solo el resumen diario anual:
 .venv/bin/python deliveries/week12/scripts/prepare_annual_od.py deliveries/week12/atlas/data
 node deliveries/week12/tests/raeb-core.test.mjs

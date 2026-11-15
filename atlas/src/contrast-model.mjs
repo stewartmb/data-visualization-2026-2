@@ -9,7 +9,8 @@ export function normalizeContrastBase(base,target,mapBase=2021,years=CONTRAST_YE
 }
 export const isODMap=state=>state.view==='map'&&state.layer==='flows';
 export function availableContrastYears(state,dataset){
-  return isODMap(state)?dataset.years:dataset.contrastYears;
+  const hasHistoricalTarget=dataset.contrastYears.includes(state.year);
+  return isODMap(state)||!hasHistoricalTarget?dataset.years:dataset.contrastYears;
 }
 export function activeODCompareBase(state,flows){
   const base=state.odCompareBase;

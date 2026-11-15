@@ -3,7 +3,14 @@ import {makeRailKernelEstimator,routeHierarchy} from '../atlas/src/raeb-core.mjs
 const root=new URL('../atlas/data/',import.meta.url),read=name=>fs.readFileSync(new URL(name,root)),hash=b=>crypto.createHash('sha256').update(b).digest('hex');
 const F=JSON.parse(read('flows.json')),manifest=JSON.parse(read('raeb/manifest.json')),networkBuffer=read('raeb/network.json.gz'),{paths}=JSON.parse(zlib.gunzipSync(networkBuffer)),n=F.nodes.length;
 assert.equal(hash(read('flows.json')),manifest.flows_sha256);assert.equal(hash(networkBuffer),manifest.network_sha256);
-assert.equal(manifest.frames,4*7*24);assert.equal(Object.keys(manifest.assets).length,672);assert.equal(paths.length,n*n);
+assert.deepEqual(F.meta.years,[2021,2022,2023,2024,2025]);
+assert.equal(manifest.frames,F.meta.years.length*7*24);assert.equal(Object.keys(manifest.assets).length,manifest.frames);assert.equal(paths.length,n*n);
+const annual=JSON.parse(read('annual-od.json'));
+assert.equal(annual.source.manifest_sha256,hash(read('raeb/manifest.json')));
+assert.equal(F.meta.validation_2025.rows,121209974);
+assert.equal(F.meta.validation_2025.outside_network.reduce((total,entry)=>total+entry.rows,0),4);
+assert(F.meta.balance_weekly_trips[2025].unmapped>0);
+assert.equal(F.meta.balance_weekly_trips[2025].unassignable,0);
 const ids=F.nodes.map(n=>n.id);assert.equal(new Set(ids).size,n);assert.equal(F.meta.network.inferred_proximity_edges,0);
 const routeNodes=F.meta.network.route_nodes;
 assert.equal(F.meta.route_model,'gtfs-parent-stops-v1');
@@ -34,16 +41,19 @@ for(let pair=0;pair<paths.length;pair++){
  assert.equal(routeNodes[current]?.complex,destination);
 }
 const estimateRadius=makeRailKernelEstimator(F.links,40.7);
-const radio={minimum:Infinity,maximum:0,monday2024:null};
+const radio={minimum:Infinity,maximum:0,monday2024:null,monday2025:null};
 let bytes=0,checkedFrames=0,maxRowDifference=0;
 for(const year of F.meta.years){
  assert.deepEqual(F.meta.months_present[year],Array.from({length:12},(_,i)=>i+1));let matrixTotal=0,startsTotal=0;
  const balance=F.meta.balance_weekly_trips[year];assert(Math.abs(balance.input-balance.assigned-balance.same_origin_destination-balance.unmapped-balance.unassignable)<1e-5);
+ const daily=annual.years[year],annualMatrix=new Float64Array(n*n),calendarDays=daily.day_counts.reduce((a,b)=>a+b);
+ assert.equal(calendarDays,year===2024?366:365);
  for(let day=0;day<7;day++)for(let hour=0;hour<24;hour++){
   const key=`${year}/${day}-${String(hour).padStart(2,'0')}`,gz=read('raeb/'+key+'.f32.gz');bytes+=gz.length;
   assert.equal(hash(gz),manifest.assets[key].sha256);assert.equal(gz.length,manifest.assets[key].bytes);
   const raw=zlib.gunzipSync(gz);assert.equal(raw.length,n*n*4);const values=new Float32Array(raw.buffer,raw.byteOffset,raw.length/4);
-  for(let o=0;o<n;o++){let row=0;for(let d=0;d<n;d++){const q=values[o*n+d];assert(Number.isFinite(q)&&q>=0);row+=q;}const start=F.starts[year][o][day][hour];maxRowDifference=Math.max(maxRowDifference,Math.abs(row-start));assert(Math.abs(row-start)<=.005+balance.unmapped);matrixTotal+=row;startsTotal+=start;}
+  const dayWeight=daily.day_counts[day]/calendarDays;
+  for(let o=0;o<n;o++){let row=0;for(let d=0;d<n;d++){const i=o*n+d,q=values[i];annualMatrix[i]+=dayWeight*q;assert(Number.isFinite(q)&&q>=0);row+=q;}const start=F.starts[year][o][day][hour];maxRowDifference=Math.max(maxRowDifference,Math.abs(row-start));assert(Math.abs(row-start)<=.005+balance.unmapped);matrixTotal+=row;startsTotal+=start;}
   // A full route incidence sum for one cohort per year independently checks
   // the directed arc-load table used by the exact-reference renderer.
   if(day===0&&hour===8){
@@ -63,9 +73,13 @@ for(const year of F.meta.years){
     for(const i of passed)through[i]+=q;
    }
    loads.forEach((v,i)=>assert(Math.abs(v-F.flows[year][day][hour][i])<.005+v*1e-6));
+   // The source aggregates are rounded to four decimals and the matrices
+   // store each pair in Float32 before this independent reconstruction.
    for(let i=0;i<n;i++){
-    assert(Math.abs(incoming[i]-F.incoming[year][day][hour][i])<.0001);
-    assert(Math.abs(through[i]-F.through[year][day][hour][i])<.0001);
+    for(const [computed,stored] of [[incoming[i],F.incoming[year][day][hour][i]],[through[i],F.through[year][day][hour][i]]]){
+     const tolerance=.00005+Math.abs(computed)*2**-24+1e-10;
+     assert(Math.abs(computed-stored)<=tolerance,`Demanda distinta en ${year}, complejo ${ids[i]}`);
+    }
    }
   }
   const loads=F.flows[year][day][hour];
@@ -74,10 +88,18 @@ for(const year of F.meta.years){
   assert(kernel.radiusMeters>0 && Number.isFinite(kernel.radiusMeters),`Sin radio automático en ${key}`);
   radio.minimum=Math.min(radio.minimum,kernel.radiusMeters);
   radio.maximum=Math.max(radio.maximum,kernel.radiusMeters);
-  if(year===2024&&day===0&&hour===8)radio.monday2024=kernel;
+  if(day===0&&hour===8&&year>=2024)radio['monday'+year]=kernel;
   checkedFrames++;
  }
- assert(Math.abs(matrixTotal-balance.assigned-balance.same_origin_destination)<.5);assert(Math.abs(startsTotal-balance.input)<.5);
+ assert(Math.abs(matrixTotal-balance.assigned-balance.same_origin_destination)<.5);
+ const expectedStarts=year===2025?balance.input-balance.unmapped:balance.input;
+ assert(Math.abs(startsTotal-expectedStarts)<.5);
+ const annualGz=read(`raeb/${year}/annual.f32.gz`);
+ assert.equal(hash(annualGz),daily.frame_sha256);
+ const raw=zlib.gunzipSync(annualGz);
+ const values=new Float32Array(raw.buffer,raw.byteOffset,raw.length/4);
+ assert.equal(values.length,n*n);
+ values.forEach((v,i)=>assert.equal(v,Math.fround(annualMatrix[i])));
 }
 
 console.log(JSON.stringify({status:'PASS',frames:checkedFrames,nodes:n,links:F.links.length,compressedMatricesBytes:bytes,radioMeters:radio,maxOriginRowDifference:maxRowDifference,checks:'SHA-256, finite/nonnegative full matrices, twelve months, directed stop continuity, exact rail endpoints, declared transfers, no inferred edges, demand balance, origin totals, arc loads'},null,2));

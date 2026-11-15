@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Fractal · Atlas de ritmos</title>
-  <meta name="description" content="Explora cómo cambiaron los ritmos de entrada al metro de Nueva York, con entradas 2019–2024, OD 2021–2024 y perfiles de 168 horas.">
+  <meta name="description" content="Explora cómo cambiaron los ritmos de entrada al metro de Nueva York, con entradas 2019–2024, OD 2021–2025 y perfiles de 168 horas.">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="src/style.css?v=circle-legend1">
+  <link rel="stylesheet" href="src/style.css?v=summary-top1">
 </head>
-<body>
+<body class="atlas-workbench">
 <div id="loading" role="status"><span class="map-spinner" aria-hidden="true"></span> Preparando el atlas de ritmos…</div>
 <header class="masthead">
   <a href="./" class="brand" aria-label="Inicio"><span class="brand-icon" aria-hidden="true">▥</span><span>Fractal<small>ATLAS DE RITMOS · NUEVA YORK</small></span></a>
@@ -15,33 +15,48 @@
     <select id="borough" aria-label="Zona"><option value="all">Todos los boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option></select>
     <input id="search" type="search" placeholder="Buscar complejo" aria-label="Buscar complejo" autocomplete="off">
     <div class="context-summary">
-      <span class="context-divider" aria-hidden="true">/</span>
       <b id="cohort-count" aria-live="polite">—</b>
-      <button id="reset" class="text-button" type="button" hidden aria-label="Restablecer filtros" title="Restablecer filtros">↺</button>
     </div>
     <span id="cohort-note" hidden></span>
     <span id="selection-label" hidden></span>
   </div>
+  <div class="atlas-view-context">
+    <section id="map-subject" aria-label="Vista del mapa" hidden></section>
+    <button id="map-center" class="atlas-home text-button" type="button" hidden>
+      <span aria-hidden="true">↺</span> Vista general
+    </button>
+  </div>
 </header>
 <div class="app-shell">
   <main id="main">
-    <div class="map-workspace">
-      <div id="content"></div>
-      <div class="od-year-strip" aria-label="Años del mapa">
-        <div class="od-year-controls">
-          <span id="od-preview-period" class="od-year-period"></span>
-          <span class="od-preview-key"><b id="od-preview-base"></b><span id="od-preview-scope" hidden></span><span id="od-preview-legend" hidden><span id="od-preview-swatch" class="map-key-bar"></span><span class="map-key-words"><span>Bajó</span><span>Subió</span></span></span></span>
-          <button type="button" id="od-compare" class="od-compare" aria-describedby="od-compare-status">Comparar</button>
-          <span id="od-compare-status" class="od-compare-status" aria-live="polite"></span>
-        </div>
-        <div id="od-years" class="od-years" role="group" aria-label="Elegir año"></div>
-      </div>
-    </div>
-    <footer class="main-footer"><span id="footer-status" role="status"></span><span><button id="save" class="text-button">Guardar exploración</button> · <button id="export" class="text-button">Exportar CSV</button></span></footer>
+    <div class="map-workspace"><div id="content"></div></div>
+    <footer class="main-footer">
+      <div id="atlas-evidence" class="footer-evidence"></div>
+      <span><button id="save" class="text-button">Guardar exploración</button> · <button id="export" class="text-button">Exportar CSV</button></span>
+    </footer>
   </main>
+  <aside class="atlas-insights" aria-label="Años y detalle de la selección">
+    <section class="od-year-strip" aria-labelledby="od-year-heading" hidden>
+      <div class="od-year-controls">
+        <div class="od-year-heading">
+          <h2 id="od-year-heading">Años</h2>
+          <button type="button" id="od-compare" class="od-compare" aria-describedby="od-compare-status">Comparar</button>
+        </div>
+        <span id="od-compare-status" class="od-compare-status" aria-live="polite"></span>
+        <div class="od-preview-key">
+          <b id="od-preview-base"></b>
+          <div id="od-preview-legend" hidden>
+            <span id="od-preview-swatch" class="map-key-bar"></span>
+            <span class="map-key-words"><span>Bajó</span><span>Subió</span></span>
+          </div>
+        </div>
+      </div>
+      <div id="od-years" class="od-years" role="group" aria-label="Elegir año"></div>
+    </section>
+    <section id="inspector" class="inspector" aria-label="Detalle de la selección"></section>
+  </aside>
 </div>
-<aside id="inspector" class="inspector" aria-label="Detalle del complejo"></aside>
 <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
 <div id="toast" class="toast" role="status" hidden></div>
-<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=activity-labels1"></script>
+<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=summary-top1"></script>
 </body></html>

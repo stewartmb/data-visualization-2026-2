@@ -1,16 +1,17 @@
 import {bindMapLasso} from './map-lasso.js?v=direct-toggles1';
-import {bindFlowScale,bindCircleScale} from './flow-scale.js?v=circle-legend1';
+import {bindFlowScale,bindCircleScale} from './flow-scale.js?v=grouped-circle-key1';
 import {odLoads,odStarts,odIncoming,odPeriodLabel} from './od-period.mjs';
 import {state,BASE,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats,passesMetricRanges,cohortProfile} from './model.js?v=20261028-4';
-import {RaebOverlay} from './raeb-overlay.mjs?v=annual-overview1';
+import {RaebOverlay} from './raeb-overlay.mjs?v=line-render1';
 import {setRaebStatus} from './raeb-cpu-overlay.mjs?v=annual-overview1';
 import {FLOW_COLOR_MAX,FLOW_COLOR_STOPS,flowColor} from './raeb-gpu-shaders.mjs?v=zoom-width1';
 import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
-import {activeODCompareBase} from './contrast-model.mjs?v=annual-od1';
-import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,railChange,railFlowWidth,zoomStrokeScale,flowStrength,flowCount,odDelta} from './od-encoding.mjs?v=shared-change1';
+import {activeODCompareBase} from './contrast-model.mjs?v=od-2025-1';
+import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,OD_RAIL_MAX_WIDTH,railChange,railFlowWidth,zoomStrokeScale,flowStrength,flowCount,odDelta} from './od-encoding.mjs?v=rail-width5';
 import {originBranches,bundleAt,distanceToLines} from './od-routing.mjs?v=annual-overview1';
-import {updateClockTime} from './inspector.js?v=direct-toggles1';
+import {updateClockTime} from './inspector.js?v=summary-top1';
 let transform=d3.zoomIdentity, previousFrame, pendingFidelity=null, pendingGrouping;
+let legendPreference=null;
 const mapZoomLimits=[1,32];
 const names={change:'Cambio de forma · distancia TV (pp)',deltaAM:'Cambio del peso AM · puntos porcentuales',deltaWeekend:'Cambio del peso de fin de semana · puntos porcentuales',recovery:'Índice de volumen · referencia = 100 %'};
 
@@ -56,6 +57,9 @@ export function renderMap(host,app,items){
   const formatFidelity=value=>paper?`${value} / 5`:value.toFixed(2);
   const odBase=activeODCompareBase(state,app.flows);
   const cambio=odBase!==null;
+  const displayGrouping=cambio?0:state.bundling;
+  const displayFidelity=cambio?1:state.fidelity;
+  const displayLevel=cambio?5:state.paperLevel;
   let onTracks=flujos&&!cambio&&(paper
     ? state.paperLevel===5&&(state.paperRadius===0||state.paperBundling===0)
     : state.fidelity===1);
@@ -86,44 +90,23 @@ export function renderMap(host,app,items){
   };
   const L=leyendas[metric];
   const formula=formulas()[metric];
+  let legendOpen=legendPreference??!matchMedia('(min-width: 1000px) and (max-width: 1199px)').matches;
+  const legendTitle=flujos
+    ?cambio?'Cambio de viajes':focusOrigin?'Salidas del complejo':between?scope.label:scopedGroup?'Salidas del grupo':onTracks?'Flujo por tramo':'Flujo en los haces'
+    :L.titulo;
+  const circleSamples=(sign='')=>Array.from({length:3},()=>`
+    <span class="map-circle-sample" role="img" tabindex="0"${sign?` data-change-sign="${sign}"`:''}>
+      <span aria-hidden="true"${sign?` style="background:${OD_CHANGE_COLORS[sign]}"`:''}></span>
+    </span>`).join('');
   host.innerHTML=`
   <div class="map-stage">
-    <div class="map-sidebar" role="region" aria-label="Controles y leyenda del mapa">
+    <div class="map-sidebar" role="region" aria-label="Controles del mapa">
     <div class="map-panel map-panel-controls">
       ${flujos?'':'<div class="eyebrow">01 · CONEXIONES Y RITMOS</div>'}
       ${app.flows?`<div class="segmented map-layer" role="group" aria-label="Capa del mapa"><button data-layer="points" class="${!flujos?'active':''}">Cambio por complejo</button><button data-layer="flows" class="${flujos?'active':''}">Flujos de la red</button></div>`:''}
       ${flujos?`<div class="flow-controls">
-        ${bart?`<section class="flow-control-group flow-control-time" aria-labelledby="map-time-heading">
-          <h3 id="map-time-heading">Día y hora</h3>
-          <div class="flow-hour-row"><span class="flow-day-current">${DAYS_LONG[state.flowDay]}</span><output id="flow-hour-label" class="flow-hour-label">${ampm(state.flowHour)}</output><div class="segmented flow-day">${DAYS.map((d,i)=>`<button data-flowday="${i}" aria-pressed="${state.flowDay===i}" class="${state.flowDay===i?'active':''}" title="${DAYS_LONG[i]}">${d.slice(0,2)}</button>`).join('')}</div></div>
-          <svg id="flow-profile" class="flow-profile"${between?' style="display:none"':''} aria-label="Distribución de viajes OD por hora en el año seleccionado"></svg>
-          <input id="flow-hour" class="flow-slider" type="range" min="0" max="23" step="1" value="${state.flowHour}" aria-label="${dataset.hourLabel}">
-          <div class="flow-ticks"><span>12 am</span><span>6 am</span><span>12 pm</span><span>6 pm</span><span>11 pm</span></div>
-        </section>`:`<div class="flow-control-group map-time-context"><output id="flow-period" aria-live="polite">${odPeriodLabel(state.flowDay,state.flowHour)}</output></div>`}
-        ${cambio?'':`<section class="flow-control-group flow-control-grouping" aria-labelledby="map-grouping-heading">
-          <h3 id="map-grouping-heading">Agrupamiento y fidelidad</h3>
-          ${paper?`<div class="fidelity radius-control">
-            <label for="bundling">Radio inicial de agrupamiento <output id="bundling-out" for="bundling">—</output></label>
-            <input id="bundling" type="range" min="0" max="0" step="any" value="0" disabled>
-            <div class="radius-actions"><button type="button" id="radius-auto" class="text-button" title="Preparar el radio sugerido para el período activo" disabled>Automático</button><small id="radius-reference">Calculando la referencia…</small></div>
-          </div>`:`<label class="fidelity"><span>Agrupación <output id="bundling-out">${state.bundling.toFixed(2)}</output></span><input id="bundling" type="range" min="0" max="1" step="0.01" value="${state.bundling}" aria-label="Agrupación de recorridos"><small>0: sin atracción entre curvas · 1: agrupamiento con el radio estimado por RAEB. Actúa sobre todos los pares OD del período activo.</small></label>`}
-          ${paper?`<label class="fidelity"><span>Fidelidad a la red <output id="pra-out">${state.paperLevel} / 5</output></span><input id="pra" type="range" min="0" max="5" step="1" value="${state.paperLevel}" aria-label="Nivel de fidelidad a la red" title="0: agrupación libre. 5: toda la red guía los haces. Con radio 0, los flujos siguen la vía asignada."><small>0: agrupación libre · 5: toda la red guía los haces.</small></label>`:`
-          <label class="fidelity"><span>Fidelidad geométrica <output id="fidelity-out">${state.fidelity.toFixed(2)}</output></span><input id="fidelity" type="range" min="0" max="1" step="0.01" value="${state.fidelity}" aria-label="Fidelidad geométrica de los trazos"><small>0: abstracción libre, puede cruzar el agua · 1: recorridos de referencia. Los trazos intermedios son una abstracción visual; los viajes OD no cambian.</small></label>`}
-          <div class="map-control fidelity-actions">
-            <button type="button" id="calculate-fidelity" aria-label="Calcular agrupamiento y fidelidad" disabled>Calcular</button>
-          </div>
-          <div class="fidelity-status">
-            <div id="raeb-status" role="status" class="raeb-status">${onTracks?'':'Procesando…'}</div>
-            <small id="applied-fidelity" role="status" hidden></small>
-          </div>
-          <button id="inspect-bundle" type="button" class="text-button" aria-pressed="false" hidden>Explorar un haz</button>
-          <div id="bundle-evidence" class="bundle-evidence" aria-live="polite" hidden></div>
-        </section>`}
         <section class="flow-control-group flow-control-navigation" aria-labelledby="map-navigation-heading">
-          <div class="map-explore-heading">
-            <h3 id="map-navigation-heading">Explorar</h3>
-            <button id="map-center" class="text-button map-reset" type="button" hidden title="Quitar filtros y selección y mostrar toda la red${bart?'':' para todo el año'}"><span aria-hidden="true">↺</span> Vista general</button>
-          </div>
+          <h3 id="map-navigation-heading">Explorar</h3>
           <div class="map-selection-tools">
             <button id="map-select" type="button" aria-pressed="false">Dibujar área</button>
             <button id="map-select-pair" type="button" aria-pressed="false">Entre dos zonas</button>
@@ -135,6 +118,41 @@ export function renderMap(host,app,items){
             <span class="flow-node-switch" aria-hidden="true"></span>
           </label>`}
         </section>
+        <section id="map-grouping" class="flow-control-group" aria-labelledby="map-grouping-title">
+          <h3 id="map-grouping-title">Agrupamiento y fidelidad</h3>
+          <div class="flow-control-grouping">
+          ${cambio?'<p class="grouping-comparison-note">La comparación usa la red de referencia con agrupamiento en cero.</p>':''}
+          ${paper?`<div class="fidelity radius-control">
+            <div class="radius-heading">
+              <label for="bundling">Radio inicial</label>
+              <output id="bundling-out" for="bundling">${cambio?'0 m':'—'}</output>
+              ${cambio?'':'<button type="button" id="radius-auto" class="text-button" aria-label="Usar el radio sugerido" title="Calculando el radio sugerido…" disabled>Sugerido</button>'}
+            </div>
+            <input id="bundling" type="range" min="0" max="0" step="any" value="0" disabled>
+          </div>`:`<label class="fidelity"><span>Agrupación <output id="bundling-out">${displayGrouping.toFixed(2)}</output></span><input id="bundling" type="range" min="0" max="1" step="0.01" value="${displayGrouping}" aria-label="Agrupación de recorridos"${cambio?' disabled':''}><small>0: sin atracción entre curvas · 1: agrupamiento con el radio estimado por RAEB. Actúa sobre todos los pares OD del período activo.</small></label>`}
+          ${paper?`<label class="fidelity"><span>Fidelidad a la red <output id="pra-out">${displayLevel} / 5</output></span><input id="pra" type="range" min="0" max="5" step="1" value="${displayLevel}"${cambio?' disabled':''} aria-label="Nivel de fidelidad a la red" title="0: agrupación libre. 5: toda la red guía los haces. Con radio 0, los flujos siguen la vía asignada."><small>0: agrupación libre · 5: toda la red guía los haces.</small></label>`:`
+          <label class="fidelity"><span>Fidelidad geométrica <output id="fidelity-out">${displayFidelity.toFixed(2)}</output></span><input id="fidelity" type="range" min="0" max="1" step="0.01" value="${displayFidelity}"${cambio?' disabled':''} aria-label="Fidelidad geométrica de los trazos"><small>0: abstracción libre, puede cruzar el agua · 1: recorridos de referencia. Los trazos intermedios son una abstracción visual; los viajes OD no cambian.</small></label>`}
+          <div class="map-control fidelity-actions">
+            <button type="button" id="calculate-fidelity" aria-label="Calcular agrupamiento y fidelidad" disabled>Calcular</button>
+          </div>
+          ${cambio?'':`<div class="fidelity-status">
+            <div id="raeb-status" role="status" class="raeb-status">${onTracks?'':'Procesando…'}</div>
+            <small id="applied-fidelity" role="status" hidden></small>
+          </div>`}
+          <button id="inspect-bundle" type="button" class="text-button" aria-pressed="false" hidden>Explorar un haz</button>
+          <div id="bundle-evidence" class="bundle-evidence" aria-live="polite" hidden></div>
+          </div>
+        </section>
+        ${bart?`<section class="flow-control-group flow-control-time" aria-labelledby="map-time-heading">
+          <h3 id="map-time-heading">Día y hora</h3>
+          <div class="flow-hour-row"><span class="flow-day-current">${DAYS_LONG[state.flowDay]}</span><output id="flow-hour-label" class="flow-hour-label">${ampm(state.flowHour)}</output><div class="segmented flow-day">${DAYS.map((d,i)=>`<button data-flowday="${i}" aria-pressed="${state.flowDay===i}" class="${state.flowDay===i?'active':''}" title="${DAYS_LONG[i]}">${d.slice(0,2)}</button>`).join('')}</div></div>
+          <svg id="flow-profile" class="flow-profile"${between?' style="display:none"':''} aria-label="Distribución de viajes OD por hora en el año seleccionado"></svg>
+          <input id="flow-hour" class="flow-slider" type="range" min="0" max="23" step="1" value="${state.flowHour}" aria-label="${dataset.hourLabel}">
+          <div class="flow-ticks"><span>12 am</span><span>6 am</span><span>12 pm</span><span>6 pm</span><span>11 pm</span></div>
+        </section>` :''}
+        <section id="map-clock" class="flow-control-group clock-panel" aria-label="Reloj semanal de la selección" hidden><div id="detail-body"></div></section>
+        <div id="map-scatter" class="flow-control-group"></div>
+        <div id="map-evidence" class="flow-control-group"></div>
       </div>`:''}
       <div class="points-controls"${flujos?' hidden':''}>
       <label class="map-field">Color de los puntos<select id="map-metric">${Object.entries(names).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label>
@@ -146,34 +164,8 @@ export function renderMap(host,app,items){
         ${filters.length?`<div class="metric-filter-chips">${filters.map(([key,label])=>`<button data-clear-metric="${key}" title="Quitar este filtro">${esc(label)} ×</button>`).join('')}</div>`:''}
       </details>
       </div>
-      ${flujos?'':`<div class="map-control"><button id="map-select" type="button" aria-pressed="false">Dibujar área</button><button id="map-center" title="Quitar filtros y selección y mostrar toda la red">Vista general ↺</button></div>`}
+      ${flujos?'':`<div class="map-control"><button id="map-select" type="button" aria-pressed="false">Dibujar área</button></div>`}
       ${flujos?'':'<p id="map-selection-hint" class="map-selection-hint" role="status" hidden></p>'}
-    </div>
-    <div class="map-panel map-legend" aria-label="Leyenda">
-      ${flujos?`<div class="map-legend-title">${cambio?'Cambio por tramo':focusOrigin?'Salidas desde '+esc(focusOrigin.name.replace(/ \([^)]*\)/g,'')):between?scope.label:scopedGroup?'Salidas · '+esc(scope.label):'Flujo de la red'}</div>
-      <div class="map-legend-what">${cambio?`${odBase} → ${state.year} · ${focusOrigin?'Salidas de '+esc(focusOrigin.name.replace(/ \([^)]*\)/g,'')):between?scope.label:scopedGroup?'Salidas · '+esc(scope.label):'Toda la red, ambos sentidos'}`:`${state.year} · ${annual?'Promedio diario de todo el año.':`Promedio por día, según ${dataset.hourLabel.toLowerCase()}.`}`}</div>
-      <div id="map-key"></div>
-      ${between?`<div class="map-legend-marks map-zone-summary"><span class="zone-label-a">Zona A · ${drawnZones.a.size}</span><span class="zone-label-b">Zona B · ${drawnZones.b.size}</span></div><div id="zone-flow-summary" class="map-key-note" role="status"></div>`:''}
-      ${between?'':`<div class="map-legend-marks" id="flow-node-key"${state.showFlowNodes?'':' hidden'}>
-        <div>${cambio?`El área indica cuánto cambiaron ${focusOrigin?'los viajes a cada destino':'los viajes por complejo'}.`
-          :focusOrigin?'El área indica cuántos viajes del origen seleccionado llegan a cada destino.'
-          :`El área indica cuántos viajes ${app.flows.incoming?'empiezan o terminan':'empiezan'} en cada complejo.`}</div>
-        <div id="flow-circle-scale" hidden>
-          <div class="map-circle-samples${cambio?' compare':''}">
-            ${Array.from({length:3},()=>'<span class="map-circle-sample" role="img" tabindex="0"><span aria-hidden="true"></span></span>').join('')}
-          </div>
-          <div class="map-key-words">${cambio?'<span>Menor cambio</span><span>Mayor cambio</span>':'<span>Menos actividad</span><span>Más actividad</span>'}</div>
-        </div>
-        ${cambio?'<div class="map-key-note">Azul si bajó · terracota si subió · gris si quedó igual.</div>':''}
-      </div>`}
-      ${routeNodes?`<div class="map-footprint-key" hidden><i aria-hidden="true"></i> Estaciones del mismo complejo · área esquemática</div>
-      <div class="map-complex-key" hidden><i aria-hidden="true"></i> Transbordo entre complejos · esquema</div>`:''}
-      ${paper||cambio?`<div class="map-track-key" hidden><i aria-hidden="true"></i> Vía de referencia sin color de flujo</div>`:''}
-      <div class="map-legend-foot" id="flow-legend-foot">${cambio?'Recorridos asignados sobre la misma red GTFS. Pasa por un tramo para ver A, B y la diferencia.':paper?'RAEB (2019) aplicado a viajes OD. Las curvas son haces; pueden apartarse de la red.':'Las curvas agrupan relaciones OD; no muestran trenes ni rutas observadas.'}</div>`:`<div class="map-legend-title">${L.titulo}</div>
-      <div class="map-legend-what">${L.que}</div>
-      <div id="map-key"></div>
-      <div class="map-legend-marks"><span><i class="lg-dot"></i> un punto = un complejo &nbsp;<i class="lg-ring"></i> seleccionado &nbsp;<i class="lg-ring pin"></i> fijado</span></div>
-      <div class="map-legend-foot">${items.length} complejos · mediana ${fmt(d3.median(items,s=>metricValue(s,metric)))} ${unit}</div>`}
     </div>
     </div>
     <div class="map-viewport">
@@ -182,10 +174,47 @@ export function renderMap(host,app,items){
         <div class="map-loading-label"><span class="map-spinner"></span>Actualizando flujos…</div>
       </div>`:''}
       <div class="map-panel map-minimap" aria-label="Mapa de ubicación"><svg class="minimap-svg" viewBox="0 0 150 112"></svg><div class="minimap-counts"></div><div class="map-distance-scale" role="img" aria-label="Escala del mapa principal"><span></span><i aria-hidden="true"></i></div></div>
+    <details class="map-panel map-legend${cambio?' comparison-key':''}" aria-label="Leyenda"${legendOpen?' open':''}>
+      <summary id="flow-legend-title" class="map-legend-title">${legendTitle}</summary>
+      ${flujos?`<div class="map-legend-what">${cambio?'Viajes por día · B − A':annual?'Promedio diario':'Promedio diario en esta franja'}</div>
+      <div id="map-key"></div>
+      ${between?`<div class="map-legend-marks map-zone-summary"><span class="zone-label-a">Zona A · ${drawnZones.a.size}</span><span class="zone-label-b">Zona B · ${drawnZones.b.size}</span></div><div id="zone-flow-summary" class="map-key-note" role="status"></div>`:''}
+      ${between?'':`<div class="map-legend-marks" id="flow-node-key"${state.showFlowNodes?'':' hidden'}>
+        ${cambio?`<div class="comparison-key-heading"><strong>${focusOrigin?'Destinos':'Complejos'}</strong><span>Área del círculo</span></div>
+          <div>El área indica cuánto cambiaron los viajes ${focusOrigin?'a cada destino':'en cada complejo'}.</div>`
+          :`<div>${focusOrigin?'El área indica cuántos viajes del origen seleccionado llegan a cada destino.'
+            :`El área indica cuántos viajes ${app.flows.incoming?'empiezan o terminan':'empiezan'} en cada complejo.`}</div>`}
+        <div id="flow-circle-scale" hidden>
+          ${cambio?`<div class="comparison-circle-groups">
+            <div class="comparison-circle-group">
+              <div class="map-circle-samples">${circleSamples('loss')}</div><span>Bajó</span>
+            </div>
+            <div class="comparison-circle-group">
+              <div class="map-circle-samples">${circleSamples('gain')}</div><span>Subió</span>
+            </div>
+          </div>`:`<div class="map-circle-samples">${circleSamples()}</div>
+          <div class="map-key-words"><span>Menos actividad</span><span>Más actividad</span></div>`}
+        </div>
+      </div>`}
+      ${routeNodes?`<div class="map-footprint-key" hidden><i aria-hidden="true"></i> Estaciones del mismo complejo · área esquemática</div>
+      <div class="map-complex-key" hidden><i aria-hidden="true"></i> Transbordo entre complejos · esquema</div>`:''}
+      <div class="map-track-key"${paper&&!cambio?' hidden':''}><i aria-hidden="true"></i> Vía de referencia</div>
+      <details class="map-legend-help">
+        <summary>Cómo leer el mapa</summary>
+        <p id="flow-legend-foot">${paper?'RAEB (2019) aplicado a viajes OD. Las curvas son haces; pueden apartarse de la red.':'Las curvas agrupan relaciones OD; no muestran trenes ni rutas observadas.'}</p>
+        ${cambio?`<p>Pasa por un tramo o un círculo para ver los valores de cada año y su diferencia.</p><p id="od-change-counts"></p>`:''}
+      </details>`:`<div class="map-legend-what">${L.que}</div>
+      <div id="map-key"></div>
+      <div class="map-legend-marks"><span><i class="lg-dot"></i> un punto = un complejo &nbsp;<i class="lg-ring"></i> seleccionado &nbsp;<i class="lg-ring pin"></i> fijado</span></div>
+      <div class="map-legend-foot">${items.length} complejos · mediana ${fmt(d3.median(items,s=>metricValue(s,metric)))} ${unit}</div>`}
+    </details>
     </div>
-    <div class="map-credit">${esc(dataset.credit)}</div>
   </div>`;
   host.querySelector('.map-stage').classList.toggle('od-stage',flujos);
+  const legendPanel=host.querySelector('.map-legend');
+  legendPanel.ontoggle=()=>{
+    if(legendPanel.isConnected&&legendPanel.open!==legendOpen)legendPreference=legendOpen=legendPanel.open;
+  };
   host.querySelector('#bundling')?.closest('.fidelity')?.setAttribute('title',paper?'Distancia en línea recta que usa la primera iteración. Con 0 se muestran las curvas iniciales.':'Controla cuánto se aproximan las curvas.');
   host.querySelector('#fidelity')?.closest('label').setAttribute('title','0: geometría libre; 1: red de referencia. Intermedio: se conservan los tramos principales.');
   const help=host.querySelector('.metric-formula-help'),trigger=host.querySelector('#metric-formula-trigger'),panel=host.querySelector('#metric-formula-panel');
@@ -218,7 +247,7 @@ export function renderMap(host,app,items){
     const magnitude=10**Math.floor(Math.log10(target));
     const distance=magnitude*[5,2,1].find(n=>n*magnitude<=target);
     mapScale.querySelector('i').style.width=`${distance*camera.k/metersPerPixel}px`;
-    mapScale.querySelector('span').textContent=`Mapa principal · ${formatDistance(distance)}`;
+    mapScale.querySelector('span').textContent=formatDistance(distance);
     mapScale.setAttribute('aria-label',`Escala del mapa principal: ${formatDistance(distance)}`);
   }
   const flat=d3.geoTransform({point(lon,lat){const [x,y]=projection([lon,lat]);this.stream.point(x,y);}});
@@ -314,8 +343,6 @@ export function renderMap(host,app,items){
     const fidelityOut=host.querySelector(paper?'#pra-out':'#fidelity-out');
     const calculate=host.querySelector('#calculate-fidelity');
     const applied=host.querySelector('#applied-fidelity');
-    const referenceText=host.querySelector('#radius-reference');
-    const trackKey=host.querySelector('.map-track-key');
     const stage=svgNode.closest('.map-stage');
     const stationNames=new Map(F.nodes.map(station=>[station.id,station.name.replace(/ \([^)]*\)/g,'')]));
     const drawRail=d3.line();
@@ -470,6 +497,7 @@ export function renderMap(host,app,items){
       }).catch(()=>{if(request===evidenceSerial&&svgNode.isConnected)bundleEvidence.textContent='No se pudo leer el haz.';});
       return true;
     };
+    const trackKey=host.querySelector('.map-track-key');
     function showTracks(show){
       onTracks=show;
       stage.classList.toggle('on-tracks',show||cambio);
@@ -480,12 +508,11 @@ export function renderMap(host,app,items){
       if(show)setRaebStatus('');
       host.querySelector('#flow-legend-foot').textContent=show
         ? 'Tramos de referencia GTFS. Pasa por la vía para ver la carga estimada.'
-        : cambio?'Recorridos asignados sobre la misma red GTFS. Pasa por un tramo para ver A, B y la diferencia.'
+        : cambio?'Ambos años se asignan a la misma red GTFS de referencia.'
         : 'Los haces RAEB agrupan viajes y pueden apartarse de la red.';
-      const note=host.querySelector('#map-key .map-key-note');
-      if(note&&!cambio)note.textContent=focusOrigin
-        ?show?'Ramas · porcentaje de las salidas':'Haces · intensidad de las salidas'
-        :show?'Viajes estimados por tramo':'Flujo estimado en los haces';
+      const note=host.querySelector('#map-flow-unit');
+      if(note)note.textContent=show?'Ramas · porcentaje de las salidas':'Haces · intensidad de las salidas';
+      if(!cambio&&!focusOrigin&&!scopedGroup)host.querySelector('#flow-legend-title').textContent=show?'Flujo por tramo':'Flujo en los haces';
       clearCandidate();
       updateComplexContext?.();
     }
@@ -512,7 +539,7 @@ export function renderMap(host,app,items){
           path.attr('display',null);
           order.set(index,strength);
           path.attr('stroke',delta>0?odGain(strength):odLoss(strength))
-            .style('--flow-variation',`${3*strength}px`);
+            .style('--flow-variation',`${(OD_RAIL_MAX_WIDTH-1)*strength}px`);
           return;
         }
         const trips=focusOrigin?(originData?.links[index]??0):b;
@@ -526,7 +553,8 @@ export function renderMap(host,app,items){
         const scale=host.querySelector('#od-track-scale');
         setFlowScale(deltaLimit);
         scale.hidden=false;
-        host.querySelector('#od-change-counts').textContent=`${fmt(gains)} subieron · ${fmt(losses)} bajaron · ${fmt(unchanged)} sin cambio`;
+        host.querySelector('#od-change-status').textContent='';
+        host.querySelector('#od-change-counts').textContent=`Tramos · ${fmt(gains)} subieron · ${fmt(losses)} bajaron · ${fmt(unchanged)} sin cambio.`;
       }
     }
     function comparisonLoads(index,hour){
@@ -594,13 +622,14 @@ export function renderMap(host,app,items){
       autoButton.disabled=!(reference>0);
       autoButton.hidden=bart&&!!kernel&&reference===null;
       if(!kernel){
-        referenceText.textContent='Calculando la referencia…';
+        autoButton.title='Calculando el radio sugerido…';
         updateGroupingControls();
         return;
       }
-      referenceText.textContent=reference===null
-        ? limit>0?'Sin radio automático · ajuste manual':'Sin grupo para estimar el radio'
-        : `Referencia RAEB: ${fmt(Math.round(reference))} m`;
+      autoButton.title=reference===null
+        ? 'Sin radio sugerido para este período'
+        : `Usar ${fmt(Math.round(reference))} m como radio inicial`;
+      autoButton.setAttribute('aria-label',autoButton.title);
       updateGrouping();
     }
     if(!cambio)try{
@@ -615,7 +644,8 @@ export function renderMap(host,app,items){
     }catch(error){setRaebStatus(error.message);console.error(error);}
     pintarFlujos=h=>{
       if(bart)host.querySelector('#flow-hour-label').value=ampm(h);
-      else host.querySelector('#flow-period').value=odPeriodLabel(state.flowDay,h);
+      const period=document.querySelector('#flow-period');
+      if(period)period.value=odPeriodLabel(state.flowDay,h);
       hideTooltip();
       const year=state.year,day=state.flowDay;
       if(between){
@@ -644,7 +674,8 @@ export function renderMap(host,app,items){
       if(cambio){
         const request=++comparisonRequest;
         comparisonFrame=null;
-        const status=host.querySelector('#od-change-counts');
+        const status=host.querySelector('#od-change-status');
+        host.querySelector('#od-change-counts').textContent='';
         host.querySelector('#od-track-scale').hidden=true;
         status.textContent='Calculando cambios por tramo…';
         yearMaps.then(frame=>{
@@ -813,7 +844,7 @@ export function renderMap(host,app,items){
     const min=destination?1.35:2.3,max=destination?8.35:13;
     return Math.sqrt(min**2+(max**2-min**2)*railChange(delta,limit)**2);
   }
-  const setCircleScale=flujos&&!between?bindCircleScale(host.querySelector('#flow-circle-scale'),cambio):null;
+  const setCircleScale=flujos&&!between?bindCircleScale(host.querySelector('#flow-circle-scale')):null;
   const rOf=(station,h)=>{
     if(between)return zoneOf(station)?3.8:1.5;
     if(flujos&&!state.showFlowNodes)return R;
@@ -861,7 +892,7 @@ export function renderMap(host,app,items){
     updateComplexContext?.();
     const limit=focusOrigin?peak:cambio?nodeChangeMax:nodeVolumeMax;
     const radius=cambio?delta=>changeRadius(delta,!!focusOrigin):focusOrigin?destinationRadius:volumeRadius;
-    const fill=focusOrigin?trips=>flowColor(trips,destinationMax):()=> '#1d6f8dcc';
+    const fill=focusOrigin?trips=>flowColor(trips,destinationMax):()=>'#1d6f8dcc';
     setCircleScale?.(limit,radius,fill);
   };
   const dotItems=focusOrigin?app.data.stations:items;
@@ -1040,18 +1071,16 @@ export function renderMap(host,app,items){
     };
     if(toggle)setNodeVisibility();
   }
-  const reset=host.querySelector('#map-center');
+  const reset=document.querySelector('#map-center');
   const scopeFiltered=state.borough!=='all'||state.query||state.cohort||state.preset||state.selected||drawnZones||filters.length;
   const hourSelected=flujos&&!!app.flows.annual&&!annual;
   const boroughLabels=g.selectAll('.borough-name');
   let boroughsHidden=null;
   const zoom=d3.zoom().scaleExtent(borough?[Math.min(1,districtCamera.k),mapZoomLimits[1]]:mapZoomLimits).translateExtent(panExtent).on('zoom',event=>{
     transform=event.transform;
-    if(flujos){
-      const cameraMoved=transform.k!==1||Math.abs(transform.x)>.01||Math.abs(transform.y)>.01;
-      reset.hidden=!(scopeFiltered||hourSelected||cameraMoved);
-      svgNode.closest('.map-stage').style.setProperty('--flow-width-scale',zoomStrokeScale(transform.k));
-    }
+    const cameraMoved=transform.k!==1||Math.abs(transform.x)>.01||Math.abs(transform.y)>.01;
+    reset.hidden=!(scopeFiltered||hourSelected||cameraMoved);
+    if(flujos)svgNode.closest('.map-stage').style.setProperty('--flow-width-scale',zoomStrokeScale(transform.k));
     g.attr('transform',transform);
     resizeScenarioStops?.();
     if(baseG!==g)baseG.attr('transform',transform);
@@ -1077,7 +1106,9 @@ export function renderMap(host,app,items){
   function pintarMini(tr){
     const [x0,y0]=tr.invert([0,0]),[x1,y1]=tr.invert([width,height]);
     const p0=miniProj(projection.invert([x0,y0])),p1=miniProj(projection.invert([x1,y1]));
-    const vis=tr.k>1.05;miniRect.attr('display',vis?null:'none').attr('x',p0[0]).attr('y',p0[1]).attr('width',Math.max(2,p1[0]-p0[0])).attr('height',Math.max(2,p1[1]-p0[1]));
+    const vis=tr.k>1.05;
+    host.querySelector('.map-minimap').classList.toggle('has-zoom',vis);
+    miniRect.attr('display',vis?null:'none').attr('x',p0[0]).attr('y',p0[1]).attr('width',Math.max(2,p1[0]-p0[0])).attr('height',Math.max(2,p1[1]-p0[1]));
   }
   pintarMini(transform);
   const porB=d3.rollup(items,v=>v.length,s=>s.borough);
@@ -1098,22 +1129,30 @@ export function renderMap(host,app,items){
     position:stationPosition,app,twoZones:drawnZones});
   if(flujos){
     if(cambio){
+      const {loss,neutral,gain}=OD_CHANGE_COLORS;
+      const trackSamples=[[loss,1],[odLoss(.5),.5],[neutral,0],[odGain(.5),.5],[gain,1]];
       host.querySelector('#map-key').innerHTML=`
-        <div class="map-key-note">Viajes por día (B − A) · mapa y minimapas</div>
         <div id="od-track-scale" hidden>
-          <div class="map-key-bar" style="background:linear-gradient(90deg,${OD_CHANGE_COLORS.loss},${OD_CHANGE_COLORS.neutral},${OD_CHANGE_COLORS.gain})"></div>
-          <div class="map-key-words"><span>Bajó</span><span>Subió</span></div>
+          <div class="comparison-key-heading">
+            <strong>Tramos</strong>
+            <span>Intensidad y grosor</span>
+          </div>
+          <div class="comparison-track-samples" aria-hidden="true">
+            ${trackSamples.map(([color,strength])=>`<i style="--sample-color:${color};--sample-width:${(OD_RAIL_MAX_WIDTH-1)*strength}px"></i>`).join('')}
+          </div>
+          <div class="map-key-bar" style="background:linear-gradient(90deg,${loss},${neutral},${gain})"></div>
+          <div class="map-key-words"><span>Bajó</span><span>Sin cambio</span><span>Subió</span></div>
         </div>
-        <div id="od-change-counts" class="map-key-note"></div>`;
+        <p id="od-change-status" class="map-key-note" role="status"></p>`;
       setFlowScale=bindFlowScale(host.querySelector('#od-track-scale .map-key-bar'),{diverging:true});
       pintarFlujos(state.flowHour);
       return;
     }
     const colors=FLOW_COLOR_STOPS.map(({color})=>color).join(',');
     host.querySelector('#map-key').innerHTML=`
-      <div class="map-key-note">${focusOrigin?(onTracks?'Ramas · porcentaje de las salidas':'Haces · intensidad de las salidas'):onTracks?'Viajes estimados por tramo':'Flujo estimado en los haces'}</div>
+      ${focusOrigin?`<div class="map-key-note" id="map-flow-unit">${onTracks?'Ramas · porcentaje de las salidas':'Haces · intensidad de las salidas'}</div>`:''}
       <div id="od-volume-scale"${between?' hidden':''}>
-        <div class="map-width-key" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="map-width-key${paper?' paper-width-key':''}" style="--rail-sample-width-range:${OD_RAIL_MAX_WIDTH-.85}px" aria-hidden="true"><i></i><i></i><i></i></div>
         <div class="map-key-bar" style="background:linear-gradient(90deg,${colors})"></div>
         <div class="map-key-words"><span>Menos tránsito</span><span>Más tránsito</span></div>
       </div>

@@ -1,6 +1,6 @@
 import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
 import {routeHierarchy} from './raeb-core.mjs?v=rail-reading1';
-import {RaebRenderer} from './raeb-renderer.mjs?v=zone-visibility1';
+import {RaebRenderer} from './raeb-renderer.mjs?v=line-render1';
 import {frameURL,networkURL} from './od-encoding.mjs?v=annual-overview1';
 import {odLoads,odStarts} from './od-period.mjs';
 import {flowColor, selectedFlowOpacity} from './raeb-gpu-shaders.mjs?v=zoom-width1';
@@ -52,6 +52,7 @@ export class RaebCPUOverlay{
     const p=this.projection,key=`${year}/${day}/${hour}/${this.width}/${this.height}/${p.scale()}/${p.translate()}/${origins?.join(',')??'all'}/${zones?.map(group=>group.join(',')).join('/')??''}`;
     this.origins=origins;this.zones=zones;
     const selectedIndex=this.data.nodes.findIndex(n=>n.id===selected);
+    this.renderer.localScale=selectedIndex>=0||!!zones;
     if(!zones||key!==this.currentKey){
       this.renderer.colorMax=odStarts(this.data,year,day,hour,selectedIndex)||(day===null?this.data.annual.volume_limit:undefined);
     }

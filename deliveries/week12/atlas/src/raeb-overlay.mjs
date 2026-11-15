@@ -1,7 +1,7 @@
-import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=annual-overview1';
+import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=line-render1';
 import {odLoads} from './od-period.mjs';
-import {RaebRenderer} from './raeb-renderer.mjs?v=zone-visibility1';
-import {RaebWebGPU} from './raeb-webgpu.mjs?v=zone-visibility1';
+import {RaebRenderer} from './raeb-renderer.mjs?v=line-render1';
+import {RaebWebGPU} from './raeb-webgpu.mjs?v=line-render1';
 
 // D3 retains interaction and linked panels. CPU prepares route hierarchies;
 // density, motion, convergence and flow rasterization stay on the GPU.
@@ -30,7 +30,7 @@ export class RaebOverlay extends RaebCPUOverlay{
    this.backendError=message;this.status(message);console.error(message,{webgpu:error.message,webgl2:fallbackError.message});return false;
   }
   this.rendererMode(cpu);cpu.selected=old.selected;cpu.canvas.style.cssText=old.canvas.style.cssText;
-  cpu.colorMax=old.colorMax;
+  cpu.colorMax=old.colorMax;cpu.localScale=old.localScale;
   if(old.canvas.parentNode)old.canvas.replaceWith(cpu.canvas);
   this.renderer=cpu;old.dispose();
   cpu.canvas.dataset.backend='cpu';cpu.canvas.dataset.gpuFallback=error.message;

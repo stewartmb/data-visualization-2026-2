@@ -1,6 +1,6 @@
 import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,railChange,odDelta} from './od-encoding.mjs?v=shared-change1';
 import {signed} from './model.js?v=20261028-4';
-import {odLoads,odPeriodLabel} from './od-period.mjs';
+import {odLoads} from './od-period.mjs';
 import {bindFlowScale} from './flow-scale.js';
 
 export function createODYearMaps(host,geo,flows,routing){
@@ -14,10 +14,8 @@ export function createODYearMaps(host,geo,flows,routing){
   const line=d3.line();
   const rails=railLinks.map(({link,index})=>({link,index,path:new Path2D(line(link.coords.map(projection)))}));
   const names=new Map(flows.nodes.map(s=>[s.id,s.name.replace(/ \([^)]*\)/g,'')]));
-  const period=document.querySelector('#od-preview-period');
   const referenceLabel=document.querySelector('#od-preview-base');
   const legend=document.querySelector('#od-preview-legend');
-  const scopeLabel=document.querySelector('#od-preview-scope');
   const swatch=document.querySelector('#od-preview-swatch');
   const setScale=bindFlowScale(swatch,{diverging:true});
   const {loss,gain,neutral}=OD_CHANGE_COLORS;
@@ -53,6 +51,7 @@ export function createODYearMaps(host,geo,flows,routing){
   }
   return (day,hour,reference,scope,comparing)=>{
     comparisonActive=comparing;
+    referenceLabel.hidden=comparing;
     showScale(scaleReady);
     const key=`${day}/${hour}/${reference}/${scope.origins?.join(',')??'all'}/${scope.zones?.[0].length??0}/${scope.label}`;
     if(key!==previous){
@@ -62,10 +61,7 @@ export function createODYearMaps(host,geo,flows,routing){
     return pending;
   };
   async function drawFrames(day,hour,reference,{origins,label,zones},request){
-    period.textContent=odPeriodLabel(day,hour,true);
     referenceLabel.textContent=`Cambio frente a ${reference}`;
-    scopeLabel.hidden=origins===null;
-    scopeLabel.textContent=origins===null?'':zones?label:`Salidas · ${label}`;
     let loadsByYear;
     if(origins===null){
       loadsByYear=new Map(slots.map(({year})=>[year,odLoads(flows,year,day,hour)]));
@@ -117,11 +113,11 @@ export function createODYearMaps(host,geo,flows,routing){
       }
       const major=changes.at(-1);
       const caption=button.querySelector('.od-year-change');
-      const title=year===reference?'Referencia':major&&Math.abs(major.delta)>=.001
-        ? `${signed(major.delta)} viajes · cambio máx.`:'Sin cambio';
-      caption.textContent=title;
-      button.title=year===reference?`${year}, año de referencia`:major&&Math.abs(major.delta)>=.001
-        ? `${year} frente a ${reference} · ${names.get(major.link.a)} ↔ ${names.get(major.link.b)} · ${signed(major.delta)} viajes asignados`:title;
+      const description=year===reference?'Año de referencia':major&&Math.abs(major.delta)>=.001
+        ? `Mayor cambio por tramo · ${names.get(major.link.a)} ↔ ${names.get(major.link.b)} · ${signed(major.delta)} viajes por día`
+        : 'Sin cambio';
+      caption.textContent=description;
+      button.title=description;
       button.dataset.previewReference=reference;
       button.dataset.previewScope=label;
     }

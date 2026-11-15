@@ -2,7 +2,7 @@
 """Prepara OD completo y caminos GTFS para RAEB, sin inferir enlaces por cercanía.
 
 --source-package permite reutilizar una adquisición validada de otra copia local.
-La salida es portable: geometrías, caminos y 672 matrices Float32 gzip (4×7×24).
+Construye la base 2021–2024. prepare_od_2025.py incorpora el año 2025 validado.
 """
 import argparse
 import calendar
@@ -249,6 +249,61 @@ def station_demands(matrix, through_pair, through_complex, n):
     return np.round(incoming, 4).tolist(), np.round(through, 4).tolist()
 
 
+def prepare_year(con, year, source_files, nodes, links, paths, incidence_pair, incidence_arc,
+                 through_pair, through_complex, out, *, network_only=False):
+    n = len(nodes)
+    n_arcs = 2 * len(links)
+    con.execute('CREATE OR REPLACE TABLE exposure (month INTEGER, day_of_week VARCHAR, d INTEGER, n DOUBLE, den DOUBLE)')
+    counts = {(m,d): sum(calendar.weekday(year,m,t)==d for t in range(1, calendar.monthrange(year,m)[1]+1)) for m in range(1,13) for d in range(7)}
+    con.executemany('INSERT INTO exposure VALUES (?,?,?,?,?)', [(m,DAYS[d],d,float(v),float(sum(counts[k,d] for k in range(1,13)))) for (m,d),v in counts.items()])
+    print(f'{year}: agregando los 12 meses...', flush=True)
+    rows = con.execute("""SELECT coalesce(o.i,-1)::INTEGER AS o, coalesce(j.i,-1)::INTEGER AS j,
+        e.d::INTEGER AS d, p.hour_of_day::INTEGER AS h,
+        sum(p.estimated_average_ridership*e.n/e.den)::DOUBLE AS q
+        FROM read_parquet(?) p JOIN exposure e USING(month,day_of_week)
+        LEFT JOIN nodes o ON o.id=p.origin_station_complex_id
+        LEFT JOIN nodes j ON j.id=p.destination_station_complex_id
+        GROUP BY ALL ORDER BY d,h,o,j""",[[str(file) for file in source_files]]).fetchnumpy()
+    frame_key = rows['d']*24+rows['h']; boundaries = np.searchsorted(frame_key, np.arange(169))
+    u = np.zeros((n,7,24)); year_flows = []; balance = defaultdict(float)
+    year_arrivals, year_through = [], []
+    guide_flow = np.zeros(len(links))
+    assets = {}
+    routable = np.fromiter((bool(path) for path in paths), bool, count=n*n)
+    year_directory = out / str(year)
+    year_directory.mkdir(parents=True, exist_ok=True)
+    for day in range(7):
+        day_flows = []
+        year_arrivals.append(day_arrivals := [])
+        year_through.append(day_through := [])
+        for hour in range(24):
+            frame = day*24+hour; lo,hi = boundaries[frame:frame+2]
+            o,j,q = rows['o'][lo:hi],rows['j'][lo:hi],rows['q'][lo:hi]
+            valid_o = o>=0; mapped = valid_o&(j>=0); same = mapped&(o==j)
+            included = mapped if network_only else valid_o
+            u[:,day,hour] = np.bincount(o[included], weights=q[included], minlength=n)
+            matrix = np.zeros(n*n)
+            matrix[o[mapped]*n+j[mapped]] = q[mapped]
+            arrivals, uses = station_demands(matrix, through_pair, through_complex, n)
+            day_arrivals.append(arrivals)
+            day_through.append(uses)
+            arc_volume = np.bincount(incidence_arc, weights=matrix[incidence_pair], minlength=n_arcs)
+            day_flows.append(np.round(arc_volume,3).tolist()); guide_flow += arc_volume.reshape(-1,2).sum(axis=1)
+            assigned_mask = mapped & ~same
+            assigned_mask[assigned_mask] = routable[o[assigned_mask]*n+j[assigned_mask]]
+            balance['input'] += float(q.sum());balance['assigned'] += float(q[assigned_mask].sum())
+            balance['same_origin_destination'] += float(q[same].sum());balance['unmapped'] += float(q[~mapped].sum())
+            balance['unassignable'] += float(q[mapped&~same&~assigned_mask].sum())
+            path = year_directory / f'{day}-{hour:02d}.f32.gz'
+            path.write_bytes(gzip.compress(matrix.astype('<f4').tobytes(), mtime=0))
+            assets[f'{year}/{day}-{hour:02d}'] = {'bytes':path.stat().st_size,'sha256':sha(path)}
+        year_flows.append(day_flows)
+    assert math.isclose(balance['input'],sum(v for k,v in balance.items() if k!='input'),rel_tol=1e-10)
+    print(f'{year}: 168 matrices completas; semana representativa {balance["input"]:,.1f}.',flush=True)
+    return {'starts': np.round(u,4).tolist(), 'flows': year_flows, 'incoming': year_arrivals,
+            'through': year_through, 'balance': dict(balance), 'guide_flow': guide_flow, 'assets': assets}
+
+
 def reroute_existing(source, stations, links, net_meta, paths, incidence_pair, incidence_arc):
     data_dir = P/'atlas/data'
     source_dir = source/'atlas/data'
@@ -344,50 +399,14 @@ def main():
         assert len(selected) == 12 and all(p.exists() for p in selected)
         for key,e in report['months'].items():
             if key.startswith(str(year)): source_files[key] = {'parquet_sha256': e['parquet_sha256'], 'rows': e['rows']}
-        glob = str(source/f'data/raw/od_2021_2024/parquet/{year}-*.parquet').replace("'", "''")
-        con.execute('CREATE OR REPLACE TABLE exposure (month INTEGER, day_of_week VARCHAR, d INTEGER, n DOUBLE, den DOUBLE)')
-        counts = {(m,d): sum(calendar.weekday(year,m,t)==d for t in range(1, calendar.monthrange(year,m)[1]+1)) for m in range(1,13) for d in range(7)}
-        con.executemany('INSERT INTO exposure VALUES (?,?,?,?,?)', [(m,DAYS[d],d,float(v),float(sum(counts[k,d] for k in range(1,13)))) for (m,d),v in counts.items()])
-        print(f'{year}: agregando los 12 meses...', flush=True)
-        rows = con.execute(f"""SELECT coalesce(o.i,-1)::INTEGER AS o, coalesce(j.i,-1)::INTEGER AS j,
-            e.d::INTEGER AS d, p.hour_of_day::INTEGER AS h,
-            sum(p.estimated_average_ridership*e.n/e.den)::DOUBLE AS q
-            FROM read_parquet('{glob}') p JOIN exposure e USING(month,day_of_week)
-            LEFT JOIN nodes o ON o.id=p.origin_station_complex_id
-            LEFT JOIN nodes j ON j.id=p.destination_station_complex_id
-            GROUP BY ALL ORDER BY d,h,o,j""").fetchnumpy()
-        frame_key = rows['d']*24+rows['h']; boundaries = np.searchsorted(frame_key, np.arange(169))
-        u = np.zeros((n,7,24)); year_flows = []; balance = defaultdict(float)
-        incoming[str(year)], through[str(year)] = year_arrivals, year_through = [], []
-        for day in range(7):
-            day_flows = []
-            year_arrivals.append(day_arrivals := [])
-            year_through.append(day_through := [])
-            for hour in range(24):
-                frame = day*24+hour; lo,hi = boundaries[frame:frame+2]
-                o,j,q = rows['o'][lo:hi],rows['j'][lo:hi],rows['q'][lo:hi]
-                valid_o = o>=0; mapped = valid_o&(j>=0); same = mapped&(o==j)
-                u[:,day,hour] = np.bincount(o[valid_o], weights=q[valid_o], minlength=n)
-                matrix = np.zeros(n*n)
-                matrix[o[mapped]*n+j[mapped]] = q[mapped]
-                arrivals, uses = station_demands(matrix, through_pair, through_complex, n)
-                day_arrivals.append(arrivals)
-                day_through.append(uses)
-                arc_volume = np.bincount(incidence_arc, weights=matrix[incidence_pair], minlength=n_arcs)
-                day_flows.append(np.round(arc_volume,3).tolist()); guide_flow += arc_volume.reshape(-1,2).sum(axis=1)
-                assigned_mask = np.array([bool(paths[int(a)*n+int(b)]) if a>=0 and b>=0 and a!=b else False for a,b in zip(o,j)])
-                balance['input'] += float(q.sum());balance['assigned'] += float(q[assigned_mask].sum())
-                balance['same_origin_destination'] += float(q[same].sum());balance['unmapped'] += float(q[~mapped].sum())
-                balance['unassignable'] += float(q[mapped&~same&~assigned_mask].sum())
-                path = out/f'{year}/{day}-{hour:02d}.f32.gz';path.parent.mkdir(exist_ok=True)
-                path.write_bytes(gzip.compress(matrix.astype('<f4').tobytes(), mtime=0))
-                assets[f'{year}/{day}-{hour:02d}'] = {'bytes':path.stat().st_size,'sha256':sha(path)}
-            year_flows.append(day_flows)
-        assert math.isclose(balance['input'],sum(v for k,v in balance.items() if k!='input'),rel_tol=1e-10)
-        starts[str(year)] = np.round(u,4).tolist(); flows[str(year)] = year_flows
-        coverage[str(year)] = list(range(1,13)); balances[str(year)] = dict(balance)
-        print(f'{year}: 168 matrices completas; semana representativa {balance["input"]:,.1f}.',flush=True)
-        del rows
+        prepared = prepare_year(con, year, selected, stations, links, paths, incidence_pair, incidence_arc,
+                                through_pair, through_complex, out)
+        year_key = str(year)
+        starts[year_key], flows[year_key] = prepared['starts'], prepared['flows']
+        incoming[year_key], through[year_key] = prepared['incoming'], prepared['through']
+        coverage[year_key], balances[year_key] = list(range(1,13)), prepared['balance']
+        assets.update(prepared['assets'])
+        guide_flow += prepared['guide_flow']
     for edge,flow in zip(links,guide_flow): edge['reference_flow'] = round(float(flow),3)
     metadata = {'source':'MTA OD estimates 2021–2024; all 48 validated monthly partitions.',
         'years':[2021,2022,2023,2024], 'route_model':'gtfs-parent-stops-v1', 'months_present':coverage, 'network':net_meta,

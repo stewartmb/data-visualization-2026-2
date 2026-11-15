@@ -37,7 +37,7 @@ export function bindFlowScale(bar,{diverging=false,unit='viajes por día',capped
 }
 
 // The references use the same pixel radii as the corresponding map marks.
-export function bindCircleScale(container,diverging){
+export function bindCircleScale(container){
   const samples=Array.from(container.querySelectorAll('.map-circle-sample'));
   const fractions=[1/16,1/4,1];
 
@@ -56,11 +56,14 @@ export function bindCircleScale(container,diverging){
     container.hidden=!limit;
     if(!limit)return;
     samples.forEach((sample,index)=>{
-      const value=fractions[index]*limit;
-      const mark=sample.firstElementChild;
-      mark.style.setProperty('--circle-size',`${2*radius(value)}px`);
-      if(!diverging)mark.style.background=fill(value);
-      sample.setAttribute('aria-label',`${diverging?'Cambio de ':''}${fmt(value)} viajes por día`);
+      const sign=sample.dataset.changeSign;
+      const position=index%fractions.length;
+      const fraction=fractions[sign==='loss'?fractions.length-1-position:position];
+      const value=fraction*limit;
+      sample.style.setProperty('--circle-size',`${2*radius(value)}px`);
+      if(!sign)sample.firstElementChild.style.background=fill(value);
+      const label=`${fmt(value)} viajes por día`;
+      sample.setAttribute('aria-label',sign?`${sign==='loss'?'Bajó':'Subió'} en ${label}`:label);
     });
   };
 }
