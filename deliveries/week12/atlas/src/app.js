@@ -1,6 +1,6 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=events-restored1';
+import {renderMap} from './map-view.js?v=crisp-raeb2';
 import {createSpectralEvents} from './spectral-events.js?v=restored1';
 import {createODYearMaps} from './od-year-maps.js?v=map-layout2';
 import {renderPaths} from './paths-view.js?v=od-only1';

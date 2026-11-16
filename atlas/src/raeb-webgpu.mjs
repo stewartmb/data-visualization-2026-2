@@ -1,5 +1,5 @@
 import {initialKernelRadius} from './raeb-core.mjs?v=rail-reading1';
-import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=line-render1';
+import {COMPUTE,DISPLAY} from './raeb-gpu-shaders.mjs?v=crisp-raeb2';
 import {zoomStrokeScale} from './od-encoding.mjs?v=zoom-width1';
 const ENTRIES={initialize:[0,1,3,4,7,8],splat:[0,1,8,9],decodeDensity:[0,9,10],convolve:[0,10,11],maximum:[0,11,13],maximumFinal:[13,14],boost:[0,11,12,14],advect:[0,1,2,3,4,5,6,11],smoothPoints:[0,1,2,3,4,5,6],rasterCurves:[0,1,6,7,15],rasterRails:[0,15,23,24],rasterGuide:[0,12,23,24],image:[0,15,17],histogram:[0,16,17,18,19,20],mutualInformation:[0,18,19,20,21],mutualInformationFinal:[21,22]};
 export class RaebWebGPU{
@@ -23,7 +23,7 @@ export class RaebWebGPU{
   this.uniformCompute=this.create(96,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST,'compute parameters');
   this.uniformDraw=this.create(96,GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST,'drawing parameters');
   this.statsRead=this.create(16,GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ,'NMI readback');
-  this.canvas.dataset.renderer=this.paper?'WebGPU compute + optical density':'WebGPU compute + merged ribbons';this.canvas.dataset.bundleStyle=this.paper?'optical-density':'merged-ribbons';this.canvas.dataset.backend='webgpu';return this;
+  this.canvas.dataset.renderer=this.paper?'WebGPU compute + flow strokes':'WebGPU compute + merged ribbons';this.canvas.dataset.bundleStyle=this.paper?'flow-strokes':'merged-ribbons';this.canvas.dataset.backend='webgpu';return this;
  }
  create(size,usage,label){
   if(size>this.device.limits.maxBufferSize)throw Error(`La GPU no admite el buffer ${label} (${size} bytes)`);

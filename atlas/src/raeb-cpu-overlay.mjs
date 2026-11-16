@@ -1,9 +1,9 @@
 import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
 import {routeHierarchy} from './raeb-core.mjs?v=rail-reading1';
-import {RaebRenderer} from './raeb-renderer.mjs?v=line-render1';
+import {RaebRenderer} from './raeb-renderer.mjs?v=crisp-raeb2';
 import {frameURL,networkURL} from './od-encoding.mjs?v=annual-overview1';
 import {odLoads,odStarts} from './od-period.mjs';
-import {flowColor, selectedFlowOpacity} from './raeb-gpu-shaders.mjs?v=zoom-width1';
+import {flowColor, selectedFlowOpacity} from './raeb-gpu-shaders.mjs?v=crisp-raeb2';
 
 export function setRaebStatus(message) {
   const status = document.querySelector('#raeb-status');

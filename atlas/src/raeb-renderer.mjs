@@ -1,4 +1,4 @@
-import {FLOW_COLOR_MAX, GLSL_FLOW_COLOR, SELECTED_FLOW_EXPRESSION} from './raeb-gpu-shaders.mjs?v=zoom-width1';
+import {FLOW_COLOR_MAX, GLSL_FLOW_COLOR, RAEB_STROKE_WIDTH, SELECTED_FLOW_EXPRESSION} from './raeb-gpu-shaders.mjs?v=crisp-raeb2';
 
 // Instanced WebGL2 draws one strip per OD curve. The paper view uses a
 // triangle strip to draw the stroke width in CSS pixels.
@@ -22,6 +22,7 @@ uniform float uTween;
 uniform bool uPreview;
 uniform bool uPaper;
 uniform int uFlowPass;
+uniform bool uLocalScale;
 uniform float uSelected;
 uniform float uColorMax;
 out vec4 vColor;
@@ -56,10 +57,10 @@ void main(){
   float retained=uPaper?0.0:clamp(uParameters.x*5.0-at(uRetention,point).x+1.0,0.0,1.0);
   float trips=metadata.x*(1.0-retained);
   float maximum=uColorMax;
-  float exposure=uPaper?min(1.0,${FLOW_COLOR_MAX}.0/maximum):1.0;
-  float alpha=1.0-exp(-trips*(uPaper?1.4:1.0)*exposure/800.0);
-  vec3 ink=flowColor(trips,maximum);
-  if(uFlowPass==1)alpha=trips>0.0?${SELECTED_FLOW_EXPRESSION}:0.0;
+  float alpha=1.0-exp(-trips/800.0);
+  vec3 ink=flowColor(trips,maximum,uPaper&&!uLocalScale);
+  if(uPaper)alpha=trips>0.0?1.0:0.0;
+  else if(uFlowPass==1)alpha=trips>0.0?${SELECTED_FLOW_EXPRESSION}:0.0;
   if(uSelected>=0.0&&!focus)alpha=0.0;
   vColor=vec4(uFlowPass==1?ink*alpha:ink,alpha);
   vec2 screen=position*uCamera.x+uCamera.yz;
@@ -69,9 +70,11 @@ void main(){
     vec2 tangent=end-start;
     vec2 normal=vec2(-tangent.y,tangent.x)/max(length(tangent),0.001);
     float side=gl_VertexID%2==0?-1.0:1.0;
-    screen+=normal*side*1.5;
+    screen+=normal*side*(${RAEB_STROKE_WIDTH}*.5);
   }
-  gl_Position=vec4(screen.x/uViewport.x*2.0-1.0,1.0-screen.y/uViewport.y*2.0,0,1);
+  // Keep the stronger stroke at intersections, independent of draw order.
+  float depth=uPaper ? 1.0-2.0*sqrt(clamp(trips/maximum,0.0,1.0)) : 0.0;
+  gl_Position=vec4(screen.x/uViewport.x*2.0-1.0,1.0-screen.y/uViewport.y*2.0,depth,1);
 }`;
 const FRAGMENT=`#version 300 es
 precision highp float;
@@ -88,7 +91,7 @@ export class RaebRenderer{
     const shader=(type,source)=>{const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s;};
     this.program=gl.createProgram();gl.attachShader(this.program,shader(gl.VERTEX_SHADER,VERTEX));gl.attachShader(this.program,shader(gl.FRAGMENT_SHADER,FRAGMENT));gl.linkProgram(this.program);
     if(!gl.getProgramParameter(this.program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(this.program));
-    this.uniforms=Object.fromEntries(['uAnchors','uLayout','uMetadata','uFromLayout','uRetention','uFromPreview','uFromParameters','uTextureWidth','uSamples','uRenderSamples','uViewport','uCamera','uParameters','uTween','uPreview','uPaper','uFlowPass','uSelected','uColorMax'].map(k=>[k,gl.getUniformLocation(this.program,k)]));
+    this.uniforms=Object.fromEntries(['uAnchors','uLayout','uMetadata','uFromLayout','uRetention','uFromPreview','uFromParameters','uTextureWidth','uSamples','uRenderSamples','uViewport','uCamera','uParameters','uTween','uPreview','uPaper','uFlowPass','uLocalScale','uSelected','uColorMax'].map(k=>[k,gl.getUniformLocation(this.program,k)]));
     this.textures=Array.from({length:5},()=>gl.createTexture());
     this.textureWidth=1024;this.camera={k:1,x:0,y:0};this.parameters={fidelity:.9,strength:.65};this.selected=-1;this.preview=true;this.count=0;
     gl.enable(gl.BLEND);gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.clearColor(0,0,0,0);
@@ -130,7 +133,7 @@ export class RaebRenderer{
   schedule(){if(!this.pending)this.pending=requestAnimationFrame(()=>{this.pending=0;this.draw();});}
   draw(){
     const gl=this.gl,u=this.uniforms;if(!this.width||!this.height)return;
-    const start=performance.now();gl.clear(gl.COLOR_BUFFER_BIT);if(!this.count||this.exact||this.awaitingSeed)return;
+    const start=performance.now();gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);if(!this.count||this.exact||this.awaitingSeed)return;
     gl.useProgram(this.program);
     for(let i=0;i<5;i++){gl.activeTexture(gl.TEXTURE0+i);gl.bindTexture(gl.TEXTURE_2D,this.textures[i]);}
     gl.uniform1i(u.uAnchors,0);gl.uniform1i(u.uLayout,1);gl.uniform1i(u.uMetadata,2);gl.uniform1i(u.uFromLayout,3);gl.uniform1i(u.uRetention,4);gl.uniform1i(u.uFromPreview,this.fromPreview?1:0);
@@ -141,11 +144,17 @@ export class RaebRenderer{
     const t=Math.min(1,(performance.now()-(this.transitionStart||0))/90);
     gl.uniform1f(u.uTween,t);gl.uniform1i(u.uPreview,this.preview?1:0);gl.uniform1i(u.uPaper,this.paper?1:0);gl.uniform1f(u.uSelected,this.selected);
     gl.uniform1f(u.uColorMax,this.colorMax||FLOW_COLOR_MAX);
+    gl.uniform1i(u.uLocalScale,this.localScale?1:0);
     const reduced=performance.now()<(this.qualityUntil||0)||(!this.preview&&t<1),renderSamples=reduced?Math.min(8,this.samples):this.samples;
     gl.uniform1i(u.uRenderSamples,renderSamples);
     const primitive=this.paper?gl.TRIANGLE_STRIP:gl.LINE_STRIP;
     const vertexCount=this.paper?2*renderSamples:renderSamples;
-    if(this.localScale){
+    if(this.paper){
+      gl.enable(gl.DEPTH_TEST);gl.depthFunc(gl.LEQUAL);
+      gl.uniform1i(u.uFlowPass,0);
+      gl.drawArraysInstanced(primitive,0,vertexCount,this.count);
+      gl.disable(gl.DEPTH_TEST);
+    }else if(this.localScale){
       // Keep a sparse selection legible without stacking opacity.
       gl.uniform1i(u.uFlowPass,1);
       gl.blendEquation(gl.MAX);

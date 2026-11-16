@@ -1,7 +1,7 @@
-import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=map-controls1';
+import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=crisp-raeb2';
 import {odLoads} from './od-period.mjs';
-import {RaebRenderer} from './raeb-renderer.mjs?v=line-render1';
-import {RaebWebGPU} from './raeb-webgpu.mjs?v=line-render1';
+import {RaebRenderer} from './raeb-renderer.mjs?v=crisp-raeb2';
+import {RaebWebGPU} from './raeb-webgpu.mjs?v=crisp-raeb2';
 
 // D3 retains interaction and linked panels. CPU prepares route hierarchies;
 // density, motion, convergence and flow rasterization stay on the GPU.

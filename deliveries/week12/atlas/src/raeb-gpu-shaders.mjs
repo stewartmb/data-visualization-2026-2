@@ -8,15 +8,19 @@ export function selectedFlowOpacity(trips, maximum) {
 export const SELECTED_FLOW_EXPRESSION = `${SELECTED_FLOW_MIN_OPACITY}+(${SELECTED_FLOW_MAX_OPACITY}-${SELECTED_FLOW_MIN_OPACITY})*sqrt(clamp(trips/maximum,0.0,1.0))`;
 // Keep the same rounded upper reference when exploring different hours and years.
 export const FLOW_COLOR_MAX = 17_000;
+export const RAEB_STROKE_WIDTH = 1.5;
 
 export const FLOW_COLOR_STOPS = [
   {trips:0, color:'#718f97'},
   {trips:FLOW_COLOR_MAX/4, color:'#33768a'},
   {trips:FLOW_COLOR_MAX, color:'#093f53'}
 ];
-const flowChannels = FLOW_COLOR_STOPS.map(({color}) =>
-  color.slice(1).match(/../g).map(channel => parseInt(channel,16))
-);
+export const RAEB_OVERVIEW_COLOR_STOPS = [
+  {...FLOW_COLOR_STOPS[0], color:'#d4dee0'},
+  ...FLOW_COLOR_STOPS.slice(1)
+];
+const channelsFor = color => color.slice(1).match(/../g).map(channel => parseInt(channel,16));
+const flowChannels = FLOW_COLOR_STOPS.map(({color}) => channelsFor(color));
 
 export function flowColor(trips, maximum=FLOW_COLOR_MAX) {
   const position = 2*Math.sqrt(Math.max(0,Math.min(trips/maximum,1)));
@@ -28,18 +32,21 @@ export function flowColor(trips, maximum=FLOW_COLOR_MAX) {
 }
 
 function shaderFlowColor(vector, signature) {
-  const [light,medium,dark] = flowChannels.map(color =>
-    `${vector}(${color.map(channel => (channel/255).toFixed(6)).join(',')})`
-  );
+  const asVector = color => `${vector}(${color.map(channel => (channel/255).toFixed(6)).join(',')})`;
+  const [light,medium,dark] = flowChannels.map(asVector);
+  const overviewLight = asVector(channelsFor(RAEB_OVERVIEW_COLOR_STOPS[0].color));
   return `${signature}{
   float position=2.0*sqrt(clamp(trips/maximum,0.0,1.0));
-  if(position<1.0){return mix(${light},${medium},position);}
+  if(position<1.0){
+    if(overview){return mix(${overviewLight},${medium},position);}
+    return mix(${light},${medium},position);
+  }
   return mix(${medium},${dark},position-1.0);
 }`;
 }
 
-export const GLSL_FLOW_COLOR = shaderFlowColor('vec3', 'vec3 flowColor(float trips,float maximum)');
-const WGSL_FLOW_COLOR = shaderFlowColor('vec3f', 'fn flowColor(trips:f32,maximum:f32)->vec3f').replace('float position=', 'let position=');
+export const GLSL_FLOW_COLOR = shaderFlowColor('vec3', 'vec3 flowColor(float trips,float maximum,bool overview)');
+const WGSL_FLOW_COLOR = shaderFlowColor('vec3f', 'fn flowColor(trips:f32,maximum:f32,overview:bool)->vec3f').replace('float position=', 'let position=');
 
 export const COMPUTE = /* wgsl */ `
 struct Params {
@@ -265,11 +272,12 @@ ${WGSL_FLOW_COLOR}
  if(!paper&&(p.control.y<=0.0||(p.flags.x&1u)==0u)){
   let weight=opticalWeight(index);let trips=weight*800.0;
   let alpha=select(0.0,select(1.0-exp(-weight),${SELECTED_FLOW_EXPRESSION},hasLocalScale),trips>0.0);
-  return vec4f(flowColor(trips,maximum)*alpha,alpha);
+  return vec4f(flowColor(trips,maximum,false)*alpha,alpha);
  }
  let ratio=f32(p.raster.x)/p.conversion.x;
  let zoomWidth=max(1.0,bitcast<f32>(p.flags.w));
- let extent=i32(ceil(select(4.5,1.5,paper)*ratio+.5));
+ let radius=${RAEB_STROKE_WIDTH}*.5*ratio;
+ let extent=i32(ceil(select(4.5*ratio,radius,paper)+.5));
  var alpha=0.0;
  var flow=0.0;
  for(var dy=-extent;dy<=extent;dy++){
@@ -281,16 +289,14 @@ ${WGSL_FLOW_COLOR}
    let selectedAlpha=${SELECTED_FLOW_EXPRESSION};
    var candidate=0.0;
    if(paper){
-    // Restore the original 3 CSS px stroke and adjust exposure for annual totals.
-    let exposure=min(1.0,${FLOW_COLOR_MAX}.0/maximum);
-    let edge=clamp(1.5*ratio+.5-length(vec2f(delta)),0.0,1.0);
-    candidate=select(pow(1.0-exp(-1.4*weight*exposure),.6),selectedAlpha,hasLocalScale)*edge;
+    // Flow sets the ink color. Alpha only covers the edge of a thin stroke.
+    candidate=clamp(radius+.5-length(vec2f(delta)),0.0,1.0);
    }else{
     candidate=select(.82*(1.0-exp(-weight/.2)),selectedAlpha,hasLocalScale)*bandEdge(vec2f(delta),weight,ratio,zoomWidth);
    }
    if(candidate>alpha||(candidate==alpha&&weight>flow)){alpha=candidate;flow=weight;}
   }
  }
- return vec4f(flowColor(flow*800.0,maximum)*alpha,alpha);
+ return vec4f(flowColor(flow*800.0,maximum,paper&&!hasLocalScale)*alpha,alpha);
 }
 `;

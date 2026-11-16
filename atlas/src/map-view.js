@@ -2,9 +2,9 @@ import {bindMapLasso} from './map-lasso.js?v=shared-map1';
 import {bindFlowScale,bindCircleScale} from './flow-scale.js?v=grouped-circle-key1';
 import {odLoads,odStarts,odIncoming,odPeriodLabel} from './od-period.mjs';
 import {state,BASE,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats,passesMetricRanges,cohortProfile} from './model.js?v=20261028-4';
-import {RaebOverlay} from './raeb-overlay.mjs?v=map-controls1';
-import {setRaebStatus} from './raeb-cpu-overlay.mjs?v=map-controls1';
-import {FLOW_COLOR_MAX,FLOW_COLOR_STOPS,flowColor} from './raeb-gpu-shaders.mjs?v=zoom-width1';
+import {RaebOverlay} from './raeb-overlay.mjs?v=crisp-raeb2';
+import {setRaebStatus} from './raeb-cpu-overlay.mjs?v=crisp-raeb2';
+import {FLOW_COLOR_MAX,FLOW_COLOR_STOPS,RAEB_OVERVIEW_COLOR_STOPS,flowColor} from './raeb-gpu-shaders.mjs?v=crisp-raeb2';
 import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
 import {activeODCompareBase} from './contrast-model.mjs?v=od-only1';
 import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,OD_RAIL_MIN_WIDTH,OD_RAIL_MAX_WIDTH,railChange,railFlowWidth,zoomStrokeScale,flowStrength,flowCount,odDelta} from './od-encoding.mjs?v=rail-width65';
@@ -342,6 +342,10 @@ export function renderMap(host,app,items){
   // thread; the camera and continuous slider preview are WebGL uniforms.
   let pintarFlujos=null,stationStarts=null,stationUse=null,updateRadiusGuide=null;
   let setFlowScale;
+  const flowGradient = onNetwork => {
+    const stops = paper&&!onNetwork&&!focusOrigin&&!between ? RAEB_OVERVIEW_COLOR_STOPS : FLOW_COLOR_STOPS;
+    return `linear-gradient(90deg,${stops.map(({color})=>color).join(',')})`;
+  };
   let nodeVolumeMax=1,nodeChangeMax=1;
   let updateComplexContext=null,hoveredComplex=null,inspectCorridor=null,resizeScenarioStops=null;
   if(flujos){
@@ -557,6 +561,8 @@ export function renderMap(host,app,items){
         ? 'Tramos de referencia GTFS. Pasa por la vía para ver la carga estimada.'
         : cambio?'Ambos años se asignan a la misma red GTFS de referencia.'
         : 'Los haces RAEB agrupan viajes y pueden apartarse de la red.';
+      const bar=host.querySelector('#od-volume-scale .map-key-bar');
+      if(bar)bar.style.background=flowGradient(show);
       const note=host.querySelector('#map-flow-unit');
       if(note)note.textContent=show?'Ramas · porcentaje de las salidas':'Haces · intensidad de las salidas';
       if(!cambio&&!focusOrigin&&!scopedGroup)host.querySelector('#flow-legend-title').textContent=show?'Flujo por tramo':'Flujo en los haces';
@@ -1198,12 +1204,11 @@ export function renderMap(host,app,items){
       pintarFlujos(state.flowHour);
       return;
     }
-    const colors=FLOW_COLOR_STOPS.map(({color})=>color).join(',');
     host.querySelector('#map-key').innerHTML=`
       ${focusOrigin?`<div class="map-key-note" id="map-flow-unit">${onTracks?'Ramas · porcentaje de las salidas':'Haces · intensidad de las salidas'}</div>`:''}
       <div id="od-volume-scale"${between?' hidden':''}>
         <div class="map-width-key${paper?' paper-width-key':''}" style="--rail-sample-width-range:${OD_RAIL_MAX_WIDTH-OD_RAIL_MIN_WIDTH}px" aria-hidden="true"><i></i><i></i><i></i></div>
-        <div class="map-key-bar" style="background:linear-gradient(90deg,${colors})"></div>
+        <div class="map-key-bar" style="background:${flowGradient(onTracks)}"></div>
         <div class="map-key-words"><span>Menos tránsito</span><span>Más tránsito</span></div>
       </div>
       ${focusOrigin?'<div class="map-key-note flow-selection-total"></div>':''}
