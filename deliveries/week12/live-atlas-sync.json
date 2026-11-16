@@ -3,7 +3,7 @@
   "source": "deliveries/week12/atlas",
   "destination": "atlas",
   "sha256": {
-    "index.html": "2354c3d9176c7faac56871432f05ebaf481a7699e7c9719a26ceac19764df90b",
+    "index.html": "9f831d58b5444357a9c804d9a4ab8bd2338ddf14f126dc44cc116d2e4a244e4b",
     "README.md": "1ed89f0aa46c00878d3ccdb1a8cb9a0a6bedc1c88f5f8a865c29c08c52edd5d0",
     "lib/LICENSE.d3": "3e6849627f74ff73c257a3ae1efb574015d94fc1035c05ec3c15805165efcbc4",
     "lib/d3.min.js": "f2094bbf6141b359722c4fe454eb6c4b0f0e42cc10cc7af921fc158fceb86539",
@@ -35,7 +35,7 @@
     "src/enrichment-metrics.mjs": "48fc352df8d45f456afea25c77009636568a7f12beaa2018ac2e811088958530",
     "src/od-period.mjs": "92df6b7eb8774e4a05d49ac0b3623da0adbfea8e5362efa10cde9ad8e71e9ab3",
     "src/spectral-events.js": "5bce40067b3cc3bce833106bae31b28289fefc3a8c0c5193e247298f703e156f",
-    "src/style.css": "1411452efde3d030a731f80ddbbb258a3662e4279062ce6fc0e254e36382adb2",
+    "src/style.css": "0a66a71fec59a4c40e41e0e76eeebfbcdb83f5957d8e820fd94a97bef7d7c93a",
     "src/contrast-model.mjs": "1d1e1ea2141a81d63b8132937b7277070e52dab114d9e46030eba39f9dac711b",
     "src/flow-scale.js": "c291ae456a85a44c9dd19e3f21ab0392aeb661e9a00d80e7faf82d60c932339a",
     "src/raeb-gpu-shaders.mjs": "0d8c7a9613596fe89be7bbb43bdfa1ff507cc6c542de01b24df32f661a79987c",

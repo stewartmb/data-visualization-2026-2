@@ -885,7 +885,7 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
 
 /* Atlas workspace */
 .atlas-workbench {
-  --atlas-timeline: clamp(224px, 19vw, 300px);
+  --atlas-timeline: calc((clamp(224px, 19vw, 300px) + clamp(300px, 25vw, 368px)) / 2);
   --atlas-controls: clamp(260px, 23vw, 368px);
 }
 .atlas-workbench .masthead { grid-template-columns: max-content minmax(0, 1fr) max-content; }
