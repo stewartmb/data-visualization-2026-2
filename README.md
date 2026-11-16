@@ -4,9 +4,9 @@ Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino · DS
 
 [Aplicación](https://stewartmb.github.io/data-visualization-2026-2/atlas/) · [Página del proyecto](https://stewartmb.github.io/data-visualization-2026-2/) · [Guía del profesor](Proyecto_Final_Guia.md)
 
-**Entradas 2019–2024:** 72 meses, 141.836.156 registros fuente, 12 campos originales. Fuentes MTA/Open NY `t69i-h2me` (solo 2019) y `wujg-7c2s` (2020–2024). **OD estimado 2021–2025** · 60 meses, 567.608.985 registros y 16 campos. Fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z`, `jsu2-fbtj` y `y2qv-fytt`. **Red:** GTFS de referencia 2026, 424 complejos OD, 475 paradas padre GTFS, 556 enlaces ferroviarios y 75 transbordos declarados. **Territorio:** borough y NTA 2020 según ubicación del complejo.
+**OD estimado 2021–2025** · 60 meses, 567.608.985 registros y 16 campos. Fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z`, `jsu2-fbtj` y `y2qv-fytt`. **Red:** GTFS de referencia 2026, 424 complejos OD, 475 paradas padre GTFS, 556 enlaces ferroviarios y 75 transbordos declarados. **Territorio:** borough y NTA 2020 según ubicación del complejo.
 
-El mapa central muestra conexiones sobre la red y permite agruparlas con RAEB. La barra superior indica la selección y el período. A la izquierda están los controles, el reloj semanal y la dispersión. A la derecha, los cinco minimapas permiten cambiar de año y comparar dos años OD.
+El mapa central muestra conexiones sobre la red y permite agruparlas con RAEB. La barra superior indica la selección y el período. Los cinco minimapas de la izquierda permiten cambiar de año y comparar dos años. Los controles, el reloj semanal y la dispersión están a la derecha.
 
 ## Ejecutar
 
@@ -23,9 +23,9 @@ python3 deliveries/week12/scripts/prepare_analytical_tasks.py
 
 Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_od.py` y `acquire_network.py`. La preparación histórica y la del RAEB se documentan en `HistoricalContrast.md`, `ODData.md` y `RAEBImplementation.md`. Los originales grandes quedan fuera de Git; se incluyen los artefactos preparados para ejecutar la app y sus manifiestos.
 
-El mapa abre en **Todo el año de 2025**. Se puede elegir otro año o comparar dos de **2021–2025**. El contraste histórico usa entradas de 2019–2024. El modo **Eventos** usa entradas horarias de 2019–2024 para explorar episodios con wavelets sobre la red. [Método y comprobaciones](deliveries/week12/SpectralEvents.md).
+El mapa abre en **Todo el año de 2025**. Se puede elegir otro año o comparar dos de **2021–2025**. **Eventos** usa las [entradas horarias de 2019–2024](deliveries/week12/SpectralEvents.md) para mostrar cuándo y dónde la afluencia se apartó de lo habitual.
 
-## Cinco preguntas actuales
+## Cinco preguntas de la investigación
 
 1. **Redistribución territorial.** ¿Qué zonas recuperaron demanda y cuáles perdieron peso entre 2019 y 2024?
 2. **Dependencia e intercambios.** ¿Ganaron peso los viajes locales y entre boroughs o aumentó la dependencia de Manhattan entre 2021 y 2024?

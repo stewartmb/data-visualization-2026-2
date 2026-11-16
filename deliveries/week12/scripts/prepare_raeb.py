@@ -366,7 +366,7 @@ def main():
     report = json.loads(report_path.read_text())
     if report.get('status') != 'PASS' or report.get('months_validated') != 48:
         raise SystemExit('Se requieren 48 meses OD con validación PASS.')
-    atlas_path = P/'atlas/data/atlas.json'; stations = json.loads(atlas_path.read_text())['stations']
+    atlas_path = P/'atlas/data/stations.json'; stations = json.loads(atlas_path.read_text())['stations']
     archive = source/'data/raw/enrichments/gtfs_subway.zip'
     catalog = json.loads((P/'data/station_catalog.json').read_text())
     if sha(archive) != json.loads((source/'data/network_reference/source.json').read_text())['sha256']:

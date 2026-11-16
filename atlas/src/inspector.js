@@ -1,8 +1,8 @@
-import {state,BASE as MAP_BASE,esc,fmt,signed,profile,deltaColor,shareColor,showTooltip,hideTooltip,dayShort,relevantEvents,cohortProfile} from './model.js?v=20261028-4';
+import {state,BASE as MAP_BASE,esc,fmt,signed,profile,deltaColor,shareColor,showTooltip,hideTooltip,dayShort,cohortProfile} from './model.js?v=20261028-4';
 
 import {scatterDomain,comparisonContext} from './scatter-domain.mjs';
 import {odPeriodLabel} from './od-period.mjs';
-import {activeODCompareBase,activeContrastBase,availableContrastYears,inspectorContrast,contrastMeasures,contrastCell,annualMeasures,isODMap} from './contrast-model.mjs?v=scatter-area1';
+import {activeODCompareBase,activeContrastBase,inspectorContrast,contrastMeasures,contrastCell,annualMeasures,isODMap} from './contrast-model.mjs?v=od-only1';
 let BASE=2021;
 const measures=(s,y=state.year)=>contrastMeasures(s,BASE,y);
 const cellValue=(s,i,mode=state.mode)=>contrastCell(s,i,mode,BASE,state.year);
@@ -41,10 +41,10 @@ export function renderInspector(mapApp){
   const app=inspectorContrast(mapApp,BASE,state.year);
   const fallback=document.querySelector('#inspector');
   const mapClock=document.querySelector('#map-clock');
-  const mapSummary=document.querySelector('#map-subject');
-  const mapSubject=mapClock?mapSummary:null;
+  const mapSummary=document.querySelector('#atlas-view-summary');
+  const mapSubject=state.view==='map'?mapSummary.querySelector('#map-subject'):null;
+  const mapControls=document.querySelector('.map-sidebar > .map-panel-controls');
   mapSummary.hidden=!mapSubject;
-  if(!mapSubject)mapSummary.replaceChildren();
   const host=mapSubject??fallback;
   fallback.hidden=host!==fallback;
   if(fallback.hidden)fallback.replaceChildren();
@@ -63,7 +63,7 @@ export function renderInspector(mapApp){
   const profiles=annual?{[state.year]:b}:{[BASE]:a,[state.year]:b};
   const subject=selected??{profiles,name:nombre==='Todo el sistema'?'todo el sistema':nombre};
   const contrastControl=annual||paired?''
-    : `<label for="contrast-base" style="font-weight:700">Año de referencia</label><select id="contrast-base" aria-label="Año de contraste de los gráficos" style="font:inherit;padding:2px 5px;width:auto">${availableContrastYears(state,dataset).filter(y=>y!==state.year).map(y=>`<option value="${y}"${y===BASE?' selected':''}>${y}</option>`).join('')}</select><span>→ ${state.year}</span>`;
+    : `<label for="contrast-base" style="font-weight:700">Año de referencia</label><select id="contrast-base" aria-label="Año de contraste de los gráficos" style="font:inherit;padding:2px 5px;width:auto">${dataset.years.filter(y=>y!==state.year).map(y=>`<option value="${y}"${y===BASE?' selected':''}>${y}</option>`).join('')}</select><span>→ ${state.year}</span>`;
   const scope=mapApp.odScope;
   const scopeTitle=mapSubject&&scope.zones?'Zona A ↔ Zona B':nombre;
   const scopeSize=mapSubject&&!selected
@@ -73,11 +73,11 @@ export function renderInspector(mapApp){
   const stationNote=selected?`${dataset.id==='bart'?'Estación':'Complejo'} ${selected.id} · ${selected.borough}`:'';
   const scopeNotes=mapSubject?[stationNote,scopeSize,...scope.notes].filter(Boolean).join(' · '):'';
   const timeSummary=mapSubject
-    ? `<div class="map-scope-period"><strong id="map-context-year">${paired?`${state.odCompareBase} → ${state.year}`:state.year}</strong><span aria-hidden="true">·</span><output id="flow-period">${odPeriodLabel(state.flowDay,state.flowHour)}</output></div>`
+    ? `<div class="map-scope-period"><strong id="map-context-year">${BASE!==null?`${BASE} → ${state.year}`:state.year}</strong>${mapClock?`<span aria-hidden="true">·</span><output id="flow-period">${odPeriodLabel(state.flowDay,state.flowHour)}</output>`:''}</div>`
     : '';
   const header=`<header class="linked-heading">
     ${selected&&!mapSubject?`<div class="eyebrow">${dataset.id==='bart'?'ESTACIÓN':'COMPLEJO'} ${esc(selected.id)} · ${esc(selected.borough)}</div>`:''}
-    <h2>${esc(scopeTitle)}</h2>
+    <h2${mapSubject?` title="${esc(scopeTitle)}"`:''}>${esc(scopeTitle)}</h2>
     ${timeSummary}
     ${scopeNotes?`<p class="map-scope-notes" title="${esc(scopeNotes)}">${esc(scopeNotes)}</p>`:mapSubject&&!groupHasData&&!selected?'<p class="map-scope-notes">Sin datos para la selección</p>':''}
     ${contrastControl?`<div class="contrast-context">${contrastControl}</div><p id="contrast-source">${esc(app.contrast.label)} · ${esc(coverageLabel(app))}</p>`:''}
@@ -91,7 +91,7 @@ export function renderInspector(mapApp){
   host.innerHTML=`${header}
   <section id="scatter-host" aria-label="${annual?'Afluencia y concentración horaria':'Volumen frente a forma semanal'}"></section>
   ${mapClock?'':'<section class="clock-panel" aria-label="Reloj semanal de la selección"><div id="detail-body"></div></section>'}
-  <details id="atlas-evidence-content" class="inline-evidence"><summary>Fuentes y método</summary><div><b>${esc(coverageLabel(app))}</b><p>El mapa muestra el promedio diario anual o los viajes que comienzan en la hora seleccionada. La dispersión y el reloj resumen la semana representativa del período disponible.</p><p>Origen–destino estimado por MTA; los recorridos son asignados por un modelo sobre una red de referencia, no trayectorias observadas. Se utilizan los doce meses completos de cada año, ponderados por la cantidad de cada día de la semana.</p><p>${esc(app.contrast.label)}. Ambos años usan la misma fuente. ${app.contrast.kind==='entries'?'2019 y 2020 se incorporan solo como referencia de afluencia; no hay OD reconstruido para esos años.':'Los años de contraste OD son 2021–2025.'}</p><p>Volumen: ${esc(app.contrast.unit)}. Forma: redistribución de sus 168 pesos semanales; TV=0 significa mismo patrón. Un grupo se calcula sumando cantidades antes de normalizar.</p><p>La referencia GTFS corresponde a 2026; no representa el servicio histórico. Las curvas libres son abstracciones visuales, no nuevas vías. El modelo minimiza un costo basado en longitud de vía y transbordos GTFS declarados. Usa una red fija a todas las horas. El balance conserva aparte 0,1333 viajes semanales representativos no mapeados en 2023.</p></div></details>`;
+  <details id="atlas-evidence-content" class="inline-evidence"><summary>Fuentes y método</summary><div><b>${esc(coverageLabel(app))}</b><p>El mapa muestra el promedio diario anual o los viajes que comienzan en la hora seleccionada. La dispersión y el reloj resumen la semana representativa del período disponible.</p><p>Origen–destino estimado por MTA; los recorridos son asignados por un modelo sobre una red de referencia, no trayectorias observadas. Se utilizan los doce meses completos de cada año, ponderados por la cantidad de cada día de la semana.</p><p>Origen–destino MTA, 2021–2025.</p><p>Volumen: ${esc(app.contrast.unit)}. Forma: redistribución de sus 168 pesos semanales; TV=0 significa mismo patrón. Un grupo se calcula sumando cantidades antes de normalizar.</p><p>La referencia GTFS corresponde a 2026; no representa el servicio histórico. Las curvas libres son abstracciones visuales, no nuevas vías. El modelo minimiza un costo basado en longitud de vía y transbordos GTFS declarados. Usa una red fija a todas las horas. El balance conserva aparte 0,1333 viajes semanales representativos no mapeados en 2023.</p></div></details>`;
   if(dataset.id==='bart'){
     const description=annual?'La dispersión muestra el promedio diario y el peso de la hora pico de cada estación.':'La dispersión compara volumen y forma. Si una estación carece de viajes en uno de los años, queda fuera de esa comparación.';
     host.querySelector('#atlas-evidence-content > div').innerHTML=`<p>${esc(dataset.evidence)}</p><p>El reloj muestra el peso de cada hora en la semana. ${description}</p>`;
@@ -103,12 +103,8 @@ export function renderInspector(mapApp){
     const context=comparisonContext(selected.id,BASE,state.year);
     if(context)host.querySelector('#atlas-evidence-content > div').insertAdjacentHTML('afterbegin',`<p class="comparison-closure-note"><b>${context.label}</b><br>${esc(context.explanation)}<br>${context.sources.map(source=>`<a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.label)} ↗</a>`).join(' · ')}</p>`);
   }
-  host.querySelector('#contrast-base')?.addEventListener('change',async event=>{
-    const select=event.currentTarget,previous=BASE;
-    const source=host.querySelector('#contrast-source'),previousSource=source.textContent;
-    select.disabled=true;source.textContent='Cargando contraste…';
-    try{await mapApp.setContrastBase(+select.value);}
-    catch(error){select.value=previous;select.disabled=false;source.textContent=previousSource;mapApp.toast(error.message);}
+  host.querySelector('#contrast-base')?.addEventListener('change',event=>{
+    mapApp.setContrastBase(+event.currentTarget.value);
   });
   if(dataset.id==='nyc'&&(state.year===2025||BASE===2025)){
     host.querySelector('#atlas-evidence-content > div').insertAdjacentHTML('beforeend',
@@ -121,9 +117,11 @@ export function renderInspector(mapApp){
   evidenceSlot.append(evidence);
   const detail=(mapClock??host).querySelector('#detail-body');
   if(mapClock)mapClock.hidden=false;
+  else mapControls?.append(detail.closest('.clock-panel'));
   drawFingerprint(detail,subject,app,annual,selected?!!selectedValid:groupHasData);
   const scatter=host.querySelector('#scatter-host');
   if(mapScatter)mapScatter.append(scatter);
+  else mapControls?.append(scatter);
   drawScatter(scatter,app,annual);
   host.querySelector('#clear-subject')?.addEventListener('click',()=>app.set({selected:null}));
 }

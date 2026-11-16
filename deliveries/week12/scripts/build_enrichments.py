@@ -144,7 +144,7 @@ def main():
     manifest=json.loads((CONTEXT/'sources.json').read_text())
     for name,entry in manifest['source_files'].items():
         if hashlib.sha256((SOURCE/name).read_bytes()).hexdigest()!=entry['sha256']:raise ValueError(f'Fuente modificada: {name}')
-    atlas=json.loads((PACKAGE/'atlas/data/atlas.json').read_text());stations=atlas['stations'];ids={s['id'] for s in stations}
+    atlas=json.loads((PACKAGE/'data/entries_archive/atlas.json').read_text());stations=atlas['stations'];ids={s['id'] for s in stations}
     territories=station_territories(stations,read('nta2020.json'))
     transfers,excluded=transfer_rows(ids);fares,excluded_fares=fare_rows()
     graph=network(stations,json.loads((PACKAGE/'data/station_catalog.json').read_text()),read('gtfs_patterns.json'))
@@ -166,8 +166,8 @@ def main():
         'transfer_scope':'Free transfers recorded on subway entry; included within ridership, not all line changes.',
         'source_manifest':'enrichment_sources.json'},
         'territories':territories,'transfers':transfers,'fares':fares}
-    dump(PACKAGE/'atlas/data/enrichments.json',context)
-    dump(PACKAGE/'atlas/data/enrichment_sources.json',manifest)
+    dump(PACKAGE/'data/entries_archive/enrichments.json',context)
+    dump(PACKAGE/'data/entries_archive/enrichment_sources.json',manifest)
     dump(PACKAGE/'atlas/data/network_current.json',graph)
     audit={'stations':len(stations),'nta_unique_matches':sum(r['matches']==1 and not r['boundary_matches'] for r in territories),
         'unmatched_territories':[r['station_complex_id'] for r in territories if not r['nta2020']],
@@ -178,7 +178,7 @@ def main():
         'graph_unmatched_stops':graph['meta']['unmapped_gtfs_stop_ids'],
         'graph_atlas_complexes_not_in_feed':graph['meta']['atlas_complexes_not_in_feed'],
         'artifacts':{str(p.relative_to(PACKAGE)):{'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'bytes':p.stat().st_size}
-            for p in sorted([p for p in OUT.iterdir() if p.is_file()]+[PACKAGE/'atlas/data/enrichments.json',PACKAGE/'atlas/data/enrichment_sources.json',PACKAGE/'atlas/data/network_current.json'])}}
+            for p in sorted([p for p in OUT.iterdir() if p.is_file()]+[PACKAGE/'data/entries_archive/enrichments.json',PACKAGE/'data/entries_archive/enrichment_sources.json',PACKAGE/'atlas/data/network_current.json'])}}
     dump(CONTEXT/'build-audit.json',audit)
     print(json.dumps(audit,ensure_ascii=False,indent=2))
 

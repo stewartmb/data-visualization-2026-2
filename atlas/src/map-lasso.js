@@ -126,4 +126,5 @@ export function bindMapLasso({svg,outlines,zoom,width,height,projection,stations
   }
   singleButton.onclick=()=>start('single');
   if(pairButton)pairButton.onclick=()=>start('pair');
+  return finish;
 }

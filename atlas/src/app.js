@@ -1,32 +1,23 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=rail-width65';
+import {renderMap} from './map-view.js?v=events-restored1';
+import {createSpectralEvents} from './spectral-events.js?v=restored1';
 import {createODYearMaps} from './od-year-maps.js?v=map-layout2';
-import {renderPaths} from './paths-view.js?v=20261014-9';
-import {renderEvidence} from './evidence-view.js?v=overview1';
-import {renderInspector} from './inspector.js?v=scatter-axis-spacing';
-import {createSpectralEvents} from './spectral-events.js?v=events1';
+import {renderPaths} from './paths-view.js?v=od-only1';
+import {renderEvidence} from './evidence-view.js?v=od-only1';
+import {renderInspector} from './inspector.js?v=od-only1';
 import {renderProject} from './project-view.js?v=map-controls1';
 
-import {activeContrastBase,activeODCompareBase,availableContrastYears,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=scatter-area1';
-import {dataset} from './datasets.mjs?v=od-2025-1';
+import {activeContrastBase,activeODCompareBase,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=od-only1';
+import {dataset} from './datasets.mjs?v=events-restored1';
 import {createRoutingData} from './od-routing.mjs?v=annual-overview1';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
 const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia',project:'Proyecto'};
-let data,geo,lineas,flows,toastTimer,historicalProfiles,historicalPromise;
-let spectralEvents;
+let data,geo,lineas,flows,toastTimer;
 let choosingODYears=false,pendingODYear=null,searchTimer;
 const stationIndices=new Map();
 const scopeKeys=['borough','query','cohort','preset','tvMin','tvMax','ranges'];
-async function loadHistoricalProfiles(){
-  if(historicalProfiles)return historicalProfiles;
-  historicalPromise??=d3.json('data/historical_contrast.json').then(value=>{
-    if(value?.meta?.status!=='PASS'||![2019,2020,2024].every(y=>value.meta.years.includes(y)))throw Error('Los perfiles históricos no están validados.');
-    historicalProfiles=value;return value;
-  }).catch(error=>{historicalPromise=null;throw error;});
-  return historicalPromise;
-}
 function hydrate(){
   const p=new URLSearchParams(location.search);
   state.view='map';
@@ -57,7 +48,7 @@ function hydrate(){
   }
   setBase(normalizeContrastBase(p.get('base'),state.year,dataset.defaultBase,dataset.years));
   const contrastBase=+p.get('contrastBase');
-  state.contrastBase=availableContrastYears(state,dataset).includes(contrastBase)?contrastBase:null;
+  state.contrastBase=dataset.years.includes(contrastBase)?contrastBase:null;
   if(p.has('fidelity')&&Number.isFinite(+p.get('fidelity')))state.fidelity=Math.max(0,Math.min(1,+p.get('fidelity')));
   state.paperRAEB=p.get('raeb')!=='atlas';
   state.paperLevel=p.has('pra')&&/^\d$/.test(p.get('pra'))?Math.min(5,+p.get('pra')):5;
@@ -88,7 +79,7 @@ function updateURL(){
   for(const key of ['mode','sort','day','detail','mapMetric','inspectorTab','clock','pathsFocus','layer','flowShow'])p.set(key,state[key]);
   if(state.flowDay!==null){p.set('hour',state.flowHour);p.set('day',state.flowDay);}
   p.set('base',BASE);p.set('fidelity',state.fidelity);p.set('bundling',state.bundling);
-  if(availableContrastYears(state,dataset).includes(state.contrastBase))p.set('contrastBase',state.contrastBase);
+  if(dataset.years.includes(state.contrastBase))p.set('contrastBase',state.contrastBase);
   if(state.paperRAEB){
     p.set('raeb','paper');p.set('pra',state.paperLevel);
     if(state.paperRadius!==null)p.set('paperRadius',state.paperRadius);
@@ -96,6 +87,7 @@ function updateURL(){
   }else p.set('raeb','atlas');
   if(state.selected)p.set('inspect',state.selected);
   if(new URLSearchParams(location.search).get('compute')==='cpu')p.set('compute','cpu');
+  app.spectralEvents?.writeURL(p);
   history.replaceState(null,'',`?${p}`);
 }
 const app={
@@ -111,13 +103,11 @@ const app={
     }else app.set({flowDay:day,flowHour:hour});
   },
   routing:null,
-  get historicalProfiles(){return historicalProfiles;},
-  async setContrastBase(year){
-    if(year===state.year||!availableContrastYears(state,dataset).includes(year))return;
-    if(!dataset.years.includes(year))await loadHistoricalProfiles();
+  setContrastBase(year){
+    if(year===state.year||!dataset.years.includes(year))return;
     state.contrastBase=year;
     // Re-render only the linked analysis: no camera, map metric, OD frame, node
-    // sizes, year, or bundling job is changed by a historical contrast.
+    // sizes, year, or bundling job is changed by changing the reference year.
     renderInspector(app);updateURL();
   },
   get data(){return data;},get geo(){return geo;},get lineas(){return lineas;},get flows(){return flows;},state,
@@ -235,7 +225,6 @@ function chooseODYear(event,year){
 }
 
 function render(){
-  if(spectralEvents?.active)return;
   if(BASE===state.year)setBase(normalizeContrastBase(null,state.year,dataset.defaultBase,dataset.years));
   hideTooltip();
   const focusId=document.activeElement?.id;
@@ -333,22 +322,16 @@ function downloadCSV(columns,rows,filename){
 hydrate();
 const loadData=name=>d3.json(new URL(['flows.json','annual-od.json'].includes(name)?name+'?v=od-2025-1':name,dataset.dataURL));
 const nyc=dataset.id==='nyc';
-Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),nyc?loadData('lineas.geojson').catch(()=>null):null,
-  loadData('flows.json'),nyc?loadData('annual-od.json'):null]).then(async([a,g,l,f,annual])=>{
+Promise.all([loadData(nyc?'stations.json':'atlas.json'),loadData('boroughs.geojson'),nyc?loadData('lineas.geojson').catch(()=>null):null,
+  loadData('flows.json'),nyc?loadData('annual-od.json'):null]).then(([a,g,l,f,annual])=>{
   if(!a.stations?.length)throw Error('Falta el catálogo de estaciones.');
-  if(dataset.id==='nyc'&&a.stations.some(s=>!s.profiles?.['2021']||!s.profiles['2024']||
-    Object.values(s.profiles).filter(Boolean).some(p=>p.p.length!==168||p.p.some(v=>!Number.isFinite(v)||v<0)))){
-    throw Error('Los perfiles no cumplen la estructura esperada.');
-  }
-  if(!f?.starts||!f?.flows||!f?.meta?.years?.includes(BASE)||!f.meta.years.includes(state.year))throw Error('Faltan los agregados OD para esta comparación. No se usarán datos de entradas como reemplazo.');
+  if(!f?.starts||!f?.flows||!f?.meta?.years?.includes(BASE)||!f.meta.years.includes(state.year))throw Error('Faltan los agregados OD del período seleccionado.');
   if(nyc&&(!annual?.volume_limit||!f.meta.years.every(y=>annual.years[y]?.starts.length===f.nodes.length&&
     annual.years[y]?.loads.length===2*f.links.length)))throw Error('Faltan los agregados anuales OD.');
   f.annual=annual;
   data=a;geo=g;lineas=l;flows=f;
   app.routing=createRoutingData(f,dataset.dataURL);
-  // Métricas exclusivamente desde el OD: los perfiles de 168 celdas de cada complejo se derivan de los
-  // viajes iniciados (starts[y][nodo][dow][hora], semana representativa). El contraste histórico
-  // utiliza perfiles separados de entradas, con la misma fuente para ambos años.
+  // Perfiles de 168 horas derivados de los viajes iniciados en cada complejo.
   if(f&&f.starts){
     const ni=new Map(f.nodes.map((n,i)=>[n.id,i]));
     for(const s of data.stations){
@@ -363,12 +346,11 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),nyc?loadData('l
       }
       s.series=[];
     }
-    data.meta.comparison=dataset.comparison;
+    data.meta={comparison:dataset.comparison,retrieved:f.meta.built_at_utc??''};
   }
   state.pins=state.pins.filter(id=>app.station(id));
   if(!app.station(state.selected))state.selected=null;
   f.nodes.forEach((station,index)=>stationIndices.set(station.id,index));
-  if(!isODMap(state)&&state.contrastBase!==null&&!dataset.years.includes(state.contrastBase))await loadHistoricalProfiles();
   document.querySelector('.brand small').textContent=`ATLAS DE RITMOS · ${dataset.name.toUpperCase()}`;
   if(dataset.id==='bart')document.title='Fractal · Área de la Bahía · BART';
   document.querySelector('#borough').replaceChildren(
@@ -497,16 +479,18 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),nyc?loadData('l
     try{localStorage.setItem('rhythm-atlas-saved',JSON.stringify(saved.slice(0,12)));app.toast('Exploración guardada en este navegador. Encuéntrala en Evidencia.');if(state.view==='evidence')render();}catch{app.toast('Este navegador no permite guardar; puedes copiar la URL.');}
   });
   document.querySelector('#export').addEventListener('click',exportCSV);
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&state.selected)app.set({selected:null});});
+  if(nyc){
+    document.querySelector('#atlas-analysis').hidden=false;
+    app.spectralEvents=createSpectralEvents({flows:f,syncURL:updateURL,dataURL:dataset.eventsURL});
+  }
+  document.addEventListener('keydown',e=>{
+    if(e.key!=='Escape')return;
+    if(!app.spectralEvents?.closeEpisode()&&state.selected)app.set({selected:null});
+  });
   // Chart dimensions depend on width. Height-only changes (mobile browser chrome,
   // screenshots) must not destroy a brush or a pending interaction.
   let rt,lastWidth=innerWidth;window.addEventListener('resize',()=>{if(innerWidth===lastWidth)return;lastWidth=innerWidth;clearTimeout(rt);rt=setTimeout(render,160);});
-  if(nyc){
-    document.querySelector('#atlas-analysis').hidden=false;
-    spectralEvents=createSpectralEvents({geo:g,flows:f,onFlows:render});
-  }
-  if(spectralEvents&&new URLSearchParams(location.search).get('analysis')==='events')spectralEvents.show(true);
-  else render();
+  render();
 }).catch(error=>{
   const el=document.querySelector('#loading');el.innerHTML=`<div><h2>No se pudo abrir el atlas</h2><p>${esc(error.message)}</p><p>Abre esta carpeta con un servidor HTTP. Consulta atlas/README.md.</p><button onclick="location.reload()">Reintentar</button></div>`;
   console.error(error);

@@ -24,8 +24,8 @@ def main():
     assert len(conversion)==72
     for source in m['sources'].values():
         for entry in [source['metadata'],*source['counts']]:assert sha(P/entry['file'])==entry['sha256']
-    client=json.loads((P/'atlas/data/full_period.json').read_text())
-    assert sha(P/'atlas/data/full_period.json')==audit['client_artifact']['sha256']
+    client=json.loads((P/'data/entries_archive/full_period.json').read_text())
+    assert sha(P/'data/entries_archive/full_period.json')==audit['client_artifact']['sha256']
     assert len(client['meta']['months'])==72 and len(client['stations'])>=424
     assert client['meta']['months']==sorted(m['months'])
     assert len({s['id'] for s in client['stations']})==len(client['stations'])
@@ -57,7 +57,7 @@ def main():
         actual=con.execute(f'SELECT sum(ridership),sum(transfers),sum(source_rows) FROM {reader}').fetchone()
         assert all(abs(float(a)-float(b))<1e-6 for a,b in zip(actual,expected_totals)),name
     # The temporal expansion must reproduce the published fingerprint input.
-    ids=[s['id'] for s in json.loads((P/'atlas/data/atlas.json').read_text())['stations']]
+    ids=[s['id'] for s in json.loads((P/'data/entries_archive/atlas.json').read_text())['stations']]
     con.execute('CREATE TEMP TABLE atlas_ids (id VARCHAR)')
     con.executemany('INSERT INTO atlas_ids VALUES (?)',[(sid,) for sid in ids])
     con.execute("""CREATE TEMP TABLE comparable AS SELECT station_complex_id,

@@ -127,8 +127,8 @@ def main():
         'source_datasets':['t69i-h2me','wujg-7c2s'],
         'fingerprint_scope':'Existing fingerprint comparison remains January–February 2020–2024. Monthly context uses all 72 months.'},
         'stations':[values[sid] for sid in sorted(values)]}
-    (P/'atlas/data/full_period.json').write_text(json.dumps(client,ensure_ascii=False,separators=(',',':')))
-    report['client_artifact']={'file':'atlas/data/full_period.json','sha256':sha(P/'atlas/data/full_period.json')}
+    (P/'data/entries_archive/full_period.json').write_text(json.dumps(client,ensure_ascii=False,separators=(',',':')))
+    report['client_artifact']={'file':'data/entries_archive/full_period.json','sha256':sha(P/'data/entries_archive/full_period.json')}
     dump(D/'build-audit.json',report);con.close();print(json.dumps(report,indent=2),flush=True)
 
 if __name__=='__main__':main()

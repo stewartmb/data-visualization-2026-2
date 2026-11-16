@@ -1,6 +1,7 @@
 .atlas-analysis {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  margin: 8px 10px 0;
   padding: 2px;
   gap: 2px;
   background: var(--pale);
@@ -8,8 +9,23 @@
   border-radius: 6px;
 }
 
-.atlas-analysis[hidden], .spectral-workspace[hidden], .spectral-header { display: none; }
+.atlas-analysis[hidden], .spectral-header[hidden], .spectral-map-key[hidden] { display: none; }
+.atlas-insights:has(.atlas-analysis:not([hidden])) { display: flex; flex-direction: column; }
+.atlas-insights:has(.atlas-analysis:not([hidden])) .od-year-strip { min-height: 0; }
+.spectral-calendar-open .od-year-strip,
+.spectral-calendar-open .atlas-insights > .inspector { display: none !important; }
+
+.spectral-episode-active :is(.context-bar,#map-subject,#map-center),
+.spectral-episode-active :is(.map-legend-position,.map-loading,.map-credit,.raeb-canvas,.map-base-decoration),
+.spectral-episode-active .map-svg > g > :not(.borough-name,.spectral-nodes,.map-lines,.map-bg),
+.spectral-episode-active :is(#atlas-evidence,.flow-footer-actions) {
+  display: none !important;
+}
+.spectral-source { display: none; }
+.spectral-episode-active .spectral-source { display: block; color: var(--muted); font-size: 10px; }
+.spectral-calendar-open .map-sidebar > .map-panel-controls { opacity: .48; }
 .atlas-analysis button {
+  flex: 1;
   padding: 4px 9px;
   border: 1px solid transparent;
   border-radius: 4px;
@@ -24,65 +40,25 @@
   border-color: var(--line);
 }
 
-.spectral-mode .app-shell, .spectral-mode .context-bar,
-.spectral-mode #map-subject, .spectral-mode #map-center { display: none !important; }
+.spectral-header p { margin: 2px 0 0; color: var(--muted); font-size: 11px; line-height: 1.25; }
+.spectral-header #spectral-summary-hour { color: var(--ink); }
 
-.spectral-header {
-  grid-area: 1 / 2;
-  min-width: 0;
-  align-items: baseline;
-  justify-content: center;
-  flex-wrap: wrap;
-  column-gap: 9px;
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.spectral-header strong { color: var(--ink); font-size: 13px; }
-.spectral-mode .spectral-header { display: flex; }
-
-.spectral-workspace {
-  display: grid;
-  grid-template-columns: var(--atlas-left) minmax(0,1fr) var(--atlas-right);
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-.spectral-detail, .spectral-timeline {
-  min-width: 0;
-  overflow: auto;
-  padding: 14px 12px;
-  background: #fff;
-}
-
-.spectral-detail { border-right: 1px solid var(--line); }
-.spectral-timeline { border-left: 1px solid var(--line); background: #f8f9f7; }
-.spectral-workspace h2 {
+.spectral-timeline { min-width: 0; padding: 14px 12px; }
+.spectral-detail { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--line); }
+.spectral-timeline { border-top: 1px solid var(--line); margin-top: 8px; }
+:is(.spectral-detail,.spectral-timeline) h2 {
   font-size: 14px;
   line-height: 1.25;
   font-weight: 700;
   margin: 0 0 13px;
 }
-.spectral-workspace h3 { font-size: 12px; line-height: 1.35; margin: 0 0 5px; }
-.spectral-empty, .spectral-detail-date, .spectral-detail-scope,
+:is(.spectral-detail,.spectral-timeline) h3 { font-size: 12px; line-height: 1.35; margin: 0 0 5px; }
+.spectral-chart-status, .spectral-detail-scope,
 .spectral-method, #spectral-episodes > p { color: var(--muted); font-size: 11px; line-height: 1.4; }
 
 .spectral-method { padding-top: 10px; margin-top: 12px; border-top: 1px solid var(--line); }
 .spectral-method summary { cursor: pointer; color: var(--teal); }
 
-.spectral-map {
-  position: relative;
-  display: grid;
-  min-width: 0;
-  min-height: 0;
-  overflow: hidden;
-  background: #eff1f1;
-}
-
-.spectral-map > svg { display: block; width: 100%; height: 100%; min-height: 0; touch-action: none; }
-.spectral-map .map-bg { fill: #e1e5e5; stroke: #b5c0c2; }
-.spectral-map .borough-name { pointer-events: none; }
-.spectral-rails { fill: none; stroke: #8b9da2; stroke-opacity: .53; stroke-width: 1px; }
 .spectral-node { opacity: .55; }
 .spectral-node.is-involved { cursor: pointer; stroke: #264751; stroke-width: 1.25px; opacity: 1; }
 .spectral-node.is-selected { stroke: #102937; stroke-width: 2.25px; }
@@ -92,6 +68,7 @@
   position: absolute;
   top: 12px;
   left: 12px;
+  z-index: 6;
   display: grid;
   gap: 4px;
   width: max-content;
@@ -105,22 +82,10 @@
   pointer-events: none;
 }
 
-#spectral-map-caption { color: var(--ink); font-size: 11px; }
-#spectral-map-caption:empty { display: none; }
+.spectral-map-hour { color: var(--ink); }
+.spectral-map-hour:empty { display: none; }
 .spectral-colorbar { height: 7px; border-radius: 3px; background: linear-gradient(90deg,#146b91,#f8f8f4,#ba542c); }
 .spectral-key-words { display: flex; justify-content: space-between; gap: 12px; }
-#spectral-center {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  width: 33px;
-  height: 33px;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  font-size: 18px;
-}
-
 .spectral-calendar {
   width: 100%;
   table-layout: fixed;
@@ -165,6 +130,7 @@
   border: 1px solid var(--line);
   border-radius: 4px;
 }
+.spectral-episode-active #spectral-episodes button { padding-block: 4px; }
 #spectral-episodes button span { color: var(--muted); font-size: 10px; }
 #spectral-episodes button[aria-pressed="true"] { border-color: #347987; background: #edf4f4; }
 
@@ -178,36 +144,52 @@
   border-top: 2px solid #176982;
 }
 .spectral-series-key span + span::before { border-color: #71848b; border-top-style: dashed; }
-.spectral-chart { display: block; width: 100%; height: 156px; }
+.spectral-chart-frame { position: relative; height: 156px; }
+.spectral-chart { display: block; width: 100%; height: 100%; }
+.spectral-chart-frame.is-empty::before {
+  position: absolute;
+  inset: 15px 14px 25px 32px;
+  border-left: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  content: "";
+}
+.spectral-chart-status {
+  position: absolute;
+  inset: 15px 14px 25px 32px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 10px;
+  text-align: center;
+}
+:is(.spectral-series-key,.spectral-chart,.spectral-chart-status,.spectral-hour-reading)[hidden] { display: none; }
 .spectral-series { fill: none; stroke: #176982; stroke-width: 2px; }
 .spectral-series.is-typical { stroke: #71848b; stroke-dasharray: 4 3; stroke-width: 1.35px; }
 .spectral-event-band { fill: #e8f0f1; }
 .spectral-chart-marker { stroke: #6f858d; stroke-width: 1px; stroke-dasharray: 2 2; }
 .spectral-hour-reading { display: block; min-height: 2.6em; color: var(--ink); font-size: 10.5px; }
-
-@media (max-width: 999px) {
-  .atlas-workbench .masthead { grid-template-columns: minmax(0,1fr) max-content max-content; }
-  .atlas-analysis { grid-area: 1 / 2; align-self: center; }
-  .atlas-view-context .atlas-home { grid-area: 1 / 3; }
-  .spectral-header { grid-area: 2 / 1 / 3 / -1; justify-content: start; }
-  .spectral-mode .masthead { grid-template-rows: 36px auto; }
-  .spectral-mode .spectral-workspace { display: flex; flex-direction: column; }
-  .spectral-timeline { order: -1; border-left: 0; border-bottom: 1px solid var(--line); }
-  .spectral-calendar td button { height: 22px; }
-  .spectral-map { order: 1; }
-  .spectral-map > svg { height: clamp(380px,65dvh,520px); }
-  .spectral-detail { order: 2; border-right: 0; border-top: 1px solid var(--line); }
-  #spectral-episodes ol { grid-template-columns: repeat(auto-fit,minmax(108px,1fr)); }
+.spectral-hour-driver {
+  display: grid;
+  width: 100%;
+  padding: 6px 8px;
+  margin-top: 5px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  color: var(--ink);
+  text-align: left;
+  font-size: 10.5px;
+  line-height: 1.4;
 }
-
-@media (max-width: 460px) {
-  .atlas-workbench .atlas-view-context .atlas-home { font-size: 10px; padding-inline: 5px; }
-  .atlas-analysis button { padding-inline: 6px; }
-}
+.spectral-hour-driver[hidden] { display: none; }
+.spectral-hour-driver:hover { border-color: var(--teal); }
+.spectral-hour-driver span:first-child { color: var(--muted); }
+.spectral-decrease { color: #146b91; }
+.spectral-increase { color: #a04727; }
 
 @media (min-width: 1000px) {
-  .spectral-workspace { height: calc(100dvh - var(--top)); }
+  .atlas-insights:has(.atlas-analysis:not([hidden])) > .od-year-strip { height: auto; flex: 1 1 auto; }
 }
 @media (max-width: 999px) {
-  .atlas-workbench .context-bar { grid-column: 1 / -1; }
+  .spectral-calendar td button { height: 22px; }
+  #spectral-episodes ol { grid-template-columns: repeat(auto-fit,minmax(108px,1fr)); }
 }

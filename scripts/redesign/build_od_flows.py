@@ -33,7 +33,7 @@ from pathlib import Path
 import numpy as np
 
 ROOT = Path(__file__).resolve().parents[2]
-ATLAS = ROOT / "atlas" / "data" / "atlas.json"
+ATLAS = ROOT / "atlas" / "data" / "stations.json"
 LINEAS = ROOT / "atlas" / "data" / "lineas.geojson"
 OD_DIR = ROOT / "data" / "raw" / "od" / "parquet"
 OUT = ROOT / "atlas" / "data" / "flows.json"

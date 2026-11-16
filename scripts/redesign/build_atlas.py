@@ -10,6 +10,8 @@ SRC = ROOT/'data/redesign'
 OLD = ROOT/'deliveries/week06/data/processed'
 OUT = ROOT/'atlas/data'
 OUT.mkdir(parents=True,exist_ok=True)
+ARCHIVE = ROOT/'deliveries/week12/data/entries_archive'
+ARCHIVE.mkdir(parents=True,exist_ok=True)
 YEARS = list(range(2021,2025))   # 2021 = año base (primer año con estimación origen-destino)
 BASE, END = 2021, 2024
 SRC_CSV = 'year_hourly_2020_2024.csv'   # año completo, todos los meses
@@ -115,7 +117,10 @@ app={'meta':{'title':'La forma del día · Atlas de ritmos','years':YEARS,'month
     'retrieved':source_manifest['retrieved_at_utc'],'scope':'subway; complejos con perfiles positivos en ambos extremos',
     'exposures':exposures,'excluded':excluded,'schemaVersion':1},'system':system,'stations':output,
     'events':json.loads((SRC/'context_events.json').read_text())}
-(OUT/'atlas.json').write_text(json.dumps(app,ensure_ascii=False,separators=(',',':')))
+(ARCHIVE/'atlas.json').write_text(json.dumps(app,ensure_ascii=False,separators=(',',':')))
+keys = ('id', 'name', 'borough', 'lat', 'lon', 'routes')
+catalog = {'stations': [{key: station[key] for key in keys} for station in output]}
+(OUT/'stations.json').write_text(json.dumps(catalog, ensure_ascii=False, separators=(',', ':'))+'\n')
 (OUT/'boroughs.geojson').write_text(json.dumps({'type':'FeatureCollection','features':features},separators=(',',':')))
 
 def quantile(vals,p):

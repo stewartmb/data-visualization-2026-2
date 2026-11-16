@@ -103,3 +103,11 @@ de 2025. Se registran aparte cuatro filas con un extremo fuera de la red
 (Tompkinsville y St George, de Staten Island Railway). Los meses sin pares
 publicados para parte de Rockaways coinciden con [las obras de la línea A](https://www.mta.info/document/150141).
 Los recorridos se modelan sobre el GTFS de referencia de 2026.
+
+## Comparaciones mensuales en Fractal
+
+El prototipo **Cambios mensuales** compara los viajes iniciados en cada complejo con los del mes anterior, para el mismo día de la semana y hora. Cada valor es el promedio publicado por la MTA para esa franja mensual, sumado sobre los destinos de subway incluidos en el catálogo del Atlas. La vista compara solo los orígenes presentes en ambos meses. Dentro de un mes publicado, una franja de un origen presente sin filas OD suma cero. Enero de 2021 carece de mes anterior.
+
+Cada celda del calendario muestra la franja con el mayor cambio absoluto en el total de viajes iniciados de la red comparable. El color indica cuánto bajó o subió ese total, con una escala constante para el calendario. Al elegir un mes, la lista muestra las seis franjas con el mayor cambio absoluto del total de la red comparable. En el mapa, el área del círculo por encima del mínimo visible representa el cambio absoluto del complejo. La escala de área es constante para las 168 franjas del par de meses. La serie compara dos días típicos, expresados en viajes iniciados por hora.
+
+`python deliveries/week12/scripts/prepare_monthly_od.py` usa DuckDB y NumPy para agregar las 60 particiones Parquet validadas por los procesos de adquisición OD originales. Comprueba los SHA-256 de origen. El [índice de la vista](atlas/data/monthly-od/index.json) declara el orden de complejos y franjas, la codificación, el linaje de cada mes y el SHA-256 de cada archivo generado. El navegador carga el par elegido bajo demanda.

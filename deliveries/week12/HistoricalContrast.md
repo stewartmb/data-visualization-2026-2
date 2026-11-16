@@ -1,5 +1,7 @@
 # Contraste histórico independiente del overview
 
+Esta página documenta una versión anterior. El Atlas actual calcula las comparaciones con OD 2021–2025. Los perfiles horarios de entradas están en el [archivo de investigación](data/entries_archive/).
+
 Cambio solicitado el 28 de octubre de 2026: incorporar **2019 y 2020 únicamente a los gráficos de la derecha**. El mapa conserva su OD de 2021–2024, sus caminos, parámetros, año, cámara y magnitudes.
 
 ## Comportamiento

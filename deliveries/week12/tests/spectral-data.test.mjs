@@ -3,7 +3,8 @@ import {readFileSync} from 'node:fs';
 
 const app = new URL('../atlas/data/', import.meta.url);
 const read = name => JSON.parse(readFileSync(new URL(name, app)));
-const index = read('spectral/index.json');
+const readSpectral = name => JSON.parse(readFileSync(new URL('../data/entries_archive/spectral/'+name, import.meta.url)));
+const index = readSpectral('index.json');
 const network = read('network_current.json');
 const ids = new Set(network.nodes.map(node => String(node.id)));
 
@@ -14,7 +15,7 @@ assert.ok(index.meta.observed_hours <= index.meta.hour_slots * ids.size);
 assert.equal(index.meta.scales.length, 4);
 
 for (const [month, episodes] of Object.entries(index.months)) {
-  const details = read('spectral/' + month + '.json');
+  const details = readSpectral(month + '.json');
   assert.ok(episodes.length <= 6);
   assert.equal(Object.keys(details).length, episodes.length);
   for (const event of episodes) {

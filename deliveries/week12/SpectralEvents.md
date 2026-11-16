@@ -1,10 +1,12 @@
 # Eventos de afluencia en la red
 
-**Pregunta.** ¿Qué complejos conectados se apartaron de su patrón habitual al mismo tiempo y cuánto duró ese cambio? El modo **Eventos** del Atlas usa las entradas horarias de **2019–2024**, con hora local de Nueva York. El modo **Flujos** usa las estimaciones OD de 2021–2025.
+**Eventos** usa entradas horarias de 2019–2024 y se abre desde la pestaña del mismo nombre en el Atlas. Este documento describe su cálculo.
+
+**Pregunta.** ¿Qué complejos conectados se apartaron de su patrón habitual al mismo tiempo y cuánto duró ese cambio? El prototipo calculó episodios con las entradas horarias de **2019–2024**, en la hora local de Nueva York.
 
 - El calendario resume la mayor señal detectada en cada mes. Al pulsar una celda, aparecen hasta seis episodios candidatos.
-- El mapa muestra los complejos detectados. El color codifica la diferencia porcentual entre entradas observadas y habituales, acumuladas para las horas en que el algoritmo detectó cada complejo. La escala de color va de −100 % a +100 % y se satura a partir de ese límite. Al pasar por un complejo se pueden consultar los conteos y el porcentaje.
-- La serie de tiempo compara las entradas por hora observadas con las habituales, antes, durante y después. Se puede inspeccionar el conjunto o un complejo pulsando su marca en el mapa.
+- El mapa muestra los complejos detectados. Los círculos se actualizan al recorrer las horas de la serie. El área por encima del mínimo visible indica la diferencia absoluta en entradas, con escala fija durante el episodio y su contexto horario. El color indica la diferencia porcentual de esa hora y se satura a partir de ±100 %. Los complejos sin comparación horaria se muestran en gris. Al pasar por una marca se pueden consultar los conteos y el porcentaje.
+- En la última versión del prototipo, la serie se mostraba debajo de la lista de episodios, a la izquierda. El panel derecho quedaba atenuado al abrir el calendario. El gráfico se llenaba al elegir un episodio. La serie de tiempo compara las entradas por hora observadas con las habituales, antes, durante y después. Al recorrer las horas, se lee la diferencia neta y el complejo con la mayor diferencia absoluta de entradas en esa hora. Se puede inspeccionar su serie pulsando su nombre o su marca en el mapa.
 
 ## Fuentes y reproducción
 
@@ -14,13 +16,12 @@
 | Grafo espacial | [Red de referencia GTFS 2026](RAEBImplementation.md), archivo [network_current.json](atlas/data/network_current.json), con 424 complejos y 549 conexiones únicas al unir ambos sentidos y deduplicar tramos y transbordos declarados. Se usa la misma topología de referencia para todo el período. |
 | Método | [ManyWaves, Valdrighi, García-Zanabria et al., secciones 4 y 5](https://files.visualdslab.com/files/papers/2026-ManyWaves-CGF.pdf#page=3). Esta adaptación usa una variable de entradas y el calendario, mapa y serie del Atlas. |
 
-El [índice procesado](atlas/data/spectral/index.json) registra los SHA-256 de los 72 Parquet y del grafo, así como cobertura y parámetros. [FullPeriodData](FullPeriodData.md) describe adquisición y conversión de los originales. Con los insumos locales y las dependencias de [Semana 12](requirements-data.txt), desde la raíz:
+El [índice procesado](data/entries_archive/spectral/index.json) registra los SHA-256 de los 72 Parquet y del grafo, así como cobertura y parámetros. [FullPeriodData](FullPeriodData.md) describe adquisición y conversión de los originales. Con los insumos locales y las dependencias de [Semana 12](requirements-data.txt), desde la raíz:
 
 ```bash
 resultado=$(mktemp -d)
 python deliveries/week12/scripts/prepare_spectral_events.py --output "$resultado"
-cp "$resultado"/index.json "$resultado"/????-??.json atlas/data/spectral/
-cp "$resultado"/index.json "$resultado"/????-??.json deliveries/week12/atlas/data/spectral/
+cp "$resultado"/index.json "$resultado"/????-??.json deliveries/week12/data/entries_archive/spectral/
 cp "$resultado"/comparison.json deliveries/week12/data/spectral_comparison.json
 node --test deliveries/week12/tests/spectral-data.test.mjs
 ```

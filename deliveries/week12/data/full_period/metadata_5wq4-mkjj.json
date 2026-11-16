@@ -1,0 +1,977 @@
+{
+  "id" : "5wq4-mkjj",
+  "name" : "MTA Subway Hourly Ridership: Beginning 2025",
+  "assetType" : "dataset",
+  "attribution" : "Metropolitan Transportation Authority",
+  "attributionLink" : "https://www.mta.info/open-data",
+  "averageRating" : 0,
+  "category" : "Transportation",
+  "createdAt" : 1732215238,
+  "description" : "This dataset provides subway ridership estimates on an hourly basis by subway station complex and class of fare payment.",
+  "diciBackend" : false,
+  "displayType" : "table",
+  "downloadCount" : 12532,
+  "hideFromCatalog" : false,
+  "hideFromDataJson" : false,
+  "locked" : false,
+  "newBackend" : true,
+  "numberOfComments" : 0,
+  "oid" : 40972725,
+  "provenance" : "official",
+  "publicationAppendEnabled" : false,
+  "publicationDate" : 1732215242,
+  "publicationGroup" : 19700097,
+  "publicationStage" : "published",
+  "rowsUpdatedAt" : 1794514672,
+  "rowsUpdatedBy" : "xzik-pf59",
+  "tableId" : 19700097,
+  "totalTimesRated" : 0,
+  "viewCount" : 32070,
+  "viewLastModified" : 1794513386,
+  "viewType" : "tabular",
+  "approvals" : [ {
+    "reviewedAt" : 1737124639,
+    "reviewedAutomatically" : true,
+    "state" : "approved",
+    "submissionId" : 6690213,
+    "submissionObject" : "public_audience_request",
+    "submissionOutcome" : "change_audience",
+    "submittedAt" : 1737124639,
+    "targetAudience" : "public",
+    "workflowId" : 2254,
+    "submissionDetails" : {
+      "permissionType" : "READ"
+    },
+    "submissionOutcomeApplication" : {
+      "endedAt" : 1737124639,
+      "failureCount" : 0,
+      "startedAt" : 1737124639,
+      "status" : "success"
+    },
+    "submitter" : {
+      "id" : "xzik-pf59",
+      "displayName" : "NY Open Data"
+    }
+  } ],
+  "clientContext" : {
+    "clientContextVariables" : [ ],
+    "inheritedVariables" : { }
+  },
+  "columns" : [ {
+    "id" : 602051827,
+    "name" : "transit_timestamp",
+    "dataTypeName" : "calendar_date",
+    "description" : "Timestamp payment took place in local time. All transactions here are rounded down to the nearest hour. For example, a swipe that took place at 1:37pm will be reported as having taken place at 1pm.",
+    "fieldName" : "transit_timestamp",
+    "position" : 1,
+    "renderTypeName" : "calendar_date",
+    "tableColumnId" : 155679258,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "2026-11-05T23:00:00.000",
+      "null" : "0",
+      "top" : [ {
+        "item" : "2025-09-09T08:00:00.000",
+        "count" : "4549"
+      }, {
+        "item" : "2025-09-10T08:00:00.000",
+        "count" : "4542"
+      }, {
+        "item" : "2025-09-11T08:00:00.000",
+        "count" : "4539"
+      }, {
+        "item" : "2025-05-21T08:00:00.000",
+        "count" : "4537"
+      }, {
+        "item" : "2025-09-17T08:00:00.000",
+        "count" : "4536"
+      }, {
+        "item" : "2025-09-08T08:00:00.000",
+        "count" : "4535"
+      }, {
+        "item" : "2025-05-20T14:00:00.000",
+        "count" : "4534"
+      }, {
+        "item" : "2025-05-20T08:00:00.000",
+        "count" : "4532"
+      }, {
+        "item" : "2025-05-20T16:00:00.000",
+        "count" : "4529"
+      }, {
+        "item" : "2025-05-23T14:00:00.000",
+        "count" : "4529"
+      }, {
+        "item" : "2025-05-21T15:00:00.000",
+        "count" : "4526"
+      }, {
+        "item" : "2025-05-19T16:00:00.000",
+        "count" : "4525"
+      }, {
+        "item" : "2025-05-19T14:00:00.000",
+        "count" : "4525"
+      }, {
+        "item" : "2025-09-15T08:00:00.000",
+        "count" : "4521"
+      }, {
+        "item" : "2025-05-22T15:00:00.000",
+        "count" : "4520"
+      }, {
+        "item" : "2025-05-22T13:00:00.000",
+        "count" : "4519"
+      }, {
+        "item" : "2025-05-23T15:00:00.000",
+        "count" : "4518"
+      }, {
+        "item" : "2025-05-19T15:00:00.000",
+        "count" : "4517"
+      }, {
+        "item" : "2025-05-19T08:00:00.000",
+        "count" : "4514"
+      }, {
+        "item" : "2025-05-20T09:00:00.000",
+        "count" : "4514"
+      } ],
+      "smallest" : "2025-01-01T00:00:00.000",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : {
+      "view" : "date_time",
+      "align" : "center"
+    }
+  }, {
+    "id" : 602051828,
+    "name" : "transit_mode",
+    "dataTypeName" : "text",
+    "description" : "Distinguishes between the subway, Staten Island Railway, and the Roosevelt Island Tram",
+    "fieldName" : "transit_mode",
+    "position" : 2,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155679259,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "tram",
+      "null" : "0",
+      "top" : [ {
+        "item" : "subway",
+        "count" : "47409772"
+      }, {
+        "item" : "staten_island_railway",
+        "count" : "185785"
+      }, {
+        "item" : "tram",
+        "count" : "164794"
+      } ],
+      "smallest" : "staten_island_railway",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : { }
+  }, {
+    "id" : 602051829,
+    "name" : "station_complex_id",
+    "dataTypeName" : "text",
+    "description" : "A unique identifier for station complexes",
+    "fieldName" : "station_complex_id",
+    "position" : 3,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155679260,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "TRAM2",
+      "null" : "0",
+      "top" : [ {
+        "item" : "611",
+        "count" : "153986"
+      }, {
+        "item" : "607",
+        "count" : "148885"
+      }, {
+        "item" : "616",
+        "count" : "146366"
+      }, {
+        "item" : "610",
+        "count" : "146346"
+      }, {
+        "item" : "602",
+        "count" : "146334"
+      }, {
+        "item" : "164",
+        "count" : "145300"
+      }, {
+        "item" : "318",
+        "count" : "145285"
+      }, {
+        "item" : "279",
+        "count" : "144523"
+      }, {
+        "item" : "628",
+        "count" : "144295"
+      }, {
+        "item" : "447",
+        "count" : "144031"
+      }, {
+        "item" : "278",
+        "count" : "143825"
+      }, {
+        "item" : "617",
+        "count" : "142002"
+      }, {
+        "item" : "614",
+        "count" : "141131"
+      }, {
+        "item" : "392",
+        "count" : "140767"
+      }, {
+        "item" : "604",
+        "count" : "139877"
+      }, {
+        "item" : "609",
+        "count" : "138542"
+      }, {
+        "item" : "618",
+        "count" : "138463"
+      }, {
+        "item" : "613",
+        "count" : "138089"
+      }, {
+        "item" : "625",
+        "count" : "138053"
+      }, {
+        "item" : "58",
+        "count" : "137979"
+      } ],
+      "smallest" : "1",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : { }
+  }, {
+    "id" : 602051830,
+    "name" : "station_complex",
+    "dataTypeName" : "text",
+    "description" : "The subway complex where an entry swipe or tap took place. Large subway complexes, such as Times Square and Fulton Center, may contain multiple subway lines. The subway complex name includes the routes that stop at the complex in parenthesis, such as Zerega Av (6).",
+    "fieldName" : "station_complex",
+    "position" : 4,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155679261,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "Zerega Av (6)",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Times Sq-42 St/Port Authority Bus Terminal (1,2,3,7,A,C,E,N,Q,R,W,S)",
+        "count" : "153986"
+      }, {
+        "item" : "34 St-Herald Sq (B,D,F,M,N,Q,R,W)",
+        "count" : "148885"
+      }, {
+        "item" : "Jackson Hts-Roosevelt Av/74 St-Broadway (7,E,F,M,R)",
+        "count" : "146366"
+      }, {
+        "item" : "Grand Central-42 St (4,5,6,7,S)",
+        "count" : "146346"
+      }, {
+        "item" : "14 St-Union Sq (4,5,6,L,N,Q,R,W)",
+        "count" : "146334"
+      }, {
+        "item" : "34 St-Penn Station (A,C,E)",
+        "count" : "145300"
+      }, {
+        "item" : "34 St-Penn Station (1,2,3)",
+        "count" : "145285"
+      }, {
+        "item" : "Sutphin Blvd-Archer Av-JFK Airport (E,J,Z)",
+        "count" : "144523"
+      }, {
+        "item" : "Fulton St (2,3,4,5,A,C,J,Z)",
+        "count" : "144295"
+      }, {
+        "item" : "Flushing-Main St (7)",
+        "count" : "144031"
+      }, {
+        "item" : "Jamaica Center-Parsons/Archer (E,J,Z)",
+        "count" : "143825"
+      }, {
+        "item" : "Atlantic Av-Barclays Ctr (2,3,4,5,B,D,N,Q,R)",
+        "count" : "142002"
+      }, {
+        "item" : "59 St-Columbus Circle (1,A,C,B,D)",
+        "count" : "141131"
+      }, {
+        "item" : "125 St (4,5,6)",
+        "count" : "140767"
+      }, {
+        "item" : "161 St-Yankee Stadium (4,B,D)",
+        "count" : "139877"
+      }, {
+        "item" : "42 St-Bryant Pk/5 Av (7,B,D,F,M)",
+        "count" : "138542"
+      }, {
+        "item" : "14 St/8 Av (A,C,E,L)",
+        "count" : "138463"
+      }, {
+        "item" : "Lexington Av/59 St (4,5,6,N,R,W)",
+        "count" : "138089"
+      }, {
+        "item" : "Delancey St-Essex St (F,M,J,Z)",
+        "count" : "138053"
+      }, {
+        "item" : "Coney Island-Stillwell Av (D,F,N,Q)",
+        "count" : "137979"
+      } ],
+      "smallest" : "103 St (1)",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : { }
+  }, {
+    "id" : 602051831,
+    "name" : "borough",
+    "dataTypeName" : "text",
+    "description" : "Represents one of the boroughs of New York City serviced by the subway system (Bronx, Brooklyn, Manhattan, Queens).",
+    "fieldName" : "borough",
+    "position" : 5,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155679262,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "Staten Island",
+      "null" : "0",
+      "top" : [ {
+        "item" : "Brooklyn",
+        "count" : "16891086"
+      }, {
+        "item" : "Manhattan",
+        "count" : "14741162"
+      }, {
+        "item" : "Queens",
+        "count" : "8306520"
+      }, {
+        "item" : "Bronx",
+        "count" : "7635795"
+      }, {
+        "item" : "Staten Island",
+        "count" : "185788"
+      } ],
+      "smallest" : "Bronx",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : {
+      "align" : "center"
+    }
+  }, {
+    "id" : 602051832,
+    "name" : "payment_method",
+    "dataTypeName" : "text",
+    "description" : "Specifies whether the payment method used to enter was from OMNY or MetroCard.",
+    "fieldName" : "payment_method",
+    "position" : 6,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155679263,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "omny",
+      "null" : "0",
+      "top" : [ {
+        "item" : "omny",
+        "count" : "27334201"
+      }, {
+        "item" : "metrocard",
+        "count" : "20426150"
+      } ],
+      "smallest" : "metrocard",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ",",
+      "align" : "center"
+    }
+  }, {
+    "id" : 602051833,
+    "name" : "fare_class_category",
+    "dataTypeName" : "text",
+    "description" : "The class of fare payment used for the trip. The consolidated categories are: • MetroCard – Fair Fare; • MetroCard – Full Fare; • MetroCard – Other; • MetroCard – Senior & Disability; • MetroCard – Students; • MetroCard – Unlimited 30-Day; • MetroCard – Unlimited 7-Day; • OMNY – Full Fare; • OMNY – Other; • OMNY – Seniors & Disabilities",
+    "fieldName" : "fare_class_category",
+    "position" : 7,
+    "renderTypeName" : "text",
+    "tableColumnId" : 155679264,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "OMNY - Students",
+      "null" : "0",
+      "top" : [ {
+        "item" : "OMNY - Full Fare",
+        "count" : "6717271"
+      }, {
+        "item" : "OMNY - Students",
+        "count" : "5717571"
+      }, {
+        "item" : "OMNY - Seniors & Disability",
+        "count" : "5537765"
+      }, {
+        "item" : "Metrocard - Other",
+        "count" : "5190901"
+      }, {
+        "item" : "OMNY - Fair Fare",
+        "count" : "5038194"
+      }, {
+        "item" : "OMNY - Other",
+        "count" : "4323400"
+      }, {
+        "item" : "Metrocard - Unlimited 30-Day",
+        "count" : "3807765"
+      }, {
+        "item" : "Metrocard - Full Fare",
+        "count" : "3339602"
+      }, {
+        "item" : "Metrocard - Unlimited 7-Day",
+        "count" : "3326929"
+      }, {
+        "item" : "Metrocard - Fair Fare",
+        "count" : "2448713"
+      }, {
+        "item" : "Metrocard - Seniors & Disability",
+        "count" : "2312095"
+      }, {
+        "item" : "Metrocard - Students",
+        "count" : "145"
+      } ],
+      "smallest" : "Metrocard - Fair Fare",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : { }
+  }, {
+    "id" : 602051834,
+    "name" : "ridership",
+    "dataTypeName" : "number",
+    "description" : "Total number of riders that entered a subway complex via OMNY or MetroCard at the specific hour and for that specific fare type.",
+    "fieldName" : "ridership",
+    "position" : 8,
+    "renderTypeName" : "number",
+    "tableColumnId" : 155679265,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "23510.0",
+      "null" : "0",
+      "top" : [ {
+        "item" : "1.0",
+        "count" : "7581489"
+      }, {
+        "item" : "2.0",
+        "count" : "4746217"
+      }, {
+        "item" : "3.0",
+        "count" : "3454921"
+      }, {
+        "item" : "4.0",
+        "count" : "2723697"
+      }, {
+        "item" : "5.0",
+        "count" : "2234252"
+      }, {
+        "item" : "6.0",
+        "count" : "1889158"
+      }, {
+        "item" : "7.0",
+        "count" : "1622967"
+      }, {
+        "item" : "8.0",
+        "count" : "1417237"
+      }, {
+        "item" : "9.0",
+        "count" : "1248390"
+      }, {
+        "item" : "10.0",
+        "count" : "1108278"
+      }, {
+        "item" : "11.0",
+        "count" : "994838"
+      }, {
+        "item" : "12.0",
+        "count" : "893925"
+      }, {
+        "item" : "13.0",
+        "count" : "809281"
+      }, {
+        "item" : "14.0",
+        "count" : "734466"
+      }, {
+        "item" : "15.0",
+        "count" : "669269"
+      }, {
+        "item" : "16.0",
+        "count" : "614698"
+      }, {
+        "item" : "17.0",
+        "count" : "563478"
+      }, {
+        "item" : "18.0",
+        "count" : "520844"
+      }, {
+        "item" : "19.0",
+        "count" : "481940"
+      }, {
+        "item" : "20.0",
+        "count" : "446273"
+      } ],
+      "smallest" : "1.0",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ",",
+      "align" : "right"
+    }
+  }, {
+    "id" : 602051835,
+    "name" : "transfers",
+    "dataTypeName" : "number",
+    "description" : "Number of individuals who entered a subway complex via a free bus-to-subway, or free out-of-network transfer. This represents a subset of total ridership, meaning that these transfers are already included in the preceding ridership column. Transfers that take place within a subway complex (e.g., individuals transferring from the 2 to the 4 train within Atlantic Avenue) are not captured here.",
+    "fieldName" : "transfers",
+    "position" : 9,
+    "renderTypeName" : "number",
+    "tableColumnId" : 155679266,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "2556.0",
+      "null" : "0",
+      "top" : [ {
+        "item" : "0.0",
+        "count" : "33348528"
+      }, {
+        "item" : "1.0",
+        "count" : "5383941"
+      }, {
+        "item" : "2.0",
+        "count" : "2347071"
+      }, {
+        "item" : "3.0",
+        "count" : "1354349"
+      }, {
+        "item" : "4.0",
+        "count" : "895272"
+      }, {
+        "item" : "5.0",
+        "count" : "638290"
+      }, {
+        "item" : "6.0",
+        "count" : "479493"
+      }, {
+        "item" : "7.0",
+        "count" : "373575"
+      }, {
+        "item" : "8.0",
+        "count" : "300522"
+      }, {
+        "item" : "9.0",
+        "count" : "245957"
+      }, {
+        "item" : "10.0",
+        "count" : "205926"
+      }, {
+        "item" : "11.0",
+        "count" : "175153"
+      }, {
+        "item" : "12.0",
+        "count" : "150240"
+      }, {
+        "item" : "13.0",
+        "count" : "131515"
+      }, {
+        "item" : "14.0",
+        "count" : "114889"
+      }, {
+        "item" : "15.0",
+        "count" : "102397"
+      }, {
+        "item" : "16.0",
+        "count" : "91478"
+      }, {
+        "item" : "17.0",
+        "count" : "82459"
+      }, {
+        "item" : "18.0",
+        "count" : "74415"
+      }, {
+        "item" : "19.0",
+        "count" : "67683"
+      } ],
+      "smallest" : "-30.0",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ",",
+      "align" : "center"
+    }
+  }, {
+    "id" : 602051836,
+    "name" : "latitude",
+    "dataTypeName" : "number",
+    "description" : "Latitude for the specified subway complex",
+    "fieldName" : "latitude",
+    "position" : 10,
+    "renderTypeName" : "number",
+    "tableColumnId" : 155679267,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "40.903126",
+      "null" : "0",
+      "top" : [ {
+        "item" : "40.68963",
+        "count" : "222576"
+      }, {
+        "item" : "40.755745",
+        "count" : "153986"
+      }, {
+        "item" : "40.74964",
+        "count" : "148885"
+      }, {
+        "item" : "40.746746",
+        "count" : "146366"
+      }, {
+        "item" : "40.75199",
+        "count" : "146346"
+      }, {
+        "item" : "40.735065",
+        "count" : "146334"
+      }, {
+        "item" : "40.75229",
+        "count" : "145300"
+      }, {
+        "item" : "40.750374",
+        "count" : "145285"
+      }, {
+        "item" : "40.700485",
+        "count" : "144523"
+      }, {
+        "item" : "40.71009",
+        "count" : "144295"
+      }, {
+        "item" : "40.7596",
+        "count" : "144031"
+      }, {
+        "item" : "40.70215",
+        "count" : "143825"
+      }, {
+        "item" : "40.684162",
+        "count" : "142002"
+      }, {
+        "item" : "40.768272",
+        "count" : "141131"
+      }, {
+        "item" : "40.80414",
+        "count" : "140767"
+      }, {
+        "item" : "40.82795",
+        "count" : "139877"
+      }, {
+        "item" : "40.75402",
+        "count" : "138542"
+      }, {
+        "item" : "40.740334",
+        "count" : "138463"
+      }, {
+        "item" : "40.762592",
+        "count" : "138089"
+      }, {
+        "item" : "40.718464",
+        "count" : "138053"
+      } ],
+      "smallest" : "40.576126",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ",",
+      "align" : "center"
+    }
+  }, {
+    "id" : 602051837,
+    "name" : "longitude",
+    "dataTypeName" : "number",
+    "description" : "Longitude for the specified subway complex",
+    "fieldName" : "longitude",
+    "position" : 11,
+    "renderTypeName" : "number",
+    "tableColumnId" : 155679268,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "largest" : "-73.7554",
+      "null" : "0",
+      "top" : [ {
+        "item" : "-73.99042",
+        "count" : "255589"
+      }, {
+        "item" : "-73.93985",
+        "count" : "239167"
+      }, {
+        "item" : "-73.867615",
+        "count" : "226935"
+      }, {
+        "item" : "-73.98758",
+        "count" : "153986"
+      }, {
+        "item" : "-73.987885",
+        "count" : "148885"
+      }, {
+        "item" : "-73.891365",
+        "count" : "146366"
+      }, {
+        "item" : "-73.977356",
+        "count" : "146346"
+      }, {
+        "item" : "-73.99339",
+        "count" : "145300"
+      }, {
+        "item" : "-73.99106",
+        "count" : "145285"
+      }, {
+        "item" : "-73.80797",
+        "count" : "144523"
+      }, {
+        "item" : "-74.007835",
+        "count" : "144295"
+      }, {
+        "item" : "-73.83003",
+        "count" : "144031"
+      }, {
+        "item" : "-73.80111",
+        "count" : "143825"
+      }, {
+        "item" : "-73.97779",
+        "count" : "142002"
+      }, {
+        "item" : "-73.981834",
+        "count" : "141131"
+      }, {
+        "item" : "-73.93759",
+        "count" : "140767"
+      }, {
+        "item" : "-73.92574",
+        "count" : "139877"
+      }, {
+        "item" : "-73.98327",
+        "count" : "138542"
+      }, {
+        "item" : "-74.00214",
+        "count" : "138463"
+      }, {
+        "item" : "-73.96761",
+        "count" : "138089"
+      } ],
+      "smallest" : "-74.07484",
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : {
+      "decimalSeparator" : ".",
+      "groupSeparator" : ",",
+      "align" : "center"
+    }
+  }, {
+    "id" : 602051838,
+    "name" : "Georeference",
+    "dataTypeName" : "point",
+    "description" : "Open Data platform-generated geocoding information from supplied address components. Point-type location is the centroid of the address components provided and does not reflect a specific address if the street address component is not provided. Point-type location is supplied in \"POINT (<geocoded longitude> <geocoded latitude>)\" format.",
+    "fieldName" : "georeference",
+    "position" : 12,
+    "renderTypeName" : "point",
+    "tableColumnId" : 155679269,
+    "cachedContents" : {
+      "non_null" : "47760351",
+      "null" : "0",
+      "top" : [ {
+        "item" : {
+          "coordinates" : [ -73.98758, 40.755745 ],
+          "type" : "Point"
+        },
+        "count" : "153986"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.987885, 40.74964 ],
+          "type" : "Point"
+        },
+        "count" : "148885"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.891365, 40.746746 ],
+          "type" : "Point"
+        },
+        "count" : "146366"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.977356, 40.75199 ],
+          "type" : "Point"
+        },
+        "count" : "146346"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.99042, 40.735065 ],
+          "type" : "Point"
+        },
+        "count" : "146334"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.99339, 40.75229 ],
+          "type" : "Point"
+        },
+        "count" : "145300"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.99106, 40.750374 ],
+          "type" : "Point"
+        },
+        "count" : "145285"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.80797, 40.700485 ],
+          "type" : "Point"
+        },
+        "count" : "144523"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.007835, 40.71009 ],
+          "type" : "Point"
+        },
+        "count" : "144295"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.83003, 40.7596 ],
+          "type" : "Point"
+        },
+        "count" : "144031"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.80111, 40.70215 ],
+          "type" : "Point"
+        },
+        "count" : "143825"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.97779, 40.684162 ],
+          "type" : "Point"
+        },
+        "count" : "142002"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.981834, 40.768272 ],
+          "type" : "Point"
+        },
+        "count" : "141131"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.93759, 40.80414 ],
+          "type" : "Point"
+        },
+        "count" : "140767"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.92574, 40.82795 ],
+          "type" : "Point"
+        },
+        "count" : "139877"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.98327, 40.75402 ],
+          "type" : "Point"
+        },
+        "count" : "138542"
+      }, {
+        "item" : {
+          "coordinates" : [ -74.00214, 40.740334 ],
+          "type" : "Point"
+        },
+        "count" : "138463"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.96761, 40.762592 ],
+          "type" : "Point"
+        },
+        "count" : "138089"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.98778, 40.718464 ],
+          "type" : "Point"
+        },
+        "count" : "138053"
+      }, {
+        "item" : {
+          "coordinates" : [ -73.98123, 40.577423 ],
+          "type" : "Point"
+        },
+        "count" : "137979"
+      } ],
+      "count" : "47760351",
+      "cardinality" : "47760351"
+    },
+    "format" : { }
+  } ],
+  "grants" : [ {
+    "inherited" : false,
+    "type" : "viewer",
+    "flags" : [ "public" ]
+  } ],
+  "metadata" : {
+    "attachments" : [ {
+      "filename" : "MTA_SubwayHourlyRidership_Overview.pdf",
+      "assetId" : "fecde4fe-54f3-4233-9b4f-b9ff58d0402e",
+      "name" : "MTA_SubwayHourlyRidership_Overview.pdf"
+    }, {
+      "filename" : "MTA_SubwayHourlyRidership_DataDictionary.pdf",
+      "assetId" : "3ad6ff48-c4f5-474c-8c5d-2a51173bd554",
+      "name" : "MTA_SubwayHourlyRidership_DataDictionary.pdf"
+    } ],
+    "custom_fields" : {
+      "Dataset Summary" : {
+        "Posting Frequency" : "Weekly",
+        "Organization" : "New York City Transit, Staten Island Railway, Roosevelt Island Operating Corporation",
+        "Contact Information" : "OpenData@mtahq.org",
+        "Time Period" : "Beginning 2025",
+        "Coverage" : "New York City",
+        "Granularity" : "Hour, mode, subway station complex, fare medium, class of fare payment",
+        "Dataset Owner" : "Metropolitan Transportation Authority"
+      },
+      "Additional Resources" : {
+        "See Also" : "https://metrics.mta.info/"
+      },
+      "Dataset Information" : {
+        "Agency" : "Metropolitan Transportation Authority"
+      }
+    },
+    "rowIdentifier" : 602051839,
+    "availableDisplayTypes" : [ "table", "fatrow", "page" ]
+  },
+  "owner" : {
+    "id" : "xzik-pf59",
+    "displayName" : "NY Open Data",
+    "profileImageUrlLarge" : "/api/users/xzik-pf59/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/xzik-pf59/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/xzik-pf59/profile_images/TINY",
+    "screenName" : "NY Open Data",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "query" : { },
+  "rights" : [ "read" ],
+  "tableAuthor" : {
+    "id" : "xzik-pf59",
+    "displayName" : "NY Open Data",
+    "profileImageUrlLarge" : "/api/users/xzik-pf59/profile_images/LARGE",
+    "profileImageUrlMedium" : "/api/users/xzik-pf59/profile_images/THUMB",
+    "profileImageUrlSmall" : "/api/users/xzik-pf59/profile_images/TINY",
+    "screenName" : "NY Open Data",
+    "type" : "interactive",
+    "flags" : [ "acceptedEula", "mayBeStoriesCoOwner" ]
+  },
+  "tags" : [ "new york city transit", "nyct", "subway", "staten island railway", "sir", "roosevelt island tramway", "tram", "ridership", "metrocard", "omny", "transfers", "hourly", "station", "subway station", "customers", "passengers", "fare" ],
+  "flags" : [ "default", "ownerMayBeContacted", "restorable", "restorePossibleForType" ]
+}

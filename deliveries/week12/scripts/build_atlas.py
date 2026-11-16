@@ -10,6 +10,8 @@ SRC = ROOT/'data'
 OLD = ROOT/'data/processed'
 OUT = ROOT/'atlas/data'
 OUT.mkdir(parents=True,exist_ok=True)
+ARCHIVE = SRC/'entries_archive'
+ARCHIVE.mkdir(parents=True,exist_ok=True)
 YEARS = list(range(2021,2025))   # 2021 = año base (primer año con estimación origen-destino)
 BASE, END = 2021, 2024
 SRC_CSV = 'year_hourly_2020_2024.csv'   # año completo, todos los meses
@@ -115,7 +117,10 @@ app={'meta':{'title':'La forma del día · Atlas de ritmos','years':YEARS,'month
     'retrieved':source_manifest['retrieved_at_utc'],'scope':'subway; complejos con perfiles positivos en ambos extremos',
     'exposures':exposures,'excluded':excluded,'schemaVersion':1},'system':system,'stations':output,
     'events':json.loads((SRC/'context_events.json').read_text())}
-(OUT/'atlas.json').write_text(json.dumps(app,ensure_ascii=False,separators=(',',':')))
+(ARCHIVE/'atlas.json').write_text(json.dumps(app,ensure_ascii=False,separators=(',',':')))
+keys = ('id', 'name', 'borough', 'lat', 'lon', 'routes')
+catalog = {'stations': [{key: station[key] for key in keys} for station in output]}
+(OUT/'stations.json').write_text(json.dumps(catalog, ensure_ascii=False, separators=(',', ':'))+'\n')
 (OUT/'boroughs.geojson').write_text(json.dumps({'type':'FeatureCollection','features':features},separators=(',',':')))
 
 def quantile(vals,p):
@@ -132,8 +137,8 @@ report={'stations_input_subway':len(stations),'stations_included':len(output),'e
     'stations_higher_weekend_share':sum(s['deltaWeekend']>0 for s in output),
     'cells_not_observed':{str(y):sum(168-s['profiles'][str(y)]['observedCells'] for s in output if s['profiles'][str(y)]) for y in YEARS},
     'source_hashes':source_manifest['files'],
-    'artifact_scope':'Only atlas.json and boroughs.geojson are produced here; enriched and full-period files have independent audits.',
-    'artifact_hashes':{name:hashlib.sha256((OUT/name).read_bytes()).hexdigest() for name in ['atlas.json','boroughs.geojson']}}
+    'artifact_scope':'Writes the archived entry profiles and the current station catalog and borough geometry.',
+    'artifact_hashes':{name:hashlib.sha256(((ARCHIVE if name=='atlas.json' else OUT)/name).read_bytes()).hexdigest() for name in ['atlas.json','boroughs.geojson']}}
 (ROOT/'redesign').mkdir(exist_ok=True)
 (ROOT/'redesign/data-audit.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps({k:v for k,v in report.items() if k not in ['source_hashes','artifact_hashes','system_metrics','top_change']},ensure_ascii=False,indent=2))

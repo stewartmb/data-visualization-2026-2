@@ -15,7 +15,7 @@ def rows(p):
     with p.open() as f:return list(csv.DictReader(f))
 
 def validate():
-    manifest=read(C/'sources.json');atlas=read(P/'atlas/data/atlas.json');ids={s['id'] for s in atlas['stations']}
+    manifest=read(C/'sources.json');atlas=read(P/'data/entries_archive/atlas.json');ids={s['id'] for s in atlas['stations']}
     for name,entry in manifest['source_files'].items():
         assert hashlib.sha256((S/name).read_bytes()).hexdigest()==entry['sha256'],name
     for name,entry in manifest['downloads'].items():
@@ -23,7 +23,11 @@ def validate():
         if path.exists():assert hashlib.sha256(path.read_bytes()).hexdigest()==entry['sha256'],name
         else:assert name=='gtfs_subway.zip','Only the bulky archive may be omitted from Git'
     audit=read(C/'build-audit.json')
-    for name,entry in audit['artifacts'].items():assert hashlib.sha256((P/name).read_bytes()).hexdigest()==entry['sha256'],name
+    for name,entry in audit['artifacts'].items():
+        path=P/name
+        if name in ('atlas/data/enrichments.json','atlas/data/enrichment_sources.json'):
+            path=P/'data/entries_archive'/path.name
+        assert hashlib.sha256(path.read_bytes()).hexdigest()==entry['sha256'],name
     ntas=rows(O/'station_nta2020.csv')
     assert len(ntas)==len(ids) and {r['station_complex_id'] for r in ntas}==ids
     assert all(r['nta2020'] and r['matches']=='1' and not r['boundary_matches'] for r in ntas)
@@ -75,7 +79,7 @@ def validate():
     for e in graph['declared_transfer_edges']:
         assert e['source'] in ids and e['target'] in ids and e['source']!=e['target']
         assert e.get('transfer_type')!='3'
-    context=read(P/'atlas/data/enrichments.json')
+    context=read(P/'data/entries_archive/enrichments.json')
     assert context['territories']==read_csv_coerced(ntas)
     result={'result':'PASS','complexes':len(ids),'nta_matches':len(ntas),'transfer_station_years':len(transfers),
         'fare_rows':len(fares),'service_edges':len(graph['service_edges']),

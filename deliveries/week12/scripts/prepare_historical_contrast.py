@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare 2019–2024 hourly-entry profiles only for right-column contrasts.
+"""Prepare 2019–2024 hourly-entry profiles for the archived historical analysis.
 
 Uses the validated full-period acquisition, never OD extrapolation. Reproduce:
   acquire_full_period.py -> build_full_period.py -> validate_full_period.py
@@ -31,7 +31,7 @@ def main():
     cube = source/'processed/station_month_hourofweek.parquet'
     cube_sha = digest(cube)
     assert cube_sha == audit['artifacts']['data/full_period/processed/station_month_hourofweek.parquet']['sha256']
-    atlas = json.loads((ROOT/'atlas/data/atlas.json').read_text())
+    atlas = json.loads((ROOT/'data/entries_archive/atlas.json').read_text())
     ids = {str(s['id']) for s in atlas['stations']}
     connection = duckdb.connect(config={'threads':2, 'memory_limit':'512MB'})
     rows = connection.execute('''SELECT station_complex_id, CAST(substr(month,1,4) AS INTEGER) AS year,
@@ -77,8 +77,8 @@ def main():
         'usage':'Right-column historical comparison only. Both compared years must come from this hourly-entry source whenever the base is 2019 or 2020. The OD map is unchanged.',
         'built_at_utc':datetime.now(timezone.utc).isoformat()}
     result = {'meta':meta,'profiles':profiles}
-    for target in [ROOT/'atlas/data/historical_contrast.json',ROOT.parents[1]/'atlas/data/historical_contrast.json']:
-        target.write_text(json.dumps(result,ensure_ascii=False,separators=(',',':'),allow_nan=False)+'\n')
+    target = ROOT/'data/entries_archive/historical_contrast.json'
+    target.write_text(json.dumps(result,ensure_ascii=False,separators=(',',':'),allow_nan=False)+'\n')
     for year in ['2019','2020']:
         values = sorted([(100*years['2024']['weekly']/years[year]['weekly'],id) for id,years in profiles.items() if years[year] and years['2024']],reverse=True)
         print(year,'comparable',len(values),'top indices',values[:5])

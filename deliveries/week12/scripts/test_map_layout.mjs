@@ -4,7 +4,7 @@ import {createRequire} from 'node:module';
 import {clusterStations,stationRadius,clusterRadius} from '../atlas/src/map-layout.mjs';
 
 const require=createRequire(import.meta.url),d3=require('../atlas/lib/d3.min.js');
-const atlas=JSON.parse(readFileSync(new URL('../atlas/data/atlas.json',import.meta.url)));
+const atlas=JSON.parse(readFileSync(new URL('../atlas/data/stations.json',import.meta.url)));
 const geo=JSON.parse(readFileSync(new URL('../atlas/data/boroughs.geojson',import.meta.url)));
 const covered={type:'FeatureCollection',features:geo.features.filter(f=>f.properties.name!=='Staten Island')};
 

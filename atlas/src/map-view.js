@@ -1,4 +1,4 @@
-import {bindMapLasso} from './map-lasso.js?v=scatter-area1';
+import {bindMapLasso} from './map-lasso.js?v=shared-map1';
 import {bindFlowScale,bindCircleScale} from './flow-scale.js?v=grouped-circle-key1';
 import {odLoads,odStarts,odIncoming,odPeriodLabel} from './od-period.mjs';
 import {state,BASE,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats,passesMetricRanges,cohortProfile} from './model.js?v=20261028-4';
@@ -6,7 +6,7 @@ import {RaebOverlay} from './raeb-overlay.mjs?v=map-controls1';
 import {setRaebStatus} from './raeb-cpu-overlay.mjs?v=map-controls1';
 import {FLOW_COLOR_MAX,FLOW_COLOR_STOPS,flowColor} from './raeb-gpu-shaders.mjs?v=zoom-width1';
 import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
-import {activeODCompareBase} from './contrast-model.mjs?v=scatter-area1';
+import {activeODCompareBase} from './contrast-model.mjs?v=od-only1';
 import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,OD_RAIL_MIN_WIDTH,OD_RAIL_MAX_WIDTH,railChange,railFlowWidth,zoomStrokeScale,flowStrength,flowCount,odDelta} from './od-encoding.mjs?v=rail-width65';
 import {originBranches,bundleAt,distanceToLines} from './od-routing.mjs?v=annual-overview1';
 import {updateClockTime} from './inspector.js?v=stable-sidebar1';
@@ -316,6 +316,7 @@ export function renderMap(host,app,items){
   let baseG=g;
   if(flujos){
     const baseSvg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    baseSvg.classList.add('map-base-svg');
     baseSvg.setAttribute('viewBox',`0 0 ${width} ${height}`);baseSvg.setAttribute('aria-hidden','true');
     const mapRect=svgNode.getBoundingClientRect(),stage=svgNode.parentElement,stageRect=stage.getBoundingClientRect();
     baseSvg.style.cssText=`position:absolute;left:${mapRect.left-stageRect.left-stage.clientLeft}px;top:${mapRect.top-stageRect.top-stage.clientTop}px;width:${width}px;height:${height}px;pointer-events:none;z-index:0`;
@@ -332,8 +333,8 @@ export function renderMap(host,app,items){
     .attr('class','map-bg').attr('data-borough',feature=>feature.properties.name)
     .classed('borough-context',feature=>!!borough&&feature!==borough)
     .attr('fill-rule','evenodd').attr('vector-effect','non-scaling-stroke').attr('d',path);
-  const footprintLayer=routeNodes?baseG.append('g').attr('aria-hidden','true'):null;
-  const zoneLayer=baseG.append('g').attr('aria-hidden','true').attr('pointer-events','none');
+  const footprintLayer=routeNodes?baseG.append('g').attr('class','map-base-decoration').attr('aria-hidden','true'):null;
+  const zoneLayer=baseG.append('g').attr('class','map-base-decoration').attr('aria-hidden','true').attr('pointer-events','none');
   const stationPosition=station=>projection(stationCoords(station));
   // Trazado del metro (GTFS de la MTA, simplificado): contexto recesivo en gris bajo los puntos.
   if(app.lineas&&!flujos)g.append('g').attr('class','map-lines').selectAll('path').data(app.lineas.features).join('path').attr('d',path).attr('fill','none').attr('vector-effect','non-scaling-stroke');
@@ -1128,6 +1129,7 @@ export function renderMap(host,app,items){
     if(app._relane)app._relane(transform.k);
     rings.attr('r',8.5/transform.k);
     contextPoints.attr('r',1.6/transform.k);
+    app.spectralEvents?.updateZoom();
     const hideBoroughs=transform.k>3;
     if(hideBoroughs!==boroughsHidden){
       boroughLabels.attr('display',hideBoroughs?'none':null);
@@ -1162,12 +1164,19 @@ export function renderMap(host,app,items){
   reset.onclick=()=>{transform=d3.zoomIdentity;app.resetScope({annual:flujos});};
   svg.on('click.clear-selection',event=>{
     if(event.defaultPrevented)return;
+    if(app.spectralEvents?.episodeActive){
+      app.spectralEvents.clearComplex();
+      return;
+    }
     if(inspectCorridor?.(event))return;
     if(state.selected)app.set({selected:null});
   });
   const lassoStations=state.cohortSource==='scatter'?app.filtered(undefined,{ignoreCohort:true}):items;
-  bindMapLasso({svg,outlines:zoneLayer,zoom,width,height,projection,stations:lassoStations,
+  const cancelDrawing=bindMapLasso({svg,outlines:zoneLayer,zoom,width,height,projection,stations:lassoStations,
     position:stationPosition,app,twoZones:drawnZones});
+  app.spectralEvents?.mount({
+    stage:svgNode.closest('.map-stage'),svg,layer:g,position:stationPosition,scale:()=>transform.k,cancelDrawing
+  });
   if(flujos){
     if(cambio){
       const {loss,neutral,gain}=OD_CHANGE_COLORS;

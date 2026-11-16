@@ -23,7 +23,7 @@ def main():
  parser.add_argument('--skip-week06-samples',action='store_true',help='Preserve the samples already delivered in Week 6.')
  args=parser.parse_args()
  OUT.mkdir(exist_ok=True,parents=True)
- hist=json.loads((A/'historical_contrast.json').read_text());f=json.loads((A/'flows.json').read_text());manifest=json.loads((A/'raeb/manifest.json').read_text())
+ hist=json.loads((P/'data/entries_archive/historical_contrast.json').read_text());f=json.loads((A/'flows.json').read_text());manifest=json.loads((A/'raeb/manifest.json').read_text())
  assert hist['meta']['status']=='PASS' and manifest['status']=='PASS'
  nodes=f['nodes'];links=f['links'];n=len(nodes);assert n==424
  ids=[s['id'] for s in nodes];boroughs=sorted({s['borough'] for s in nodes});bi={s:i for i,s in enumerate(boroughs)}; membership=np.array([bi[s['borough']] for s in nodes]);M=np.eye(len(boroughs))[membership]

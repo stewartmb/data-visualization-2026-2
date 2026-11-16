@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Descarga oficial COMPLETA 2019–2024, en 72 respuestas mensuales verificadas.
+"""Descarga oficial de entradas horarias de la MTA, verificada por mes.
 
 Conserva los 12 campos originales y todos los modos. Sin muestras ni filtro
 de estaciones. Python + DuckDB. Cada mes se valida contra count y sum oficiales
-antes de marcarlo completo. Descargas comprimidas y reanudables fuera de Git.
+antes de marcarlo completo. Descargas comprimidas y reanudables fuera de Git. Por defecto cubre 2019–2024;
+--year 2025 descarga el año siguiente y registra sus controles por separado.
 """
 import argparse
 import csv
@@ -27,6 +28,7 @@ INDEX=OUT/'acquisition.json'
 FIELDS=['transit_timestamp','transit_mode','station_complex_id','station_complex','borough',
         'payment_method','fare_class_category','ridership','transfers','latitude','longitude','georeference']
 DATASETS={str(y):('t69i-h2me' if y==2019 else 'wujg-7c2s',y,y+1) for y in range(2019,2025)}
+DATASETS_2025={'2025':('5wq4-mkjj',2025,2026)}
 
 def now():return datetime.now(timezone.utc).isoformat()
 def sha(path):
@@ -52,9 +54,9 @@ def json_snapshot(name,url,refresh):
     return json.loads(path.read_text()),{'url':url,'file':str(path.relative_to(P)),
         'sha256':sha(path),'retrieved_at_utc':datetime.fromtimestamp(path.stat().st_mtime,timezone.utc).isoformat()}
 
-def expectations(refresh=False):
+def expectations(datasets,refresh=False):
     expected={};sources={}
-    for dataset in sorted({config[0] for config in DATASETS.values()}):
+    for dataset in sorted({config[0] for config in datasets.values()}):
         meta,meta_source=json_snapshot(f'metadata_{dataset}.json',f'https://data.ny.gov/api/views/{dataset}.json',refresh)
         actual={c['fieldName'] for c in meta['columns'] if not c['fieldName'].startswith(':')}
         if actual!=set(FIELDS):raise ValueError(f'Esquema oficial cambió: {dataset}: {actual}')
@@ -69,13 +71,13 @@ def expectations(refresh=False):
         print(f'Control oficial {label}: {len(rows)} meses',flush=True)
         return dataset,rows,source
     with ThreadPoolExecutor(max_workers=3) as pool:
-        for dataset,rows,source in pool.map(get_year,DATASETS.items()):
+        for dataset,rows,source in pool.map(get_year,datasets.items()):
             sources[dataset]['counts'].append(source)
             for r in rows:
                 key=f"{int(r['year'])}-{int(r['month']):02d}"
                 if key in expected:raise ValueError(f'Mes duplicado: {key}')
                 expected[key]={'dataset':dataset,'rows':int(r['rows']),'ridership':float(r['ridership']),'transfers':float(r['transfers'])}
-    if set(expected)!={f'{y}-{m:02d}' for y in range(2019,2025) for m in range(1,13)}:raise ValueError('Faltan meses en el control oficial')
+    if set(expected)!={f'{y}-{m:02d}' for y in datasets for m in range(1,13)}:raise ValueError('Faltan meses en el control oficial')
     return expected,sources
 
 def validate_month(path,month,expected):
@@ -132,18 +134,26 @@ def download_month(month,expected,previous,refresh):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--workers',type=int,default=2)
-    parser.add_argument('--month',help='Prueba un mes YYYY-MM; no se declarará completa la serie')
+    parser.add_argument('--year',choices=DATASETS_2025,help='Descarga solo el año indicado')
+    parser.add_argument('--month',help='Descarga solo un mes YYYY-MM del período elegido')
     parser.add_argument('--refresh',action='store_true')
-    args=parser.parse_args();OUT.mkdir(parents=True,exist_ok=True);RAW.mkdir(parents=True,exist_ok=True)
-    expected,sources=expectations(args.refresh)
-    prior=json.loads(INDEX.read_text()) if INDEX.exists() else {}
+    args=parser.parse_args()
+    datasets=DATASETS_2025 if args.year else DATASETS
+    index=OUT/f'acquisition_{args.year}.json' if args.year else INDEX
+    period_start=min(datasets)
+    period_end=int(max(datasets))+1
+    OUT.mkdir(parents=True,exist_ok=True)
+    RAW.mkdir(parents=True,exist_ok=True)
+    expected,sources=expectations(datasets,args.refresh)
+    prior=json.loads(index.read_text()) if index.exists() else {}
     completed=prior.get('months',{});errors={}
     jobs=[args.month] if args.month else sorted(expected)
-    if any(m not in expected for m in jobs):raise ValueError('Mes fuera de 2019–2024')
+    if any(m not in expected for m in jobs):parser.error('El mes está fuera del período seleccionado')
+    total=len(expected)
     def save():
         valid={m:v for m,v in completed.items() if v.get('expected')==expected.get(m) and (P/v['file']).exists()}
-        write(INDEX,{'schema_version':1,'period_start':'2019-01-01','period_end_exclusive':'2025-01-01',
-            'status':'COMPLETE' if len(valid)==72 else 'PARTIAL','months_expected':72,'months_validated':len(valid),
+        write(index,{'schema_version':1,'period_start':f'{period_start}-01-01','period_end_exclusive':f'{period_end}-01-01',
+            'status':'COMPLETE' if len(valid)==total else 'PARTIAL','months_expected':total,'months_validated':len(valid),
             'records_expected':sum(v['rows'] for v in expected.values()),'records_validated':sum(v['rows'] for v in valid.values()),
             'source_fields':FIELDS,'scope':'All rows and modes; no fixed station list; no sample.',
             'sources':sources,'months':dict(sorted(valid.items())),'errors':errors,'updated_at_utc':now()})
@@ -154,11 +164,11 @@ def main():
             month=futures[future]
             try:
                 _,entry,new=future.result();completed[month]=entry
-                print(f'{month}: {entry["rows"]:,} filas verificadas; {len(completed)}/72 meses; {time.monotonic()-start:.0f} s',flush=True)
+                print(f'{month}: {entry["rows"]:,} filas verificadas; {len(completed)}/{total} meses; {time.monotonic()-start:.0f} s',flush=True)
             except Exception as error:errors[month]=str(error);print(f'ERROR {month}: {error}',flush=True)
             save()
     save()
     if errors:raise SystemExit('Hay meses incompletos. Reejecutar el mismo comando para reanudar.')
-    print(json.loads(INDEX.read_text())['status'],flush=True)
+    print(json.loads(index.read_text())['status'],flush=True)
 
 if __name__=='__main__':main()

@@ -47,7 +47,7 @@ deliveries/week12/
     processed/                       tablas completas por día, mes, tarifa y hora
     build-audit.json                  cobertura y procedencia de resultados
     validation.json                   PASS solo después de verificar todo
-  atlas/data/full_period.json         series mensuales del cliente: 72 meses
+  data/entries_archive/full_period.json         series mensuales del cliente: 72 meses
 ```
 
 Las descargas crudas no se suben a Git por su volumen. Eso no las convierte en
@@ -88,6 +88,21 @@ No produce una auditoría final ni declara completa una serie parcial.
 El [diccionario de campos y derivaciones](data/full_period/data_dictionary.csv)
 especifica unidades, granularidad y tratamiento de ausencias.
 
+## Descargar solo las entradas de 2025
+
+La [fuente oficial desde 2025](https://data.ny.gov/d/5wq4-mkjj) conserva los 12
+campos de entradas horarias. Desde la raíz del repositorio:
+
+```bash
+.venv/bin/python -u deliveries/week12/scripts/acquire_full_period.py --year 2025 --workers 2
+```
+
+La descarga toma los 12 meses de 2025, con los modos de la fuente, y guarda
+los CSV comprimidos en `data/raw/full_period/`, dentro de Semana 12.
+`data/full_period/acquisition_2025.json` registra conteos, totales y SHA-256
+por mes. Usa el mismo comando para reanudar. Este paso adquiere las entradas
+originales. El catálogo de Eventos aún cubre 2019–2024.
+
 ## Tablas preparadas
 
 | Archivo en `data/full_period/processed/` | Granularidad |
@@ -112,9 +127,9 @@ la suma de entradas, transbordos y número de registros de la base completa.
 No se interpreta un día sin registros de una estación como disponibilidad del
 servicio con demanda cero.
 
-## Datos disponibles y comparación visual vigente
+## Datos archivados
 
-La base completa cubre los **72 meses**. El cubo horario preparado genera perfiles de entradas de todos los meses de 2019–2024 mediante `prepare_historical_contrast.py`. El selector **Base histórica** de la derecha permite 2019 y 2020; ambos extremos de esa comparación se calculan con entradas. El mapa mantiene exclusivamente OD 2021–2024. Ver [HistoricalContrast](HistoricalContrast.md).
+La base completa cubre los **72 meses**. El cubo horario preparado genera perfiles de entradas de todos los meses de 2019–2024 mediante `prepare_historical_contrast.py`. Los perfiles están en el [archivo de entradas](data/entries_archive/). La versión actual del Atlas usa OD 2021–2025.
 
 `full_period.json` y las tablas mensuales se conservan como datos de contexto preparados; una tabla disponible no significa que su antigua curva esté expuesta en el panel principal actual. Los scripts y las cifras de enero–febrero se mantienen como ruta histórica de compatibilidad, no como definición de la huella vigente. No ejecutar la construcción antigua para sustituir silenciosamente artefactos OD.
 

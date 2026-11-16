@@ -11,7 +11,7 @@ from matplotlib.patches import Polygon,Rectangle
 P=Path(__file__).resolve().parents[1];R=P.parents[1];A=P/'atlas/data';OUT=R/'deliveries/week06/sketches'
 plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10})
 def main():
- f=json.loads((A/'flows.json').read_text());h=json.loads((A/'historical_contrast.json').read_text());geo=json.loads((A/'boroughs.geojson').read_text());nodes=f['nodes'];links=f['links'];n=len(nodes)
+ f=json.loads((A/'flows.json').read_text());h=json.loads((P/'data/entries_archive/historical_contrast.json').read_text());geo=json.loads((A/'boroughs.geojson').read_text());nodes=f['nodes'];links=f['links'];n=len(nodes)
  U={y:np.array([np.array(h['profiles'][s['id']][str(y)]['p'])*h['profiles'][s['id']][str(y)]['weekly'] for s in nodes]) for y in [2019,2024]};tot={y:U[y].sum(axis=0) for y in U};prof={y:tot[y]/tot[y].sum() for y in tot}
  fig=plt.figure(figsize=(15,8.5),facecolor='#f7f8f7');gs=fig.add_gridspec(2,2,width_ratios=[2.2,1],wspace=.13,hspace=.4);ax=fig.add_subplot(gs[:,0]);scatter=fig.add_subplot(gs[0,1]);clock=fig.add_subplot(gs[1,1],projection='polar')
  for feat in geo['features']:

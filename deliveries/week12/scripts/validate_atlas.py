@@ -6,7 +6,7 @@ from datetime import date, timedelta
 import json, csv, math, hashlib
 
 ROOT=Path(__file__).resolve().parents[1]
-data=json.loads((ROOT/'atlas/data/atlas.json').read_text())
+data=json.loads((ROOT/'data/entries_archive/atlas.json').read_text())
 audit=json.loads((ROOT/'redesign/data-audit.json').read_text())
 sources=json.loads((ROOT/'data/sources.json').read_text())
 stations=data['stations']
@@ -23,7 +23,7 @@ for name,meta in sources['files'].items():
     assert hashlib.sha256(p.read_bytes()).hexdigest()==meta['sha256'],name
 assert set(audit['artifact_hashes'])=={'atlas.json','boroughs.geojson'}
 for name,digest in audit['artifact_hashes'].items():
-    assert hashlib.sha256((ROOT/'atlas/data'/name).read_bytes()).hexdigest()==digest,name
+    assert hashlib.sha256(((ROOT/'data/entries_archive' if name=='atlas.json' else ROOT/'atlas/data')/name).read_bytes()).hexdigest()==digest,name
 
 raw=defaultdict(lambda:[0.0]*168)
 with (ROOT/'data/year_hourly_2020_2024.csv').open() as f:

@@ -16,99 +16,159 @@ const eventTime = (start,end) => {
   const a = parseHour(start), b = parseHour(end);
   return sameDay(a,b)
     ? labels.date.format(a) + ' · ' + labels.time.format(a) + '–' + labels.time.format(b)
-    : labels.day.format(a) + ' ' + labels.time.format(a) + ' → ' + labels.day.format(b) + ' ' + labels.time.format(b);
+    : labels.date.format(a) + ' · ' + labels.time.format(a) + ' → ' + (a.getUTCFullYear()===b.getUTCFullYear()?labels.day:labels.date).format(b) + ' ' + labels.time.format(b);
 };
 const number = value => value === null ? 'Sin registro' : labels.count.format(value);
+const signedCount = new Intl.NumberFormat('es-PE',{maximumFractionDigits:1,signDisplay:'exceptZero'}).format;
 const changeColor = d3.scaleDiverging([-1,0,1],t=>t<.5?d3.interpolateRgb('#146b91','#f8f8f4')(2*t):d3.interpolateRgb('#f8f8f4','#ba542c')(2*t-1)).clamp(true);
-const change = station => station.expected ? (station.entries-station.expected)/station.expected : 0;
+function hourChange(station,hour){
+  const observed = station.observed[hour], typical = station.typical[hour];
+  return observed==null||typical==null ? null : observed-typical;
+}
 const deltaLabel = value => (value>0?'+':'') + number(value*100) + ' %';
 const shortName = station => station.name.replace(/\s+\(.*/,'');
-const file = name => 'data/spectral/' + name + '.json?v=events1';
-
-export function createSpectralEvents({geo,flows,onFlows}){
+export function createSpectralEvents({flows,syncURL,dataURL}){
+  const file = name => new URL(name + '.json?v=events1',dataURL);
   const buttons = document.querySelectorAll('[data-analysis]');
-  const panel = document.querySelector('#spectral-workspace');
+  const panel = document.querySelector('#spectral-timeline');
   const calendar = panel.querySelector('#spectral-calendar');
   const eventList = panel.querySelector('#spectral-episodes');
   const detail = panel.querySelector('#spectral-detail');
-  const caption = panel.querySelector('#spectral-map-caption');
-  const viewport = panel.querySelector('.spectral-map');
-  const svg = d3.select(viewport.querySelector('svg'));
+  const subject = detail.querySelector('.spectral-chart-subject');
+  const legend = detail.querySelector('.spectral-series-key');
+  const frame = detail.querySelector('.spectral-chart-frame');
+  const chart = frame.querySelector('.spectral-chart');
+  const status = frame.querySelector('.spectral-chart-status');
+  const reading = detail.querySelector('.spectral-hour-reading');
+  const driver = detail.querySelector('.spectral-hour-driver');
+  const scope = detail.querySelector('.spectral-detail-scope');
+  const header = document.querySelector('#spectral-header');
+  const summarySubject = header.querySelector('#spectral-subject');
+  const period = header.querySelector('#spectral-period');
+  const summaryHour = header.querySelector('#spectral-summary-hour');
+  const close = header.querySelector('#close-spectral-episode');
   const monthCache = new Map();
   const stations = new Map(flows.nodes.map(node => [String(node.id),node]));
-  let active = false, catalog, catalogRequest, activeMonth, episode, record, selected, timeOrigin;
-  let serial = 0, pending = false, message = '', points, projection, camera = d3.zoomIdentity;
   const initial = new URLSearchParams(location.search);
-  const zoom = d3.zoom().scaleExtent([1,30]).on('zoom',event => {
-    camera = event.transform;
-    svg.select('.spectral-map-layer').attr('transform',camera);
-    svg.selectAll('.spectral-node').attr('r',s => pointRadius(s)/camera.k);
-  });
-  const pointRadius = station => (station.id === selected ? 7.5 : station.event ? 5 : 1.4);
-  const resetMap = panel.querySelector('#spectral-center');
-  resetMap.addEventListener('click',()=>svg.call(zoom.transform,d3.zoomIdentity));
+  let calendarOpen = initial.get('analysis')==='events';
+  let restore = calendarOpen ? {month:initial.get('month'),id:initial.get('event'),complex:initial.get('complex')} : null;
+  let catalog, catalogRequest, activeMonth, episode, record, selected, timeOrigin, scene, inspectedHour;
+  let serial = 0, pending = false, message = '', maximumChange = 1;
 
-  function syncURL(){
-    const url = new URL(location.href);
-    url.searchParams.set('analysis','events');
-    for(const [key,value] of [['month',activeMonth],['event',episode?.id],['complex',selected]]){
-      if(value)url.searchParams.set(key,value);
-      else url.searchParams.delete(key);
-    }
-    history.replaceState(null,'',url);
+  function pointRadius(station){
+    if(!station.event)return 1.4;
+    const difference = Math.abs(hourChange(station.event,inspectedHour)??0);
+    const minRadius = 2.5, maxRadius = 12;
+    // Scale the area above the minimum used to keep every complex selectable.
+    return Math.sqrt(minRadius**2 + (maxRadius**2-minRadius**2)*difference/maximumChange);
   }
 
-  function drawMap(){
-    const {width,height} = svg.node().getBoundingClientRect();
-    if(!active||width<40||height<40)return;
-    svg.attr('viewBox',`0 0 ${width} ${height}`).selectAll('*').remove();
-    const boroughs = geo.features.filter(feature => feature.properties.name !== 'Staten Island');
-    const area = {type:'FeatureCollection',features:boroughs};
-    projection = d3.geoMercator().fitExtent([[16,20],[width-16,height-18]],area);
-    const flat = d3.geoTransform({point(lon,lat){this.stream.point(...projection([lon,lat]));}});
-    const path = d3.geoPath(flat);
-    const layer = svg.append('g').attr('class','spectral-map-layer');
-    layer.selectAll('.map-bg').data(boroughs).join('path').attr('class','map-bg')
-      .attr('fill-rule','evenodd').attr('vector-effect','non-scaling-stroke').attr('d',path);
-    const rail = d3.line().x(coord=>projection(coord)[0]).y(coord=>projection(coord)[1]);
-    layer.append('g').attr('class','spectral-rails').attr('aria-hidden','true').selectAll('path')
-      .data(flows.links.filter(link=>link.kind==='rail')).join('path')
-      .attr('d',link=>rail(link.coords)).attr('vector-effect','non-scaling-stroke');
-    layer.append('g').attr('aria-hidden','true').selectAll('text')
-      .data([['Manhattan',width<550?-73.995:-74.062,40.81],['Brooklyn',-73.965,40.637],['Queens',-73.765,40.728],['Bronx',-73.848,40.859]])
-      .join('text').attr('class','borough-name').attr('text-anchor','middle')
-      .attr('x',d=>projection([d[1],d[2]])[0]).attr('y',d=>projection([d[1],d[2]])[1]).text(d=>d[0]);
-    points = layer.append('g').attr('class','spectral-nodes');
-    svg.call(zoom.translateExtent([[-width/3,-height/3],[width*4/3,height*4/3]])).call(zoom.transform,camera);
-    drawPoints();
+  function writeURL(params){
+    if(!calendarOpen)return;
+    params.set('analysis','events');
+    for(const [key,value] of [['month',activeMonth??restore?.month],
+      ['event',episode?.id??restore?.id],['complex',selected??restore?.complex]]){
+      if(value)params.set(key,value);
+    }
+  }
+
+  function mount({stage,svg,layer,position,scale,cancelDrawing}){
+    const key = document.querySelector('#spectral-key-template').content.firstElementChild.cloneNode(true);
+    stage.querySelector('.map-viewport').append(key);
+    const controls = stage.querySelectorAll(stage.querySelector('.flow-controls')
+      ? '.flow-controls > *, .map-layer' : '.map-panel-controls');
+    scene = {controls,svg,key,
+      points:layer.append('g').attr('class','spectral-nodes'),position,scale,cancelDrawing,
+      role:svg.attr('role'),label:svg.attr('aria-label')};
+    updateMapControls();
+    drawScene();
+  }
+
+  function updateMapControls(){
+    if(!scene)return;
+    for(const control of scene.controls)control.inert = calendarOpen;
+  }
+
+  function drawScene(){
+    const visible = !!episode;
+    document.body.classList.toggle('spectral-episode-active',visible);
+    header.hidden = !visible;
+    summarySubject.textContent = visible
+      ? selected ? shortName(stations.get(selected)) : `${episode.complexes} complejos del episodio`
+      : '';
+    period.textContent = visible ? `Episodio · ${eventTime(episode.start,episode.end)}` : '';
+    summaryHour.textContent = '';
+    if(!scene){
+      drawDetail();
+      return;
+    }
+    scene.key.hidden = !visible;
+    scene.points.attr('display',visible?null:'none');
+    scene.svg.attr('role',visible?'group':scene.role)
+      .attr('aria-label',visible?'Complejos del episodio':scene.label);
+    if(visible){
+      scene.key.querySelector('.spectral-map-hour').textContent = '';
+      drawPoints();
+    }else scene.points.selectAll('circle').remove();
+    drawDetail();
+  }
+
+  function updateZoom(){
+    if(episode&&scene)scene.points.selectAll('circle').attr('r',d=>pointRadius(d)/scene.scale());
+  }
+
+  function paintHour(date){
+    if(!scene)return;
+    scene.key.querySelector('.spectral-map-hour').textContent =
+      labels.day.format(date) + ' · ' + labels.time.format(date);
+    scene.points.selectAll('.spectral-node.is-involved')
+      .attr('fill',station=>{
+        const difference = hourChange(station.event,inspectedHour);
+        const typical = station.event.typical[inspectedHour];
+        if(difference===null)return '#c2cbcd';
+        return changeColor(typical>0?difference/typical:Math.sign(difference));
+      })
+      .attr('aria-label',station=>{
+        const difference = hourChange(station.event,inspectedHour);
+        return shortName(station) + ' · ' +
+          (difference===null?'sin comparación a esta hora':signedCount(difference)+' entradas a esta hora');
+      });
+    updateZoom();
   }
 
   function drawPoints(){
-    if(!points)return;
+    const {points,position,scale} = scene;
     const involved = new Map((record?.stations??[]).map(station=>[station.id,station]));
     const data = [...stations.values()].map(station=>({...station,id:String(station.id),event:involved.get(String(station.id))}));
     const ordered = data.sort((a,b)=>Number(!!a.event)-Number(!!b.event)||Number(a.id===selected)-Number(b.id===selected));
     const marks = points.selectAll('circle').data(ordered,d=>d.id).join('circle')
       .attr('class','spectral-node').attr('data-complex',d=>d.id).classed('is-involved',d=>!!d.event).classed('is-selected',d=>d.id===selected)
-      .attr('cx',d=>projection([d.lon,d.lat])[0]).attr('cy',d=>projection([d.lon,d.lat])[1])
-      .attr('r',d=>pointRadius(d)/camera.k).attr('vector-effect','non-scaling-stroke')
-      .attr('fill',d=>d.event?changeColor(change(d.event)):'#8e9ea2')
+      .attr('cx',d=>position(d)[0]).attr('cy',d=>position(d)[1])
+      .attr('r',d=>pointRadius(d)/scale()).attr('vector-effect','non-scaling-stroke')
+      .attr('fill','#8e9ea2')
       .attr('tabindex',d=>d.event?0:null).attr('role',d=>d.event?'button':null)
       .attr('aria-pressed',d=>d.event?String(d.id===selected):null)
-      .attr('aria-label',d=>d.event?`${shortName(d)} · ${deltaLabel(change(d.event))}`:null)
       .attr('aria-hidden',d=>d.event?null:'true');
     const tooltip = (event,d) => {
       if(!d.event)return;
-      showTooltip(`<strong>${esc(shortName(d))}</strong><br>${number(d.event.entries)} entradas · ${number(d.event.expected)} habituales<br>${deltaLabel(change(d.event))} en sus horas detectadas`,event);
+      const difference = hourChange(d.event,inspectedHour);
+      const observed = d.event.observed[inspectedHour], typical = d.event.typical[inspectedHour];
+      const reference = typical>0 ? ' · ' + deltaLabel(difference/typical) : '';
+      const summary = difference===null ? 'Sin comparación a esta hora'
+        : `${number(observed)} entradas · ${number(typical)} habituales<br>${signedCount(difference)} entradas${reference}`;
+      showTooltip(`<strong>${esc(shortName(d))}</strong><br>${summary}`,event);
     };
-    marks.on('click',(_,d)=>{if(d.event)selectComplex(d.id);})
+    marks.on('click',(event,d)=>{
+      if(!d.event)return;
+      event.stopPropagation();
+      selectComplex(d.id,true);
+    })
       .on('keydown',(event,d)=>{
-        if(d.event&&['Enter',' '].includes(event.key)){event.preventDefault();selectComplex(d.id);}
+        if(d.event&&['Enter',' '].includes(event.key)){event.preventDefault();selectComplex(d.id,true);}
       })
       .on('pointerenter',tooltip).on('pointerleave',hideTooltip)
       .on('focus',function(_,d){const box=this.getBoundingClientRect();tooltip({clientX:box.right,clientY:box.top},d);})
       .on('blur',hideTooltip);
-    resetMap.hidden = false;
   }
 
   function drawCalendar(){
@@ -143,31 +203,28 @@ export function createSpectralEvents({geo,flows,onFlows}){
   }
 
   function drawDetail(){
-    if(!episode||pending||message){
-      caption.textContent = episode ? eventTime(episode.start,episode.end) : '';
-      detail.innerHTML = `<p class="spectral-empty" role="status">${esc(message||(pending?'Cargando episodio…':'Selecciona un episodio para comparar las entradas observadas y habituales.'))}</p>`;
+    const empty = !episode||!record||pending||!!message;
+    for(const element of [subject,legend,chart,reading,scope])element.toggleAttribute('hidden',empty);
+    status.hidden = !empty;
+    frame.classList.toggle('is-empty',empty);
+    driver.hidden = true;
+    d3.select(chart).selectAll('*').remove();
+    if(empty){
+      status.textContent = message||(pending?'Cargando episodio…':'Selecciona un episodio para ver sus entradas.');
       return;
     }
-    const station = record?.stations.find(item=>item.id===selected);
-    const subject = station ? shortName(stations.get(station.id)) : 'Complejos del episodio';
-    const chosen = station ?? record;
-    caption.textContent = eventTime(episode.start,episode.end);
-    detail.innerHTML = `<h3>${esc(subject)}</h3>
-      <p class="spectral-detail-date">${esc(caption.textContent)} · ${episode.hours} h</p>
-      <div class="spectral-series-key"><span>Observadas</span><span>Habituales</span></div>
-      <svg class="spectral-chart" role="img" tabindex="0" aria-label="Entradas por hora antes, durante y después. Usa las flechas izquierda y derecha para recorrer las horas."></svg>
-      <output class="spectral-hour-reading" aria-live="polite"></output>
-      <p class="spectral-detail-scope">${station
-        ? 'Pulsa el complejo de nuevo para ver el conjunto.'
-        : `${episode.complexes} complejos. Selecciona uno en el mapa para ver sus entradas.`}</p>`;
-    drawChart(chosen);
+    const station = record.stations.find(item=>item.id===selected);
+    subject.textContent = station ? shortName(stations.get(station.id)) : 'Complejos del episodio';
+    scope.textContent = station
+      ? 'Pulsa el complejo de nuevo para ver el conjunto.'
+      : 'Selecciona un complejo en el mapa para ver sus entradas.';
+    drawChart(station??record);
   }
 
   function drawChart(chosen){
-    const plot = d3.select(detail.querySelector('.spectral-chart'));
-    const reading = detail.querySelector('.spectral-hour-reading');
-    const W = Math.max(224,plot.node().clientWidth), H = 156;
-    const m = {left:43,right:14,top:15,bottom:25};
+    const plot = d3.select(chart);
+    const W = plot.node().clientWidth || 200, H = 156;
+    const m = {left:W<240?34:43,right:14,top:15,bottom:25};
     const n = chosen.observed.length;
     const dates = Array.from({length:n},(_,i)=>new Date(timeOrigin + (record.start+i)*3600000));
     const values = [chosen.observed,chosen.typical];
@@ -189,19 +246,46 @@ export function createSpectralEvents({geo,flows,onFlows}){
     const marker = plot.append('line').attr('class','spectral-chart-marker').attr('y1',m.top).attr('y2',H-m.bottom);
     let currentHour;
     function inspect(i){
-      currentHour = i;
+      if(currentHour===i)return;
+      currentHour = inspectedHour = i;
+      paintHour(dates[i]);
       const pos=x(dates[i]);
       marker.attr('x1',pos).attr('x2',pos);
-      reading.textContent = `${labels.day.format(dates[i])} · ${labels.time.format(dates[i])} · ${number(chosen.observed[i])} obs. / ${number(chosen.typical[i])} hab.`;
+      const observed = chosen.observed[i], typical = chosen.typical[i];
+      const compared = observed!==null&&typical!==null;
+      reading.textContent = `${labels.day.format(dates[i])} · ${labels.time.format(dates[i])} · ${number(observed)} obs. / ${number(typical)} hab.`;
+      if(compared)reading.textContent += ` · Cambio ${signedCount(observed-typical)}`;
+      summaryHour.textContent = `${labels.day.format(dates[i])} · ${labels.time.format(dates[i])} · ${compared
+        ? `${signedCount(observed-typical)} entradas frente a lo habitual` : 'Sin comparación'}`;
+      driver.hidden = true;
+      if(selected||!compared)return;
+      let largest;
+      for(const station of record.stations){
+        const difference = hourChange(station,i);
+        if(difference===null||difference===0)continue;
+        if(!largest||Math.abs(difference)>Math.abs(largest.difference)){
+          largest = {id:station.id,difference,usual:station.typical[i]};
+        }
+      }
+      if(!largest)return;
+      const name = shortName(stations.get(largest.id));
+      const percent = largest.usual ? ' (' + deltaLabel(largest.difference/largest.usual) + ')' : '';
+      driver.innerHTML = `<span>Mayor diferencia a esta hora</span>
+        <strong>${esc(name)}</strong>
+        <span class="${largest.difference<0?'spectral-decrease':'spectral-increase'}">${signedCount(largest.difference)} entradas${percent} ↗</span>`;
+      driver.onclick = () => {
+        selectComplex(largest.id);
+        chart.focus({preventScroll:true});
+      };
+      driver.hidden = false;
     }
     const peak = dates.findIndex(date=>date.getTime()===parseHour(episode.peak).getTime());
-    inspect(Math.max(0,peak));
+    inspect(inspectedHour??Math.max(0,peak));
     plot.on('pointermove',event=>{
       const [pointer] = d3.pointer(event,plot.node());
       const hour = Math.round((+x.invert(pointer)-dates[0])/3600000);
       inspect(Math.max(0,Math.min(n-1,hour)));
-    }).on('pointerleave',()=>inspect(Math.max(0,peak)))
-      .on('keydown',event=>{
+    }).on('keydown',event=>{
         if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
         event.preventDefault();
         const direction = event.key==='ArrowLeft' ? -1 : 1;
@@ -210,22 +294,31 @@ export function createSpectralEvents({geo,flows,onFlows}){
   }
 
   function refreshSelection(){
-    if(!active)return;
-    drawPoints();
-    drawDetail();
+    drawScene();
     syncURL();
   }
 
-  function selectComplex(id){
+  function strongestHour(station){
+    const hours = d3.range(...record.window)
+      .filter(i=>hourChange(station,i)!==null);
+    return d3.greatest(hours,i=>Math.abs(hourChange(station,i)));
+  }
+
+  function selectComplex(id,focusEpisode=false){
     const hadFocus = document.activeElement?.dataset.complex === id;
     selected = selected===id ? null : id;
+    if(selected&&focusEpisode){
+      inspectedHour = strongestHour(record.stations.find(station=>station.id===selected));
+    }
     refreshSelection();
-    if(hadFocus)points.select(`[data-complex="${id}"]`).node()?.focus({preventScroll:true});
+    if(hadFocus)scene.points.select(`[data-complex="${id}"]`).node()?.focus({preventScroll:true});
   }
 
   async function selectEpisode(event,complex=null){
     const ticket = ++serial;
+    hideTooltip();
     episode = event;
+    inspectedHour = undefined;
     selected = null;
     record = null;
     pending = true;
@@ -241,7 +334,13 @@ export function createSpectralEvents({geo,flows,onFlows}){
       if(ticket!==serial)return;
       record = monthData?.[event.id];
       if(!record?.stations?.length)throw Error('Faltan los datos del episodio.');
-      if(record.stations.some(station=>station.id===complex))selected=complex;
+      maximumChange = d3.max(record.stations,station=>
+        d3.max(station.observed,(_,hour)=>Math.abs(hourChange(station,hour)??0)))||1;
+      const station = record.stations.find(station=>station.id===complex);
+      if(station){
+        selected = complex;
+        inspectedHour = strongestHour(station);
+      }
     }catch(error){
       if(ticket!==serial)return;
       message = 'No se pudo cargar el episodio. Pulsa su fecha para reintentar.';
@@ -254,7 +353,9 @@ export function createSpectralEvents({geo,flows,onFlows}){
 
   function clearEpisode(){
     serial++;
+    hideTooltip();
     episode=record=selected=null;
+    inspectedHour=undefined;
     pending=false;
     message='';
     drawEpisodes();
@@ -265,13 +366,8 @@ export function createSpectralEvents({geo,flows,onFlows}){
     const button = event.target.closest('[data-spectral-month]');
     if(!button)return;
     const month = button.dataset.spectralMonth;
-    if(month===activeMonth){
-      activeMonth=null;
-      clearEpisode();
-    }else{
-      activeMonth = month;
-      selectEpisode(catalog.months[month][0]);
-    }
+    activeMonth = month===activeMonth ? null : month;
+    clearEpisode();
     calendar.querySelectorAll('[data-spectral-month]').forEach(item=>{
       item.setAttribute('aria-pressed',String(item.dataset.spectralMonth===activeMonth));
     });
@@ -285,47 +381,68 @@ export function createSpectralEvents({geo,flows,onFlows}){
     eventList.querySelector(`[data-spectral-event="${chosen.id}"]`)?.focus({preventScroll:true});
   });
 
-  async function load(){
-    if(catalog){drawMap();drawDetail();syncURL();return;}
+  function load(){
+    if(catalogRequest)return;
     calendar.textContent = 'Cargando calendario…';
-    catalogRequest ??= d3.json(file('index'));
-    try{
-      catalog = await catalogRequest;
+    catalogRequest = d3.json(file('index')).then(value=>{
+      catalog = value;
       timeOrigin = +parseHour(catalog.meta.origin);
+      const saved = restore;
+      restore = null;
+      if(catalog.months[saved?.month]?.length)activeMonth = saved.month;
       drawCalendar();
       drawEpisodes();
-      if(!active)return;
-      drawMap();
-      const month = initial.get('month');
-      if(catalog.months[month]?.length){
-        activeMonth = month;
-        const id = initial.get('event');
-        drawCalendar();
-        selectEpisode(catalog.months[month].find(item=>item.id===id)??catalog.months[month][0],initial.get('complex'));
-      }else{
-        drawDetail();
-        syncURL();
-      }
-    }catch(error){
+      const savedEvent = catalog.months[activeMonth]?.find(event=>event.id===saved?.id);
+      if(calendarOpen&&savedEvent)selectEpisode(savedEvent,saved.complex);
+      else syncURL();
+    }).catch(error=>{
       catalogRequest = null;
       catalog = null;
       calendar.innerHTML = '<p role="status">No se pudo abrir el calendario.</p><button type="button">Reintentar</button>';
       calendar.querySelector('button').onclick = load;
       console.error(error);
-    }
+    });
   }
 
-  function show(events){
-    if(events===active)return;
-    active=events;
-    hideTooltip();
-    document.body.classList.toggle('spectral-mode',events);
-    panel.hidden=!events;
-    for(const button of buttons)button.setAttribute('aria-pressed',String(button.dataset.analysis===(events?'events':'flows')));
-    if(events){syncURL();load();}
-    else onFlows();
+  function updatePanel(){
+    panel.hidden = !calendarOpen;
+    document.body.classList.toggle('spectral-calendar-open',calendarOpen);
+    updateMapControls();
+    for(const button of buttons)button.setAttribute('aria-pressed',String(button.dataset.analysis===(calendarOpen?'events':'years')));
   }
-  for(const button of buttons)button.addEventListener('click',()=>show(button.dataset.analysis==='events'));
-  new ResizeObserver(()=>drawMap()).observe(viewport);
-  return {show,get active(){return active;}};
+
+  function showCalendar(open){
+    if(calendarOpen===open)return;
+    calendarOpen = open;
+    updatePanel();
+    if(open){
+      hideTooltip();
+      scene?.cancelDrawing();
+      load();
+    }
+    else{
+      restore = null;
+      clearEpisode();
+    }
+    syncURL();
+  }
+
+  function closeEpisode(){
+    if(!episode)return false;
+    const id = episode.id;
+    clearEpisode();
+    eventList.querySelector(`[data-spectral-event="${id}"]`)?.focus({preventScroll:true});
+    return true;
+  }
+
+  close.addEventListener('click',closeEpisode);
+  for(const button of buttons)button.addEventListener('click',()=>showCalendar(button.dataset.analysis==='events'));
+  updatePanel();
+  if(calendarOpen)load();
+
+  return {
+    mount, updateZoom, writeURL, closeEpisode,
+    get episodeActive(){return !!episode;},
+    clearComplex(){if(selected)selectComplex(null);}
+  };
 }

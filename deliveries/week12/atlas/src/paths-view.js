@@ -1,9 +1,10 @@
 import {state,esc,fmt,profile,cohortProfile,showTooltip,hideTooltip,heading,stats} from './model.js?v=20261027-4';
 
 export function renderPaths(host,app,items){
-  host.innerHTML=heading('03 / SEGUIR TRAYECTORIAS','La recuperación no sigue una sola dirección.','Sigue dos cambios del ritmo a la vez: el peso de la mañana laborable y el del fin de semana. Cada punto fechado representa enero–febrero de ese año.','T1 · T4 · T5')+`
+  const years=app.dataset.years.filter(year=>year<=state.year);
+  host.innerHTML=heading('03 / SEGUIR TRAYECTORIAS','La recuperación no sigue una sola dirección.','Sigue dos cambios del ritmo a la vez: el peso de la mañana laborable y el del fin de semana. Cada punto resume una semana representativa de ese año.','T1 · T4 · T5')+`
   <div class="toolbar"><div class="segmented"><button id="focus-paths" class="${state.pathsFocus?'active':''}">Enfocar trayectorias</button><button id="all-paths" class="${!state.pathsFocus?'active':''}">Todos los complejos</button></div><span>Arrastra para formar un grupo por su posición en ${state.year}.</span></div>
-  <div class="viz-card"><svg class="paths-svg" role="img" aria-label="Trayectorias del peso de la mañana y del fin de semana entre 2020 y el año seleccionado"></svg><div class="path-key"><i></i> Sistema completo <i class="sel"></i> Estación seleccionada</div><div class="chart-note">La línea conecta años, no trayectos del metro. Sistema: distribución ponderada por entradas; los puntos tenues son estaciones en ${state.year}.</div></div>
+  <div class="viz-card"><svg class="paths-svg" role="img" aria-label="Trayectorias del peso de la mañana y del fin de semana hasta el año seleccionado"></svg><div class="path-key"><i></i> Sistema completo <i class="sel"></i> Estación seleccionada</div><div class="chart-note">La línea conecta años, no trayectos del metro. Sistema: distribución ponderada por viajes; los puntos tenues son estaciones en ${state.year}.</div></div>
   ${stats(items)}<div class="narrative"><b>Contexto de servicio</b><span>En enero–febrero de 2021 hubo cierres nocturnos del metro. El cambio de forma combina uso y condiciones de operación; consulta Evidencia antes de interpretar motivos.</span></div>`;
   const svg=d3.select(host.querySelector('svg')),width=svg.node().clientWidth,height=svg.node().clientHeight;
   host.querySelector('#focus-paths').onclick=()=>app.set({pathsFocus:true});
@@ -11,11 +12,11 @@ export function renderPaths(host,app,items){
   svg.attr('viewBox',`0 0 ${width} ${height}`);
   const margin={left:66,right:32,top:42,bottom:57};
   const ids=[...new Set([...state.pins,state.selected].filter(Boolean))];
-  const paths=[{id:'system',label:'Sistema',color:'#c96035',points:d3.range(2020,state.year+1).map(year=>({year,p:app.data.system[year]}))}];
-  if(state.cohort||state.borough!=='all'||state.preset||state.query){const pts=d3.range(2020,state.year+1).map(year=>({year,p:cohortProfile(items,year)}));if(pts.some(p=>p.p))paths.push({id:'group',label:'Grupo activo',color:'#9a7a45',points:pts});}
-  ids.forEach((id,i)=>{const s=app.station(id);if(s)paths.push({id,label:s.name,color:id===state.selected?'#0b7c83':['#8454a1','#627d40','#b9862c'][i%3],points:d3.range(2020,state.year+1).map(year=>({year,p:profile(s,year)}))});});
+  const paths=[{id:'system',label:'Sistema',color:'#c96035',points:years.map(year=>({year,p:cohortProfile(app.data.stations,year)}))}];
+  if(state.cohort||state.borough!=='all'||state.preset||state.query){const pts=years.map(year=>({year,p:cohortProfile(items,year)}));if(pts.some(p=>p.p))paths.push({id:'group',label:'Grupo activo',color:'#9a7a45',points:pts});}
+  ids.forEach((id,i)=>{const s=app.station(id);if(s)paths.push({id,label:s.name,color:id===state.selected?'#0b7c83':['#8454a1','#627d40','#b9862c'][i%3],points:years.map(year=>({year,p:profile(s,year)}))});});
   host.querySelector('.path-key').innerHTML=paths.map(r=>`<div style="margin:4px 0"><i style="background:${r.color};margin-left:0"></i>${esc(r.id==='system'?'Sistema completo':r.label)}</div>`).join('');
-  const all=state.pathsFocus?paths.flatMap(r=>r.points.map(d=>d.p).filter(Boolean)):app.data.stations.flatMap(s=>d3.range(2020,state.year+1).map(y=>profile(s,y)).filter(Boolean));
+  const all=state.pathsFocus?paths.flatMap(r=>r.points.map(d=>d.p).filter(Boolean)):app.data.stations.flatMap(s=>years.map(y=>profile(s,y)).filter(Boolean));
   const x=d3.scaleLinear().domain([Math.max(0,d3.min(all,p=>p.am)-(state.pathsFocus?.6:2)),Math.min(100,d3.max(all,p=>p.am)+(state.pathsFocus?.6:2))]).nice().range([margin.left,width-margin.right]);
   const y=d3.scaleLinear().domain([Math.max(0,d3.min(all,p=>p.weekend)-(state.pathsFocus?.6:1)),Math.min(100,d3.max(all,p=>p.weekend)+(state.pathsFocus?.6:1))]).nice().range([height-margin.bottom,margin.top]);
   const defs=svg.append('defs');
