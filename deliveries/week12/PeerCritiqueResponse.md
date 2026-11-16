@@ -14,7 +14,7 @@ Se conserva íntegro el registro anterior en `history/before-20261028-alignment/
 | Usuario | No solicitó reproducir automáticamente | No existe botón ni avance automático | Implementado; selección manual de las 168 horas |
 | Usuario | No se puede quitar selección; sliders pequeños | Vista general, clic repetido/fondo, Escape; sliders apilados | Implementado |
 | Usuario | Incluir 2019 y 2020 | Base histórica independiente, entradas equivalentes en ambos años | Implementado; no genera OD inexistente para esos años |
-| Usuario | Preguntas distintas con valor territorial | Nuevas seis tareas y seis familias de tablas verificadas | Evidencia preparada; integración territorial y escenario interactivo pendientes |
+| Usuario | Preguntas distintas con valor territorial | Preguntas y tablas reproducibles para el proyecto | Evidencia preparada; integración territorial pendiente |
 
 ## Qué se conserva y qué se aplaza
 
@@ -27,7 +27,6 @@ Las cifras e hipótesis del Atlas antiguo permanecen identificadas en historia; 
 | T3 | Ventanas de 3 h, 7 días y seis años | Reloj y selección horaria disponibles; detector automático por integrar |
 | T4 | Cargas de los 549 enlaces para 2021/2024 | Geometría y haces disponibles; inspección exacta por tramo pendiente |
 | T5 | Balance externo por borough/cohorte, cuatro años | CSV preparado; codificación interactiva pendiente |
-| T6 | Seis escenarios reproducibles | Cálculo preparado; escenario interactivo pendiente |
 
 
 ## Verificación y próximos pasos

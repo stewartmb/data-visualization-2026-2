@@ -12,7 +12,7 @@ export function bindMapLasso({svg,outlines,zoom,width,height,projection,stations
   const savedAreas=twoZones?.outlines??(app.state.areaOutline?[app.state.areaOutline]:[]);
   showAreas(savedAreas);
 
-  const appliedMode=twoZones?'pair':app.state.cohort?'single':null;
+  const appliedMode=twoZones?'pair':app.state.cohort&&app.state.cohortSource!=='scatter'?'single':null;
   let overlay,mode,first,pointerId,points;
   function syncButtons(){
     const active=overlay?mode:appliedMode;

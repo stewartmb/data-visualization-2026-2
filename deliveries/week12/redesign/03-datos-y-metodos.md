@@ -8,6 +8,6 @@ Para OD, combinar promedios mensuales ponderando las ocurrencias de cada día de
 
 El OD es una estimación por hora de inicio, no salidas observadas en esa hora ni trayectorias. Los caminos se asignan por distancia sobre una red de referencia actual: no reconstruyen operación histórica, esperas o elección real de ruta. La abstracción visual no añade infraestructura. No se dispone de capacidad ni motivos de viaje para afirmar congestión, turismo, residencia o causas. 2020 completo es un año pandémico; 2019 es la referencia anual anterior. Las comparaciones usan la misma fuente en ambos extremos y suman cantidades antes de normalizar.
 
-Cargas de corredor y balance externo se calculan con cantidades, no densidad de píxeles. T6 retira un enlace con ambos sentidos si existen; divide demanda que pierde conexión y distancia adicional de la conectada. Se conservan seis ejemplos, no una evaluación exhaustiva de toda infraestructura.
+Cargas de corredor y balance externo se calculan con cantidades, no densidad de píxeles. Se conservan seis ejemplos, no una evaluación exhaustiva de toda infraestructura.
 
 La preparación `prepare_analytical_tasks.py` produce seis CSV y controles. Las referencias metodológicas están en [Semana 6](../../week06/referencias.md). El uso de TV adapta las categorías de la ecuación 11 de Fredriksson y Karlström; el artículo no valida automáticamente su efectividad para semanas.

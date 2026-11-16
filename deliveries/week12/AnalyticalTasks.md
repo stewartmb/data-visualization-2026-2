@@ -1,14 +1,14 @@
-# Seis tareas del Atlas: demanda, conexiones y vulnerabilidad
+# Cinco tareas del Atlas: demanda y conexiones
 
-Revisión de alcance: **28 de octubre de 2026**. Este documento sustituye las seis tareas anteriores como contrato analítico vigente. Define objetivos y resultados comprobables; **no certifica que las seis estén implementadas**. La guía del profesor (§4.2) pide aproximadamente 5–8 preguntas de dominio; aquí elegimos seis por sus propósitos distintos.
+Revisión de alcance: **15 de noviembre de 2026**. La guía del profesor (§4.2) pide aproximadamente 5–8 preguntas de dominio. Este documento define las cinco preguntas vigentes y el estado de su implementación.
 
 ## Problema y audiencia
 
-El volumen agregado del subway oculta dónde se redistribuye la demanda, qué territorios intercambian viajes, cuándo los inician y de qué corredores podrían depender. El Atlas debe ayudar a **analistas de transporte e investigadores urbanos** a priorizar lugares, franjas y conexiones que requieren aforos, revisión de oferta o estudios de contingencia. Periodistas de datos son una audiencia secundaria.
+El volumen agregado del subway oculta dónde se redistribuye la demanda, qué territorios intercambian viajes, cuándo los inician y de qué corredores podrían depender. El Atlas debe ayudar a **analistas de transporte e investigadores urbanos** a priorizar lugares, franjas y conexiones que requieren aforos, revisión de oferta o estudios de conectividad. Periodistas de datos son una audiencia secundaria.
 
 El beneficio es pasar de una impresión visual a una pregunta investigable y documentada. No hay oferta histórica, capacidad, tiempos observados de viaje ni motivos de viaje para recomendar frecuencias, afirmar congestión o explicar causalmente los cambios por COVID, turismo o teletrabajo.
 
-## Seis preguntas diferentes
+## Cinco preguntas diferentes
 
 | ID | Pregunta de dominio | Resultado que obtiene la audiencia | Para qué sirve |
 |---|---|---|---|
@@ -17,14 +17,13 @@ El beneficio es pasar de una impresión visual a una pregunta investigable y doc
 | T3 | **¿Dónde y cuándo se desplazaron las ventanas de mayor demanda?** | Días y franjas concretas con picos desplazados, aumentos absolutos o cambios de peso semanal | Elegir horarios y lugares para aforos o revisión de patrones de servicio |
 | T4 | **¿Qué corredores de la red de referencia sostienen los principales intercambios territoriales?** | Tramos con mayor carga OD asignada y territorios que aportan a esa carga, por cohorte de inicio | Priorizar corredores para contrastar demanda modelada con capacidad y servicio observados |
 | T5 | **¿Qué zonas generan más viajes hacia fuera y cuáles atraen más viajes desde otras zonas, y cómo cambia ese balance durante la semana?** | Balance direccional externo y sus cantidades de soporte, con franjas de inversión del balance | Reconocer necesidades distintas según dirección y horario de inicio, sin etiquetar barrios por su supuesto uso |
-| T6 | **¿Qué viajes y territorios quedarían más expuestos si se interrumpiera un tramo de la red de referencia?** | Demanda que pierde conexión y distancia adicional para la que conserva un camino alternativo | Priorizar estudios de contingencia por exposición estructural; extensión contrafactual pendiente |
 
-T1 trata de **cuánto y dónde**; T2 de **con quién se conecta**; T3 de **cuándo**; T4 de **por dónde se asigna**; T5 de **asimetría de dirección**; T6 de **consecuencias de una perturbación**. T2 compara composición de destinos; T5 compara el balance externo de una zona. T4 describe la red intacta; T6 la modifica explícitamente. No son seis versiones de un ranking de estaciones.
+T1 trata de **cuánto y dónde**; T2 de **con quién se conecta**; T3 de **cuándo**; T4 de **por dónde se asigna**; T5 de **asimetría de dirección**. T2 compara la composición de destinos y T5 el balance externo de una zona.
 
 ## Datos y reglas comunes
 
 - **Entradas MTA 2019–2024:** comparación histórica de T1 y T3; 72 meses adquiridos, 141.836.156 registros fuente. La interfaz analiza 424 complejos de subway; otros modos/complejos presentes en los originales no se absorben en ese universo.
-- **OD estimado MTA 2021–2024:** T2–T6 y comparaciones temporales desde 2021; 48 meses adquiridos, 446.399.011 registros fuente. No hay OD 2019/2020 en este conjunto.
+- **OD estimado MTA 2021–2024:** T2–T5 y comparaciones temporales desde 2021; 48 meses adquiridos, 446.399.011 registros fuente. No hay OD 2019/2020 en este conjunto.
 - **Red GTFS de referencia 2026:** 424 complejos, 547 enlaces ferroviarios y 2 transferencias peatonales declaradas. Caminos por distancia sobre la unión de patrones de servicio, con plataformas colapsadas en complejos. No reconstruye operación histórica, esperas ni compatibilidad de servicios.
 - **Boroughs y NTA 2020:** agrupación por ubicación del complejo. Un territorio sin complejos cubiertos no equivale a demanda cero. El origen de metro no es el domicilio; el destino no identifica empleo, turismo ni motivo.
 - Usar los doce meses de cada año y estandarizar calendario. Comparar meses homólogos si se estudia estacionalidad; el promedio anual puede ocultar cambios mensuales. Una diferencia entre años no prueba un efecto causal de la pandemia.
@@ -126,45 +125,24 @@ Rango `[-1,1]`: positivo = predominan viajes con destino en R; negativo = predom
 
 **Criterio de éxito:** identificar un territorio y una franja con predominio de una dirección, y contrastarlo con otro horario. **Estado:** calculable con los OD disponibles; métrica preparada en CSV; lectura interactiva pendiente. No llamarlo “entradas menos salidas a esa hora”: los destinos pertenecen a viajes iniciados en esa cohorte. Tampoco inferir “barrio dormitorio”, zona laboral o turismo.
 
-## T6 — Exposición ante una interrupción de referencia
-
-**La interfaz simula la interrupción de las paradas de un complejo.** Los seis ejemplos de retiro de enlaces preparados para la Semana 12 usan el grafo vigente. Las muestras entregadas en Semana 6 conservan su versión original. Es un experimento de escenario con demanda fija, no una predicción del comportamiento real ni una técnica validada por RAEB.
-
-**Entrada:** OD de una cohorte, grafo de referencia intacto y un enlace ferroviario elegido. Retirar sus aristas dirigidas en ambos sentidos si existen, identificando qué IDs se eliminan; no retirar transferencias peatonales ni enlaces paralelos sin declararlo. Un enlace GTFS no identifica necesariamente una infraestructura física completa: no llamarlo “cierre de túnel” sin verificar todos los tramos involucrados.
-
-Recalcular caminos de menor costo con el mismo criterio de la referencia. El costo combina longitud de vía y penalización del transbordo, en kilómetros equivalentes al resumir el escenario. Comparar solo pares de complejos distintos que eran asignables en la red intacta. Separar los no asignables previos y origen=destino.
-
-```text
-Q = Σ_OD elegibles q_OD
-U_e = Σ_OD que pierden conexión q_OD / Q
-Δkm_e = Σ_OD aún conectados q_OD (costo_sin_e − costo_original)
-        / Σ_OD aún conectados q_OD
-```
-
-`U_e` y `Δkm_e` deben mostrarse por separado: excluir desconectados del segundo promedio podría hacer parecer benigno un cierre grave. Denominador cero implica métrica indefinida. Con distancias no negativas, el camino mínimo no debe acortarse al eliminar aristas; ese es un control del cálculo.
-
-**Salida verificable:** cuota y cantidad de demanda que pierde conexión, distancia adicional ponderada para la restante y territorios afectados; cantidades conservadas y escenario identificado. **Munzner:** propósito producir un escenario y descubrir su efecto; búsqueda sobre enlace conocido; consulta comparar red intacta/alterada y resumir exposición. **Medios candidatos:** seleccionar un tramo y activar un escenario reversible, con diferencia explícita en el mismo mapa; la red original permanece recuperable.
-
-**Valor:** distinguir corredores voluminosos de enlaces con pocas alternativas y orientar estudios de contingencia. No ofrece minutos de demora, evacuación, trenes de reemplazo ni demanda adaptada: faltan horarios, capacidad, frecuencias y respuesta de viajeros.
-
 ## Un panel, varias tareas; estado de implementación
 
-Se mantiene el panel integrado: mapa central + dispersión volumen × forma + reloj radial + minimapa. No se añaden seis pantallas ni seis formularios. Las tareas determinan qué información hace falta; la composición actual no se declara suficiente antes de probarla. T2, T5 y T6 requieren agregados/derivaciones y detalles adicionales, que deben diseñarse sin recargar el overview.
+Se mantiene el panel integrado: mapa central + dispersión volumen × forma + reloj radial + minimapa. Las tareas determinan qué información hace falta; la composición actual no se declara suficiente antes de probarla. T2 y T5 requieren agregados/derivaciones y detalles adicionales, que deben diseñarse sin recargar el overview.
 
 | Componente | Función analítica | Límite |
 |---|---|---|
-| Mapa y caminos de referencia | Espacio, relaciones y contexto de T1–T6 | La abstracción libre puede cruzar agua; no crea infraestructura ni permite medir distancias sobre la curva |
-| Dispersión volumen × forma | Seleccionar casos que separan cantidad y reparto temporal, apoyo a T1/T3 | No responde por sí sola sobre dependencia territorial, balance o vulnerabilidad |
-| Reloj radial | Localizar franjas de T3 y elegir cohorte de T2/T4/T5/T6 | El color actual es diferencia de peso semanal; otra métrica exige una codificación/leyenda explícita |
-| Minimap y navegación | Conservar orientación durante la inspección | Son medios de interacción, no una séptima tarea del dominio |
-| Detalle bajo demanda/exportación | Cantidades, denominadores, cobertura y límites de cualquier conclusión | Verificar procedencia es un requisito transversal; no ocupa una de las seis preguntas |
+| Mapa y caminos de referencia | Espacio, relaciones y contexto de T1–T5 | La abstracción libre puede cruzar agua; no crea infraestructura ni permite medir distancias sobre la curva |
+| Dispersión volumen × forma | Seleccionar casos que separan cantidad y reparto temporal, apoyo a T1/T3 | No responde por sí sola sobre dependencia territorial, o balance |
+| Reloj radial | Localizar franjas de T3 y elegir cohorte de T2/T4/T5 | El color actual es diferencia de peso semanal; otra métrica exige una codificación/leyenda explícita |
+| Minimap y navegación | Conservar orientación durante la inspección | Son medios de interacción, no una tarea adicional del dominio |
+| Detalle bajo demanda/exportación | Cantidades, denominadores, cobertura y límites de cualquier conclusión | Verificar procedencia es un requisito transversal; no ocupa una de las cinco preguntas |
 
-**Overview → zoom y selección directa → detalles bajo demanda.** La búsqueda es auxiliar. No se añade reproducción automática. El overview debe orientar sin configurar filtros; preguntas específicas pueden requerir seleccionar un lugar, hora o escenario. El objetivo es reducir cálculo mental mediante posiciones, tamaños y diferencias explícitas, sin afirmar que toda interpretación puede hacerse sin razonamiento.
+**Overview → zoom y selección directa → detalles bajo demanda.** La búsqueda es auxiliar. No se añade reproducción automática. El overview debe orientar sin configurar filtros; preguntas específicas pueden requerir seleccionar un lugar o una hora. El objetivo es reducir cálculo mental mediante posiciones, tamaños y diferencias explícitas, sin afirmar que toda interpretación puede hacerse sin razonamiento.
 
 ## Evaluación y entrega
 
 Cada tarea debe producir una respuesta escrita con entidad/territorio, período, unidad, valores y una cautela pertinente. Comparar esos resultados con agregados reproducibles independientes; después evaluar con personas si la interacción permite encontrarlos. Ausencia de capacidad o tiempo de viaje no se soluciona cambiando el idiom.
 
-El Atlas actual permite leer cargas exactas por tramo (T4) y probar una interrupción por complejo (T6). También permite probar enlaces hipotéticos desde un haz RAEB. La síntesis territorial de T1, T2 y T5 permanece como evidencia y la validación con usuarios sigue pendiente. Los seis cálculos vigentes están en `data/analytical_tasks/`. Semana 6 conserva las muestras originales. El método vigente del mapa se documenta en RAEB Implementation.
+El Atlas actual permite leer cargas exactas por tramo (T4). También permite probar enlaces hipotéticos desde un haz RAEB. La síntesis territorial de T1, T2 y T5 permanece como evidencia y la validación con usuarios sigue pendiente. Los cálculos de las tareas vigentes están en `data/analytical_tasks/`. Semana 6 conserva las muestras originales. El método vigente del mapa se documenta en RAEB Implementation.
 
-Fuentes y alcance: [ODData](ODData.md), [HistoricalContrast](HistoricalContrast.md), [RAEB Implementation](RAEBImplementation.md). Fundamento visual y alternativas: [revisión de Semana 6](../week06/referencias.md). La literatura respalda métodos y decisiones puntuales; no valida automáticamente estas seis preguntas ni nuestra herramienta.
+Fuentes y alcance: [ODData](ODData.md), [HistoricalContrast](HistoricalContrast.md), [RAEB Implementation](RAEBImplementation.md). Fundamento visual y alternativas: [revisión de Semana 6](../week06/referencias.md). La literatura respalda métodos y decisiones puntuales; no valida automáticamente estas cinco preguntas ni nuestra herramienta.

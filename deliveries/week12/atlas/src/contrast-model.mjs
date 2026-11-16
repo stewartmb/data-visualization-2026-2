@@ -48,5 +48,5 @@ export function inspectorContrast(mapApp,base,target){
   const contrast={kind,base,target,meta,label:kind==='entries'?'Entradas estimadas MTA':mapApp.dataset?.odLabel??'OD estimado MTA',unit:kind==='entries'?'entradas':'viajes OD'};
   return {...mapApp,data:{...mapApp.data,stations},contrast,
     station:id=>index.get(id),
-    filtered:()=>mapApp.filtered().map(s=>index.get(s.id)).filter(s=>s&&(base===null?annualMeasures(s,target):contrastMeasures(s,base,target)))};
+    filtered:(query,options)=>mapApp.filtered(query,options).map(s=>index.get(s.id)).filter(s=>s&&(base===null?annualMeasures(s,target):contrastMeasures(s,base,target)))};
 }

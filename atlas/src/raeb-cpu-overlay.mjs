@@ -8,10 +8,11 @@ import {flowColor, selectedFlowOpacity} from './raeb-gpu-shaders.mjs?v=zoom-widt
 export function setRaebStatus(message) {
   const status = document.querySelector('#raeb-status');
   if (!status) return;
-  if (status.textContent !== message) status.textContent = message;
+  const processing = message === 'Procesando…';
+  const visibleMessage = processing ? '' : message;
+  if (status.textContent !== visibleMessage) status.textContent = visibleMessage;
   const stage = status.closest?.('.map-stage');
   if (!stage) return;
-  const processing = message === 'Procesando…';
   stage.querySelector('.map-loading').hidden = !processing;
   stage.querySelector('.map-svg').setAttribute('aria-busy', String(processing));
 }

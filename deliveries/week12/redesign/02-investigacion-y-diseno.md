@@ -1,6 +1,6 @@
 # Investigación y contrato de diseño vigente
 
-Actualización del 28 de octubre de 2026. La [investigación bibliográfica canónica](../../week06/referencias.md) pertenece a Semana 6. Las [seis tareas vigentes](../AnalyticalTasks.md) y el [brief de implementación](../ODVisualizationBrief.md) pertenecen al desarrollo refinado de Semana 12. El [diseño anterior](../../../redesign/02-investigacion-y-diseno-historico-20261014.md) conserva las decisiones de la etapa sin OD; no es el contrato actual.
+Actualización del 28 de octubre de 2026. La [investigación bibliográfica canónica](../../week06/referencias.md) pertenece a Semana 6. Las [cinco tareas vigentes](../AnalyticalTasks.md) y el [brief de implementación](../ODVisualizationBrief.md) pertenecen al desarrollo refinado de Semana 12. El [diseño anterior](../../../redesign/02-investigacion-y-diseno-historico-20261014.md) conserva las decisiones de la etapa sin OD; no es el contrato actual.
 
 ## Composición y decisiones
 
@@ -18,7 +18,7 @@ Un panel con mapa dominante, dispersión volumen × forma a la derecha arriba, r
 | Hellinger, 12 vecinos y tres estaciones fijadas | No exigir en esta versión | Fueron decisiones del diseño anterior, no son tareas vigentes ni funciones que se prometan ahora |
 | Connected scatterplot anual | Alternativa estudiada, no idiom actual | Necesita puntos ordenados por tiempo; la dispersión actual tiene un punto por complejo |
 | Animación temporal automática | Excluir por petición del usuario | Selección manual en reloj/barra; no se deducen posiciones ni velocidades de trenes |
-| Medidas territoriales y escenario de interrupción | Propuestas analíticas por desarrollar | Calcular y validar antes de fijar su codificación en el panel; no etiquetarlas como implementadas |
+| Medidas territoriales | Propuestas analíticas por desarrollar | Calcular y validar antes de fijar su codificación en el panel; no etiquetarlas como implementadas |
 
 ## Marks, canales y semántica
 

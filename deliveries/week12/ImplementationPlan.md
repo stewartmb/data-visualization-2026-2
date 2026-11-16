@@ -18,4 +18,3 @@ Las responsabilidades son una propuesta de actualización, no acuerdos nuevos at
 | T3 | Ventanas de 3 h, 7 días y seis años | Reloj y selección horaria disponibles; detector automático por integrar |
 | T4 | Cargas de los 549 enlaces para 2021/2024 | Geometría y haces disponibles; inspección exacta por tramo pendiente |
 | T5 | Balance externo por borough/cohorte, cuatro años | CSV preparado; codificación interactiva pendiente |
-| T6 | Seis escenarios reproducibles | Cálculo preparado; escenario interactivo pendiente |

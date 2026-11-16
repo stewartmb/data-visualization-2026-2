@@ -25,14 +25,13 @@ Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_o
 
 El mapa abre en **Todo el año de 2025**. Se puede elegir otro año o comparar dos de **2021–2025**. Los datos de entradas de 2019 y 2020 se reservan para el contraste histórico.
 
-## Seis preguntas actuales
+## Cinco preguntas actuales
 
 1. **Redistribución territorial.** ¿Qué zonas recuperaron demanda y cuáles perdieron peso entre 2019 y 2024?
 2. **Dependencia e intercambios.** ¿Ganaron peso los viajes locales y entre boroughs o aumentó la dependencia de Manhattan entre 2021 y 2024?
 3. **Ventanas de demanda.** ¿Dónde y cuándo se desplazaron las franjas de mayor demanda?
 4. **Corredores de soporte.** ¿Qué tramos de la red de referencia sostienen los principales intercambios?
 5. **Balance externo.** ¿Qué territorios generan o atraen más viajes externos y en qué franjas cambia el balance?
-6. **Exposición a interrupciones.** ¿Qué viajes perderían conexión o requerirían mayor distancia al retirar un enlace de referencia?
 
 [Contrato con métricas, beneficio y estado](deliveries/week12/AnalyticalTasks.md). [Resultados reproducibles](deliveries/week12/data/analytical_tasks/). Tener los CSV no significa que todas las tareas tengan ya detalle interactivo.
 

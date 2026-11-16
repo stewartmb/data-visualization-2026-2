@@ -22,7 +22,6 @@ Grosor y una escala secuencial petróleo muestran la demanda estimada. Al selecc
 
 - **Explorar un haz** inspecciona las curvas calculadas cerca del punto señalado fuera de la red. Muestra la demanda OD que contribuye y la distancia asignada frente a la directa para el par con mayor aporte.
 - **Probar enlace hipotético** añade un arco bidireccional de longitud geodésica entre dos paradas existentes. Compara costo y cargas con demanda fija. El modelo no incorpora capacidad, horarios, costos de obra ni cambios de demanda.
-- **Dependencia de la red** elimina las paradas del complejo seleccionado para estimar pérdida de acceso, aislamiento y desvíos. «Cierre» significa interrupción de las paradas y los arcos incidentes. No simula un tren que pasa sin detenerse.
 - Los minimapas muestran diferencias por tramo frente al año abierto en el mapa principal. En modo Comparar, la referencia pasa a ser el año elegido como A. La escala se comparte entre los minimapas y se ajusta a la franja y referencia activas. La comparación principal aplica una escala fija en la vista general. Los filtros territoriales y de búsqueda acotan los viajes por origen en el mapa principal, en RAEB y en los minimapas. Los tramos y destinos pueden quedar fuera del área de origen.
 
 Para reproducir la reasignación sin repetir la adquisición ni la agregación horaria, ejecutar desde la raíz:
@@ -64,7 +63,7 @@ La app redondea hacia arriba el producto del porcentaje por los 556 enlaces ferr
 | 2024 · domingo · 8 a. m. | 56 | 12 | 629,96 m |
 | 2021 · lunes · 8 a. m. | 56 | 10 | 531,15 m |
 
-La comprobación de las 840 franjas de 2021–2025 encontró un grupo en cada una. El radio automático varió de **392,69 m a 878,08 m**. **Sugerido** propone el radio de la franja activa. Pulsa **Calcular** para fijar ese valor o el que elijas manualmente. El radio aplicado se conserva al cambiar de franja. El máximo del deslizador cubre tanto la referencia de la franja como el valor que ya estaba aplicado. La regla bajo el minimapa cambia con el zoom y el círculo usa la misma escala. El radio representa distancia en línea recta en la primera iteración. En las siguientes se reduce por un factor de 0,9.
+La comprobación de las 840 franjas de 2021–2025 encontró un grupo en cada una. El radio automático varió de **392,69 m a 878,08 m**. Ajusta el radio con el deslizador y pulsa **Calcular** para aplicarlo. El radio aplicado se conserva al cambiar de franja. El máximo del deslizador cubre tanto la referencia de la franja como el valor que ya estaba aplicado. La regla bajo el minimapa cambia con el zoom y el círculo usa la misma escala. El radio representa distancia en línea recta en la primera iteración. En las siguientes se reduce por un factor de 0,9.
 
 Reproducción del valor inicial y verificación de las franjas desde la raíz:
 
@@ -168,9 +167,9 @@ Prueba reproducible: servir `tests/webgpu-bands.html` por HTTP. Comprueba que ma
 
 ## Controles y retorno a la vista general
 
-El estado visible del cálculo usa tres mensajes normales: `Procesando…`, `Completado` y `Completado (parcial)`. El último conserva el significado previo: finalizó el presupuesto de iteraciones sin cumplir el umbral de NMI. Los detalles técnicos quedan en el título del estado y en los atributos de diagnóstico del canvas; los errores reales siguen mostrándose como errores. Se aplica tanto a WebGPU como al respaldo CPU.
+Durante el cálculo se muestra un indicador sobre el mapa. El resultado aparece como `Completado` o `Completado (parcial)`. El segundo indica que se alcanzó el límite de iteraciones antes del umbral de NMI. Los detalles técnicos quedan en el título del estado y en los atributos de diagnóstico del canvas; los errores reales siguen mostrándose como errores. Se aplica tanto a WebGPU como al respaldo CPU.
 
-El panel izquierdo separa día y hora, agrupamiento y fidelidad, y navegación. Los deslizadores de agrupamiento y fidelidad ocupan todo el ancho de su bloque. Ajusta el radio de agrupamiento y la fidelidad, y pulsa **Calcular** para aplicar ambos. Mientras haya ajustes pendientes, se indican el radio y la fidelidad aplicados al mapa. `Vista general ↺` elimina el complejo seleccionado y restablece el zoom; pulsar el mismo nodo de nuevo o el fondo del mapa elimina la selección manteniendo la cámara. También se conserva Escape. La dispersión y el reloj vuelven al sujeto general, sin cambiar año, hora ni año de contraste.
+El panel izquierdo separa día y hora, agrupamiento y fidelidad, y navegación. Los deslizadores de agrupamiento y fidelidad ocupan todo el ancho de su bloque. Ajusta el radio de agrupamiento y la fidelidad, y pulsa **Calcular** para aplicar ambos. Junto al título de agrupamiento figuran el radio y la fidelidad aplicados al mapa. `Vista general ↺` elimina el complejo seleccionado y restablece el zoom; pulsar el mismo nodo de nuevo o el fondo del mapa elimina la selección manteniendo la cámara. También se conserva Escape. La dispersión y el reloj vuelven al sujeto general, sin cambiar año, hora ni año de contraste.
 
 En el diseño estrecho, la capa de curvas y el fondo geográfico se posicionan sobre el rectángulo real del SVG del mapa, debajo de los controles. Se comprobó que canvas y SVG comparten ubicación y tamaño después de apilar los sliders.
 

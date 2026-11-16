@@ -2,9 +2,8 @@ import {state,BASE as MAP_BASE,esc,fmt,signed,profile,deltaColor,shareColor,show
 
 import {scatterDomain,comparisonContext} from './scatter-domain.mjs';
 import {odPeriodLabel} from './od-period.mjs';
-import {activeODCompareBase,activeContrastBase,availableContrastYears,inspectorContrast,contrastMeasures,contrastCell,annualMeasures,isODMap} from './contrast-model.mjs?v=od-2025-1';
+import {activeODCompareBase,activeContrastBase,availableContrastYears,inspectorContrast,contrastMeasures,contrastCell,annualMeasures,isODMap} from './contrast-model.mjs?v=scatter-area1';
 let BASE=2021;
-const closureCache=new Map();
 const measures=(s,y=state.year)=>contrastMeasures(s,BASE,y);
 const cellValue=(s,i,mode=state.mode)=>contrastCell(s,i,mode,BASE,state.year);
 const hourLabel=h=>h===0?'12 am':h<12?`${h} am`:h===12?'12 pm':`${h-12} pm`;
@@ -31,10 +30,10 @@ function coverageLabel(app){
   return a===b?`${a} · ${BASE} → ${state.year}`:`${BASE}: ${a} · ${state.year}: ${b}`;
 }
 
+let scatterResizeObserver;
+
 export function renderInspector(mapApp){
-  const previousClosure=document.querySelector('#od-closure');
-  const closureOpen=previousClosure?.open&&previousClosure.dataset.station===state.selected;
-  mapApp.updateClosure=null;
+  scatterResizeObserver?.disconnect();
   const paired=activeODCompareBase(state,mapApp.flows)!==null;
   const annual=isODMap(state)&&!paired;
   const dataset=mapApp.dataset;
@@ -53,15 +52,14 @@ export function renderInspector(mapApp){
   const mapScatter=document.querySelector('#map-scatter');
   mapScatter?.replaceChildren();
   const evidenceSlot=document.querySelector('#atlas-evidence');
-  const mapEvidence=document.querySelector('#map-evidence');
   evidenceSlot.replaceChildren();
-  mapEvidence?.replaceChildren();
   if(mapClock)mapClock.hidden=true;
   const items=app.filtered(),a=annual?null:cohortProfile(items,BASE),b=cohortProfile(items,state.year);
   host.hidden=false;state.clock=true;
   const selectedValid=selected&&(annual?annualMeasures(selected,state.year):measures(selected));
+  const groupHasData=!!b&&(annual||!!a);
   const filtered=state.preset||state.tvMin>0||state.tvMax<100||Object.values(state.ranges).some(Boolean);
-  const nombre=selected?selected.name.replace(/ \(.*/,''):state.cohort?'Grupo seleccionado':state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:filtered?'Grupo filtrado':'Todo el sistema';
+  const nombre=selected?selected.name.replace(/ \(.*/,''):state.cohort?(state.cohortSource==='scatter'?'Área en la dispersión':'Grupo seleccionado'):state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:filtered?'Grupo filtrado':'Todo el sistema';
   const profiles=annual?{[state.year]:b}:{[BASE]:a,[state.year]:b};
   const subject=selected??{profiles,name:nombre==='Todo el sistema'?'todo el sistema':nombre};
   const contrastControl=annual||paired?''
@@ -70,7 +68,7 @@ export function renderInspector(mapApp){
   const scopeTitle=mapSubject&&scope.zones?'Zona A ↔ Zona B':nombre;
   const scopeSize=mapSubject&&!selected
     ? scope.zones?`${scope.zones[0].length} en A · ${scope.zones[1].length} en B`
-    : scope.origins!==null?`${scope.origins.length} ${dataset.stationLabel}`:''
+    : scope.origins!==null||state.cohort?`${scope.origins?.length??items.length} ${dataset.stationLabel}`:''
     : '';
   const stationNote=selected?`${dataset.id==='bart'?'Estación':'Complejo'} ${selected.id} · ${selected.borough}`:'';
   const scopeNotes=mapSubject?[stationNote,scopeSize,...scope.notes].filter(Boolean).join(' · '):'';
@@ -81,37 +79,29 @@ export function renderInspector(mapApp){
     ${selected&&!mapSubject?`<div class="eyebrow">${dataset.id==='bart'?'ESTACIÓN':'COMPLEJO'} ${esc(selected.id)} · ${esc(selected.borough)}</div>`:''}
     <h2>${esc(scopeTitle)}</h2>
     ${timeSummary}
-    ${scopeNotes?`<p class="map-scope-notes" title="${esc(scopeNotes)}">${esc(scopeNotes)}</p>`:''}
+    ${scopeNotes?`<p class="map-scope-notes" title="${esc(scopeNotes)}">${esc(scopeNotes)}</p>`:mapSubject&&!groupHasData&&!selected?'<p class="map-scope-notes">Sin datos para la selección</p>':''}
     ${contrastControl?`<div class="contrast-context">${contrastControl}</div><p id="contrast-source">${esc(app.contrast.label)} · ${esc(coverageLabel(app))}</p>`:''}
     ${selected?'<button class="close" id="clear-subject" aria-label="Quitar selección">×</button>':''}
   </header>`;
-  if(!selected&&(!b||(!annual&&!a))){
-    host.innerHTML=mapSubject
-      ? `${header}<p class="map-scope-notes">Sin datos para la selección</p>`
-      : '<h2>Sin datos para la selección</h2><button id="clear-empty">Ver todo el sistema</button>';
-    host.querySelector('#clear-empty')?.addEventListener('click',()=>app.resetScope());
+  if(!mapSubject&&!selected&&!groupHasData){
+    host.innerHTML='<h2>Sin datos para la selección</h2><button id="clear-empty">Ver todo el sistema</button>';
+    host.querySelector('#clear-empty').onclick=()=>app.resetScope();
     return;
   }
   host.innerHTML=`${header}
   <section id="scatter-host" aria-label="${annual?'Afluencia y concentración horaria':'Volumen frente a forma semanal'}"></section>
-  ${selected&&annual&&mapApp.flows.meta.network?.route_nodes?`<details class="inline-evidence od-closure" id="od-closure" data-station="${esc(selected.id)}">
-    <summary>Dependencia de la red · simular cierre</summary>
-    <div><p>Retira todas las paradas del complejo en la red de referencia para el período del mapa.</p>
-    <dl class="closure-values" aria-live="polite"></dl>
-    <p>Demanda fija. El escenario también interrumpe el paso por esas paradas.</p></div>
-  </details>`:''}
   ${mapClock?'':'<section class="clock-panel" aria-label="Reloj semanal de la selección"><div id="detail-body"></div></section>'}
   <details id="atlas-evidence-content" class="inline-evidence"><summary>Fuentes y método</summary><div><b>${esc(coverageLabel(app))}</b><p>El mapa muestra el promedio diario anual o los viajes que comienzan en la hora seleccionada. La dispersión y el reloj resumen la semana representativa del período disponible.</p><p>Origen–destino estimado por MTA; los recorridos son asignados por un modelo sobre una red de referencia, no trayectorias observadas. Se utilizan los doce meses completos de cada año, ponderados por la cantidad de cada día de la semana.</p><p>${esc(app.contrast.label)}. Ambos años usan la misma fuente. ${app.contrast.kind==='entries'?'2019 y 2020 se incorporan solo como referencia de afluencia; no hay OD reconstruido para esos años.':'Los años de contraste OD son 2021–2025.'}</p><p>Volumen: ${esc(app.contrast.unit)}. Forma: redistribución de sus 168 pesos semanales; TV=0 significa mismo patrón. Un grupo se calcula sumando cantidades antes de normalizar.</p><p>La referencia GTFS corresponde a 2026; no representa el servicio histórico. Las curvas libres son abstracciones visuales, no nuevas vías. El modelo minimiza un costo basado en longitud de vía y transbordos GTFS declarados. Usa una red fija a todas las horas. El balance conserva aparte 0,1333 viajes semanales representativos no mapeados en 2023.</p></div></details>`;
   if(dataset.id==='bart'){
     const description=annual?'La dispersión muestra el promedio diario y el peso de la hora pico de cada estación.':'La dispersión compara volumen y forma. Si una estación carece de viajes en uno de los años, queda fuera de esa comparación.';
-    host.querySelector('.inline-evidence:not(.od-closure)>div').innerHTML=`<p>${esc(dataset.evidence)}</p><p>El reloj muestra el peso de cada hora en la semana. ${description}</p>`;
+    host.querySelector('#atlas-evidence-content > div').innerHTML=`<p>${esc(dataset.evidence)}</p><p>El reloj muestra el peso de cada hora en la semana. ${description}</p>`;
   }
   if(annual&&dataset.id==='nyc'){
-    host.querySelector('.inline-evidence:not(.od-closure)>div').innerHTML=`<p>${esc(coverageLabel(app))}. Distribución de los viajes OD estimados por la MTA, ponderada por el calendario. El reloj del sistema suma los viajes por franja antes de calcular su porcentaje semanal.</p><p>La dispersión muestra el promedio diario y la proporción que concentra la franja de mayor demanda de cada complejo. Los recorridos del mapa se asignan sobre la red GTFS de referencia. El grafo usa paradas y transbordos declarados, con las entradas y salidas agrupadas por complejo.</p>`;
+    host.querySelector('#atlas-evidence-content > div').innerHTML=`<p>${esc(coverageLabel(app))}. Distribución de los viajes OD estimados por la MTA, ponderada por el calendario. El reloj del sistema suma los viajes por franja antes de calcular su porcentaje semanal.</p><p>La dispersión muestra el promedio diario y la proporción que concentra la franja de mayor demanda de cada complejo. Los recorridos del mapa se asignan sobre la red GTFS de referencia. El grafo usa paradas y transbordos declarados, con las entradas y salidas agrupadas por complejo.</p>`;
   }
   if(!annual&&selectedValid&&dataset.id==='nyc'){
     const context=comparisonContext(selected.id,BASE,state.year);
-    if(context)host.querySelector('.inline-evidence:not(.od-closure)>div').insertAdjacentHTML('afterbegin',`<p class="comparison-closure-note"><b>${context.label}</b><br>${esc(context.explanation)}<br>${context.sources.map(source=>`<a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.label)} ↗</a>`).join(' · ')}</p>`);
+    if(context)host.querySelector('#atlas-evidence-content > div').insertAdjacentHTML('afterbegin',`<p class="comparison-closure-note"><b>${context.label}</b><br>${esc(context.explanation)}<br>${context.sources.map(source=>`<a href="${esc(source.url)}" target="_blank" rel="noopener">${esc(source.label)} ↗</a>`).join(' · ')}</p>`);
   }
   host.querySelector('#contrast-base')?.addEventListener('change',async event=>{
     const select=event.currentTarget,previous=BASE;
@@ -129,51 +119,13 @@ export function renderInspector(mapApp){
     `<p><strong>Reloj semanal.</strong> Cada anillo es un día, de lunes en el centro a domingo en el exterior. Selecciona una celda para ver esa hora.${mapClock&&mapApp.flows.annual?' Vuelve a pulsarla o elige el centro del reloj para ver todo el año.':''}</p>
     <p><strong>Fuentes.</strong> ${esc(dataset.credit)}</p>`);
   evidenceSlot.append(evidence);
-  const closure=host.querySelector('#od-closure');
-  mapApp.updateClosure=bindClosure(closure,mapApp,selected);
-  if(closure&&closureOpen)closure.open=true;
-  if(closure&&mapEvidence)mapEvidence.append(closure);
+  const detail=(mapClock??host).querySelector('#detail-body');
+  if(mapClock)mapClock.hidden=false;
+  drawFingerprint(detail,subject,app,annual,selected?!!selectedValid:groupHasData);
   const scatter=host.querySelector('#scatter-host');
   if(mapScatter)mapScatter.append(scatter);
   drawScatter(scatter,app,annual);
-  const detail=(mapClock??host).querySelector('#detail-body');
-  if(mapClock)mapClock.hidden=false;
-  if(!selected||selectedValid)drawFingerprint(detail,subject,app,annual);
-  else detail.textContent=annual?`Sin viajes OD para esta selección en ${state.year}.`:`Sin datos comparables para ${BASE} y ${state.year}.`;
   host.querySelector('#clear-subject')?.addEventListener('click',()=>app.set({selected:null}));
-}
-
-function bindClosure(details,app,station){
-  if(!details)return;
-  const values=details.querySelector('dl');
-  const update=async()=>{
-    if(!details.open)return;
-    const {year,flowDay,flowHour}=state;
-    const key=`${station.id}/${year}/${flowDay}/${flowHour}`;
-    values.dataset.key=key;
-    const stillCurrent=()=>details.isConnected&&values.dataset.key===key;
-    const draw=result=>{
-      if(!stillCurrent())return;
-      const rows=[['Viajes que pierden su origen o destino',result.access],
-        ['Otros viajes sin ruta',result.disconnected],
-        ['Otros viajes con un recorrido más costoso',result.detoured]];
-      values.replaceChildren(...rows.flatMap(([label,count])=>{
-        const dt=document.createElement('dt'),dd=document.createElement('dd');
-        dt.textContent=label;dd.textContent=fmt(count);
-        return [dt,dd];
-      }));
-    };
-    if(closureCache.has(key)){draw(closureCache.get(key));return;}
-    values.textContent='Calculando para el período activo…';
-    try{
-      const result=await app.routing.scenario(year,flowDay,flowHour,{closed:station.id});
-      closureCache.set(key,result);
-      if(closureCache.size>24)closureCache.delete(closureCache.keys().next().value);
-      draw(result);
-    }catch(error){if(stillCurrent())values.textContent='No se pudo simular el cierre para este período.';}
-  };
-  details.addEventListener('toggle',update);
-  return update;
 }
 
 // Trayectoria: el sujeto (complejo o grupo) recorre las cinco temporadas en el espacio peso AM × fin de semana,
@@ -201,7 +153,7 @@ function drawTrajectory(host,profiles,app,nombre){
   svg.selectAll('.yl').data(years).join('text').attr('x',k=>x(profiles[k].am)+5).attr('y',k=>y(profiles[k].weekend)-5).attr('font-size',8.5).attr('fill','#1b2a33').attr('paint-order','stroke').attr('stroke','#fff').attr('stroke-width',3).text(k=>k);
 }
 
-function drawFingerprint(host,s,app,annual){
+function drawFingerprint(host,s,app,annual,hasData){
   const unit=app.contrast.unit;
   const mode=annual?'current':state.mode;
   const delta=mode==='delta';
@@ -224,7 +176,7 @@ function drawFingerprint(host,s,app,annual){
   const g=d3.select(host.querySelector('svg')).append('g').attr('transform','translate(180,175)');
   const arc=d3.arc(),cells=d3.range(168);
   const rIn=d=>36+d*15.5+(d>=5?7:0),rOut=d=>50+d*15.5+(d>=5?7:0);
-  const fill=i=>delta?deltaColor(cellValue(s,i,mode)):shareColor(100*(mode==='base'?reference:current).p[i]);
+  const fill=i=>!hasData?'#f0f2f1':delta?deltaColor(cellValue(s,i,mode)):shareColor(100*(mode==='base'?reference:current).p[i]);
   const marks=g.selectAll('path').data(cells).join('path')
     .attr('d',i=>arc({innerRadius:rIn(Math.floor(i/24)),outerRadius:rOut(Math.floor(i/24)),startAngle:(i%24)*Math.PI/12+.008,endAngle:(i%24+1)*Math.PI/12-.008}))
     .attr('fill',fill);
@@ -232,7 +184,10 @@ function drawFingerprint(host,s,app,annual){
   const center=g.append('g');
   center.append('circle').attr('r',29).attr('fill','#f1f4ee');
   const text=center.append('text').attr('text-anchor','middle').attr('fill','#49636b');
-  if(annualMap){
+  if(!hasData){
+    text.attr('font-size',11).attr('y',4).text('Sin datos');
+    center.append('title').text('Sin datos para el ritmo semanal de esta selección.');
+  }else if(annualMap){
     const selectYear=()=>app.setFlowTime(null,null);
     center.attr('id','clock-annual').attr('tabindex',0).attr('role','button').attr('aria-label','Todo el año')
       .on('click',selectYear)
@@ -253,6 +208,7 @@ function drawFingerprint(host,s,app,annual){
     g.append('text').attr('x',Math.sin(angle)*r).attr('y',-Math.cos(angle)*r+4)
       .attr('text-anchor','middle').attr('font-size',12).attr('fill','#60747b').text(hourLabel(h));
   }
+  if(!hasData)return;
   const setTime=i=>{
     const day=Math.floor(i/24),hour=i%24;
     if(annualMap&&day===state.flowDay&&hour===state.flowHour)app.setFlowTime(null,null);
@@ -335,21 +291,21 @@ function drawDestinations(host,s,app){
 // el grupo activo en color pleno y el resto atenuado; el seleccionado con anillo. Clic en un punto lo selecciona.
 function drawScatter(host,app,annual){
   if(!host)return;
+  scatterResizeObserver?.disconnect();
   const stations=app.data.stations;
   const items=new Set(app.filtered().map(s=>s.id));
+  const scatterArea=state.cohortSource==='scatter'&&!!state.cohort;
   const rows=stations.flatMap(station=>{
     const m=annual?annualMeasures(station,state.year):measures(station);
     if(!m)return [];
     return [{station,id:station.id,recovery:annual?m.daily:m.recovery,
       change:annual?m.peakShare:m.change,peak:m.peak}];
   });
-  const W=360,H=232,M={t:27,r:14,b:34,l:40};
   const domain=annual?null:scatterDomain(rows,BASE,state.year);
   const contextual=new Set(domain?.context.map(r=>r.id));
   const plotted=rows.filter(s=>!contextual.has(s.id));
   const xMax=domain?.xMax??(d3.max(rows,r=>r.recovery)||1);
   const yMax=domain?.yMax??(d3.max(rows,r=>r.change)||1);
-  const x=d3.scaleLinear().domain([0,xMax]).range([M.l,W-M.r]),y=d3.scaleLinear().domain([0,yMax]).range([H-M.b,M.t]);
   const title=annual?'Afluencia y concentración horaria':'Más viajes, ¿otra semana?';
   const xLabel=annual?'Viajes por día':`Volumen · ${state.year} frente a ${BASE}`;
   const yLabel=annual?'% semanal en la hora pico':'Cambio de forma · TV (pp)';
@@ -359,17 +315,28 @@ function drawScatter(host,app,annual){
   const key=annual
     ? `La hora pico es la franja de una hora con más viajes en la semana de cada ${unit}.`
     : `100 % = volumen de ${BASE} · TV = cambio del reparto semanal`;
-  const pointKey=`Cada punto es ${app.dataset.id==='bart'?'una estación':'un complejo'}.`;
   const missing=stations.length-rows.length;
-  host.innerHTML=`<div class="scatter-block"><h3 class="scatter-title">${title}</h3>
-  <svg class="detail-viz" viewBox="0 0 ${W} ${H}" role="group" aria-label="${title}. ${pointKey}" data-x-max="${xMax}" data-y-max="${yMax}" data-plotted-count="${plotted.length}"></svg>
-  <div class="scatter-notes">
-    <p class="scatter-point-detail" hidden><span class="scatter-point-name"></span><span class="scatter-point-value"></span></p>
-    ${contextual.size?`<p class="scatter-key">${contextual.size} con cierre documentado</p>`:''}
-    ${missing?`<p class="scatter-key">${missing} ${annual?'sin viajes':'sin comparación válida'}</p>`:''}
-  </div>
+  host.innerHTML=`<div class="scatter-block">
+    <div class="scatter-heading">
+      <h3 id="scatter-title" class="scatter-title">${title}</h3>
+      <div class="scatter-area-actions">
+        <button id="scatter-draw-area" type="button" class="text-button" aria-pressed="false" aria-controls="scatter-plot" title="Rodea los puntos y suelta.">Dibujar área</button>
+        ${scatterArea?'<button id="scatter-clear-area" type="button" class="text-button">Quitar área</button>':''}
+      </div>
+    </div>
+    <svg id="scatter-plot" class="detail-viz" role="group" aria-labelledby="scatter-title"
+      data-x-max="${xMax}" data-y-max="${yMax}" data-plotted-count="${plotted.length}"></svg>
   </div>`;
-  const svg=d3.select(host.querySelector('svg'));
+  const plot=host.querySelector('#scatter-plot');
+  const W=plot.clientWidth||360, H=plot.clientHeight||232;
+  const M={t:23,r:13,b:49,l:40};
+  const x=d3.scaleLinear().domain([0,xMax]).range([M.l,W-M.r]);
+  const y=d3.scaleLinear().domain([0,yMax]).range([H-M.b,M.t]);
+  const svg=d3.select(plot).attr('viewBox',`0 0 ${W} ${H}`);
+  scatterResizeObserver=new ResizeObserver(()=>{
+    if(plot.isConnected&&(plot.clientWidth!==W||plot.clientHeight!==H))drawScatter(host,app,annual);
+  });
+  scatterResizeObserver.observe(plot);
   svg.append('g').attr('class','chart-axis').attr('transform',`translate(0,${H-M.b})`)
     .call(d3.axisBottom(x).ticks(5).tickFormat(v=>annual?fmt(v):v+' %').tickSize(3));
   svg.append('g').attr('class','chart-axis').attr('transform',`translate(${M.l},0)`)
@@ -379,36 +346,35 @@ function drawScatter(host,app,annual){
     svg.append('text').attr('x',x(100)+4).attr('y',H-M.b-5).attr('font-size',8.5).attr('fill','#6f7d86').text(`base ${BASE} = 100`);
   }
   const selected=plotted.find(row=>row.id===state.selected);
-  const pointName=host.querySelector('.scatter-point-name');
-  const pointValue=host.querySelector('.scatter-point-value');
-  const showPoint=row=>{
-    pointValue.parentElement.hidden=!row;
-    if(!row)return;
-    pointName.textContent=row.id===state.selected?'':row.station.name.replace(/ \(.*/,'');
-    if(annual){
-      const hour=row.peak%24,hh=h=>String(h).padStart(2,'0')+':00';
-      const slot=`${dayShort[Math.floor(row.peak/24)]} ${hh(hour)}–${hh((hour+1)%24)}`;
-      pointValue.textContent=`${fmt(row.recovery)} viajes/día · ${slot} · ${fmt(row.change)} %`;
-      if(through){
-        const i=indices.get(row.id);
-        const passing=d3.sum(through[state.year].flat(),frame=>frame[i])/7;
-        pointValue.textContent+=` · ${fmt(passing)} viajes/día pasan por aquí`;
-      }
-    }else{
-      pointValue.textContent=`Volumen ${fmt(row.recovery)} % · TV ${fmt(row.change)} pp`;
-    }
+  const pointDetails=row=>{
+    if(!annual)return `Volumen ${fmt(row.recovery)} % · TV ${fmt(row.change)} pp`;
+    const hour=row.peak%24,hh=h=>String(h).padStart(2,'0')+':00';
+    const slot=`${dayShort[Math.floor(row.peak/24)]} ${hh(hour)}–${hh((hour+1)%24)}`;
+    const value=`${fmt(row.recovery)} viajes/día · ${slot} · ${fmt(row.change)} %`;
+    if(!through)return value;
+    const i=indices.get(row.id);
+    const passing=d3.sum(through[state.year].flat(),frame=>frame[i])/7;
+    return `${value} · ${fmt(passing)} viajes/día pasan por aquí`;
   };
-  showPoint(selected);
+  const showPoint=(row,event)=>{
+    const name=row.station.name.replace(/ \(.*/,'');
+    showTooltip(`<b>${esc(name)}</b><br>${esc(pointDetails(row))}`,event);
+  };
+  const coverage=[
+    contextual.size?`${contextual.size} con cierre documentado`:'',
+    missing?`${missing} ${annual?'sin viajes':'sin comparación válida'}`:''
+  ].filter(Boolean);
+  const axisHelp=[key,...coverage].join('. ');
   svg.append('text').attr('class','scatter-axis-label')
     .attr('x',W-M.r).attr('y',H-8).attr('text-anchor','end').text(xLabel+' →');
   svg.append('text').attr('class','scatter-axis-label scatter-axis-help')
-    .attr('x',M.l).attr('y',M.t-10).attr('tabindex',0).attr('aria-label',`${yLabel}. ${key}`)
+    .attr('x',M.l).attr('y',M.t-10).attr('tabindex',0).attr('aria-label',`${yLabel}. ${axisHelp}`)
     .text('↑ '+yLabel+' ⓘ')
-    .on('pointerenter',event=>showTooltip(esc(key),event))
+    .on('pointerenter',event=>showTooltip(esc(axisHelp),event))
     .on('pointerleave',hideTooltip)
     .on('focus',function(){
       const box=this.getBoundingClientRect();
-      showTooltip(esc(key),{clientX:box.left,clientY:box.bottom});
+      showTooltip(esc(axisHelp),{clientX:box.left,clientY:box.bottom});
     }).on('blur',hideTooltip);
   const ordered=[...plotted].sort((a,b)=>(items.has(a.id)?1:0)-(items.has(b.id)?1:0));
   const marks=svg.append('g').selectAll('circle').data(ordered,s=>s.id).join('circle')
@@ -418,11 +384,15 @@ function drawScatter(host,app,annual){
     .attr('aria-pressed',s=>String(s.id===state.selected))
     .attr('aria-label',s=>s.station.name.replace(/ \(.*/,''))
     .attr('cx',s=>x(s.recovery)).attr('cy',s=>y(s.change)).attr('r',s=>items.has(s.id)?3:2.2)
-    .attr('fill','#1d6f8d').attr('opacity',s=>items.has(s.id)?.55:.1).style('cursor','pointer')
-    .on('pointerenter',(event,row)=>showPoint(row))
-    .on('pointerleave',()=>showPoint(selected))
-    .on('focus',(_,row)=>showPoint(row))
-    .on('blur',()=>showPoint(selected))
+    .classed('scatter-area-member',s=>scatterArea&&items.has(s.id))
+    .attr('fill','#1d6f8d').attr('opacity',s=>items.has(s.id)?(scatterArea?1:.55):.1).style('cursor','pointer')
+    .on('pointerenter',(event,row)=>showPoint(row,event))
+    .on('pointerleave',hideTooltip)
+    .on('focus',function(_,row){
+      const box=this.getBoundingClientRect();
+      showPoint(row,{clientX:box.right,clientY:box.top});
+    })
+    .on('blur',hideTooltip)
     .on('click',(_,row)=>app.toggleStation(row.id))
     .on('keydown',(event,row)=>{
       if(event.key==='Enter'||event.key===' '){
@@ -438,4 +408,79 @@ function drawScatter(host,app,annual){
       .attr('font-size',9).attr('fill','#102937').attr('paint-order','stroke').attr('stroke','#fff').attr('stroke-width',3)
       .style('pointer-events','none').text(selected.station.name.replace(/ \(.*/,''));
   }
+  const candidates=new Set(app.filtered(undefined,{ignoreCohort:true}).map(station=>station.id));
+  bindScatterArea(host,svg,{left:M.l,top:M.t,right:W-M.r,bottom:H-M.b},
+    plotted.filter(row=>candidates.has(row.id)),row=>[x(row.recovery),y(row.change)],app);
+}
+
+
+function bindScatterArea(host,svg,{left,top,right,bottom},rows,position,app){
+  const draw=host.querySelector('#scatter-draw-area');
+  const clear=host.querySelector('#scatter-clear-area');
+  const node=svg.node();
+  const line=d3.line();
+  let overlay;
+
+  function stop(){
+    overlay.remove();
+    overlay=null;
+    svg.classed('is-scatter-lasso-active',false);
+    draw.setAttribute('aria-pressed','false');
+  }
+
+  draw.onclick=()=>{
+    if(overlay){stop();return;}
+    draw.setAttribute('aria-pressed','true');
+    svg.classed('is-scatter-lasso-active',true);
+    overlay=svg.append('g').attr('class','scatter-lasso');
+    const surface=overlay.append('rect').attr('class','map-lasso-surface')
+      .attr('x',left).attr('y',top).attr('width',right-left).attr('height',bottom-top);
+    const trace=overlay.append('path').attr('class','map-lasso-trace');
+    const point=event=>{
+      const [x,y]=d3.pointer(event,node);
+      return [Math.min(right,Math.max(left,x)),Math.min(bottom,Math.max(top,y))];
+    };
+    let pointer=null,points=[];
+    surface.on('pointerdown',function(event){
+      if(event.button!==0||pointer!==null)return;
+      event.preventDefault();
+      this.setPointerCapture(event.pointerId);
+      pointer=event.pointerId;
+      points=[point(event)];
+    }).on('pointermove',event=>{
+      if(event.pointerId!==pointer)return;
+      const next=point(event);
+      const last=points.at(-1);
+      if(Math.hypot(next[0]-last[0],next[1]-last[1])<1.5)return;
+      points.push(next);
+      trace.attr('d',line(points)+'Z');
+    }).on('pointerup',event=>{
+      if(event.pointerId!==pointer)return;
+      pointer=null;
+      points.push(point(event));
+      trace.attr('d',null);
+      const ids=new Set(points.length>=3
+        ? rows.filter(row=>d3.polygonContains(points,position(row))).map(row=>row.id)
+        : []);
+      if(!ids.size){
+        app.toast('El área no incluye puntos. Vuelve a dibujar.');
+        return;
+      }
+      stop();
+      app.set({cohort:ids,cohortSource:'scatter',selected:null});
+    }).on('pointercancel lostpointercapture',event=>{
+      if(event.pointerId===pointer)stop();
+    });
+  };
+
+  if(clear)clear.onclick=()=>{
+    draw.focus({preventScroll:true});
+    app.set({cohort:null});
+  };
+  host.addEventListener('keydown',event=>{
+    if(event.key!=='Escape'||!overlay)return;
+    event.stopPropagation();
+    stop();
+    draw.focus({preventScroll:true});
+  });
 }

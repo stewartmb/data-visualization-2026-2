@@ -4,6 +4,6 @@ La investigación se entrega en **Semana 6**, que exige al menos cuatro artícul
 
 - [Revisión bibliográfica, decisiones, límites y trazabilidad](../deliveries/week06/referencias.md).
 - [Catálogo de PDFs y reproducción de descargas](../deliveries/week06/papers/README.md).
-- [Seis tareas nuevas y su estado](../deliveries/week12/AnalyticalTasks.md).
+- [Cinco tareas y su estado](../deliveries/week12/AnalyticalTasks.md).
 
 La selección de cuatro artículos de octubre se conserva como historia, no como selección exclusiva vigente.

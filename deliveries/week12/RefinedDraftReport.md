@@ -4,14 +4,13 @@
 
 ## 1. Motivación, audiencia y secuencia analítica
 
-Un total de entradas no revela dónde se redistribuye la demanda ni qué territorios conectan sus viajes. Analistas de transporte e investigadores urbanos necesitan explorar demanda, vínculos y dependencia modelada de la red para priorizar aforos y estudios; periodistas son audiencia secundaria. La secuencia va del territorio a las conexiones, horarios, corredores, balance y perturbación. El producto no determina frecuencias óptimas.
+Un total de entradas no revela dónde se redistribuye la demanda ni qué territorios conectan sus viajes. Analistas de transporte e investigadores urbanos necesitan explorar demanda, vínculos y dependencia modelada de la red para priorizar aforos y estudios; periodistas son audiencia secundaria. La secuencia va del territorio a las conexiones, horarios, corredores y balance. El producto no determina frecuencias óptimas.
 
 1. **Redistribución territorial.** ¿Qué zonas recuperaron demanda y cuáles perdieron peso entre 2019 y 2024?
 2. **Dependencia e intercambios.** ¿Ganaron peso los viajes locales y entre boroughs o aumentó la dependencia de Manhattan entre 2021 y 2024?
 3. **Ventanas de demanda.** ¿Dónde y cuándo se desplazaron las franjas de mayor demanda?
 4. **Corredores de soporte.** ¿Qué tramos de la red de referencia sostienen los principales intercambios?
 5. **Balance externo.** ¿Qué territorios generan o atraen más viajes externos y en qué franjas cambia el balance?
-6. **Exposición a interrupciones.** ¿Qué viajes perderían conexión o requerirían mayor distancia al retirar un enlace de referencia?
 
 ## 2. Datos, métodos y procedencia
 
@@ -23,11 +22,11 @@ El mapa usa OD 2021–2024. La columna derecha incorpora 2019 y 2020: al elegirl
 
 ## 3. Diseño y justificación
 
-Un panel integrado: **mapa central** de conexiones con abstracción guiada por la red; **dispersión volumen × forma** arriba a la derecha; **reloj radial 7 × 24** debajo; **minimapa** para orientación. El área del nodo indica viajes iniciados; las posiciones de la dispersión separan índice de volumen y TV; el color del reloj indica cambio de participación semanal. Las barras de agrupación y fidelidad modifican la geometría, nunca los OD. No hay reproducción automática. Overview → zoom/selección → detalles bajo demanda.
+El mapa central muestra las conexiones. El resumen está en la barra superior, el reloj y la dispersión a la izquierda, y los minimapas de comparación a la derecha. El minimapa de orientación permanece sobre el mapa principal.
 
 RAEB guía la abstracción con jerarquía de rutas; KDEEB informa densidad, advección y suavizado; WebGPU es una adaptación de ingeniería. La referencia usa GTFS 2026 y sus transferencias explícitas. Fidelidad 0 permite abstracciones que cruzan agua; fidelidad 1 recupera la geometría de referencia. Nada de ello altera conexiones topológicas ni cantidades OD. La fusión visual de trazos usa ancho local saturado, no una escala exacta de carga de corredor; T4 necesita valores por enlace.
 
-La dispersión usa posición para índice y TV; el reloj usa ángulo para hora, anillo para día y color para diferencia en pp. El área exterior del reloj es distinta: no se usa como magnitud ni se afirma superioridad frente a una matriz. Las barras se apilan, el estado muestra Procesando/Completado/Completado (parcial) y la selección puede limpiarse sin quedar atrapado en naranja.
+La dispersión usa posición para índice y TV; el reloj usa ángulo para hora, anillo para día y color para diferencia en pp. El área exterior del reloj es distinta: no se usa como magnitud ni se afirma superioridad frente a una matriz. El encabezado de agrupamiento muestra los valores aplicados. Las leyendas del mapa se pueden plegar y mover.
 
 ## 4. Hallazgos preliminares del alcance actual
 
@@ -46,13 +45,6 @@ Brooklyn tiene menos volumen que en 2019 y a la vez gana participación relativa
 
 La cuota de viajes originados en Brooklyn con destino Manhattan pasa de **42,07 % a 46,71 %**; desde Queens, de **47,09 % a 50,30 %**; desde Bronx, de **53,53 % a 57,22 %**. En esos agregados aumenta la participación hacia Manhattan; no confirma que disminuya la cantidad de viajes locales. Fuente: `T2_territorial_od.csv`, semanas representativas y todos los meses.
 
-### Escenarios y límites
-
-Se calcularon seis retiradas ilustrativas de enlaces sobre la misma red, con OD 2024 fijo. Se informa por separado demanda desconectada y distancia adicional para la aún conectada. Son ejemplos, no un ranking exhaustivo de vulnerabilidad ni predicciones operativas. El CSV conserva los IDs de los enlaces y denominadores. No se extraen distancias de las curvas del bundling.
-
-
-Resultados completos y controles en `data/analytical_tasks/`; preparación en `scripts/prepare_analytical_tasks.py`. Las seis tablas tienen muestras en Semana 6. Ninguna cifra implica una causa o recomendación operativa.
-
 ## 5. Funciones existentes y pendientes
 
 | Tarea | Evidencia preparada | Estado de interacción |
@@ -62,7 +54,6 @@ Resultados completos y controles en `data/analytical_tasks/`; preparación en `s
 | T3 | Ventanas de 3 h, 7 días y seis años | Reloj y selección horaria disponibles; detector automático por integrar |
 | T4 | Cargas de los 549 enlaces para 2021/2024 | Geometría y haces disponibles; inspección exacta por tramo pendiente |
 | T5 | Balance externo por borough/cohorte, cuatro años | CSV preparado; codificación interactiva pendiente |
-| T6 | Seis escenarios reproducibles | Cálculo preparado; escenario interactivo pendiente |
 
 
 No se presenta la preparación de una tabla como una interacción implementada. La auditoría de accesibilidad y la evaluación con personas de la audiencia siguen pendientes; las pruebas técnicas no demuestran efectividad perceptual.
@@ -75,7 +66,7 @@ Se conserva el registro original de críticas en `history/before-20261028-alignm
 
 El OD es una estimación por hora de inicio, no salidas observadas en esa hora ni trayectorias. Los caminos se asignan por distancia sobre una red de referencia actual: no reconstruyen operación histórica, esperas o elección real de ruta. La abstracción visual no añade infraestructura. No se dispone de capacidad ni motivos de viaje para afirmar congestión, turismo, residencia o causas. 2020 completo es un año pandémico; 2019 es la referencia anual anterior. Las comparaciones usan la misma fuente en ambos extremos y suman cantidades antes de normalizar.
 
-Los escenarios de T6 mantienen demanda fija, distancias y red estática; no modelan horarios, capacidad, cambio de modo o reacción del viajero. Las NTA sin complejos cubiertos no son zonas sin demanda. Los períodos anuales no eliminan estacionalidad ni controlan clima, feriados u obras.
+Las NTA sin complejos cubiertos no son zonas sin demanda. Los períodos anuales no eliminan estacionalidad ni controlan clima, feriados u obras.
 
 ## 8. Trabajo restante y responsables
 

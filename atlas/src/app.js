@@ -1,13 +1,13 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=summary-top1';
+import {renderMap} from './map-view.js?v=rail-width65';
 import {createODYearMaps} from './od-year-maps.js?v=map-layout2';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=overview1';
-import {renderInspector} from './inspector.js?v=summary-top1';
-import {renderProject} from './project-view.js?v=od-2025-1';
+import {renderInspector} from './inspector.js?v=scatter-axis-spacing';
+import {renderProject} from './project-view.js?v=map-controls1';
 
-import {activeContrastBase,activeODCompareBase,availableContrastYears,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=od-2025-1';
+import {activeContrastBase,activeODCompareBase,availableContrastYears,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=scatter-area1';
 import {dataset} from './datasets.mjs?v=od-2025-1';
 import {createRoutingData} from './od-routing.mjs?v=annual-overview1';
 
@@ -39,6 +39,7 @@ function hydrate(){
   const zoneB=new Set((p.get('zoneB')??'').split(',').filter(id=>id&&!zoneA.has(id)));
   state.odZones=zoneA.size&&zoneB.size&&!state.selected?{a:zoneA,b:zoneB}:null;
   if(p.has('cohort'))state.cohort=new Set(p.get('cohort')?p.get('cohort').split(','):[]);
+  state.cohortSource=state.cohort?.size&&p.get('cohortSource')==='scatter'?'scatter':null;
   if(p.get('pins'))state.pins=p.get('pins').split(',').slice(0,3);
   for(const [key,allowed] of Object.entries({mode:['delta','current','base'],sort:['change','similar','borough','morning','morningUp','afternoon','night','weekend','volume','volumeDown'],day:['all','0','1','2','3','4','5','6'],mapMetric:['change','deltaAM','deltaWeekend','recovery'],inspectorTab:['fingerprint','compare','evolution','source'],layer:['points','flows'],flowShow:['volume','change']}))if(allowed.includes(p.get(key)))state[key]=p.get(key);
   for(const key of ['tvMin','tvMax'])if(p.has(key)&&Number.isFinite(+p.get(key)))state[key]=Math.max(0,Math.min(100,+p.get(key)));
@@ -74,7 +75,10 @@ function updateURL(){
     p.set('zoneA',[...state.odZones.a].join(','));
     p.set('zoneB',[...state.odZones.b].join(','));
   }
-  if(state.cohort)p.set('cohort',[...state.cohort].join(','));
+  if(state.cohort){
+    p.set('cohort',[...state.cohort].join(','));
+    if(state.cohortSource==='scatter')p.set('cohortSource','scatter');
+  }
   if(state.tvMin>0)p.set('tvMin',state.tvMin);
   if(state.tvMax<100)p.set('tvMax',state.tvMax);
   for(const [key,range] of Object.entries(state.ranges))if(range){p.set(key+'Min',range[0]);p.set(key+'Max',range[1]);}
@@ -97,13 +101,11 @@ const app={
   syncURL:updateURL,
   updateODYearMaps:null,
   updateFlowHour:null,
-  updateClosure:null,
   setFlowTime(day,hour){
     if(day===state.flowDay&&hour===state.flowHour)return;
     if(day===state.flowDay&&app.updateFlowHour){
       state.flowHour=hour;
       app.updateFlowHour(hour);
-      app.updateClosure?.();
     }else app.set({flowDay:day,flowHour:hour});
   },
   routing:null,
@@ -118,13 +120,13 @@ const app={
   },
   get data(){return data;},get geo(){return geo;},get lineas(){return lineas;},get flows(){return flows;},state,
   station:id=>data.stations.find(s=>s.id===id),
-  filtered(query=state.query){
+  filtered(query=state.query,{ignoreCohort=false}={}){
     const q=query.trim().toLocaleLowerCase();
     return data.stations.filter(s=>{
       if(!profile(s))return false;
       if(state.borough!=='all'&&s.borough!==state.borough)return false;
       if(q&&!`${s.name} ${s.id} ${s.routes.join(' ')}`.toLocaleLowerCase().includes(q))return false;
-      if(state.cohort&&!state.cohort.has(s.id))return false;
+      if(!ignoreCohort&&state.cohort&&!state.cohort.has(s.id))return false;
       const m=measures(s);
       if(!passesMetricRanges(s))return false;
       if(state.preset==='morning'&&m.deltaAM>=-2)return false;
@@ -139,7 +141,10 @@ const app={
       const scroller=document.querySelector('.matrix-scroll');if(scroller)scroller.scrollTop=0;
     }
     if(!('odZones' in patch)&&(patch.selected||scopeKeys.some(key=>key in patch)))state.odZones=null;
-    if('cohort' in patch&&!('areaOutline' in patch))state.areaOutline=null;
+    if('cohort' in patch){
+      if(!('areaOutline' in patch))state.areaOutline=null;
+      if(!('cohortSource' in patch))state.cohortSource=null;
+    }
     Object.assign(state,patch);
     if(state.selected&&scopeKeys.some(key=>key in patch)&&!app.filtered().some(s=>s.id===state.selected))state.selected=null;
     render();
@@ -232,6 +237,9 @@ function render(){
   hideTooltip();
   const focusId=document.activeElement?.id;
   const previousScroll=document.querySelector('.matrix-scroll')?.scrollTop||0;
+  const previousControls=document.querySelector('.od-stage .flow-controls');
+  const previousControlScroll=previousControls?.scrollTop??0;
+  const previousPageScroll=previousControls&&innerWidth<1000?window.scrollY:null;
   const items=app.filtered();
   const selected=app.station(state.selected);
   const scoped=!!selected||items.length!==data.stations.length;
@@ -252,7 +260,7 @@ function render(){
     notes:scopeNotes,
     zones:between,
     origins:between?between.flat():scoped?toIndices((selected?[selected]:items).map(s=>s.id)):null,
-    label:between?'Zona A ↔ Zona B':selected?selected.name.replace(/ \([^)]*\)/g,''):state.cohort?'Área seleccionada':state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:scoped?'Grupo filtrado':'Toda la red'
+    label:between?'Zona A ↔ Zona B':selected?selected.name.replace(/ \([^)]*\)/g,''):state.cohort?(state.cohortSource==='scatter'?'Área en la dispersión':'Área seleccionada'):state.query?'Resultados de búsqueda':state.borough!=='all'?state.borough:scoped?'Grupo filtrado':'Toda la red'
   };
   document.querySelectorAll('[data-view]').forEach(b=>{b.classList.toggle('active',b.dataset.view===state.view);b.setAttribute('aria-current',b.dataset.view===state.view?'page':'false');});
   renderODYears();
@@ -271,6 +279,11 @@ function render(){
   views[state.view](host,app,items);
   if(state.view==='atlas'&&previousScroll)document.querySelector('.matrix-scroll').scrollTop=previousScroll;
   renderInspector(app);
+  const controls=document.querySelector('.od-stage .flow-controls');
+  if(previousControls&&controls){
+    controls.scrollTop=previousControlScroll;
+    if(previousPageScroll!==null)window.scrollTo({top:previousPageScroll,behavior:'instant'});
+  }
   if(focusId)document.getElementById(focusId)?.focus({preventScroll:true});
   updateURL();
 }
@@ -394,16 +407,84 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),nyc?loadData('l
   document.addEventListener('change',e=>{if(e.target.id==='preset-select')app.set({preset:e.target.value||null,cohort:null,query:'',sort:'change'});});
   document.querySelector('#borough').addEventListener('change',e=>app.set({borough:e.target.value}));
   const search=document.querySelector('#search');
+  const options=document.querySelector('#search-options');
+  let suggestions=[], activeOption=-1;
+
+  function highlightSuggestion(index){
+    activeOption=index;
+    for(const [i,option] of [...options.children].entries()){
+      option.setAttribute('aria-selected',String(i===index));
+    }
+    if(index<0){
+      search.removeAttribute('aria-activedescendant');
+    }else{
+      const option=options.children[index];
+      search.setAttribute('aria-activedescendant',option.id);
+      option.scrollIntoView({block:'nearest'});
+    }
+  }
+
+  function closeSuggestions(){
+    suggestions=[];
+    options.replaceChildren();
+    options.hidden=true;
+    search.setAttribute('aria-expanded','false');
+    highlightSuggestion(-1);
+  }
+
+  function selectSuggestion(station){
+    clearTimeout(searchTimer);
+    closeSuggestions();
+    const query=station?.name??search.value;
+    search.value=query;
+    app.set({query,selected:station?.id??null});
+  }
+
+  function showSuggestions(){
+    closeSuggestions();
+    if(!search.value.trim())return;
+    suggestions=app.filtered(search.value).slice(0,8);
+    if(!suggestions.length)return;
+    suggestions.forEach((station,index)=>{
+      const option=document.createElement('div');
+      option.id='search-option-'+index;
+      option.setAttribute('role','option');
+      option.setAttribute('aria-selected','false');
+      const name=document.createElement('strong');
+      name.textContent=station.name;
+      const area=document.createElement('span');
+      area.textContent=[station.borough,station.routes.join(' · ')].filter(Boolean).join(' / ');
+      option.append(name,area);
+      option.addEventListener('mousedown',event=>event.preventDefault());
+      option.addEventListener('click',()=>selectSuggestion(station));
+      options.append(option);
+    });
+    options.hidden=false;
+    search.setAttribute('aria-expanded','true');
+  }
+
+  search.addEventListener('focus',showSuggestions);
+  search.addEventListener('blur',closeSuggestions);
   search.addEventListener('input',()=>{
     clearTimeout(searchTimer);
+    showSuggestions();
     searchTimer=setTimeout(()=>app.set({query:search.value}),180);
   });
   search.addEventListener('keydown',event=>{
-    if(event.key!=='Enter')return;
-    clearTimeout(searchTimer);
-    const query=search.value;
-    const first=app.filtered(query)[0];
-    app.set({query,selected:first?.id??null});
+    if(event.key==='Escape'&&!options.hidden){
+      event.stopPropagation();
+      closeSuggestions();
+    }else if(event.key==='ArrowDown'||event.key==='ArrowUp'){
+      if(options.hidden)showSuggestions();
+      if(!suggestions.length)return;
+      event.preventDefault();
+      const step=event.key==='ArrowDown'?1:-1;
+      const next=activeOption<0&&step<0?suggestions.length-1:activeOption+step;
+      highlightSuggestion((next+suggestions.length)%suggestions.length);
+    }else if(event.key==='Enter'){
+      event.preventDefault();
+      selectSuggestion(suggestions[activeOption]??app.filtered(search.value)[0]);
+    }
   });
   document.querySelectorAll('[data-preset]').forEach(b=>b.addEventListener('click',()=>app.set({preset:b.dataset.preset,cohort:null,query:'',sort:'change'})));
   document.querySelector('#save').addEventListener('click',()=>{

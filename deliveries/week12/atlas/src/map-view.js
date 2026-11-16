@@ -1,17 +1,59 @@
-import {bindMapLasso} from './map-lasso.js?v=direct-toggles1';
+import {bindMapLasso} from './map-lasso.js?v=scatter-area1';
 import {bindFlowScale,bindCircleScale} from './flow-scale.js?v=grouped-circle-key1';
 import {odLoads,odStarts,odIncoming,odPeriodLabel} from './od-period.mjs';
 import {state,BASE,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats,passesMetricRanges,cohortProfile} from './model.js?v=20261028-4';
-import {RaebOverlay} from './raeb-overlay.mjs?v=line-render1';
-import {setRaebStatus} from './raeb-cpu-overlay.mjs?v=annual-overview1';
+import {RaebOverlay} from './raeb-overlay.mjs?v=map-controls1';
+import {setRaebStatus} from './raeb-cpu-overlay.mjs?v=map-controls1';
 import {FLOW_COLOR_MAX,FLOW_COLOR_STOPS,flowColor} from './raeb-gpu-shaders.mjs?v=zoom-width1';
 import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
-import {activeODCompareBase} from './contrast-model.mjs?v=od-2025-1';
-import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,OD_RAIL_MAX_WIDTH,railChange,railFlowWidth,zoomStrokeScale,flowStrength,flowCount,odDelta} from './od-encoding.mjs?v=rail-width5';
+import {activeODCompareBase} from './contrast-model.mjs?v=scatter-area1';
+import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,OD_RAIL_MIN_WIDTH,OD_RAIL_MAX_WIDTH,railChange,railFlowWidth,zoomStrokeScale,flowStrength,flowCount,odDelta} from './od-encoding.mjs?v=rail-width65';
 import {originBranches,bundleAt,distanceToLines} from './od-routing.mjs?v=annual-overview1';
-import {updateClockTime} from './inspector.js?v=summary-top1';
+import {updateClockTime} from './inspector.js?v=stable-sidebar1';
 let transform=d3.zoomIdentity, previousFrame, pendingFidelity=null, pendingGrouping;
 let legendPreference=null;
+let legendPosition={x:0,y:0};
+
+function bindLegendPosition(panel){
+  const frame=panel.parentElement;
+  const handle=panel.querySelector('.map-legend-move');
+  const gap=10;
+  function move(x,y){
+    legendPosition={x,y};
+    panel.style.setProperty('--legend-x',String(x*100)+'%');
+    panel.style.setProperty('--legend-y',String(y*100)+'%');
+    panel.style.setProperty('--legend-inset-x',String(gap*(1-2*x))+'px');
+    panel.style.setProperty('--legend-inset-y',String(gap*(1-2*y))+'px');
+  }
+  move(legendPosition.x,legendPosition.y);
+
+  let drag, moved=false;
+  handle.addEventListener('pointerdown',event=>{
+    if(event.button!==0)return;
+    const box=panel.getBoundingClientRect();
+    drag={x:event.clientX,y:event.clientY,offsetX:event.clientX-box.left,offsetY:event.clientY-box.top};
+    moved=false;
+    handle.setPointerCapture(event.pointerId);
+  });
+  handle.addEventListener('pointermove',event=>{
+    if(!drag)return;
+    if(Math.hypot(event.clientX-drag.x,event.clientY-drag.y)<4&&!moved)return;
+    moved=true;
+    const bounds=frame.getBoundingClientRect();
+    const fraction=(position,available)=>Math.max(0,Math.min(1,position/Math.max(1,available)));
+    move(
+      fraction(event.clientX-bounds.left-drag.offsetX-gap,bounds.width-panel.offsetWidth-2*gap),
+      fraction(event.clientY-bounds.top-drag.offsetY-gap,bounds.height-panel.offsetHeight-2*gap)
+    );
+  });
+  handle.addEventListener('lostpointercapture',()=>{drag=null;});
+  handle.addEventListener('click',event=>{
+    if(moved&&event.detail){moved=false;return;}
+    const {x,y}=legendPosition;
+    const next=x<.5?(y<.5?[1,0]:[0,0]):(y<.5?[1,1]:[0,1]);
+    move(...next);
+  });
+}
 const mapZoomLimits=[1,32];
 const names={change:'Cambio de forma · distancia TV (pp)',deltaAM:'Cambio del peso AM · puntos porcentuales',deltaWeekend:'Cambio del peso de fin de semana · puntos porcentuales',recovery:'Índice de volumen · referencia = 100 %'};
 
@@ -90,7 +132,7 @@ export function renderMap(host,app,items){
   };
   const L=leyendas[metric];
   const formula=formulas()[metric];
-  let legendOpen=legendPreference??!matchMedia('(min-width: 1000px) and (max-width: 1199px)').matches;
+  let legendOpen=legendPreference??matchMedia('(min-width: 1200px)').matches;
   const legendTitle=flujos
     ?cambio?'Cambio de viajes':focusOrigin?'Salidas del complejo':between?scope.label:scopedGroup?'Salidas del grupo':onTracks?'Flujo por tramo':'Flujo en los haces'
     :L.titulo;
@@ -119,28 +161,29 @@ export function renderMap(host,app,items){
           </label>`}
         </section>
         <section id="map-grouping" class="flow-control-group" aria-labelledby="map-grouping-title">
-          <h3 id="map-grouping-title">Agrupamiento y fidelidad</h3>
+          <div class="grouping-heading">
+            <h3 id="map-grouping-title">Agrupamiento y fidelidad</h3>
+            <small id="applied-fidelity" role="status"></small>
+          </div>
           <div class="flow-control-grouping">
-          ${cambio?'<p class="grouping-comparison-note">La comparación usa la red de referencia con agrupamiento en cero.</p>':''}
           ${paper?`<div class="fidelity radius-control">
             <div class="radius-heading">
               <label for="bundling">Radio inicial</label>
               <output id="bundling-out" for="bundling">${cambio?'0 m':'—'}</output>
-              ${cambio?'':'<button type="button" id="radius-auto" class="text-button" aria-label="Usar el radio sugerido" title="Calculando el radio sugerido…" disabled>Sugerido</button>'}
             </div>
             <input id="bundling" type="range" min="0" max="0" step="any" value="0" disabled>
           </div>`:`<label class="fidelity"><span>Agrupación <output id="bundling-out">${displayGrouping.toFixed(2)}</output></span><input id="bundling" type="range" min="0" max="1" step="0.01" value="${displayGrouping}" aria-label="Agrupación de recorridos"${cambio?' disabled':''}><small>0: sin atracción entre curvas · 1: agrupamiento con el radio estimado por RAEB. Actúa sobre todos los pares OD del período activo.</small></label>`}
           ${paper?`<label class="fidelity"><span>Fidelidad a la red <output id="pra-out">${displayLevel} / 5</output></span><input id="pra" type="range" min="0" max="5" step="1" value="${displayLevel}"${cambio?' disabled':''} aria-label="Nivel de fidelidad a la red" title="0: agrupación libre. 5: toda la red guía los haces. Con radio 0, los flujos siguen la vía asignada."><small>0: agrupación libre · 5: toda la red guía los haces.</small></label>`:`
           <label class="fidelity"><span>Fidelidad geométrica <output id="fidelity-out">${displayFidelity.toFixed(2)}</output></span><input id="fidelity" type="range" min="0" max="1" step="0.01" value="${displayFidelity}"${cambio?' disabled':''} aria-label="Fidelidad geométrica de los trazos"><small>0: abstracción libre, puede cruzar el agua · 1: recorridos de referencia. Los trazos intermedios son una abstracción visual; los viajes OD no cambian.</small></label>`}
-          <div class="map-control fidelity-actions">
-            <button type="button" id="calculate-fidelity" aria-label="Calcular agrupamiento y fidelidad" disabled>Calcular</button>
+          <div class="grouping-actions">
+            ${cambio?'':'<div id="raeb-status" role="status" class="raeb-status"></div>'}
+            <div class="map-control fidelity-actions">
+              <button type="button" id="calculate-fidelity" aria-label="Calcular agrupamiento y fidelidad"
+                ${cambio?'title="La comparación usa la red de referencia con radio cero."':''} disabled>Calcular</button>
+            </div>
+            <button id="inspect-bundle" type="button" class="text-button" aria-pressed="false" hidden>Explorar un haz</button>
+            <div id="bundle-evidence" class="bundle-evidence" aria-live="polite" hidden></div>
           </div>
-          ${cambio?'':`<div class="fidelity-status">
-            <div id="raeb-status" role="status" class="raeb-status">${onTracks?'':'Procesando…'}</div>
-            <small id="applied-fidelity" role="status" hidden></small>
-          </div>`}
-          <button id="inspect-bundle" type="button" class="text-button" aria-pressed="false" hidden>Explorar un haz</button>
-          <div id="bundle-evidence" class="bundle-evidence" aria-live="polite" hidden></div>
           </div>
         </section>
         ${bart?`<section class="flow-control-group flow-control-time" aria-labelledby="map-time-heading">
@@ -152,7 +195,6 @@ export function renderMap(host,app,items){
         </section>` :''}
         <section id="map-clock" class="flow-control-group clock-panel" aria-label="Reloj semanal de la selección" hidden><div id="detail-body"></div></section>
         <div id="map-scatter" class="flow-control-group"></div>
-        <div id="map-evidence" class="flow-control-group"></div>
       </div>`:''}
       <div class="points-controls"${flujos?' hidden':''}>
       <label class="map-field">Color de los puntos<select id="map-metric">${Object.entries(names).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></label>
@@ -171,9 +213,11 @@ export function renderMap(host,app,items){
     <div class="map-viewport">
       <svg class="map-svg" role="img" aria-label="Mapa de estaciones · ${esc(dataset.name)}"${flujos&&!cambio?' aria-busy="true"':''}></svg>
       ${flujos&&!cambio?`<div class="map-loading" aria-hidden="true"${onTracks?' hidden':''}>
-        <div class="map-loading-label"><span class="map-spinner"></span>Actualizando flujos…</div>
+        <div class="map-loading-label"><span class="map-spinner"></span></div>
       </div>`:''}
       <div class="map-panel map-minimap" aria-label="Mapa de ubicación"><svg class="minimap-svg" viewBox="0 0 150 112"></svg><div class="minimap-counts"></div><div class="map-distance-scale" role="img" aria-label="Escala del mapa principal"><span></span><i aria-hidden="true"></i></div></div>
+    <div class="map-legend-position">
+    <button type="button" class="map-legend-move" aria-label="Mover leyenda" title="Arrastra para mover la leyenda o pulsa para cambiar de esquina">⤢</button>
     <details class="map-panel map-legend${cambio?' comparison-key':''}" aria-label="Leyenda"${legendOpen?' open':''}>
       <summary id="flow-legend-title" class="map-legend-title">${legendTitle}</summary>
       ${flujos?`<div class="map-legend-what">${cambio?'Viajes por día · B − A':annual?'Promedio diario':'Promedio diario en esta franja'}</div>
@@ -209,9 +253,11 @@ export function renderMap(host,app,items){
       <div class="map-legend-foot">${items.length} complejos · mediana ${fmt(d3.median(items,s=>metricValue(s,metric)))} ${unit}</div>`}
     </details>
     </div>
+    </div>
   </div>`;
   host.querySelector('.map-stage').classList.toggle('od-stage',flujos);
   const legendPanel=host.querySelector('.map-legend');
+  bindLegendPosition(legendPanel.parentElement);
   legendPanel.ontoggle=()=>{
     if(legendPanel.isConnected&&legendPanel.open!==legendOpen)legendPreference=legendOpen=legendPanel.open;
   };
@@ -338,12 +384,12 @@ export function renderMap(host,app,items){
       .attr('vector-effect','non-scaling-stroke').attr('opacity',.5).style('pointer-events','none');
     const grouping=host.querySelector('#bundling');
     const groupingOut=host.querySelector('#bundling-out');
-    const autoButton=host.querySelector('#radius-auto');
     const fidelity=host.querySelector(paper?'#pra':'#fidelity');
     const fidelityOut=host.querySelector(paper?'#pra-out':'#fidelity-out');
     const calculate=host.querySelector('#calculate-fidelity');
     const applied=host.querySelector('#applied-fidelity');
     const stage=svgNode.closest('.map-stage');
+    stage.style.setProperty('--rail-flow-width-min',OD_RAIL_MIN_WIDTH+'px');
     const stationNames=new Map(F.nodes.map(station=>[station.id,station.name.replace(/ \([^)]*\)/g,'')]));
     const drawRail=d3.line();
     const railGeometry=rail.map(({link})=>link.coords.map(projection));
@@ -546,7 +592,7 @@ export function renderMap(host,app,items){
         const maximum=between?Math.max(1,zoneStats?.trips??0):focusOrigin?originData?.total||1:volumeLimit;
         order.set(index,trips);
         path.attr('display',trips>0?null:'none')
-          .attr('stroke',flowColor(trips,maximum)).style('--flow-variation',`${railFlowWidth(trips,maximum)-.85}px`);
+          .attr('stroke',flowColor(trips,maximum)).style('--flow-variation',`${railFlowWidth(trips,maximum)-OD_RAIL_MIN_WIDTH}px`);
       });
       railPaths.sort((a,b)=>order.get(a.index)-order.get(b.index));
       if(cambio){
@@ -575,11 +621,17 @@ export function renderMap(host,app,items){
       const px=activeRadius*transform.k/metersPerPixel;
       radiusGuide.attr('display',showRadius&&px>0?null:'none').attr('cx',x).attr('cy',y).attr('r',px);
     };
+    const updateApplied=()=>{
+      const currentGrouping=paper?activeRadius:state.bundling;
+      applied.textContent=cambio
+        ? (paper?'En el mapa: 0 m · 5 / 5':'En el mapa: 0.00 · 1.00')
+        : `En el mapa: ${formatGrouping(currentGrouping)} · ${formatFidelity(state[fidelityKey])}`;
+    };
+    updateApplied();
     function updateGroupingControls(){
+      updateApplied();
       const hasDraft=pendingGrouping!==undefined||pendingFidelity!==null;
       calculate.disabled=!hasDraft||(paper&&!kernel);
-      applied.hidden=!hasDraft;
-      if(hasDraft)applied.textContent=`En el mapa: ${formatGrouping(paper?activeRadius:state.bundling)} · ${formatFidelity(state[fidelityKey])}`;
       fidelityOut.value=formatFidelity(pendingFidelity??state[fidelityKey]);
       if(!paper){
         grouping.value=String(pendingGrouping??state.bundling);
@@ -616,20 +668,12 @@ export function renderMap(host,app,items){
       if(!paper||!svgNode.isConnected)return;
       if(value===kernel&&value)return;
       kernel=value;
-      const reference=kernel?.radiusMeters;
       const limit=radiusLimit();
       grouping.disabled=!kernel||Math.max(limit,activeRadius)===0;
-      autoButton.disabled=!(reference>0);
-      autoButton.hidden=bart&&!!kernel&&reference===null;
       if(!kernel){
-        autoButton.title='Calculando el radio sugerido…';
         updateGroupingControls();
         return;
       }
-      autoButton.title=reference===null
-        ? 'Sin radio sugerido para este período'
-        : `Usar ${fmt(Math.round(reference))} m como radio inicial`;
-      autoButton.setAttribute('aria-label',autoButton.title);
       updateGrouping();
     }
     if(!cambio)try{
@@ -772,11 +816,6 @@ export function renderMap(host,app,items){
       grouping.onblur=()=>reveal(false);
       grouping.onpointerenter=()=>reveal(true);
       grouping.onpointerleave=()=>reveal(document.activeElement===grouping);
-      autoButton.onclick=()=>{
-        const suggested=kernel.radiusMeters;
-        pendingGrouping=suggested===activeRadius?undefined:suggested;
-        updateGroupingControls();
-      };
     }
     if(!cambio){
       fidelity.value=String(pendingFidelity??state[fidelityKey]);
@@ -957,6 +996,7 @@ export function renderMap(host,app,items){
   }
   if(focusOrigin)contextPoints.remove();
   const points=g.selectAll('.map-dot').data(dotItems).join('circle').attr('class','map-dot'+(flujos?' quiet':'')).attr('data-station-id',s=>s.id).attr('vector-effect','non-scaling-stroke').attr('cx',s=>stationPosition(s)[0]).attr('cy',s=>stationPosition(s)[1]).attr('r',s=>rOf(s)).attr('fill',s=>flujos?(focusOrigin&&s.id!==focusOrigin.id?'#87969d':'#1d6f8dcc'):color(metricValue(s,state.mapMetric)))
+    .classed('scatter-area-member',s=>state.cohortSource==='scatter'&&ids.has(s.id))
     .classed('map-zone-a',s=>zoneOf(s)==='a')
     .classed('map-zone-b',s=>zoneOf(s)==='b')
     .classed('map-zone-context',s=>!!between&&!zoneOf(s))
@@ -1125,7 +1165,8 @@ export function renderMap(host,app,items){
     if(inspectCorridor?.(event))return;
     if(state.selected)app.set({selected:null});
   });
-  bindMapLasso({svg,outlines:zoneLayer,zoom,width,height,projection,stations:items,
+  const lassoStations=state.cohortSource==='scatter'?app.filtered(undefined,{ignoreCohort:true}):items;
+  bindMapLasso({svg,outlines:zoneLayer,zoom,width,height,projection,stations:lassoStations,
     position:stationPosition,app,twoZones:drawnZones});
   if(flujos){
     if(cambio){
@@ -1152,7 +1193,7 @@ export function renderMap(host,app,items){
     host.querySelector('#map-key').innerHTML=`
       ${focusOrigin?`<div class="map-key-note" id="map-flow-unit">${onTracks?'Ramas · porcentaje de las salidas':'Haces · intensidad de las salidas'}</div>`:''}
       <div id="od-volume-scale"${between?' hidden':''}>
-        <div class="map-width-key${paper?' paper-width-key':''}" style="--rail-sample-width-range:${OD_RAIL_MAX_WIDTH-.85}px" aria-hidden="true"><i></i><i></i><i></i></div>
+        <div class="map-width-key${paper?' paper-width-key':''}" style="--rail-sample-width-range:${OD_RAIL_MAX_WIDTH-OD_RAIL_MIN_WIDTH}px" aria-hidden="true"><i></i><i></i><i></i></div>
         <div class="map-key-bar" style="background:linear-gradient(90deg,${colors})"></div>
         <div class="map-key-words"><span>Menos tránsito</span><span>Más tránsito</span></div>
       </div>

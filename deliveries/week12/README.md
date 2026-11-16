@@ -7,11 +7,11 @@ Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino · Re
 | Aplicación D3 y recursos | [atlas/](atlas/), espejo de [la raíz](../../atlas/) |
 | Datos candidatos, muestras y scripts | [data/](data/), [scripts/](scripts/), [DataSharing](DataSharing.md) |
 | Narrativa, diseño, hallazgos, límites y pendientes | [RefinedDraftReport.md](RefinedDraftReport.md) y [PDF](RefinedDraftReport.pdf) |
-| Presentación vigente | [PresentationWeek12.pptx](PresentationWeek12.pptx) |
+| Presentación del 28 de octubre | [PresentationWeek12.pptx](PresentationWeek12.pptx) |
 | Respuesta a crítica | [PeerCritiqueResponse.pdf](PeerCritiqueResponse.pdf) y [fuente](PeerCritiqueResponse.md) |
 | Fuente del artículo y borrador | [paper.tex](paper/paper.tex), [paper.pdf](paper/paper.pdf) |
 | Página y README | [Página inicial](../../index.html), este documento y [README raíz](../../README.md) |
-| Seis tareas y plan | [AnalyticalTasks](AnalyticalTasks.md), [ImplementationPlan](ImplementationPlan.md) |
+| Cinco tareas y plan | [AnalyticalTasks](AnalyticalTasks.md), [ImplementationPlan](ImplementationPlan.md) |
 
 ## Datos y ejecución
 
@@ -39,4 +39,3 @@ Histórico 2019/2020 visible en **Base histórica**, a la derecha. Red y OD no s
 | T3 | Ventanas de 3 h, 7 días y seis años | Reloj y selección horaria disponibles; detector automático por integrar |
 | T4 | Cargas por enlace y franja | Carga exacta por tramo, agrupamiento RAEB y comparación A/B disponibles |
 | T5 | Balance externo por borough/cohorte, cuatro años | CSV preparado; codificación interactiva pendiente |
-| T6 | Seis ejemplos de cierre por enlace | Escenario interactivo por complejo en el Atlas actual |
