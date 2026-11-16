@@ -5,6 +5,7 @@ Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino · Re
 | Entregable | Archivo |
 |---|---|
 | Aplicación D3 y recursos | [atlas/](atlas/), espejo de [la raíz](../../atlas/) |
+| Análisis espectral de cambios de afluencia | [Eventos](SpectralEvents.md) |
 | Datos candidatos, muestras y scripts | [data/](data/), [scripts/](scripts/), [DataSharing](DataSharing.md) |
 | Narrativa, diseño, hallazgos, límites y pendientes | [RefinedDraftReport.md](RefinedDraftReport.md) y [PDF](RefinedDraftReport.pdf) |
 | Presentación del 28 de octubre | [PresentationWeek12.pptx](PresentationWeek12.pptx) |

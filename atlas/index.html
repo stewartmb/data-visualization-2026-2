@@ -6,6 +6,7 @@
   <meta name="description" content="Explora cómo cambiaron los ritmos de entrada al metro de Nueva York, con entradas 2019–2024, OD 2021–2025 y perfiles de 168 horas.">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="src/style.css?v=legend-width">
+  <link rel="stylesheet" href="src/spectral-events.css?v=events1">
 </head>
 <body class="atlas-workbench">
 <div id="loading" role="status"><span class="map-spinner" aria-hidden="true"></span> Preparando el atlas de ritmos…</div>
@@ -24,7 +25,12 @@
     <span id="cohort-note" hidden></span>
     <span id="selection-label" hidden></span>
   </div>
+  <div id="spectral-header" class="spectral-header"><strong>Cambios de afluencia</strong><span>Entradas horarias · 2019–2024</span></div>
   <div class="atlas-view-context">
+    <div id="atlas-analysis" class="atlas-analysis" role="group" aria-label="Análisis del Atlas" hidden>
+      <button type="button" data-analysis="flows" aria-pressed="true">Flujos</button>
+      <button type="button" data-analysis="events" aria-pressed="false">Eventos</button>
+    </div>
     <section id="map-subject" aria-label="Vista del mapa" hidden></section>
     <button id="map-center" class="atlas-home text-button" type="button" hidden>
       <span aria-hidden="true">↺</span> Vista general
@@ -60,7 +66,36 @@
     <section id="inspector" class="inspector" aria-label="Detalle de la selección"></section>
   </aside>
 </div>
+<div id="spectral-workspace" class="spectral-workspace" hidden>
+  <aside class="spectral-detail" aria-labelledby="spectral-detail-heading">
+    <h2 id="spectral-detail-heading">Entradas por hora</h2>
+    <div id="spectral-detail"></div>
+    <details class="spectral-method">
+      <summary>Datos y método</summary>
+      <p>MTA · Entradas 2019–2024. Hora local de Nueva York. Las entradas habituales son la mediana del mismo día y hora de hasta ocho semanas cercanas.</p>
+      <p>Las wavelets sobre el grafo GTFS 2026 detectan cambios entre complejos conectados y entre horas. El calendario usa la mayor intensidad de cada mes y muestra hasta seis candidatos. Un contorno marca los complejos detectados. El color compara entradas observadas y habituales durante sus horas detectadas.</p>
+      <p>Las horas sin registro quedan fuera de la detección. La serie del conjunto suma los complejos que tienen ambas cifras para cada hora. Un episodio es una señal para investigar su causa.</p>
+      <a href="https://files.visualdslab.com/files/papers/2026-ManyWaves-CGF.pdf#page=3">Método de ManyWaves ↗</a>
+    </details>
+  </aside>
+  <section class="spectral-map" aria-label="Mapa de cambios de afluencia">
+    <svg role="group" aria-label="Complejos del metro de Nueva York"></svg>
+    <div class="spectral-map-key">
+      <strong id="spectral-map-caption"></strong>
+      <span class="spectral-sign-title">Entradas respecto a lo habitual</span>
+      <span class="spectral-colorbar" aria-hidden="true"></span>
+      <span class="spectral-key-words"><span>Bajaron</span><span>Subieron</span></span>
+    </div>
+    <button id="spectral-center" class="text-button" type="button" aria-label="Centrar el mapa" title="Centrar el mapa" hidden>↺</button>
+  </section>
+  <aside class="spectral-timeline" aria-labelledby="spectral-timeline-heading">
+    <h2 id="spectral-timeline-heading">Eventos por mes</h2>
+    <div id="spectral-calendar"></div>
+    <div class="spectral-intensity-key"><span>Menor señal</span><i aria-hidden="true"></i><span>Mayor señal</span></div>
+    <div id="spectral-episodes"></div>
+  </aside>
+</div>
 <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
 <div id="toast" class="toast" role="status" hidden></div>
-<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=scatter-axis-spacing"></script>
+<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=spectral-events1"></script>
 </body></html>

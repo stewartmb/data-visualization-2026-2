@@ -1,0 +1,213 @@
+.atlas-analysis {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  gap: 2px;
+  background: var(--pale);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.atlas-analysis[hidden], .spectral-workspace[hidden], .spectral-header { display: none; }
+.atlas-analysis button {
+  padding: 4px 9px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 650;
+  color: var(--muted);
+}
+
+.atlas-analysis button[aria-pressed="true"] {
+  color: var(--ink);
+  background: white;
+  border-color: var(--line);
+}
+
+.spectral-mode .app-shell, .spectral-mode .context-bar,
+.spectral-mode #map-subject, .spectral-mode #map-center { display: none !important; }
+
+.spectral-header {
+  grid-area: 1 / 2;
+  min-width: 0;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  column-gap: 9px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.spectral-header strong { color: var(--ink); font-size: 13px; }
+.spectral-mode .spectral-header { display: flex; }
+
+.spectral-workspace {
+  display: grid;
+  grid-template-columns: var(--atlas-left) minmax(0,1fr) var(--atlas-right);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.spectral-detail, .spectral-timeline {
+  min-width: 0;
+  overflow: auto;
+  padding: 14px 12px;
+  background: #fff;
+}
+
+.spectral-detail { border-right: 1px solid var(--line); }
+.spectral-timeline { border-left: 1px solid var(--line); background: #f8f9f7; }
+.spectral-workspace h2 {
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 700;
+  margin: 0 0 13px;
+}
+.spectral-workspace h3 { font-size: 12px; line-height: 1.35; margin: 0 0 5px; }
+.spectral-empty, .spectral-detail-date, .spectral-detail-scope,
+.spectral-method, #spectral-episodes > p { color: var(--muted); font-size: 11px; line-height: 1.4; }
+
+.spectral-method { padding-top: 10px; margin-top: 12px; border-top: 1px solid var(--line); }
+.spectral-method summary { cursor: pointer; color: var(--teal); }
+
+.spectral-map {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #eff1f1;
+}
+
+.spectral-map > svg { display: block; width: 100%; height: 100%; min-height: 0; touch-action: none; }
+.spectral-map .map-bg { fill: #e1e5e5; stroke: #b5c0c2; }
+.spectral-map .borough-name { pointer-events: none; }
+.spectral-rails { fill: none; stroke: #8b9da2; stroke-opacity: .53; stroke-width: 1px; }
+.spectral-node { opacity: .55; }
+.spectral-node.is-involved { cursor: pointer; stroke: #264751; stroke-width: 1.25px; opacity: 1; }
+.spectral-node.is-selected { stroke: #102937; stroke-width: 2.25px; }
+.spectral-node:focus-visible { stroke: #102937; stroke-width: 2.6px; outline: none; }
+
+.spectral-map-key {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: grid;
+  gap: 4px;
+  width: max-content;
+  max-width: calc(100% - 60px);
+  padding: 9px 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 10px;
+  pointer-events: none;
+}
+
+#spectral-map-caption { color: var(--ink); font-size: 11px; }
+#spectral-map-caption:empty { display: none; }
+.spectral-colorbar { height: 7px; border-radius: 3px; background: linear-gradient(90deg,#146b91,#f8f8f4,#ba542c); }
+.spectral-key-words { display: flex; justify-content: space-between; gap: 12px; }
+#spectral-center {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 33px;
+  height: 33px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 18px;
+}
+
+.spectral-calendar {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 1px 3px;
+  font-size: 9px;
+}
+.spectral-calendar :is(th, td) { padding: 0; text-align: center; }
+.spectral-calendar :is(th[scope="row"], thead td:first-child) { width: 29px; text-align: left; }
+.spectral-calendar th[scope="col"] { color: var(--muted); font-weight: 500; }
+.spectral-calendar td button {
+  display: block;
+  width: 100%;
+  height: 20px;
+  border-radius: 2px;
+  padding: 0;
+  border: 1px solid transparent;
+  background: var(--cell,#e8eceb);
+}
+.spectral-calendar td button[aria-pressed="true"] { border-color: #102937; outline: 1px solid #102937; }
+.spectral-calendar td button:focus-visible { outline: 2px solid #102937; outline-offset: 1px; }
+.spectral-calendar td button:disabled { opacity: .45; }
+
+.spectral-intensity-key {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 4px 0 15px;
+  color: var(--muted);
+  font-size: 9px;
+}
+.spectral-intensity-key i { flex: 1; min-width: 10px; height: 5px; background: linear-gradient(90deg,#e6eef0,#176982); border-radius: 2px; }
+#spectral-episodes h3 { margin: 0 0 7px; }
+#spectral-episodes ol { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
+#spectral-episodes button {
+  display: grid;
+  width: 100%;
+  padding: 6px 8px;
+  text-align: left;
+  font-size: 11px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+#spectral-episodes button span { color: var(--muted); font-size: 10px; }
+#spectral-episodes button[aria-pressed="true"] { border-color: #347987; background: #edf4f4; }
+
+.spectral-series-key { display: flex; gap: 10px; color: var(--muted); font-size: 10px; }
+.spectral-series-key span::before {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  margin-inline-end: 4px;
+  vertical-align: middle;
+  border-top: 2px solid #176982;
+}
+.spectral-series-key span + span::before { border-color: #71848b; border-top-style: dashed; }
+.spectral-chart { display: block; width: 100%; height: 156px; }
+.spectral-series { fill: none; stroke: #176982; stroke-width: 2px; }
+.spectral-series.is-typical { stroke: #71848b; stroke-dasharray: 4 3; stroke-width: 1.35px; }
+.spectral-event-band { fill: #e8f0f1; }
+.spectral-chart-marker { stroke: #6f858d; stroke-width: 1px; stroke-dasharray: 2 2; }
+.spectral-hour-reading { display: block; min-height: 2.6em; color: var(--ink); font-size: 10.5px; }
+
+@media (max-width: 999px) {
+  .atlas-workbench .masthead { grid-template-columns: minmax(0,1fr) max-content max-content; }
+  .atlas-analysis { grid-area: 1 / 2; align-self: center; }
+  .atlas-view-context .atlas-home { grid-area: 1 / 3; }
+  .spectral-header { grid-area: 2 / 1 / 3 / -1; justify-content: start; }
+  .spectral-mode .masthead { grid-template-rows: 36px auto; }
+  .spectral-mode .spectral-workspace { display: flex; flex-direction: column; }
+  .spectral-timeline { order: -1; border-left: 0; border-bottom: 1px solid var(--line); }
+  .spectral-calendar td button { height: 22px; }
+  .spectral-map { order: 1; }
+  .spectral-map > svg { height: clamp(380px,65dvh,520px); }
+  .spectral-detail { order: 2; border-right: 0; border-top: 1px solid var(--line); }
+  #spectral-episodes ol { grid-template-columns: repeat(auto-fit,minmax(108px,1fr)); }
+}
+
+@media (max-width: 460px) {
+  .atlas-workbench .atlas-view-context .atlas-home { font-size: 10px; padding-inline: 5px; }
+  .atlas-analysis button { padding-inline: 6px; }
+}
+
+@media (min-width: 1000px) {
+  .spectral-workspace { height: calc(100dvh - var(--top)); }
+}
+@media (max-width: 999px) {
+  .atlas-workbench .context-bar { grid-column: 1 / -1; }
+}

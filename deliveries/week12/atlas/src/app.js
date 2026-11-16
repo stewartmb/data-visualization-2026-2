@@ -5,6 +5,7 @@ import {createODYearMaps} from './od-year-maps.js?v=map-layout2';
 import {renderPaths} from './paths-view.js?v=20261014-9';
 import {renderEvidence} from './evidence-view.js?v=overview1';
 import {renderInspector} from './inspector.js?v=scatter-axis-spacing';
+import {createSpectralEvents} from './spectral-events.js?v=events1';
 import {renderProject} from './project-view.js?v=map-controls1';
 
 import {activeContrastBase,activeODCompareBase,availableContrastYears,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=scatter-area1';
@@ -14,6 +15,7 @@ import {createRoutingData} from './od-routing.mjs?v=annual-overview1';
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
 const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia',project:'Proyecto'};
 let data,geo,lineas,flows,toastTimer,historicalProfiles,historicalPromise;
+let spectralEvents;
 let choosingODYears=false,pendingODYear=null,searchTimer;
 const stationIndices=new Map();
 const scopeKeys=['borough','query','cohort','preset','tvMin','tvMax','ranges'];
@@ -233,6 +235,7 @@ function chooseODYear(event,year){
 }
 
 function render(){
+  if(spectralEvents?.active)return;
   if(BASE===state.year)setBase(normalizeContrastBase(null,state.year,dataset.defaultBase,dataset.years));
   hideTooltip();
   const focusId=document.activeElement?.id;
@@ -498,7 +501,12 @@ Promise.all([loadData('atlas.json'),loadData('boroughs.geojson'),nyc?loadData('l
   // Chart dimensions depend on width. Height-only changes (mobile browser chrome,
   // screenshots) must not destroy a brush or a pending interaction.
   let rt,lastWidth=innerWidth;window.addEventListener('resize',()=>{if(innerWidth===lastWidth)return;lastWidth=innerWidth;clearTimeout(rt);rt=setTimeout(render,160);});
-  render();
+  if(nyc){
+    document.querySelector('#atlas-analysis').hidden=false;
+    spectralEvents=createSpectralEvents({geo:g,flows:f,onFlows:render});
+  }
+  if(spectralEvents&&new URLSearchParams(location.search).get('analysis')==='events')spectralEvents.show(true);
+  else render();
 }).catch(error=>{
   const el=document.querySelector('#loading');el.innerHTML=`<div><h2>No se pudo abrir el atlas</h2><p>${esc(error.message)}</p><p>Abre esta carpeta con un servidor HTTP. Consulta atlas/README.md.</p><button onclick="location.reload()">Reintentar</button></div>`;
   console.error(error);

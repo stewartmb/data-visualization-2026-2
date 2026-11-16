@@ -23,7 +23,7 @@ python3 deliveries/week12/scripts/prepare_analytical_tasks.py
 
 Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_od.py` y `acquire_network.py`. La preparación histórica y la del RAEB se documentan en `HistoricalContrast.md`, `ODData.md` y `RAEBImplementation.md`. Los originales grandes quedan fuera de Git; se incluyen los artefactos preparados para ejecutar la app y sus manifiestos.
 
-El mapa abre en **Todo el año de 2025**. Se puede elegir otro año o comparar dos de **2021–2025**. Los datos de entradas de 2019 y 2020 se reservan para el contraste histórico.
+El mapa abre en **Todo el año de 2025**. Se puede elegir otro año o comparar dos de **2021–2025**. El contraste histórico usa entradas de 2019–2024. El modo **Eventos** usa entradas horarias de 2019–2024 para explorar episodios con wavelets sobre la red. [Método y comprobaciones](deliveries/week12/SpectralEvents.md).
 
 ## Cinco preguntas actuales
 
