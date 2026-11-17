@@ -1,52 +1,48 @@
-table,field,type,unit_or_format,meaning,missing
-sample.csv,year,number or categorical as named,valor/ID según nombre,year,blank = undefined denominator; no missing month substituted
-sample.csv,baseline,number or categorical as named,valor/ID según nombre,baseline,blank = undefined denominator; no missing month substituted
-sample.csv,territory_level,number or categorical as named,valor/ID según nombre,territory level,blank = undefined denominator; no missing month substituted
-sample.csv,territory,number or categorical as named,valor/ID según nombre,territory,blank = undefined denominator; no missing month substituted
-sample.csv,complexes,number or categorical as named,valor/ID según nombre,complexes,blank = undefined denominator; no missing month substituted
-sample.csv,weekly_entries,number or categorical as named,valor/ID según nombre,Entradas de una semana representativa; no total anual,blank = undefined denominator; no missing month substituted
-sample.csv,volume_index_2019_100,number or categorical as named,valor/ID según nombre,volume index 2019 100,blank = undefined denominator; no missing month substituted
-sample.csv,delta_weekly_entries,number or categorical as named,valor/ID según nombre,delta weekly entries,blank = undefined denominator; no missing month substituted
-sample.csv,system_share_pct,number or categorical as named,%,system share pct,blank = undefined denominator; no missing month substituted
-sample.csv,delta_system_share_pp,number or categorical as named,pp,delta system share pp,blank = undefined denominator; no missing month substituted
-sample.csv,tv_vs2019_pp,number or categorical as named,pp,50*sum(abs(p2024-p2019)),blank = undefined denominator; no missing month substituted
-od_sample.csv,year,number or categorical as named,valor/ID según nombre,year,blank = undefined denominator; no missing month substituted
-od_sample.csv,origin_borough,number or categorical as named,valor/ID según nombre,origin borough,blank = undefined denominator; no missing month substituted
-od_sample.csv,destination_borough,number or categorical as named,valor/ID según nombre,destination borough,blank = undefined denominator; no missing month substituted
-od_sample.csv,weekly_estimated_od,number or categorical as named,valor/ID según nombre,weekly estimated od,blank = undefined denominator; no missing month substituted
-od_sample.csv,destination_share_pct,number or categorical as named,%,Cuota dentro del territorio de origen,blank = undefined denominator; no missing month substituted
-network_sample.csv,link_id,number or categorical as named,valor/ID según nombre,link id,blank = undefined denominator; no missing month substituted
-network_sample.csv,a,number or categorical as named,valor/ID según nombre,a,blank = undefined denominator; no missing month substituted
-network_sample.csv,b,number or categorical as named,valor/ID según nombre,b,blank = undefined denominator; no missing month substituted
-network_sample.csv,length_m,number or categorical as named,metros,Longitud de geometría de referencia,blank = undefined denominator; no missing month substituted
-network_sample.csv,kind,number or categorical as named,valor/ID según nombre,rail o declared_walk_transfer,blank = undefined denominator; no missing month substituted
-network_sample.csv,allowed_forward,number or categorical as named,valor/ID según nombre,allowed forward,blank = undefined denominator; no missing month substituted
-network_sample.csv,allowed_reverse,number or categorical as named,valor/ID según nombre,allowed reverse,blank = undefined denominator; no missing month substituted
-hourly_entries_original,transit_timestamp,timestamp,2019-01-01 a 2024-12-31,Hora de registro en tiempo local de la fuente; no incluye zona horaria en el valor,sin imputación; hora ausente no prueba servicio disponible
-hourly_entries_original,transit_mode,string,subway / SIR / tram según fuente,Etiqueta de modo tal como la publica MTA,no se corrigen etiquetas silenciosamente
-hourly_entries_original,station_complex_id,string,todos los IDs presentes,ID del complejo MTA; una agrupación puede contener varias estaciones y andenes,sin filtro fijo de 424
-hourly_entries_original,station_complex,string,valor original,Nombre publicado del complejo,sin imputación
-hourly_entries_original,borough,string,ubicación del complejo; no residencia,Borough reportado por la fuente,sin imputación
-hourly_entries_original,payment_method,string,categorías originales; no se fusionan,Medio de pago reportado,ausencia no prueba inexistencia del producto
-hourly_entries_original,fare_class_category,string,categorías originales; no perfil demográfico,Categoría tarifaria reportada,sin imputación
-hourly_entries_original,ridership,double,entradas; no usuarios únicos ni OD,Entradas publicadas para la combinación hora/complejo/modo/pago/clase,no se inventan ceros de registros ausentes
-hourly_entries_original,transfers,double,conteo; no se suma otra vez a ridership ni mide todos los cambios de línea,Entradas con transbordo gratuito incluidas en ridership,anomalías reportadas por mes en acquisition.json
-hourly_entries_original,latitude,double,grados decimales,Latitud publicada,NULL preservado si aparece
-hourly_entries_original,longitude,double,grados decimales,Longitud publicada,NULL preservado si aparece
-hourly_entries_original,georeference,string,texto conservado,Representación espacial original de la fuente,NULL preservado si aparece
-od_original_2021_2024,year,number,published categorical/number; hour_of_day is departure cohort,The year in which the subway trips occurred.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,month,number,published categorical/number; hour_of_day is departure cohort,The month in which the subway trips occurred.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,day_of_week,text,published categorical/number; hour_of_day is departure cohort,"The day of the week on which the subway trips occurred (Monday, Tuesday, etc.).",No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,hour_of_day,number,published categorical/number; hour_of_day is departure cohort,The hour of the day in which the subway trips occurred. All trip times are rounded down to the nearest hour.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,timestamp,calendar_date,published categorical/number; hour_of_day is departure cohort," Representative datetime for the year, month, day of week, and hour of day in which the subway trips occurred. This date will be from the first full week of the month.",No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,origin_station_complex_id,number,published categorical/number; hour_of_day is departure cohort,The unique identifier for the subway station complex where the trips originated.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,origin_station_complex_name,text,published categorical/number; hour_of_day is departure cohort,The name of the subway station complex where the trips originated.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,origin_latitude,number,published categorical/number; hour_of_day is departure cohort,The latitude of the subway station complex where the trips originated.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,origin_longitude,number,published categorical/number; hour_of_day is departure cohort,The longitude of the subway station complex where the trips originated.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,destination_station_complex_id,number,published categorical/number; hour_of_day is departure cohort,The unique identifier for the subway station complex where the trips are inferred to have ended.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,destination_station_complex_name,text,published categorical/number; hour_of_day is departure cohort,The name of the subway station complex where the trips are inferred to have ended.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,destination_latitude,number,published categorical/number; hour_of_day is departure cohort,The latitude of the subway station complex where the trips are inferred to have ended.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,destination_longitude,number,published categorical/number; hour_of_day is departure cohort,The longitude of the subway station complex where the trips are inferred to have ended.,No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,estimated_average_ridership,number,published categorical/number; hour_of_day is departure cohort,"The estimated ridership for an origin-destination pair and hour of day, averaged by day of week over the calendar month.",No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,origin_point,point,published categorical/number; hour_of_day is departure cohort,"Open Data platform-generated geocoding information from supplied address components. Point-type location is the centroid of the address components provided and does not reflect a specific address if the street address component is not provided. Point-type location is supplied in ""POINT (<geocoded longitude> <geocoded latitude>)"" format.",No missing month substituted; sparse zeros per documented convention
-od_original_2021_2024,destination_point,point,published categorical/number; hour_of_day is departure cohort,"Open Data platform-generated geocoding information from supplied address components. Point-type location is the centroid of the address components provided and does not reflect a specific address if the street address component is not provided. Point-type location is supplied in ""POINT (<geocoded longitude> <geocoded latitude>)"" format.",No missing month substituted; sparse zeros per documented convention
+table,field,type,unit_or_format,description,allowed_values,missing
+sample.csv,transit_timestamp,fecha y hora,AAAA-MM-DD HH:MM:SS en hora local de Nueva York,Hora en que se registró el pago redondeada hacia abajo,2021–2025 inclusive,Una hora sin fila no equivale a cero
+sample.csv,transit_mode,texto,categoría,Modo de transporte publicado por la MTA,subway o tram o staten_island_railway en la muestra,Vacío si la fuente no informa el modo
+sample.csv,station_complex_id,texto,ID MTA,Complejo donde se registró la entrada,ID de complejo del catálogo MTA,Vacío si la fuente no informa el ID
+sample.csv,station_complex,texto,nombre,Nombre publicado del complejo,Texto de la fuente,Vacío si la fuente no informa el nombre
+sample.csv,borough,texto,distrito,Distrito del complejo,Texto de la fuente,Vacío si la fuente no informa el distrito
+sample.csv,payment_method,texto,categoría,Medio de pago registrado,metrocard u omny según la fuente,Vacío si la fuente no informa el medio
+sample.csv,fare_class_category,texto,categoría,Clase tarifaria de la entrada,Categorías oficiales según año y medio,Vacío si la fuente no informa la clase
+sample.csv,ridership,decimal,entradas,Entradas agregadas para la combinación de hora complejo modo medio y clase,Un cero explícito conserva su valor,Vacío si la fuente no publica el valor
+sample.csv,transfers,decimal,entradas con transferencia gratuita,Subconjunto de ridership para transferencias gratuitas de acceso que captura la fuente,No cubre transferencias internas del subway,Vacío si la fuente no publica el valor
+sample.csv,latitude,decimal,grados WGS84,Latitud publicada del complejo,−90 a 90,Vacío si la fuente no publica coordenada
+sample.csv,longitude,decimal,grados WGS84,Longitud publicada del complejo,−180 a 180,Vacío si la fuente no publica coordenada
+sample.csv,georeference,texto,punto como lo entrega la API,Representación espacial del complejo,Par longitud y latitud,Vacío si la fuente no publica el punto
+sample.csv,source_dataset,texto,ID Open NY,Identificador añadido al convertir a Parquet para rastrear la fuente,wujg-7c2s o 5wq4-mkjj,Requerido
+od_sample.csv,year,entero,año calendario,Año de la cohorte,2021–2025,Requerido
+od_sample.csv,month,entero,mes calendario,Mes de la cohorte,1–12,Requerido
+od_sample.csv,day_of_week,texto,día en inglés,Día de la semana que se promedia,Monday a Sunday,Requerido
+od_sample.csv,hour_of_day,entero,hora local de entrada,Hora de inicio redondeada hacia abajo,0–23,Requerido
+od_sample.csv,timestamp,fecha y hora,AAAA-MM-DD HH:MM:SS en hora local de Nueva York,Fecha representativa para el mes día de semana y hora de la cohorte,Primera semana completa de referencia según Open NY,Vacío si la fuente no publica la fecha
+od_sample.csv,origin_station_complex_id,texto,ID MTA,Complejo de entrada,ID de complejo del catálogo MTA,Requerido para identificar el par
+od_sample.csv,origin_station_complex_name,texto,nombre,Nombre publicado del origen,Texto de la fuente,Vacío si la fuente no informa el nombre
+od_sample.csv,origin_latitude,decimal,grados WGS84,Latitud publicada del origen,−90 a 90,Vacío si la fuente no publica coordenada
+od_sample.csv,origin_longitude,decimal,grados WGS84,Longitud publicada del origen,−180 a 180,Vacío si la fuente no publica coordenada
+od_sample.csv,destination_station_complex_id,texto,ID MTA,Complejo estimado de destino,ID de complejo del catálogo MTA,Requerido para identificar el par
+od_sample.csv,destination_station_complex_name,texto,nombre,Nombre publicado del destino,Texto de la fuente,Vacío si la fuente no informa el nombre
+od_sample.csv,destination_latitude,decimal,grados WGS84,Latitud publicada del destino,−90 a 90,Vacío si la fuente no publica coordenada
+od_sample.csv,destination_longitude,decimal,grados WGS84,Longitud publicada del destino,−180 a 180,Vacío si la fuente no publica coordenada
+od_sample.csv,estimated_average_ridership,decimal,viajes estimados por ocurrencia del día y hora,Promedio para el par OD calculado por la MTA dentro del mes,Valor no negativo que puede ser fraccionario,Si falta el par en un mes completo aporta cero al preparar el Atlas
+od_sample.csv,origin_point,texto,punto como lo entrega la API,Representación espacial del origen,Par longitud y latitud,Vacío si la fuente no publica el punto
+od_sample.csv,destination_point,texto,punto como lo entrega la API,Representación espacial del destino,Par longitud y latitud,Vacío si la fuente no publica el punto
+network_sample.csv,link_id,entero,índice base cero,Posición del enlace en flows.json para este snapshot,0–630,Requerido
+network_sample.csv,a,texto,ID de complejo MTA,Complejo que contiene la parada padre stop_a,Se une con complexes.csv,Requerido
+network_sample.csv,b,texto,ID de complejo MTA,Complejo que contiene la parada padre stop_b,Puede coincidir con a si el transbordo es interno,Requerido
+network_sample.csv,stop_a,texto,ID de parada padre GTFS,Primer extremo del enlace,ID del snapshot GTFS,Requerido
+network_sample.csv,stop_b,texto,ID de parada padre GTFS,Segundo extremo del enlace,ID del snapshot GTFS,Requerido
+network_sample.csv,kind,texto,tipo de enlace,Tipo de conexión usada por el modelo,rail o declared_walk_transfer,Requerido
+network_sample.csv,routes,texto,IDs GTFS separados por barra vertical,Servicios asociados al enlace,IDs del snapshot,Vacío para transbordos declarados
+network_sample.csv,length_m,decimal,metros,Longitud geométrica declarada en el grafo,Positiva,Requerido
+network_sample.csv,allowed_forward,entero,booleano 0 o 1,Permiso de recorrer de stop_a a stop_b,0 o 1,Requerido
+network_sample.csv,allowed_reverse,entero,booleano 0 o 1,Permiso de recorrer de stop_b a stop_a,0 o 1,Requerido
+network_sample.csv,cost_forward,decimal,metros equivalentes del modelo,Costo de recorrer de stop_a a stop_b cuando está permitido,Distancia o costo equivalente de transbordo,Vacío si la red omite ese costo
+network_sample.csv,cost_reverse,decimal,metros equivalentes del modelo,Costo de recorrer de stop_b a stop_a cuando está permitido,Distancia o costo equivalente de transbordo,Vacío si la red omite ese costo
+network_sample.csv,coordinates,texto,lista JSON de pares longitud y latitud,Geometría del enlace en el orden stop_a a stop_b,WGS84,Requerido
+complexes.csv,complex_id,texto,ID de complejo MTA,Clave territorial del complejo en el Atlas,424 complejos cubiertos,Requerido
+complexes.csv,name,texto,nombre,Nombre del complejo,Nombre del catálogo en el Atlas,Requerido
+complexes.csv,borough,texto,distrito,Distrito que contiene al complejo,Bronx Brooklyn Manhattan o Queens,Requerido
+complexes.csv,latitude,decimal,grados WGS84,Latitud del punto que representa al complejo,−90 a 90,Requerido
+complexes.csv,longitude,decimal,grados WGS84,Longitud del punto que representa al complejo,−180 a 180,Requerido

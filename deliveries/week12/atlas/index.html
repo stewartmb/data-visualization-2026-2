@@ -5,13 +5,13 @@
   <title>Fractal · Atlas de ritmos</title>
   <meta name="description" content="Explora los flujos origen–destino del metro de Nueva York entre 2021 y 2025.">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="src/style.css?v=shared-timeline-width1">
-  <link rel="stylesheet" href="src/spectral-events.css?v=restored1">
+  <link rel="stylesheet" href="src/style.css?v=station-highlight1">
+  <link rel="stylesheet" href="src/spectral-events.css?v=station-highlight1">
 </head>
 <body class="atlas-workbench">
 <div id="loading" role="status"><span class="map-spinner" aria-hidden="true"></span> Preparando el atlas de ritmos…</div>
 <header class="masthead">
-  <a href="./" class="brand" aria-label="Inicio"><span class="brand-icon" aria-hidden="true">▥</span><span>Fractal<small>ATLAS DE RITMOS · NUEVA YORK</small></span></a>
+  <a href="./" class="brand" aria-label="Fractal · Vista general" title="Volver a la vista general"><span class="brand-icon" aria-hidden="true">▥</span><span>Fractal<small>ATLAS DE RITMOS · NUEVA YORK</small></span></a>
   <div class="context-bar" role="group" aria-label="Filtros del mapa">
     <select id="borough" aria-label="Zona"><option value="all">Todos los boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option></select>
     <div class="station-search">
@@ -25,34 +25,29 @@
     <span id="cohort-note" hidden></span>
     <span id="selection-label" hidden></span>
   </div>
-  <div class="atlas-view-context">
-    <button id="map-center" class="atlas-home text-button" type="button" hidden>
-      <span aria-hidden="true">↺</span> Vista general
-    </button>
-    <section id="atlas-view-summary" class="atlas-map-summary" aria-label="Resumen del mapa" hidden>
-      <div id="map-subject" hidden></div>
-      <div id="spectral-header" class="spectral-header linked-heading" hidden>
-        <h2 id="spectral-subject"></h2>
-        <p id="spectral-period"></p>
-        <p id="spectral-summary-hour"></p>
-        <button id="close-spectral-episode" class="close" type="button" aria-label="Cerrar episodio" title="Cerrar episodio">×</button>
-      </div>
-    </section>
-  </div>
+  <section id="atlas-view-summary" class="atlas-map-summary" aria-label="Resumen del mapa" hidden>
+    <div id="map-subject" hidden></div>
+    <div id="spectral-header" class="spectral-header linked-heading" hidden>
+      <h2 id="spectral-subject"></h2>
+      <p id="spectral-period"></p>
+      <p id="spectral-summary-hour"></p>
+      <button id="close-spectral-episode" class="close" type="button" aria-label="Cerrar episodio" title="Cerrar episodio">×</button>
+    </div>
+  </section>
 </header>
 <div class="app-shell">
   <main id="main">
     <div class="map-workspace"><div id="content"></div></div>
     <footer class="main-footer">
       <div id="atlas-evidence" class="footer-evidence"></div>
-      <span class="spectral-source">MTA · Entradas horarias · GTFS de referencia 2026</span>
+      <span class="spectral-source">MTA · Entradas horarias 2021–2025 · Red GTFS de referencia</span>
       <span class="flow-footer-actions"><button id="save" class="text-button">Guardar exploración</button> · <button id="export" class="text-button">Exportar CSV</button></span>
     </footer>
   </main>
   <aside class="atlas-insights" aria-label="Años y eventos">
     <div id="atlas-analysis" class="atlas-analysis" role="group" aria-label="Explorar el tiempo" hidden>
       <button type="button" data-analysis="years" aria-pressed="true" aria-controls="od-year-panel">Años</button>
-      <button type="button" data-analysis="events" aria-pressed="false" aria-controls="spectral-timeline">Eventos</button>
+      <button type="button" data-analysis="events" aria-pressed="false" aria-controls="spectral-navigation spectral-timeline">Eventos</button>
     </div>
     <section id="od-year-panel" class="od-year-strip" aria-labelledby="od-year-heading" hidden>
       <div class="od-year-controls">
@@ -71,18 +66,37 @@
       </div>
       <div id="od-years" class="od-years" role="group" aria-label="Elegir año"></div>
     </section>
-    <section id="spectral-timeline" class="spectral-timeline" hidden aria-labelledby="spectral-timeline-heading">
-      <h2 id="spectral-timeline-heading">Eventos por mes</h2>
-      <div id="spectral-calendar"></div>
+    <section id="spectral-navigation" class="spectral-navigation" aria-labelledby="spectral-navigation-heading" hidden>
+      <h2 id="spectral-navigation-heading">Eventos por mes</h2>
       <div class="spectral-intensity-key"><span>Menor señal</span><i aria-hidden="true"></i><span>Mayor señal</span></div>
-      <div id="spectral-episodes"></div>
+      <div id="spectral-calendar"></div>
+    </section>
+    <section id="spectral-timeline" class="spectral-timeline" hidden aria-labelledby="spectral-timeline-heading">
+      <h2 id="spectral-timeline-heading">Episodios</h2>
+      <div id="spectral-episodes">
+        <div class="spectral-episodes-heading" hidden>
+          <h3 id="spectral-episode-month"></h3>
+          <div id="spectral-episode-order" class="spectral-episode-order" role="radiogroup" aria-label="Orden de los episodios">
+            <label>
+              <input type="radio" name="spectral-episode-order" value="date" aria-label="Fecha, de la más antigua a la más reciente" checked>
+              <span>Fecha <span aria-hidden="true">↑</span></span>
+            </label>
+            <label>
+              <input type="radio" name="spectral-episode-order" value="strength" aria-label="Señal espectral, de mayor a menor intensidad">
+              <span>Señal espectral <span aria-hidden="true">↓</span></span>
+            </label>
+          </div>
+        </div>
+        <ol aria-labelledby="spectral-episode-month" hidden></ol>
+        <p hidden>Elige un mes para ver sus episodios.</p>
+      </div>
       <section class="spectral-detail" aria-labelledby="spectral-detail-heading">
         <h2 id="spectral-detail-heading">Entradas por hora</h2>
         <div id="spectral-detail">
           <h3 class="spectral-chart-subject" hidden></h3>
           <div class="spectral-series-key" hidden><span>Observadas</span><span>Habituales</span></div>
           <div class="spectral-chart-frame is-empty">
-            <svg class="spectral-chart" role="img" tabindex="0" aria-label="Entradas por hora antes, durante y después. Usa las flechas izquierda y derecha para recorrer las horas." hidden></svg>
+            <svg class="spectral-chart" role="img" tabindex="0" aria-label="Entradas por hora antes, durante y después. Pulsa en la gráfica o usa las flechas izquierda y derecha para fijar una hora en el mapa." hidden></svg>
             <p class="spectral-chart-status" role="status">Selecciona un episodio para ver sus entradas.</p>
           </div>
           <output class="spectral-hour-reading" aria-live="polite" hidden></output>
@@ -91,7 +105,7 @@
         </div>
         <details class="spectral-method">
           <summary>Datos y método</summary>
-          <p>MTA · Entradas horarias de 2019–2024. Hora local de Nueva York. El valor habitual es la mediana del mismo día de la semana y hora de hasta ocho semanas cercanas.</p>
+          <p>MTA · Entradas horarias de 2021–2025. Hora local de Nueva York. El valor habitual es la mediana del mismo día de la semana y hora de hasta ocho semanas cercanas.</p>
           <p>Las wavelets sobre el grafo GTFS 2026 detectan cambios entre complejos conectados y entre horas. El calendario muestra la mayor señal de cada mes y hasta seis episodios. En el mapa, el área del círculo representa la diferencia de entradas y el color muestra el cambio porcentual.</p>
           <p>La serie suma los complejos que tienen ambas cifras para cada hora. Un episodio es una señal para investigar su causa.</p>
           <a href="https://files.visualdslab.com/files/papers/2026-ManyWaves-CGF.pdf#page=3">Método de ManyWaves ↗</a>
@@ -112,5 +126,5 @@
 </template>
 <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
 <div id="toast" class="toast" role="status" hidden></div>
-<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=crisp-raeb2"></script>
+<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=station-highlight1"></script>
 </body></html>

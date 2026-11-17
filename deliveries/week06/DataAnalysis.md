@@ -1,79 +1,50 @@
-# Semana 6 — Análisis, transformaciones y diseño revisados
+# Semana 6 · Análisis y diseño del Atlas Fractal
 
-**Revisión del 28 de octubre de 2026** · Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino
+Revisión del 16 de noviembre de 2026. Renzo Acervo Correa, Stewart Maquera Bobadilla y José Condori Palomino · DS5343 Data Visualization, UTEC.
 
-## Datos y métodos
+## Datos y transformaciones
 
-**Entradas 2019–2024:** 72 meses, 141.836.156 registros fuente, 12 campos originales. Fuentes MTA/Open NY `t69i-h2me` (solo 2019) y `wujg-7c2s` (2020–2024). **OD estimado 2021–2024:** 48 meses, 446.399.011 registros, 16 campos; fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z` y `jsu2-fbtj`. **Red:** GTFS de referencia 2026, 424 complejos de subway, 547 enlaces ferroviarios y 2 transferencias peatonales declaradas. **Territorio:** borough y NTA 2020 según ubicación del complejo.
+**Años** utiliza los OD estimados de la MTA, de enero de 2021 a diciembre de 2025. La MTA publica viajes promedio por par de complejos, mes, día de semana y hora de entrada. Para combinar los doce meses se ponderan los promedios por el número de ocurrencias del día de semana de cada mes. El día promedio anual incorpora las proporciones reales de lunes a domingo. El perfil de una semana representativa se obtiene normalizando las 168 cantidades de día y hora por su suma. [Fuentes y cobertura OD](../week12/ODData.md).
 
-Para OD, combinar promedios mensuales ponderando las ocurrencias de cada día de semana. Para entradas, dividir la suma de cada combinación día–hora por sus ocurrencias anuales. V es la suma de las 168 cantidades de una semana representativa, p=u/V, índice=100 V_obj/V_base y TV_pp=50 Σ|p_obj−p_base|. El reloj usa 100(p_obj−p_base) en pp. TV no considera distancia entre horas ni prueba significancia o causalidad. La carga L_e suma q_OD para los caminos que recorren e; un viaje puede contribuir a varios enlaces. El balance externo es (destinos externos−orígenes externos)/(suma de ambos), indefinido sin viajes externos.
+El mapa asigna OD por costo mínimo a una red GTFS fija de 2026. Los 424 complejos son las unidades de demanda y selección. El ruteo usa 475 paradas padre, 556 enlaces ferroviarios y 75 transbordos declarados. Se suman ambos sentidos para la carga de un tramo. Un mismo viaje puede contribuir a varios tramos. Diez filas OD con extremos fuera del universo del mapa se conservan en la adquisición y quedan fuera del enrutamiento. Un mes incompleto bloquea la preparación. En un mes validado completo, una combinación OD ausente aporta cero al agregado. [Método RAEB](../week12/RAEBImplementation.md) · [Auditoría de fuentes](../week04/README.md).
 
-## Preguntas y evidencia
+**Eventos** usa entradas horarias de subway del mismo período, con fechas y horas locales. Se suman los conteos por complejo y hora, filtrando el modo subway. Para cada complejo se estima la referencia habitual con observaciones equivalentes de semanas cercanas. El residuo transformado alimenta las wavelets sobre un grafo que conecta complejos vecinos y horas consecutivas. El detector aplica umbrales de señal y magnitud, y agrupa cambios conectados que persisten. Horas sin observación o referencia válida quedan fuera de la detección. [Reglas y fuentes de Eventos](../week12/SpectralEvents.md).
 
-1. **Redistribución territorial.** ¿Qué zonas recuperaron demanda y cuáles perdieron peso entre 2019 y 2024?
-2. **Dependencia e intercambios.** ¿Ganaron peso los viajes locales y entre boroughs o aumentó la dependencia de Manhattan entre 2021 y 2024?
-3. **Ventanas de demanda.** ¿Dónde y cuándo se desplazaron las franjas de mayor demanda?
-4. **Corredores de soporte.** ¿Qué tramos de la red de referencia sostienen los principales intercambios?
-5. **Balance externo.** ¿Qué territorios generan o atraen más viajes externos y en qué franjas cambia el balance?
-6. **Exposición a interrupciones.** ¿Qué viajes perderían conexión o requerirían mayor distancia al retirar un enlace de referencia?
+## Preguntas y evidencia procesada
 
-Las seis tablas de `data/processed/T1_*.csv` a `T6_*.csv` son muestras de hasta 24 filas de resultados reales. Las tablas completas están en `../week12/data/analytical_tasks/`. `../week12/scripts/prepare_analytical_tasks.py` verifica 672 matrices OD contra sus SHA y produce todos los resultados, con controles de conservación y de distancia en los escenarios. No se presenta el escenario como interfaz terminada.
-
-| Tarea | Evidencia preparada | Estado de interacción |
+| Pregunta | Transformación y archivo | Lectura e interacción |
 |---|---|---|
-| T1 | CSV por borough/NTA, seis años | Contraste por complejo disponible; síntesis territorial por integrar al panel |
-| T2 | Matrices territoriales y participaciones, cuatro años | Selección de origen disponible; detalle territorial por integrar |
-| T3 | Ventanas de 3 h, 7 días y seis años | Reloj y selección horaria disponibles; detector automático por integrar |
-| T4 | Cargas de los 549 enlaces para 2021/2024 | Geometría y haces disponibles; inspección exacta por tramo pendiente |
-| T5 | Balance externo por borough/cohorte, cuatro años | CSV preparado; codificación interactiva pendiente |
-| T6 | Seis escenarios reproducibles | Cálculo preparado; escenario interactivo pendiente |
+| ¿Qué tramos llevan más demanda en la red de referencia? | Promedio diario estimado de viajes asignados por enlace. [556 tramos y cambios A/B](data/processed/atlas_rail_annual.csv). | El grosor y el color secuencial priorizan las cargas altas. El cursor recupera el valor de cada tramo. Habilitar el agrupamiento permite explorar relaciones a otra escala de abstracción. |
+| ¿Con qué destinos se vincula más un origen o qué demanda cruza entre dos áreas? | Matriz OD anual. [423 destinos con demanda desde Times Sq-42 St](data/processed/atlas_origin_destinations.csv). El par puede agregarse por grupos de complejos. | Seleccionar un origen muestra sus salidas. Dibujar dos zonas selecciona los pares que las cruzan. La ruta asignada y el destino conservan significados distintos. |
+| ¿En qué día y hora se concentra la actividad de un complejo o del sistema? | Distribución en 168 celdas. [Reloj del sistema y de Times Sq-42 St](data/processed/atlas_weekly_clock.csv). | El reloj localiza franjas por anillo y ángulo. Al pulsar se actualiza el mapa y al repetir se limpia la franja. La dispersión anual sitúa cada complejo por volumen diario y participación de su hora pico. |
+| ¿Dónde cambió el volumen entre años y dónde se reorganizó el ritmo semanal? | Diferencia de carga por tramo, índice de volumen y TV de la forma semanal. [Comparación de 424 complejos](data/processed/atlas_complex_annual.csv). | Los minimapas comparten franja, referencia y escala. El mapa comparado muestra B − A. Posición en la dispersión separa dos dimensiones y el reloj localiza las diferencias horarias. |
+| ¿Cuándo se apartaron de lo habitual varios complejos conectados y cómo evolucionó la desviación? | Wavelets de entradas y episodios. [Matriz de 60 meses](data/processed/atlas_events_monthly.csv), [32 horas de contexto](data/processed/atlas_event_series.csv) y [desglose por complejo y hora](data/processed/atlas_event_complexes.csv). | Elegir mes y episodio ubica la evidencia. Mapa y serie comparten la hora. El color del complejo indica cambio relativo con signo y su tamaño refleja el cambio absoluto en entradas. |
 
+El eje de volumen en A/B calcula `100 × promedio_diario_B / promedio_diario_A`. El eje de cambio de forma calcula `TV (pp) = 50 × suma de |p_B(i) − p_A(i)|`, con `p` como proporción de la semana. En el reloj la diferencia por celda es `100 × (p_B(i) − p_A(i))`. Los resultados son comparaciones descriptivas entre años seleccionables.
 
 ## Hallazgos exploratorios
 
-### Demanda territorial: entradas 2024 frente a 2019
+- **Un tramo con aumento destacado.** Entre Bryant Pk / 5 Av y 34 St–Herald Sq, la carga diaria asignada pasó de **172.071** en 2021 a **294.385** en 2025. Fue el mayor cambio absoluto de los 556 enlaces ferroviarios del ejemplo. La cifra corresponde a viajes OD asignados al tramo y agrupa ambos sentidos. [CSV de tramos](data/processed/atlas_rail_annual.csv).
+- **Magnitud y forma en Times Sq–42 St.** Sus salidas diarias estimadas pasaron de **64.133** a **131.748**. El índice de volumen fue **205,43 %** de 2021 y la variación total fue **5,56 pp**. La mayor ganancia de peso de una celda fue el martes a las 09:00 **(+0,30 pp)**. En el promedio diario de 2025, Grand Central–42 St fue su destino estimado más frecuente, con unos **3.752 viajes**. [Dispersión](data/processed/atlas_complex_annual.csv) · [Reloj](data/processed/atlas_weekly_clock.csv) · [Destinos](data/processed/atlas_origin_destinations.csv).
+- **Una caída horaria localizada.** El episodio del **29 de septiembre de 2023** abarca 16 horas y 43 complejos. A las **17:00** registra **66.945 entradas observadas** frente a **131.210,5 habituales** en los complejos del episodio. El detector publicó 338 candidatos en 59 meses. Marzo de 2021 tiene cobertura de entradas y cero candidatos seleccionados. [Serie del episodio](data/processed/atlas_event_series.csv) · [Matriz mensual](data/processed/atlas_events_monthly.csv).
 
-| Borough | Índice de volumen (2019=100) | Cambio de participación del sistema | TV del perfil territorial |
-|---|---|---|---|
-| Bronx | 58.4 % | -1.44 pp | 1.88 pp |
-| Brooklyn | 72.1 % | +0.37 pp | 4.60 pp |
-| Manhattan | 71.3 % | +0.27 pp | 4.71 pp |
-| Queens | 75.0 % | +0.81 pp | 3.32 pp |
+## Diseño, alternativas y límites
 
-Brooklyn tiene menos volumen que en 2019 y a la vez gana participación relativa. El Bronx conserva 58,4 % del volumen semanal representativo de 2019 y pierde 1,44 pp de participación. Son lecturas descriptivas; el borough de la estación no identifica residencia.
+El [boceto anotado de Años](sketches/panel-anos.png) inicia con todo el sistema y un día promedio de 2025. Los años ocupan el panel izquierdo, el mapa va al centro y el reloj y la dispersión a la derecha. El [boceto de comparación](sketches/panel-comparacion.png) añade la escala divergente y reutiliza los mismos idioms. Se puede recorrer primero la geografía, acotar por selección y consultar una marca. Un mapa con 424 relojes fue descartado por oclusión. Un reloj separado del mapa habría obligado a repetir la selección temporal.
 
-### Conexiones: OD 2021 frente a 2024
+El [boceto de Eventos](sketches/panel-eventos.png) sustituye los años por meses, episodios y serie dentro del mismo panel izquierdo. El mapa conserva el contexto de la red. Una cuadrícula separada de 4 × 3 por año dificultaba alinear el mismo mes entre años. La matriz compacta mantiene esa alineación. Mostrar el residuo directo fue una alternativa al filtrado en el grafo. El contraste de Semana 12 muestra diferencias de extensión de los episodios y requiere referencias por complejo para evaluar cuál delimita mejor la afectación. [Comparación de métodos](../week12/SpectralEvents.md#comprobación-exploratoria).
 
-La cuota de viajes originados en Brooklyn con destino Manhattan pasa de **42,07 % a 46,71 %**; desde Queens, de **47,09 % a 50,30 %**; desde Bronx, de **53,53 % a 57,22 %**. En esos agregados aumenta la participación hacia Manhattan; no confirma que disminuya la cantidad de viajes locales. Fuente: `T2_territorial_od.csv`, semanas representativas y todos los meses.
+La abstracción permite inspeccionar demanda, patrones y desviaciones. El GTFS fijo representa la red de referencia, los recorridos se modelan y los OD describen cohortes típicas. La ocupación, las causas de episodios y los itinerarios individuales quedan fuera de la cobertura. Las razones para cada decisión y sus fuentes están en la [revisión de cinco artículos](referencias.md).
 
-### Escenarios y límites
+## Reproducción
 
-Se calcularon seis retiradas ilustrativas de enlaces sobre la misma red, con OD 2024 fijo. Se informa por separado demanda desconectada y distancia adicional para la aún conectada. Son ejemplos, no un ranking exhaustivo de vulnerabilidad ni predicciones operativas. El CSV conserva los IDs de los enlaces y denominadores. No se extraen distancias de las curvas del bundling.
-
-
-## Bocetos, alternativas y literatura
-
-Un panel integrado: **mapa central** de conexiones con abstracción guiada por la red; **dispersión volumen × forma** arriba a la derecha; **reloj radial 7 × 24** debajo; **minimapa** para orientación. El área del nodo indica viajes iniciados; las posiciones de la dispersión separan índice de volumen y TV; el color del reloj indica cambio de participación semanal. Las barras de agrupación y fidelidad modifican la geometría, nunca los OD. No hay reproducción automática. Overview → zoom/selección → detalles bajo demanda.
-
-Boceto vigente exportado en `sketches/panel-actual.png`, como boceto estático basado en datos reales, con leyendas; no es captura ni resultado del solver; los bocetos anteriores se mantienen en `sketches/history/`. Se descarta dibujar 424 relojes pequeños sobre el mapa por oclusión, categorías rígidas de estación sin validación y animación como único comparador. La dispersión no es un connected scatterplot y la geometría del haz no equivale a infraestructura ni saturación.
-
-La revisión en `referencias.md` organiza 12 artículos. RAEB informa jerarquía de rutas; KDEEB, refinamiento; Dhont, reloj; Fredriksson, TV; Brehmer–Munzner, tareas; Gleicher, comparación y Shneiderman, exploración. Se indican adaptación y límites de cada fuente.
-
-## Limitaciones y reproducción
-
-El OD es una estimación por hora de inicio, no salidas observadas en esa hora ni trayectorias. Los caminos se asignan por distancia sobre una red de referencia actual: no reconstruyen operación histórica, esperas o elección real de ruta. La abstracción visual no añade infraestructura. No se dispone de capacidad ni motivos de viaje para afirmar congestión, turismo, residencia o causas. 2020 completo es un año pandémico; 2019 es la referencia anual anterior. Las comparaciones usan la misma fuente en ambos extremos y suman cantidades antes de normalizar.
+Desde la raíz del repositorio, con la versión 2021–2025 de los artefactos de Semana 12:
 
 ```bash
-python3 -m http.server 8775
-# Abrir /atlas/; no requiere descargar 26 GB para ver la app.
-python3 -m pip install -r deliveries/week12/requirements-data.txt
-node deliveries/week12/tests/contrast-model.test.mjs
-node deliveries/week12/tests/raeb-core.test.mjs
-node deliveries/week12/tests/scatter-domain.test.mjs
+python3 deliveries/week06/code/build_atlas_evidence.py
+python3 deliveries/week06/code/build_atlas_evidence.py --check
 node deliveries/week12/tests/validate-raeb-data.mjs
-python3 deliveries/week12/scripts/prepare_analytical_tasks.py
+node --test deliveries/week12/tests/spectral-data.test.mjs
 ```
 
-Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_od.py` y `acquire_network.py`. La preparación histórica y la del RAEB se documentan en `HistoricalContrast.md`, `ODData.md` y `RAEBImplementation.md`. Los originales grandes quedan fuera de Git; se incluyen los artefactos preparados para ejecutar la app y sus manifiestos.
-
-Los hallazgos históricos del corte enero–febrero se conservan en `history/` y no se trasladan al nuevo período.
+Los CSV de esta revisión se identifican con el prefijo `atlas_`. Los archivos del EDA anterior siguen disponibles para rastrear la evolución del proyecto. [Adquisición y preparación completa](../week12/DataAcquisition.md).

@@ -1,0 +1,312 @@
+{
+  "schema_version": 1,
+  "period_start": "2025-01-01",
+  "period_end_exclusive": "2026-01-01",
+  "status": "COMPLETE",
+  "months_expected": 12,
+  "months_validated": 12,
+  "records_expected": 30471781,
+  "records_validated": 30471781,
+  "source_fields": [
+    "transit_timestamp",
+    "transit_mode",
+    "station_complex_id",
+    "station_complex",
+    "borough",
+    "payment_method",
+    "fare_class_category",
+    "ridership",
+    "transfers",
+    "latitude",
+    "longitude",
+    "georeference"
+  ],
+  "scope": "All rows and modes; no fixed station list; no sample.",
+  "sources": {
+    "5wq4-mkjj": {
+      "metadata": {
+        "url": "https://data.ny.gov/api/views/5wq4-mkjj.json",
+        "file": "data/full_period/metadata_5wq4-mkjj.json",
+        "sha256": "1ceeffab3743fcd4f102b6589263dd22c7d43a2bd74d46e6f276df63cd6614f6",
+        "retrieved_at_utc": "2026-11-16T13:34:34.933269+00:00"
+      },
+      "counts": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.json?%24select=date_extract_y%28transit_timestamp%29+as+year%2Cdate_extract_m%28transit_timestamp%29+as+month%2Ccount%28%2A%29+as+rows%2Csum%28ridership%29+as+ridership%2Csum%28transfers%29+as+transfers&%24where=transit_timestamp+%3E%3D+%272025-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272026-01-01T00%3A00%3A00%27&%24group=date_extract_y%28transit_timestamp%29%2Cdate_extract_m%28transit_timestamp%29&%24order=year%2Cmonth&%24limit=1000",
+          "file": "data/full_period/expected_months_2025.json",
+          "sha256": "890092341f98be46bc662c36bdbfc51548cec148c6e9fbb80967982e7b333c0a",
+          "retrieved_at_utc": "2026-11-16T13:35:44.428599+00:00"
+        }
+      ],
+      "landing": "https://data.ny.gov/d/5wq4-mkjj"
+    }
+  },
+  "months": {
+    "2025-01": {
+      "file": "data/raw/full_period/2025-01.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-02-01T00%3A00%3A00%27&%24limit=2398983",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2398982,
+        "ridership": 100254088.0,
+        "transfers": 4442858.0
+      },
+      "rows": 2398982,
+      "ridership": 100254088.0,
+      "transfers": 4442858.0,
+      "first_timestamp": "2025-01-01T00:00:00.000",
+      "last_timestamp": "2025-01-31T23:00:00.000",
+      "recorded_dates": 31,
+      "complexes_all_modes": 428,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "4df3333b91ae8ff160e305896c864dffc003bae799b2036b3932e3a229ea46e0",
+      "bytes": 57268936,
+      "retrieved_at_utc": "2026-11-16T13:53:57.341371+00:00",
+      "validated": true
+    },
+    "2025-02": {
+      "file": "data/raw/full_period/2025-02.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-03-01T00%3A00%3A00%27&%24limit=2273358",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2273357,
+        "ridership": 95383233.0,
+        "transfers": 4312233.0
+      },
+      "rows": 2273357,
+      "ridership": 95383233.0,
+      "transfers": 4312233.0,
+      "first_timestamp": "2025-02-01T00:00:00.000",
+      "last_timestamp": "2025-02-28T23:00:00.000",
+      "recorded_dates": 28,
+      "complexes_all_modes": 421,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "4e047b6ca19fa731a5bf54fc53dadc96cd21f2d54b95e0871529b54b4367dac2",
+      "bytes": 53961039,
+      "retrieved_at_utc": "2026-11-16T13:39:03.628387+00:00",
+      "validated": true
+    },
+    "2025-03": {
+      "file": "data/raw/full_period/2025-03.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-03-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-04-01T00%3A00%3A00%27&%24limit=2599250",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2599249,
+        "ridership": 109841656.0,
+        "transfers": 5024051.0
+      },
+      "rows": 2599249,
+      "ridership": 109841656.0,
+      "transfers": 5024051.0,
+      "first_timestamp": "2025-03-01T00:00:00.000",
+      "last_timestamp": "2025-03-31T23:00:00.000",
+      "recorded_dates": 31,
+      "complexes_all_modes": 424,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "e1763ca14d775d67579802252c00b9803a3681e604993da5871c9f39c6bb5766",
+      "bytes": 61455210,
+      "retrieved_at_utc": "2026-11-16T13:56:19.696967+00:00",
+      "validated": true
+    },
+    "2025-04": {
+      "file": "data/raw/full_period/2025-04.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-04-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-05-01T00%3A00%3A00%27&%24limit=2646410",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2646409,
+        "ridership": 111631248.0,
+        "transfers": 5050240.0
+      },
+      "rows": 2646409,
+      "ridership": 111631248.0,
+      "transfers": 5050240.0,
+      "first_timestamp": "2025-04-01T00:00:00.000",
+      "last_timestamp": "2025-04-30T23:00:00.000",
+      "recorded_dates": 30,
+      "complexes_all_modes": 423,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "421acd0f0adaaeedf2e3af8b0b4d50b0831a5c450ce66559ebeded6f8d73b701",
+      "bytes": 62591298,
+      "retrieved_at_utc": "2026-11-16T14:03:23.372073+00:00",
+      "validated": true
+    },
+    "2025-05": {
+      "file": "data/raw/full_period/2025-05.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-05-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-06-01T00%3A00%3A00%27&%24limit=2776120",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2776119,
+        "ridership": 115151825.0,
+        "transfers": 5077448.0
+      },
+      "rows": 2776119,
+      "ridership": 115151825.0,
+      "transfers": 5077448.0,
+      "first_timestamp": "2025-05-01T00:00:00.000",
+      "last_timestamp": "2025-05-31T23:00:00.000",
+      "recorded_dates": 31,
+      "complexes_all_modes": 428,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "766da3f98e4e64571bf8e7eec0e3874c15e2398f4e8f2f512608dd7d261fd169",
+      "bytes": 65718275,
+      "retrieved_at_utc": "2026-11-16T16:25:37.177678+00:00",
+      "validated": true
+    },
+    "2025-06": {
+      "file": "data/raw/full_period/2025-06.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-06-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-07-01T00%3A00%3A00%27&%24limit=2673222",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2673221,
+        "ridership": 108114701.0,
+        "transfers": 4987987.0
+      },
+      "rows": 2673221,
+      "ridership": 108114701.0,
+      "transfers": 4987987.0,
+      "first_timestamp": "2025-06-01T00:00:00.000",
+      "last_timestamp": "2025-06-30T23:00:00.000",
+      "recorded_dates": 30,
+      "complexes_all_modes": 428,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "4d2190fae8c2da2f30ac81474b76fa4a2f65ee67e794b84bed9f472695f88e32",
+      "bytes": 63422961,
+      "retrieved_at_utc": "2026-11-16T16:11:31.614391+00:00",
+      "validated": true
+    },
+    "2025-07": {
+      "file": "data/raw/full_period/2025-07.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-07-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-08-01T00%3A00%3A00%27&%24limit=2711976",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2711975,
+        "ridership": 107908350.0,
+        "transfers": 5350072.0
+      },
+      "rows": 2711975,
+      "ridership": 107908350.0,
+      "transfers": 5350072.0,
+      "first_timestamp": "2025-07-01T00:00:00.000",
+      "last_timestamp": "2025-07-31T23:00:00.000",
+      "recorded_dates": 31,
+      "complexes_all_modes": 428,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "fba048d8a6eba69a4004f76e3a560dcd875866e829a90f9c9fcadd243101fad5",
+      "bytes": 64235410,
+      "retrieved_at_utc": "2026-11-16T16:44:56.546253+00:00",
+      "validated": true
+    },
+    "2025-08": {
+      "file": "data/raw/full_period/2025-08.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-08-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-09-01T00%3A00%3A00%27&%24limit=2681449",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2681448,
+        "ridership": 104134420.0,
+        "transfers": 5285113.0
+      },
+      "rows": 2681448,
+      "ridership": 104134420.0,
+      "transfers": 5285113.0,
+      "first_timestamp": "2025-08-01T00:00:00.000",
+      "last_timestamp": "2025-08-31T23:00:00.000",
+      "recorded_dates": 31,
+      "complexes_all_modes": 428,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "5217a7a7608a2d7f567212c1ed50b593b548f4e17c4f8c5beb7caf213cfb4d75",
+      "bytes": 63296548,
+      "retrieved_at_utc": "2026-11-16T16:27:44.892982+00:00",
+      "validated": true
+    },
+    "2025-09": {
+      "file": "data/raw/full_period/2025-09.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-09-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-10-01T00%3A00%3A00%27&%24limit=2581491",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2581490,
+        "ridership": 112550616.0,
+        "transfers": 5536242.0
+      },
+      "rows": 2581490,
+      "ridership": 112550616.0,
+      "transfers": 5536242.0,
+      "first_timestamp": "2025-09-01T00:00:00.000",
+      "last_timestamp": "2025-09-30T23:00:00.000",
+      "recorded_dates": 30,
+      "complexes_all_modes": 428,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "9ee0009f347c001d52f864e2e195b1c3c32f28e19ce730dce5047671cb49b436",
+      "bytes": 60922418,
+      "retrieved_at_utc": "2026-11-16T16:31:13.032583+00:00",
+      "validated": true
+    },
+    "2025-10": {
+      "file": "data/raw/full_period/2025-10.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-10-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-11-01T00%3A00%3A00%27&%24limit=2578817",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2578816,
+        "ridership": 117769153.0,
+        "transfers": 5615920.0
+      },
+      "rows": 2578816,
+      "ridership": 117769153.0,
+      "transfers": 5615920.0,
+      "first_timestamp": "2025-10-01T00:00:00.000",
+      "last_timestamp": "2025-10-31T23:00:00.000",
+      "recorded_dates": 31,
+      "complexes_all_modes": 428,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "933c673ea5f1d83ee674b78d870c16322d41a32c7454b84d6bbd485ea891c586",
+      "bytes": 60751873,
+      "retrieved_at_utc": "2026-11-16T16:33:40.924875+00:00",
+      "validated": true
+    },
+    "2025-11": {
+      "file": "data/raw/full_period/2025-11.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-11-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-12-01T00%3A00%3A00%27&%24limit=2341101",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2341100,
+        "ridership": 108184839.0,
+        "transfers": 5166006.0
+      },
+      "rows": 2341100,
+      "ridership": 108184839.0,
+      "transfers": 5166006.0,
+      "first_timestamp": "2025-11-01T00:00:00.000",
+      "last_timestamp": "2025-11-30T23:00:00.000",
+      "recorded_dates": 30,
+      "complexes_all_modes": 428,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "2378e16aa190bf1d98e9f6986276f264802e54d3cf93e6e24f11f550285705de",
+      "bytes": 55077571,
+      "retrieved_at_utc": "2026-11-16T16:38:25.356430+00:00",
+      "validated": true
+    },
+    "2025-12": {
+      "file": "data/raw/full_period/2025-12.csv.gz",
+      "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-12-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272026-01-01T00%3A00%3A00%27&%24limit=2209616",
+      "expected": {
+        "dataset": "5wq4-mkjj",
+        "rows": 2209615,
+        "ridership": 112710695.0,
+        "transfers": 5528572.0
+      },
+      "rows": 2209615,
+      "ridership": 112710695.0,
+      "transfers": 5528572.0,
+      "first_timestamp": "2025-12-01T00:00:00.000",
+      "last_timestamp": "2025-12-31T23:00:00.000",
+      "recorded_dates": 31,
+      "complexes_all_modes": 428,
+      "rows_with_transfer_count_anomaly": 0,
+      "sha256": "86e35ef4816162a516c63310ec251fb3e3c6d36cec9e08c8513ae08255076021",
+      "bytes": 52167611,
+      "retrieved_at_utc": "2026-11-16T16:39:44.816188+00:00",
+      "validated": true
+    }
+  },
+  "errors": {},
+  "updated_at_utc": "2026-11-16T16:44:56.548348+00:00"
+}

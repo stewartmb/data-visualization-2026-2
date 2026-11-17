@@ -13,7 +13,7 @@ import numpy as np
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import connected_components
 
-YEARS = tuple(range(2019, 2025))
+YEARS = tuple(range(2021, 2026))
 START = datetime(YEARS[0], 1, 1)
 STOP = datetime(YEARS[-1] + 1, 1, 1)
 HOURS = int((STOP - START).total_seconds() / 3600)
@@ -56,14 +56,14 @@ def load_entries(parquets, indices):
                 raise ValueError(f"{year}: se requieren los doce Parquet locales")
             rows = connection.execute("""
                 SELECT station_complex_id,
-                       date_diff('hour', TIMESTAMP '2019-01-01', transit_timestamp) AS hour,
+                       date_diff('hour', ?::TIMESTAMP, transit_timestamp) AS hour,
                        sum(ridership) AS entries
                 FROM read_parquet(?)
                 WHERE lower(transit_mode) = 'subway'
                   AND transit_timestamp >= ? AND transit_timestamp < ?
                   AND ridership IS NOT NULL
                 GROUP BY 1, 2
-            """, [[str(path) for path in paths], datetime(year, 1, 1), datetime(year+1, 1, 1)])
+            """, [START, [str(path) for path in paths], datetime(year, 1, 1), datetime(year+1, 1, 1)])
             while batch := rows.fetchmany(100_000):
                 matched = [(indices[str(station)], hour, count) for station, hour, count in batch
                            if str(station) in indices and count >= 0]
@@ -299,7 +299,7 @@ def prepare(parquets, network_path, output):
             "cutoff": cutoff, "quantile": TAIL_QUANTILE, "scales": scales.tolist(),
             "spectral_bound": spectral_bound, "chebyshev_order": ORDER,
             "source_sha256": {path.name: contents_hash(path) for path in source_files},
-            "sources": ["https://data.ny.gov/d/t69i-h2me", "https://data.ny.gov/d/wujg-7c2s"]}
+            "sources": ["https://data.ny.gov/d/wujg-7c2s", "https://data.ny.gov/d/5wq4-mkjj"]}
     write_json(output / "index.json", {"meta": meta, "months": by_month})
     print(f"{sum(map(len, by_month.values()))} episodios en {len(by_month)} meses · umbral {cutoff:.3f}", flush=True)
     baseline = np.abs(signal)

@@ -2,17 +2,17 @@
 
 La guía del profesor exige datos procesados candidatos y scripts que permitan reproducirlos. Se separan los originales grandes, los artefactos del navegador y las tablas analíticas.
 
-## Entradas 2019–2024
+## Entradas horarias 2021–2025
 
-Fuentes oficiales `t69i-h2me` (solo 2019) y `wujg-7c2s` (2020–2024). 72 meses, 141.836.156 registros fuente y 12 campos originales. `acquire_full_period.py` descarga y controla meses; `build_full_period.py` conserva datos tipados y agregados; `validate_full_period.py` verifica el período. Detalles y diccionario en [FullPeriodData](FullPeriodData.md).
+Fuentes oficiales `wujg-7c2s` y `5wq4-mkjj`. La descarga abarca 60 meses, 130.987.497 registros fuente y 12 campos originales. `acquire_full_period.py` descarga y valida por mes, y `build_full_period.py --year` convierte los originales a Parquet. [Cobertura y diccionario](FullPeriodData.md).
 
-`prepare_historical_contrast.py` prepara semanas de 168 celdas para 2019–2024. Verifica los manifiestos, SHA del cubo y cobertura antes de escribir `historical_contrast.json`. La derecha abre con 2019 y permite 2020, usando entradas en ambos años. No se reconstruyen OD para esos años.
+`prepare_spectral_events.py` agrega las entradas de subway por complejo y hora local y genera el calendario, los episodios y sus series. [Método de Eventos](SpectralEvents.md).
 
-## OD estimado 2021–2024 y red
+## OD estimado 2021–2025 y red
 
-Fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z`, `jsu2-fbtj`. 48 meses, 446.399.011 registros, 16 campos originales. `acquire_od.py` descarga; `prepare_validate_od.py` convierte y contrasta controles oficiales; el informe entregado tiene `status: PASS`. Ver [ODData](ODData.md).
+Fuentes `rapa-97zv`, `nqnz-e9z9`, `uhf3-t34z`, `jsu2-fbtj`, `y2qv-fytt`. 60 meses, 567.608.985 registros, 16 campos originales. `acquire_od.py` descarga; `prepare_validate_od.py` convierte y contrasta controles oficiales; el informe entregado tiene `status: PASS`. Ver [ODData](ODData.md).
 
-`acquire_network.py` obtiene el snapshot GTFS documentado; `prepare_raeb.py` prepara red, caminos, 672 matrices y balances. La referencia es 2026: no servicio histórico, tiempos reales ni elección observada de ruta. Adyacencias y transferencias explícitas, sin enlaces por proximidad. Ver [RAEBImplementation](RAEBImplementation.md).
+`acquire_network.py` obtiene el snapshot GTFS documentado; `prepare_raeb.py` prepara red y caminos. La aplicación utiliza 840 matrices horarias y cinco anuales. La referencia es 2026: no servicio histórico, tiempos reales ni elección observada de ruta. Adyacencias y transferencias explícitas, sin enlaces por proximidad. Ver [RAEBImplementation](RAEBImplementation.md).
 
 ## Ejecutar con artefactos incluidos
 
@@ -21,10 +21,10 @@ python3 -m http.server 8775
 node deliveries/week12/tests/contrast-model.test.mjs
 node deliveries/week12/tests/validate-raeb-data.mjs
 python3 -m pip install -r deliveries/week12/requirements-data.txt
-python3 deliveries/week12/scripts/prepare_analytical_tasks.py
+python3 deliveries/week12/scripts/prepare_analytical_tasks.py --skip-week06-samples
 ```
 
-Abrir `/atlas/`. Los originales completos no son necesarios para ver la app ni reproducir las seis tablas actuales desde los artefactos. El script de tareas verifica las matrices y produce cantidades territoriales, participaciones, ventanas, cargas, balances y seis escenarios de demanda fija, con controles y muestras para Semana 6. WebGPU o WebGL2 son necesarios para dibujar todas las curvas OD; los navegadores sin ambos muestran una limitación explícita.
+Abrir `/atlas/`. Los originales completos no son necesarios para ver la app ni reproducir las seis tablas actuales desde los artefactos. El script de tareas verifica las matrices y produce cantidades territoriales, participaciones, ventanas, cargas, balances y seis escenarios de demanda fija, con controles reproducibles. WebGPU o WebGL2 son necesarios para dibujar todas las curvas OD; los navegadores sin ambos muestran una limitación explícita.
 
 ## Rutas anteriores y contexto adicional
 

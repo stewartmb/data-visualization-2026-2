@@ -3,18 +3,25 @@ import {readFileSync} from 'node:fs';
 
 const app = new URL('../atlas/data/', import.meta.url);
 const read = name => JSON.parse(readFileSync(new URL(name, app)));
-const readSpectral = name => JSON.parse(readFileSync(new URL('../data/entries_archive/spectral/'+name, import.meta.url)));
+const readSpectral = name => JSON.parse(readFileSync(new URL('../data/spectral/'+name, import.meta.url)));
 const index = readSpectral('index.json');
 const network = read('network_current.json');
 const ids = new Set(network.nodes.map(node => String(node.id)));
 
 assert.equal(ids.size, index.meta.complexes);
-assert.equal(Object.keys(index.meta.source_sha256).length, 72);
+const studyYears = [2021, 2022, 2023, 2024, 2025];
+const sourceMonths = studyYears.flatMap(year => Array.from({length:12}, (_,i) =>
+  `${year}-${String(i+1).padStart(2,'0')}`));
+assert.deepEqual(index.meta.years, studyYears);
+assert.equal(index.meta.origin, '2021-01-01T00');
+assert.deepEqual(Object.keys(index.meta.source_sha256).sort(), sourceMonths.map(month => month+'.parquet'));
+assert.ok(sourceMonths.filter(month => month.startsWith('2025-')).every(month => index.months[month]?.length));
 assert.ok(index.meta.valid_hours <= index.meta.observed_hours);
 assert.ok(index.meta.observed_hours <= index.meta.hour_slots * ids.size);
 assert.equal(index.meta.scales.length, 4);
 
 for (const [month, episodes] of Object.entries(index.months)) {
+  assert.ok(sourceMonths.includes(month));
   const details = readSpectral(month + '.json');
   assert.ok(episodes.length <= 6);
   assert.equal(Object.keys(details).length, episodes.length);

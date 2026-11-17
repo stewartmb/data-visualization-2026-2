@@ -257,7 +257,7 @@ function drawComparison(host,s,app){
 }
 
 function drawEvolution(host,s,app){
-  host.innerHTML=`<p class="sub">Entradas por día, promediadas en cada mes de 2021–2024.</p><svg class="detail-viz" viewBox="0 0 360 230" role="img" aria-label="Evolución mensual de las entradas por día del complejo"></svg><p class="method-note">Los conteos mensuales provienen de los CSV conservados en Semana 6. Las huellas fueron consultadas nuevamente en la API. El histórico puede revisarse; no se mezclan ambos snapshots para calcular los cambios de forma.</p><div class="source-row"><b>Contexto documentado</b><br>La MTA reanudó el servicio nocturno de 24 horas el 17 de mayo de 2021. Esto no prueba el motivo de cada cambio de una estación.<br><a href="https://www.mta.info/press-release/mta-partners-dining-dignitaries-welcome-back-247-subway-service-and-100-percent" target="_blank" rel="noopener">Comunicado oficial MTA ↗</a></div>`;
+  host.innerHTML=`<p class="sub">Entradas por día, promediadas en cada mes del período de estudio.</p><svg class="detail-viz" viewBox="0 0 360 230" role="img" aria-label="Evolución mensual de las entradas por día del complejo"></svg><p class="method-note">Los conteos mensuales provienen de los CSV conservados en Semana 6. Las huellas fueron consultadas nuevamente en la API. El histórico puede revisarse; no se mezclan ambos snapshots para calcular los cambios de forma.</p><div class="source-row"><b>Contexto documentado</b><br>La MTA reanudó el servicio nocturno de 24 horas el 17 de mayo de 2021. Esto no prueba el motivo de cada cambio de una estación.<br><a href="https://www.mta.info/press-release/mta-partners-dining-dignitaries-welcome-back-247-subway-service-and-100-percent" target="_blank" rel="noopener">Comunicado oficial MTA ↗</a></div>`;
   const svg=d3.select(host.querySelector('svg')),x=d3.scaleLinear().domain([0,59]).range([49,347]),y=d3.scaleLinear().domain([0,d3.max(s.series)*1.1]).nice().range([190,15]);
   svg.append('g').attr('class','chart-axis').attr('transform','translate(0,190)').call(d3.axisBottom(x).tickValues([0,12,24,36]).tickFormat(i=>2021+i/12));
   svg.append('g').attr('class','chart-axis').attr('transform','translate(49,0)').call(d3.axisLeft(y).ticks(4).tickFormat(d3.format('~s')));
@@ -332,7 +332,8 @@ function drawScatter(host,app,annual){
   const y=d3.scaleLinear().domain([0,yMax]).range([H-M.b,M.t]);
   const svg=d3.select(plot).attr('viewBox',`0 0 ${W} ${H}`);
   scatterResizeObserver=new ResizeObserver(()=>{
-    if(plot.isConnected&&(plot.clientWidth!==W||plot.clientHeight!==H))drawScatter(host,app,annual);
+    const width=plot.clientWidth,height=plot.clientHeight;
+    if(plot.isConnected&&width>0&&height>0&&(width!==W||height!==H))drawScatter(host,app,annual);
   });
   scatterResizeObserver.observe(plot);
   svg.append('g').attr('class','chart-axis').attr('transform',`translate(0,${H-M.b})`)
@@ -384,13 +385,23 @@ function drawScatter(host,app,annual){
     .attr('cx',s=>x(s.recovery)).attr('cy',s=>y(s.change)).attr('r',s=>items.has(s.id)?3:2.2)
     .classed('scatter-area-member',s=>scatterArea&&items.has(s.id))
     .attr('fill','#1d6f8d').attr('opacity',s=>items.has(s.id)?(scatterArea?1:.55):.1).style('cursor','pointer')
-    .on('pointerenter',(event,row)=>showPoint(row,event))
-    .on('pointerleave',hideTooltip)
+    .on('pointerenter',function(event,row){
+      app.showStationPreview(row.id,this);
+      showPoint(row,event);
+    })
+    .on('pointerleave',function(){
+      if(!this.matches(':focus-visible'))app.showStationPreview(null,this);
+      hideTooltip();
+    })
     .on('focus',function(_,row){
       const box=this.getBoundingClientRect();
+      if(this.matches(':focus-visible'))app.showStationPreview(row.id,this);
       showPoint(row,{clientX:box.right,clientY:box.top});
     })
-    .on('blur',hideTooltip)
+    .on('blur',function(){
+      app.showStationPreview(null,this);
+      hideTooltip();
+    })
     .on('click',(_,row)=>app.toggleStation(row.id))
     .on('keydown',(event,row)=>{
       if(event.key==='Enter'||event.key===' '){

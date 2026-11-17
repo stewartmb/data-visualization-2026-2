@@ -1,13 +1,12 @@
 {
   "status": "PASS",
-  "built_at_utc": "2026-11-14T02:41:41.502175+00:00",
+  "built_at_utc": "2026-11-16T17:04:11.536718+00:00",
   "method": "Representative weeks; aggregate quantities before normalization. OD hour denotes starting cohort. Fixed-demand graph removal examples. Cost combines rail distance and declared transfer penalty; no operational prediction.",
   "source_sha256": {
-    "atlas/data/historical_contrast.json": "01a2f024ec0ef08fbe2661edc32fbad55cd0b8e9716357f8fe4011ea09ce8e75",
-    "atlas/data/flows.json": "634764ba5b0f6c8036dc701ea846d14cdfd1de3a89dec9d40a21211f65af4361",
-    "atlas/data/raeb/manifest.json": "95d3185b229d0a3998a04474ba04df314e96b4f1d7cc3722054e047db7457c56"
+    "atlas/data/flows.json": "c8813d6d68bcdd24ba19c247cdd6ee7284e1d9a83c73f3b2b7bb56459303c122",
+    "atlas/data/raeb/manifest.json": "d496b0624b2e715defb7a8a67f21ce6d0174eb31c4eb9e3ec9d94a80f4650459"
   },
-  "inputs": "All 672 dense float32 OD frames verified against the RAEB manifest; small float32 rounding retained.",
+  "inputs": "All 840 dense float32 OD frames verified against the RAEB manifest; small float32 rounding retained.",
   "checks": [
     "territorial OD conservation",
     "external origins equal external destinations across partition",
@@ -16,21 +15,21 @@
     "scenario connected + disconnected demand conservation"
   ],
   "row_counts": {
-    "T1_territory.csv": 804,
-    "T3_windows.csv": 5628,
-    "T2_territorial_od.csv": 64,
-    "T5_external_balance.csv": 2688,
-    "T4_corridor_loads.csv": 1262,
+    "T1_territory.csv": 670,
+    "T3_windows.csv": 4690,
+    "T2_territorial_od.csv": 80,
+    "T5_external_balance.csv": 3360,
+    "T4_corridor_loads.csv": 3155,
     "T6_reference_scenarios.csv": 6
   },
   "scenarios": "Six illustrative link removals, not exhaustive ranking of network vulnerability.",
   "artifacts": {
-    "T1_territory.csv": "2ffca67a3dcd05073dd3f48ab44213d2d849f9685d652cc803218c57a229dca2",
-    "T3_windows.csv": "197fc6faaeb605e641e9352b70a05abfd040167da15d549da461618d419edfc9",
-    "T2_territorial_od.csv": "ebbb7228d32a572d99d4db044d0cabd1f0a67e06bb229073061116a4d7b56c0e",
-    "T5_external_balance.csv": "c85c0cc5d10797395e1aca264254764696dd39f2c92dc35fb2f6e2ac75cf3d95",
-    "T4_corridor_loads.csv": "659584a0bc8b9e8844cfd2b785707d39c45e9d529f40b11722ab14abcf48c97d",
-    "T6_reference_scenarios.csv": "b5c1c63201bbb79825ed8f1326b4ca5e6ee1c9138e8e1b2863e64e4df460291c"
+    "T1_territory.csv": "8dc9e375d849280394a382b48996923abd07dc454ce516bbf092e8baeaeca9ce",
+    "T3_windows.csv": "382234767e8244b11154db277f6bc5cbd49a9757e57f1d6c109eac090fb470bb",
+    "T2_territorial_od.csv": "61c804465090a10b912db4786223cee3ebb83868d47f1984401d7576ade35b94",
+    "T5_external_balance.csv": "dcb691ad05710fd97f72e83c2d0250aba40bcef9262d97a9d2c38ea3851fc0c3",
+    "T4_corridor_loads.csv": "41cbf5ff44a39e31f1301606ea53e183eeb565dbcb2cafa474c77e398d1288ba",
+    "T6_reference_scenarios.csv": "818ffa749b2df45519e515a88e671cfc86364582f6bf002802ab5a798692385e"
   },
   "ui_status": "Evidence/preparation only. Does not declare T1-T6 fully implemented in the interface."
 }

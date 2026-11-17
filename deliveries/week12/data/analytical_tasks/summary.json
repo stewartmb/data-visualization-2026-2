@@ -1,56 +1,56 @@
 {
-  "territories_2024": [
+  "territories_latest": [
     {
-      "year": 2024,
-      "baseline": 2019,
+      "year": 2025,
+      "baseline": 2021,
       "territory_level": "borough",
       "territory": "Bronx",
       "complexes": 68,
-      "weekly_entries": 1549927.063134978,
-      "volume_index_2019_100": 58.39766729978637,
-      "delta_weekly_entries": -1104163.6476777946,
-      "system_share_pct": 6.722810994465399,
-      "delta_system_share_pp": -1.4448335022287748,
-      "tv_vs2019_pp": 1.8759484370260857
+      "weekly_estimated_od": 1716073.6508,
+      "volume_index_base_100": 122.72200811049173,
+      "delta_weekly_estimated_od": 317731.4323,
+      "system_share_pct": 6.952716524772909,
+      "delta_system_share_pp": -2.626857251906842,
+      "tv_vs_base_pp": 3.002203922750748
     },
     {
-      "year": 2024,
-      "baseline": 2019,
+      "year": 2025,
+      "baseline": 2021,
       "territory_level": "borough",
       "territory": "Brooklyn",
       "complexes": 156,
-      "weekly_entries": 5116089.413642961,
-      "volume_index_2019_100": 72.14870418423273,
-      "delta_weekly_entries": -1974944.9597242381,
-      "system_share_pct": 22.19104561548754,
-      "delta_system_share_pp": 0.3692413947246148,
-      "tv_vs2019_pp": 4.603761859948506
+      "weekly_estimated_od": 5519802.147700001,
+      "volume_index_base_100": 156.7777694572537,
+      "delta_weekly_estimated_od": 1999021.0020000008,
+      "system_share_pct": 22.363620342227094,
+      "delta_system_share_pp": -1.7560710255668022,
+      "tv_vs_base_pp": 3.6780688058348416
     },
     {
-      "year": 2024,
-      "baseline": 2019,
+      "year": 2025,
+      "baseline": 2021,
       "territory_level": "borough",
       "territory": "Manhattan",
       "complexes": 121,
-      "weekly_entries": 12955561.888969522,
-      "volume_index_2019_100": 71.2857008506656,
-      "delta_weekly_entries": -5218576.450653121,
-      "system_share_pct": 56.19476940448529,
-      "delta_system_share_pp": 0.2660476064574646,
-      "tv_vs2019_pp": 4.712282497828539
+      "weekly_estimated_od": 13784077.1938,
+      "volume_index_base_100": 188.66368185895954,
+      "delta_weekly_estimated_od": 6477913.6238,
+      "system_share_pct": 55.84654320599902,
+      "delta_system_share_pp": 5.7944658122526915,
+      "tv_vs_base_pp": 4.2986642090798135
     },
     {
-      "year": 2024,
-      "baseline": 2019,
+      "year": 2025,
+      "baseline": 2021,
       "territory_level": "borough",
       "territory": "Queens",
       "complexes": 79,
-      "weekly_entries": 3433168.5907111755,
-      "volume_index_2019_100": 75.02691926117703,
-      "delta_weekly_entries": -1142747.1266328013,
-      "system_share_pct": 14.89137398556177,
-      "delta_system_share_pp": 0.8095445010466829,
-      "tv_vs2019_pp": 3.318269365822947
+      "weekly_estimated_od": 3662106.8139000004,
+      "volume_index_base_100": 154.39962472865167,
+      "delta_weekly_estimated_od": 1290270.2111000004,
+      "system_share_pct": 14.837119927000982,
+      "delta_system_share_pp": -1.4115375347790504,
+      "tv_vs_base_pp": 2.7864953133408394
     }
   ],
   "od_relations": [
@@ -501,85 +501,197 @@
       "destination_borough": "Queens",
       "weekly_estimated_od": 1219855.3906520633,
       "destination_share_pct": 35.70803633102327
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Bronx",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 513223.0292070601,
+      "destination_share_pct": 29.906818378866138
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Bronx",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 140727.95420170017,
+      "destination_share_pct": 8.200577775401474
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Bronx",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 966650.5767621454,
+      "destination_share_pct": 56.32920112668629
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Bronx",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 95472.08800336067,
+      "destination_share_pct": 5.5634027190460955
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 135482.69716827478,
+      "destination_share_pct": 2.454484661458049
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 2391809.935557114,
+      "destination_share_pct": 43.33144322227592
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 2569039.3199515417,
+      "destination_share_pct": 46.542235557001
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Brooklyn",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 423470.19951062277,
+      "destination_share_pct": 7.671836559265032
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 914287.2873346237,
+      "destination_share_pct": 6.632923441160075
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 2489721.85188426,
+      "destination_share_pct": 18.062303459861518
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 8629796.391022136,
+      "destination_share_pct": 62.60699406782799
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Manhattan",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 1750271.6635508966,
+      "destination_share_pct": 12.697779031150416
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Queens",
+      "destination_borough": "Bronx",
+      "weekly_estimated_od": 92353.89280174393,
+      "destination_share_pct": 2.521878730068909
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Queens",
+      "destination_borough": "Brooklyn",
+      "weekly_estimated_od": 438319.6576150404,
+      "destination_share_pct": 11.969057155862345
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Queens",
+      "destination_borough": "Manhattan",
+      "weekly_estimated_od": 1833800.619215563,
+      "destination_share_pct": 50.07501726770304
+    },
+    {
+      "year": 2025,
+      "origin_borough": "Queens",
+      "destination_borough": "Queens",
+      "weekly_estimated_od": 1297632.6438550884,
+      "destination_share_pct": 35.4340468463657
     }
   ],
   "scenarios": [
     {
-      "year": 2024,
+      "year": 2025,
       "link_removed": 328,
       "origin": "606",
       "destination": "612",
       "removed_directions": "0;1",
-      "eligible_weekly_estimated_od": 22907838.904644243,
+      "eligible_weekly_estimated_od": 24682048.51309018,
       "disconnected_weekly_estimated_od": 0.0,
       "disconnected_share_pct": 0.0,
-      "additional_equivalent_km_weighted_connected": 0.05004557914616146,
-      "still_connected_weekly_estimated_od": 22907838.904644243,
-      "detoured_weekly_estimated_od": 1397950.627179345
+      "additional_equivalent_km_weighted_connected": 0.048425955541882365,
+      "still_connected_weekly_estimated_od": 24682048.51309018,
+      "detoured_weekly_estimated_od": 1466084.8762218393
     },
     {
-      "year": 2024,
+      "year": 2025,
       "link_removed": 473,
       "origin": "119",
       "destination": "120",
       "removed_directions": "0;1",
-      "eligible_weekly_estimated_od": 22907838.904644243,
+      "eligible_weekly_estimated_od": 24682048.51309018,
       "disconnected_weekly_estimated_od": 0.0,
       "disconnected_share_pct": 0.0,
-      "additional_equivalent_km_weighted_connected": 0.17315871035535255,
-      "still_connected_weekly_estimated_od": 22907838.904644243,
-      "detoured_weekly_estimated_od": 871505.2696888968
+      "additional_equivalent_km_weighted_connected": 0.1816228027517572,
+      "still_connected_weekly_estimated_od": 24682048.51309018,
+      "detoured_weekly_estimated_od": 996593.0556249619
     },
     {
-      "year": 2024,
-      "link_removed": 173,
-      "origin": "464",
-      "destination": "610",
+      "year": 2025,
+      "link_removed": 533,
+      "origin": "623",
+      "destination": "26",
       "removed_directions": "0;1",
-      "eligible_weekly_estimated_od": 22907838.904644243,
+      "eligible_weekly_estimated_od": 24682048.51309018,
       "disconnected_weekly_estimated_od": 0.0,
       "disconnected_share_pct": 0.0,
-      "additional_equivalent_km_weighted_connected": 0.036848547631583885,
-      "still_connected_weekly_estimated_od": 22907838.904644243,
-      "detoured_weekly_estimated_od": 834221.0733961547
+      "additional_equivalent_km_weighted_connected": 0.01580222325167052,
+      "still_connected_weekly_estimated_od": 24682048.51309018,
+      "detoured_weekly_estimated_od": 508547.182744408
     },
     {
-      "year": 2024,
+      "year": 2025,
       "link_removed": 284,
       "origin": "609",
       "destination": "607",
       "removed_directions": "0;1",
-      "eligible_weekly_estimated_od": 22907838.904644243,
+      "eligible_weekly_estimated_od": 24682048.51309018,
       "disconnected_weekly_estimated_od": 0.0,
       "disconnected_share_pct": 0.0,
-      "additional_equivalent_km_weighted_connected": 0.10164676921936154,
-      "still_connected_weekly_estimated_od": 22907838.904644243,
-      "detoured_weekly_estimated_od": 1920960.3947061645
+      "additional_equivalent_km_weighted_connected": 0.10120194298716599,
+      "still_connected_weekly_estimated_od": 24682048.51309018,
+      "detoured_weekly_estimated_od": 2059563.9838436767
     },
     {
-      "year": 2024,
+      "year": 2025,
       "link_removed": 102,
       "origin": "610",
       "destination": "602",
       "removed_directions": "0;1",
-      "eligible_weekly_estimated_od": 22907838.904644243,
+      "eligible_weekly_estimated_od": 24682048.51309018,
       "disconnected_weekly_estimated_od": 0.0,
       "disconnected_share_pct": 0.0,
-      "additional_equivalent_km_weighted_connected": 8.017688584362692e-08,
-      "still_connected_weekly_estimated_od": 22907838.904644243,
+      "additional_equivalent_km_weighted_connected": 7.963166066335772e-08,
+      "still_connected_weekly_estimated_od": 24682048.51309018,
       "detoured_weekly_estimated_od": 0.0
     },
     {
-      "year": 2024,
+      "year": 2025,
       "link_removed": 183,
       "origin": "447",
       "destination": "448",
       "removed_directions": "0;1",
-      "eligible_weekly_estimated_od": 22907838.904644243,
-      "disconnected_weekly_estimated_od": 547461.288727059,
-      "disconnected_share_pct": 2.3898425818599107,
+      "eligible_weekly_estimated_od": 24682048.51309018,
+      "disconnected_weekly_estimated_od": 560310.6514860075,
+      "disconnected_share_pct": 2.2701140514688056,
       "additional_equivalent_km_weighted_connected": 0.0,
-      "still_connected_weekly_estimated_od": 22360377.615917187,
+      "still_connected_weekly_estimated_od": 24121737.861604165,
       "detoured_weekly_estimated_od": 0.0
     }
   ]

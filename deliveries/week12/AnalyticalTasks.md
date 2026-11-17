@@ -12,7 +12,7 @@ El beneficio es pasar de una impresión visual a una pregunta investigable y doc
 
 | ID | Pregunta de dominio | Resultado que obtiene la audiencia | Para qué sirve |
 |---|---|---|---|
-| T1 | **¿Qué zonas recuperaron demanda y cuáles perdieron peso en el sistema entre 2019 y 2024?** | Zonas con recuperación de volumen, cambio absoluto y cambio de participación; distinguir crecimiento propio de redistribución territorial | Priorizar territorios para investigar demanda rezagada o emergente |
+| T1 | **¿Qué zonas ganaron viajes y cuáles perdieron peso en el sistema entre 2021 y 2025?** | Zonas con recuperación de volumen, cambio absoluto y cambio de participación; distinguir crecimiento propio de redistribución territorial | Priorizar territorios para investigar demanda rezagada o emergente |
 | T2 | **¿Cambió la dependencia de Manhattan o ganaron peso los viajes locales y entre los otros boroughs entre 2021 y 2024?** | Reparto de destinos por territorio de origen y cambios en conexiones locales/interterritoriales, conservando cantidades absolutas | Identificar relaciones que requieren un análisis de conectividad y oferta más detallado |
 | T3 | **¿Dónde y cuándo se desplazaron las ventanas de mayor demanda?** | Días y franjas concretas con picos desplazados, aumentos absolutos o cambios de peso semanal | Elegir horarios y lugares para aforos o revisión de patrones de servicio |
 | T4 | **¿Qué corredores de la red de referencia sostienen los principales intercambios territoriales?** | Tramos con mayor carga OD asignada y territorios que aportan a esa carga, por cohorte de inicio | Priorizar corredores para contrastar demanda modelada con capacidad y servicio observados |
@@ -22,12 +22,12 @@ T1 trata de **cuánto y dónde**; T2 de **con quién se conecta**; T3 de **cuán
 
 ## Datos y reglas comunes
 
-- **Entradas MTA 2019–2024:** comparación histórica de T1 y T3; 72 meses adquiridos, 141.836.156 registros fuente. La interfaz analiza 424 complejos de subway; otros modos/complejos presentes en los originales no se absorben en ese universo.
-- **OD estimado MTA 2021–2024:** T2–T5 y comparaciones temporales desde 2021; 48 meses adquiridos, 446.399.011 registros fuente. No hay OD 2019/2020 en este conjunto.
+- **Entradas MTA 2021–2025:** fuente de Eventos; 60 meses adquiridos y 130.987.497 registros fuente. La interfaz analiza 424 complejos de subway; otros modos/complejos presentes en los originales no se absorben en ese universo.
+- **OD estimado MTA 2021–2025:** T1–T5 y comparaciones entre años; 60 meses adquiridos y 567.608.985 registros fuente.
 - **Red GTFS de referencia 2026:** 424 complejos, 547 enlaces ferroviarios y 2 transferencias peatonales declaradas. Caminos por distancia sobre la unión de patrones de servicio, con plataformas colapsadas en complejos. No reconstruye operación histórica, esperas ni compatibilidad de servicios.
 - **Boroughs y NTA 2020:** agrupación por ubicación del complejo. Un territorio sin complejos cubiertos no equivale a demanda cero. El origen de metro no es el domicilio; el destino no identifica empleo, turismo ni motivo.
 - Usar los doce meses de cada año y estandarizar calendario. Comparar meses homólogos si se estudia estacionalidad; el promedio anual puede ocultar cambios mensuales. Una diferencia entre años no prueba un efecto causal de la pandemia.
-- Comparación inicial OD: **2021 → 2024**. Para una referencia anual anterior a la pandemia usar **entradas 2019 → 2024**, con entradas en ambos extremos. El año 2020 completo no es una base prepandemia. El mapa mantiene OD 2021–2024; la base histórica independiente de dispersión/reloj no inventa OD previo a 2021.
+- El Atlas abre con el promedio diario de 2025. En Años se puede comparar cualquier par de años del período. Los CSV de comparación territorial usan 2021 como base. En Eventos, cada hora se compara con su patrón semanal habitual.
 - Sumar cantidades de los complejos antes de calcular medidas de un territorio o grupo. No promediar porcentajes, ratios ni distancias de sus estaciones. Definir el conjunto comparable de IDs en ambos años y reportar incorporaciones, exclusiones y cobertura por separado.
 
 ### Convención temporal y cantidades
@@ -47,7 +47,7 @@ La hora OD es la **hora de inicio del viaje**. Los destinos son destinos de esa 
 
 ## T1 — Redistribución territorial de la demanda
 
-**Entrada:** entradas 2019–2024, complejos comparables y agrupación borough/NTA. **Salida verificable:** tabla por territorio con `V_base`, `V_objetivo`, diferencia de viajes/semana representativa, índice de volumen y cambio de participación del sistema.
+**Entrada:** viajes iniciados según OD 2021–2025, complejos comparables y agrupación borough/NTA. **Salida verificable:** tabla por territorio con `V_base`, `V_objetivo`, diferencia de viajes/semana representativa, índice de volumen y cambio de participación del sistema.
 
 ```text
 I_R = 100 V[objetivo,R] / V[base,R]
@@ -60,11 +60,11 @@ Permite distinguir una zona con crecimiento absoluto pero pérdida de participac
 
 **Munzner:** propósito descubrir; búsqueda explorar zonas con resultado desconocido → localizar un territorio elegido; consulta comparar y resumir atributos espaciales. **Medios candidatos:** selección geográfica directa y detalle territorial compacto; punto enlazado en la dispersión cuando corresponda. **Criterio de éxito:** identificar dos territorios con comportamientos diferentes y citar cantidades, participación y cobertura, sin inferir causas.
 
-**Estado:** base histórica y comparación por complejo disponibles; la síntesis territorial y sus participaciones están calculadas y verificadas en CSV; su integración al panel está pendiente.
+**Estado:** comparación OD por complejo disponibles; la síntesis territorial y sus participaciones están calculadas y verificadas en CSV; su integración al panel está pendiente.
 
 ## T2 — Dependencia e intercambios entre territorios
 
-**Entrada:** OD 2021–2024 y pertenencia territorial. **Salida verificable:** matriz dirigida de cantidades y participaciones por destino para cada territorio de origen, más su diferencia entre años.
+**Entrada:** OD 2021–2025 y pertenencia territorial. **Salida verificable:** matriz dirigida de cantidades y participaciones por destino para cada territorio de origen, más su diferencia entre años.
 
 ```text
 F[y,R,S] = Σ_d,h Σ_o∈R,j∈S q[y,d,h,o,j]
@@ -80,7 +80,7 @@ Calcular porcentaje interno `P[R,R]`, hacia Manhattan y hacia los demás borough
 
 ## T3 — Nuevas ventanas de demanda
 
-**Entrada:** perfiles día × hora de complejos o territorios, entradas 2019–2024 u OD 2021–2024 según el contraste. **Salida verificable:** ventanas de máxima demanda y franjas que ganan/pierden cantidad o peso semanal, con valores de ambos años.
+**Entrada:** perfiles de viajes iniciados por día y hora de complejos o territorios, derivados del OD 2021–2025. **Salida verificable:** ventanas de máxima demanda y franjas que ganan/pierden cantidad o peso semanal, con valores de ambos años.
 
 ```text
 Δu[d,h] = u[objetivo,d,h] − u[base,d,h]
@@ -145,4 +145,4 @@ Cada tarea debe producir una respuesta escrita con entidad/territorio, período,
 
 El Atlas actual permite leer cargas exactas por tramo (T4). También permite probar enlaces hipotéticos desde un haz RAEB. La síntesis territorial de T1, T2 y T5 permanece como evidencia y la validación con usuarios sigue pendiente. Los cálculos de las tareas vigentes están en `data/analytical_tasks/`. Semana 6 conserva las muestras originales. El método vigente del mapa se documenta en RAEB Implementation.
 
-Fuentes y alcance: [ODData](ODData.md), [HistoricalContrast](HistoricalContrast.md), [RAEB Implementation](RAEBImplementation.md). Fundamento visual y alternativas: [revisión de Semana 6](../week06/referencias.md). La literatura respalda métodos y decisiones puntuales; no valida automáticamente estas cinco preguntas ni nuestra herramienta.
+Fuentes y alcance: [ODData](ODData.md), [Eventos](SpectralEvents.md), [RAEB Implementation](RAEBImplementation.md). Fundamento visual y alternativas: [revisión de Semana 6](../week06/referencias.md). La literatura respalda métodos y decisiones puntuales; no valida automáticamente estas cinco preguntas ni nuestra herramienta.

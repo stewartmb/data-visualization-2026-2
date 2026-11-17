@@ -1,15 +1,15 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
-import {renderAtlas} from './atlas-view.js?v=20261014-9';
-import {renderMap} from './map-view.js?v=crisp-raeb2';
-import {createSpectralEvents} from './spectral-events.js?v=restored1';
+import {renderAtlas} from './atlas-view.js?v=study-period1';
+import {renderMap} from './map-view.js?v=station-highlight1';
+import {createSpectralEvents} from './spectral-events.js?v=event-sidebar1';
 import {createODYearMaps} from './od-year-maps.js?v=map-layout2';
 import {renderPaths} from './paths-view.js?v=od-only1';
-import {renderEvidence} from './evidence-view.js?v=od-only1';
-import {renderInspector} from './inspector.js?v=od-only1';
-import {renderProject} from './project-view.js?v=map-controls1';
+import {renderEvidence} from './evidence-view.js?v=study-period1';
+import {renderInspector} from './inspector.js?v=station-highlight1';
+import {renderProject} from './project-view.js?v=study-period1';
 
 import {activeContrastBase,activeODCompareBase,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=od-only1';
-import {dataset} from './datasets.mjs?v=events-restored1';
+import {dataset} from './datasets.mjs?v=study-period1';
 import {createRoutingData} from './od-routing.mjs?v=annual-overview1';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
@@ -90,6 +90,22 @@ function updateURL(){
   app.spectralEvents?.writeURL(p);
   history.replaceState(null,'',`?${p}`);
 }
+let stationPreview=null;
+let stationPreviewMark=null;
+function showStationPreview(id,mark){
+  if(id===null&&mark&&mark!==stationPreviewMark)return;
+  const update=(key,highlighted)=>{
+    if(key===null)return;
+    const escaped=CSS.escape(String(key));
+    const selector=`[data-station-id="${escaped}"],[data-context-station-id="${escaped}"],[data-scatter-station="${escaped}"]`;
+    document.querySelectorAll(selector).forEach(point=>point.classList.toggle('is-station-preview',highlighted));
+  };
+  if(id!==stationPreview)update(stationPreview,false);
+  stationPreview=id;
+  stationPreviewMark=mark??null;
+  update(id,true);
+}
+
 const app={
   dataset,
   syncURL:updateURL,
@@ -141,16 +157,15 @@ const app={
     if(state.selected&&scopeKeys.some(key=>key in patch)&&!app.filtered().some(s=>s.id===state.selected))state.selected=null;
     render();
   },
-  resetScope({annual=false}={}){
+  resetScope(){
     clearTimeout(searchTimer);
     document.querySelector('#search').value='';
-    if(annual){choosingODYears=false;pendingODYear=null;}
-    const period=annual&&flows.annual?{flowDay:null,flowHour:null}:{};
     app.set({selected:null,odZones:null,cohort:null,preset:null,query:'',borough:'all',tvMin:0,tvMax:100,
-      ranges:{deltaAM:null,deltaWeekend:null,recovery:null},...period});
+      ranges:{deltaAM:null,deltaWeekend:null,recovery:null}});
   },
   select(id){app.set({selected:id});},
   toggleStation(id){app.select(state.selected===id?null:id);},
+  showStationPreview,
   pin(id){
     if(state.pins.includes(id))state.pins=state.pins.filter(x=>x!==id);
     else if(state.pins.length<3)state.pins.push(id);
@@ -226,6 +241,7 @@ function chooseODYear(event,year){
 
 function render(){
   if(BASE===state.year)setBase(normalizeContrastBase(null,state.year,dataset.defaultBase,dataset.years));
+  showStationPreview(null);
   hideTooltip();
   const focusId=document.activeElement?.id;
   const previousScroll=document.querySelector('.matrix-scroll')?.scrollTop||0;
@@ -261,9 +277,6 @@ function render(){
   if(search!==document.activeElement)search.value=state.query;
   const periodLabel=document.querySelector('#period-label');if(periodLabel)periodLabel.textContent=`${state.year}`;
   document.querySelector('#cohort-count').textContent=`${items.length} / ${data.stations.length} ${dataset.stationLabel}`;
-  const reset=document.querySelector('#map-center');
-  reset.hidden=!(state.borough!=='all'||state.query||state.cohort||state.preset||state.odZones||selected||rangeNotes.length);
-  reset.onclick=()=>app.resetScope();
   document.body.classList.add('has-inspector');
   document.querySelector('#selection-label').textContent=selected?`${selected.name}${items.some(s=>s.id===selected.id)?'':' · fuera del grupo activo'}`:'';
   const host=document.querySelector('#content');host.replaceChildren();host.dataset.view=state.view;
@@ -351,8 +364,12 @@ Promise.all([loadData(nyc?'stations.json':'atlas.json'),loadData('boroughs.geojs
   state.pins=state.pins.filter(id=>app.station(id));
   if(!app.station(state.selected))state.selected=null;
   f.nodes.forEach((station,index)=>stationIndices.set(station.id,index));
-  document.querySelector('.brand small').textContent=`ATLAS DE RITMOS · ${dataset.name.toUpperCase()}`;
-  if(dataset.id==='bart')document.title='Fractal · Área de la Bahía · BART';
+  const brand=document.querySelector('.masthead .brand');
+  brand.querySelector('small').textContent=`ATLAS DE RITMOS · ${dataset.name.toUpperCase()}`;
+  if(dataset.id==='bart'){
+    brand.href='./?system=bart';
+    document.title='Fractal · Área de la Bahía · BART';
+  }
   document.querySelector('#borough').replaceChildren(
     new Option(dataset.territoryLabel,'all'),
     ...dataset.areas.map(area=>new Option(area,area))
@@ -361,7 +378,7 @@ Promise.all([loadData(nyc?'stations.json':'atlas.json'),loadData('boroughs.geojs
   document.querySelector('#loading').hidden=true;
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>app.set({view:b.dataset.view})));
   const yearStrip=document.querySelector('#od-years');
-  for(const year of f.meta.years){
+  for(const year of dataset.years){
     const button=document.createElement('button');
     button.type='button';
     button.dataset.odYear=year;
@@ -481,7 +498,7 @@ Promise.all([loadData(nyc?'stations.json':'atlas.json'),loadData('boroughs.geojs
   document.querySelector('#export').addEventListener('click',exportCSV);
   if(nyc){
     document.querySelector('#atlas-analysis').hidden=false;
-    app.spectralEvents=createSpectralEvents({flows:f,syncURL:updateURL,dataURL:dataset.eventsURL});
+    app.spectralEvents=createSpectralEvents({flows:f,syncURL:updateURL,dataURL:dataset.eventsURL,onModeChange:render});
   }
   document.addEventListener('keydown',e=>{
     if(e.key!=='Escape')return;

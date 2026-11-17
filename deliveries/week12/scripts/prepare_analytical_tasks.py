@@ -15,36 +15,37 @@ def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def csvout(name,rows):
  rows=list(rows)
  with (OUT/name).open('w',newline='') as f:
-  line_ending='\n' if name in {'T4_corridor_loads.csv','T6_reference_scenarios.csv'} else '\r\n'
-  w=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator=line_ending);w.writeheader();w.writerows(rows)
+  w=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator='\n');w.writeheader();w.writerows(rows)
  return len(rows)
 def main():
  parser=argparse.ArgumentParser(description=__doc__)
  parser.add_argument('--skip-week06-samples',action='store_true',help='Preserve the samples already delivered in Week 6.')
  args=parser.parse_args()
  OUT.mkdir(exist_ok=True,parents=True)
- hist=json.loads((P/'data/entries_archive/historical_contrast.json').read_text());f=json.loads((A/'flows.json').read_text());manifest=json.loads((A/'raeb/manifest.json').read_text())
- assert hist['meta']['status']=='PASS' and manifest['status']=='PASS'
+ f=json.loads((A/'flows.json').read_text());manifest=json.loads((A/'raeb/manifest.json').read_text())
+ years=tuple(f['meta']['years'])
+ assert years==tuple(range(2021,2026)) and manifest['status']=='PASS'
+ base_year, latest_year=years[0],years[-1]
  nodes=f['nodes'];links=f['links'];n=len(nodes);assert n==424
  ids=[s['id'] for s in nodes];boroughs=sorted({s['borough'] for s in nodes});bi={s:i for i,s in enumerate(boroughs)}; membership=np.array([bi[s['borough']] for s in nodes]);M=np.eye(len(boroughs))[membership]
  with (P/'data/context/processed/station_nta2020.csv').open() as inp:ntas={r['station_complex_id']:r for r in csv.DictReader(inp)}
  groups=[('borough',b,[i for i,s in enumerate(nodes) if s['borough']==b]) for b in boroughs]
  for nta in sorted({r['nta2020'] for r in ntas.values()}):groups.append(('NTA2020',nta,[i for i,s in enumerate(nodes) if ntas.get(s['id'],{}).get('nta2020')==nta]))
  territorial=[];windows=[];system={};group_u={}
- for year in range(2019,2025):
-  u=np.array([np.array(hist['profiles'][id][str(year)]['p'])*hist['profiles'][id][str(year)]['weekly'] for id in ids]);system[year]=float(u.sum());group_u[year]={}
+ for year in years:
+  u=np.asarray(f['starts'][str(year)],dtype=float).reshape(n,168);system[year]=float(u.sum());group_u[year]={}
   for level,name,ix in groups:
    v=u[ix].sum(axis=0);group_u[year][level,name]=v;peak=v.reshape(7,24)
    for day in range(7):
     sums=np.array([sum(peak[day,(h+k)%24] for k in range(3)) for h in range(24)]);best=float(sums.max())
-    windows.append(dict(year=year,territory_level=level,territory=name,weekday_monday0=day,window_hours=3,start_hours_tied=';'.join(str(h) for h,x in enumerate(sums) if np.isclose(x,best,rtol=1e-10)),entries_per_representative_day=best,week_share_pct=100*best/v.sum() if v.sum() else ''))
- for year in range(2019,2025):
+    windows.append(dict(year=year,territory_level=level,territory=name,weekday_monday0=day,window_hours=3,start_hours_tied=';'.join(str(h) for h,x in enumerate(sums) if np.isclose(x,best,rtol=1e-10)),trips_per_representative_day=best,week_share_pct=100*best/v.sum() if v.sum() else ''))
+ for year in years:
   for level,name,ix in groups:
-   v=group_u[year][level,name];base=group_u[2019][level,name];total=float(v.sum());b=float(base.sum())
-   territorial.append(dict(year=year,baseline=2019,territory_level=level,territory=name,complexes=len(ix),weekly_entries=total,volume_index_2019_100=100*total/b if b else '',delta_weekly_entries=total-b,system_share_pct=100*total/system[year],delta_system_share_pp=100*(total/system[year]-b/system[2019]),tv_vs2019_pp=50*float(np.abs(v/total-base/b).sum()) if total and b else ''))
+   v=group_u[year][level,name];base=group_u[base_year][level,name];total=float(v.sum());b=float(base.sum())
+   territorial.append(dict(year=year,baseline=base_year,territory_level=level,territory=name,complexes=len(ix),weekly_estimated_od=total,volume_index_base_100=100*total/b if b else '',delta_weekly_estimated_od=total-b,system_share_pct=100*total/system[year],delta_system_share_pp=100*(total/system[year]-b/system[base_year]),tv_vs_base_pp=50*float(np.abs(v/total-base/b).sum()) if total and b else ''))
  counts={'T1_territory.csv':csvout('T1_territory.csv',territorial),'T3_windows.csv':csvout('T3_windows.csv',windows)}
  relations=[];balances=[];Qs={};digest_inputs={}
- for year in range(2021,2025):
+ for year in years:
   Q=np.zeros((n,n),dtype=np.float64)
   for day in range(7):
    for hour in range(24):
@@ -60,7 +61,7 @@ def main():
   print('OD frames read:',year,flush=True)
  counts['T2_territorial_od.csv']=csvout('T2_territorial_od.csv',relations);counts['T5_external_balance.csv']=csvout('T5_external_balance.csv',balances)
  loads=[];weekly={}
- for year in [2021,2024]:
+ for year in years:
   ar=np.asarray(f['flows'][str(year)],dtype=float);weekly[year]=ar.sum(axis=(0,1)).reshape(-1,2).sum(axis=1)
   for e,link in enumerate(links):loads.append(dict(year=year,link_id=e,origin=link['a'],destination=link['b'],kind=link['kind'],length_m=link['len'],weekly_assigned_traversals_both_directions=float(weekly[year][e]),monday08_start_cohort_traversals_both_directions=float(ar[0,8,2*e:2*e+2].sum())))
  counts['T4_corridor_loads.csv']=csvout('T4_corridor_loads.csv',loads)
@@ -82,9 +83,9 @@ def main():
   costs=shortest_path(csr_matrix((list(directed.values()),(rows,columns)),shape=(stops_n,stops_n)),directed=True,method='D')
   origin_costs=np.stack([costs[stops].min(axis=0) for stops in members],axis=0)
   return np.stack([origin_costs[:,stops].min(axis=1) for stops in members],axis=1)
- d0=distances();valid=np.isfinite(d0)&(~np.eye(n,dtype=bool));q=Qs[2024];denom=float(q[valid].sum());assert denom>0
+ d0=distances();valid=np.isfinite(d0)&(~np.eye(n,dtype=bool));q=Qs[latest_year];denom=float(q[valid].sum());assert denom>0
  # Illustrative scenarios: 3 busiest inter-borough links and 3 busiest remaining links.
- rank=sorted([i for i,l in enumerate(links) if l['kind']=='rail'],key=lambda e:weekly[2024][e],reverse=True)
+ rank=sorted([i for i,l in enumerate(links) if l['kind']=='rail'],key=lambda e:weekly[latest_year][e],reverse=True)
  cross=[e for e in rank if membership[index[links[e]['a']]]!=membership[index[links[e]['b']]]][:3]
  degree=np.zeros(n,dtype=int)
  for l in links:
@@ -95,10 +96,10 @@ def main():
   d=distances(e);lost=valid&~np.isfinite(d);connected=valid&np.isfinite(d);extra=d[connected]-d0[connected];assert (extra>=-1e-7).all()
   remaining=float(q[connected].sum());disconnected=float(q[lost].sum());link=links[e]
   affected=connected.copy();affected[connected]=extra>.01
-  row=dict(year=2024,link_removed=e,origin=link['a'],destination=link['b'],removed_directions=';'.join(str(i) for i,b in enumerate(link['allowed']) if b),eligible_weekly_estimated_od=denom,disconnected_weekly_estimated_od=disconnected,disconnected_share_pct=100*disconnected/denom,additional_equivalent_km_weighted_connected=float(np.sum(q[connected]*np.maximum(extra,0))/remaining/1000) if remaining else '',still_connected_weekly_estimated_od=remaining,detoured_weekly_estimated_od=float(q[affected].sum()))
+  row=dict(year=latest_year,link_removed=e,origin=link['a'],destination=link['b'],removed_directions=';'.join(str(i) for i,b in enumerate(link['allowed']) if b),eligible_weekly_estimated_od=denom,disconnected_weekly_estimated_od=disconnected,disconnected_share_pct=100*disconnected/denom,additional_equivalent_km_weighted_connected=float(np.sum(q[connected]*np.maximum(extra,0))/remaining/1000) if remaining else '',still_connected_weekly_estimated_od=remaining,detoured_weekly_estimated_od=float(q[affected].sum()))
   assert np.isclose(remaining+disconnected,denom);scenarios.append(row)
  counts['T6_reference_scenarios.csv']=csvout('T6_reference_scenarios.csv',scenarios)
- evidence={'status':'PASS','built_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'method':'Representative weeks; aggregate quantities before normalization. OD hour denotes starting cohort. Fixed-demand graph removal examples. Cost combines rail distance and declared transfer penalty; no operational prediction.','source_sha256':{str(p.relative_to(P)):sha(p) for p in [A/'historical_contrast.json',A/'flows.json',A/'raeb/manifest.json']},'inputs':'All 672 dense float32 OD frames verified against the RAEB manifest; small float32 rounding retained.','checks':['territorial OD conservation','external origins equal external destinations across partition','no negative/non-finite OD','no shortened shortest distance after removing links','scenario connected + disconnected demand conservation'],'row_counts':counts,'scenarios':'Six illustrative link removals, not exhaustive ranking of network vulnerability.','artifacts':{name:sha(OUT/name) for name in counts},'ui_status':'Evidence/preparation only. Does not declare T1-T6 fully implemented in the interface.'}
+ evidence={'status':'PASS','built_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'method':'Representative weeks; aggregate quantities before normalization. OD hour denotes starting cohort. Fixed-demand graph removal examples. Cost combines rail distance and declared transfer penalty; no operational prediction.','source_sha256':{str(p.relative_to(P)):sha(p) for p in [A/'flows.json',A/'raeb/manifest.json']},'inputs':'All 840 dense float32 OD frames verified against the RAEB manifest; small float32 rounding retained.','checks':['territorial OD conservation','external origins equal external destinations across partition','no negative/non-finite OD','no shortened shortest distance after removing links','scenario connected + disconnected demand conservation'],'row_counts':counts,'scenarios':'Six illustrative link removals, not exhaustive ranking of network vulnerability.','artifacts':{name:sha(OUT/name) for name in counts},'ui_status':'Evidence/preparation only. Does not declare T1-T6 fully implemented in the interface.'}
  (OUT/'validation.json').write_text(json.dumps(evidence,ensure_ascii=False,indent=2)+'\n')
  for name in (() if args.skip_week06_samples else counts):
   target=R/'deliveries/week06/data/processed'/name;target.parent.mkdir(exist_ok=True,parents=True)
@@ -108,6 +109,6 @@ def main():
   sample=[all_rows[i] for i in sorted(set(np.linspace(0,len(all_rows)-1,min(24,len(all_rows)),dtype=int)))]
   with target.open('w',newline='') as dest:
    writer=csv.DictWriter(dest,fieldnames=fields);writer.writeheader();writer.writerows(sample)
- (OUT/'summary.json').write_text(json.dumps({'territories_2024':[r for r in territorial if r['year']==2024 and r['territory_level']=='borough'],'od_relations':relations,'scenarios':scenarios},ensure_ascii=False,indent=2)+'\n')
+ (OUT/'summary.json').write_text(json.dumps({'territories_latest':[r for r in territorial if r['year']==latest_year and r['territory_level']=='borough'],'od_relations':relations,'scenarios':scenarios},ensure_ascii=False,indent=2)+'\n')
  print('PASS:',counts,flush=True)
 if __name__=='__main__':main()

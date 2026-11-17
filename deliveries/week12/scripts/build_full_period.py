@@ -26,12 +26,35 @@ def dump(path,obj):path.write_text(json.dumps(obj,ensure_ascii=False,indent=2)+'
 def sqlpath(path):return str(path).replace("'","''")
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--cache-only',action='store_true');args=parser.parse_args()
-    manifest=json.loads((D/'acquisition.json').read_text())
-    if not args.cache_only and (manifest['status']!='COMPLETE' or manifest['months_validated']!=72):
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--cache-only',action='store_true')
+    parser.add_argument('--year',type=int,choices=range(2021,2026),help='Convierte las entradas del año a Parquet')
+    args=parser.parse_args()
+    cache_only=args.cache_only or args.year is not None
+    legacy_manifest=D/'acquisition.json'
+    if args.year is None:
+        manifest=json.loads(legacy_manifest.read_text())
+    else:
+        candidates=(legacy_manifest,D/'acquisition_atlas.json',D/f'acquisition_{args.year}.json')
+        months={}
+        for path in candidates:
+            if path.exists():
+                saved=json.loads(path.read_text())['months']
+                months.update({month:entry for month,entry in saved.items()
+                               if month.startswith(f'{args.year}-') and entry['validated']})
+        manifest={'months':months,'months_expected':12,'months_validated':len(months),
+                  'status':'COMPLETE' if len(months)==12 else 'PARTIAL'}
+    if (args.year is not None or not cache_only) and (manifest['status']!='COMPLETE' or
+            manifest['months_validated']!=manifest['months_expected']):
         raise SystemExit('Adquisición incompleta: ejecutar acquire_full_period.py hasta COMPLETE.')
     PARQUET.mkdir(parents=True,exist_ok=True);OUT.mkdir(parents=True,exist_ok=True)
-    state_path=D/'parquet-conversion.json';state=json.loads(state_path.read_text()) if state_path.exists() else {}
+    legacy_state=D/'parquet-conversion.json'
+    state_path=D/(f'parquet-conversion_{args.year}.json' if args.year else legacy_state)
+    state=json.loads(state_path.read_text()) if state_path.exists() else {}
+    if args.year and legacy_state.exists():
+        for month,entry in json.loads(legacy_state.read_text()).items():
+            if month in manifest['months']:
+                state.setdefault(month,entry)
     con=duckdb.connect(config={'memory_limit':'4GB','threads':4,'preserve_insertion_order':False})
     con.execute(f"SET temp_directory='{sqlpath(RAW/'duckdb_tmp')}'")
     for month,entry in manifest['months'].items():
@@ -51,9 +74,14 @@ def main():
         if n!=entry['rows']:raise ValueError(f'Conversión perdió filas: {month}')
         temp.replace(dest);state[month]={'source_sha256':entry['sha256'],'parquet_sha256':sha(dest),'rows':n}
         dump(state_path,state);print(f'{month}: {n:,} filas convertidas sin descartar columnas',flush=True)
-    if args.cache_only:
-        con.close();print(f'Cache parcial: {len(state)}/72 meses convertidos; no se declara completa la serie.',flush=True);return
-    con.execute(f"CREATE VIEW d AS SELECT * FROM read_parquet('{sqlpath(PARQUET)}/*.parquet')")
+    if cache_only:
+        if args.year:dump(state_path,state)
+        converted=sum(month in state for month in manifest['months'])
+        con.close()
+        print(f'Parquet: {converted}/{manifest["months_expected"]} meses disponibles.',flush=True)
+        return
+    file_list=', '.join(f"'{sqlpath(PARQUET/f'{month}.parquet')}'" for month in manifest['months'])
+    con.execute(f"CREATE VIEW d AS SELECT * FROM read_parquet([{file_list}])")
     total=con.execute('SELECT count(*) FROM d').fetchone()[0]
     if total!=manifest['records_expected']:raise ValueError('El total convertido no coincide con la fuente')
     def export(name,sql):

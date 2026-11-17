@@ -13,17 +13,25 @@
 .atlas-insights:has(.atlas-analysis:not([hidden])) { display: flex; flex-direction: column; }
 .atlas-insights:has(.atlas-analysis:not([hidden])) .od-year-strip { min-height: 0; }
 .spectral-calendar-open .od-year-strip,
-.spectral-calendar-open .atlas-insights > .inspector { display: none !important; }
+.spectral-calendar-open .atlas-insights > .inspector,
+.spectral-calendar-open .map-sidebar { display: none; }
 
-.spectral-episode-active :is(.context-bar,#map-subject,#map-center),
-.spectral-episode-active :is(.map-legend-position,.map-loading,.map-credit,.raeb-canvas,.map-base-decoration),
-.spectral-episode-active .map-svg > g > :not(.borough-name,.spectral-nodes,.map-lines,.map-bg),
-.spectral-episode-active :is(#atlas-evidence,.flow-footer-actions) {
+.spectral-calendar-open .atlas-insights > :is(.atlas-analysis, .spectral-navigation, .spectral-timeline) {
+  flex: 0 0 auto;
+}
+.atlas-workbench.spectral-calendar-open .map-stage {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.spectral-calendar-open :is(.context-bar,#map-subject),
+.spectral-calendar-open :is(.map-legend-position,.map-loading,.map-credit,.raeb-canvas,.map-base-decoration),
+.spectral-calendar-open .map-svg > g > :not(.borough-name,.spectral-nodes,.map-lines,.map-bg),
+.spectral-calendar-open :is(#atlas-evidence,.flow-footer-actions) {
   display: none !important;
 }
 .spectral-source { display: none; }
-.spectral-episode-active .spectral-source { display: block; color: var(--muted); font-size: 10px; }
-.spectral-calendar-open .map-sidebar > .map-panel-controls { opacity: .48; }
+.spectral-calendar-open .spectral-source { display: block; color: var(--muted); font-size: 10px; }
 .atlas-analysis button {
   flex: 1;
   padding: 4px 9px;
@@ -40,12 +48,23 @@
   border-color: var(--line);
 }
 
-.spectral-header p { margin: 2px 0 0; color: var(--muted); font-size: 11px; line-height: 1.25; }
+.spectral-header p {
+  margin: 2px 0 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .spectral-header #spectral-summary-hour { color: var(--ink); }
 
-.spectral-timeline { min-width: 0; padding: 14px 12px; }
+.spectral-timeline {
+  min-width: 0;
+  padding: 14px 12px;
+  border-top: 1px solid var(--line);
+}
 .spectral-detail { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--line); }
-.spectral-timeline { border-top: 1px solid var(--line); margin-top: 8px; }
 :is(.spectral-detail,.spectral-timeline) h2 {
   font-size: 14px;
   line-height: 1.25;
@@ -61,8 +80,12 @@
 
 .spectral-node { opacity: .55; }
 .spectral-node.is-involved { cursor: pointer; stroke: #264751; stroke-width: 1.25px; opacity: 1; }
-.spectral-node.is-selected { stroke: #102937; stroke-width: 2.25px; }
-.spectral-node:focus-visible { stroke: #102937; stroke-width: 2.6px; outline: none; }
+.spectral-node.is-involved:is(.is-selected,:hover,:focus-visible) {
+  stroke: var(--station-highlight);
+  stroke-width: 4px;
+  paint-order: stroke fill;
+  outline: none;
+}
 
 .spectral-map-key {
   position: absolute;
@@ -86,39 +109,99 @@
 .spectral-map-hour:empty { display: none; }
 .spectral-colorbar { height: 7px; border-radius: 3px; background: linear-gradient(90deg,#146b91,#f8f8f4,#ba542c); }
 .spectral-key-words { display: flex; justify-content: space-between; gap: 12px; }
+.spectral-navigation {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 10px 12px;
+  container-type: inline-size;
+}
+.spectral-navigation h2 { margin: 0; font: 700 13px/1.3 Atlas, system-ui, sans-serif; }
 .spectral-calendar {
   width: 100%;
   table-layout: fixed;
   border-collapse: separate;
-  border-spacing: 1px 3px;
-  font-size: 9px;
+  border-spacing: 2px 4px;
+  font-size: 10px;
 }
 .spectral-calendar :is(th, td) { padding: 0; text-align: center; }
-.spectral-calendar :is(th[scope="row"], thead td:first-child) { width: 29px; text-align: left; }
-.spectral-calendar th[scope="col"] { color: var(--muted); font-weight: 500; }
+.spectral-calendar :is(th[scope="row"], thead td:first-child) { width: 30px; text-align: left; }
+.spectral-calendar th[scope="col"] { color: var(--muted); font-size: 9px; font-weight: 500; }
+.spectral-calendar .month-abbreviation { display: none; }
+@container (min-width: 280px) {
+  .spectral-calendar .month-initial { display: none; }
+  .spectral-calendar .month-abbreviation { display: inline; }
+}
 .spectral-calendar td button {
   display: block;
   width: 100%;
-  height: 20px;
-  border-radius: 2px;
+  height: 23px;
   padding: 0;
   border: 1px solid transparent;
-  background: var(--cell,#e8eceb);
+  border-radius: 2px;
+  background: var(--cell, #edf0f1);
 }
-.spectral-calendar td button[aria-pressed="true"] { border-color: #102937; outline: 1px solid #102937; }
+.spectral-calendar td button[aria-pressed="true"] {
+  border-color: #102937;
+  box-shadow: 0 0 0 1px #102937, inset 0 0 0 1px #fff;
+}
 .spectral-calendar td button:focus-visible { outline: 2px solid #102937; outline-offset: 1px; }
-.spectral-calendar td button:disabled { opacity: .45; }
-
+.spectral-calendar td button:disabled { cursor: default; }
 .spectral-intensity-key {
   display: flex;
   align-items: center;
   gap: 5px;
-  margin: 4px 0 15px;
   color: var(--muted);
   font-size: 9px;
 }
 .spectral-intensity-key i { flex: 1; min-width: 10px; height: 5px; background: linear-gradient(90deg,#e6eef0,#176982); border-radius: 2px; }
-#spectral-episodes h3 { margin: 0 0 7px; }
+.spectral-episodes-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 5px 8px;
+  margin-bottom: 7px;
+}
+#spectral-episodes h3 { margin: 0; }
+.spectral-episode-order {
+  display: inline-flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #edf1ef;
+  color: var(--ink);
+  font-size: 11px;
+}
+.spectral-episode-order label { position: relative; }
+.spectral-episode-order input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  clip-path: inset(50%);
+}
+.spectral-episode-order label > span {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  gap: 4px;
+  min-height: 24px;
+  padding: 2px 7px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.spectral-episode-order input:checked + span {
+  border-color: #347987;
+  background: #fff;
+}
+.spectral-episode-order input:focus-visible + span {
+  outline: 2px solid #102937;
+  outline-offset: 1px;
+}
 #spectral-episodes ol { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
 #spectral-episodes button {
   display: grid;
@@ -144,7 +227,7 @@
   border-top: 2px solid #176982;
 }
 .spectral-series-key span + span::before { border-color: #71848b; border-top-style: dashed; }
-.spectral-chart-frame { position: relative; height: 156px; }
+.spectral-chart-frame { position: relative; height: 180px; }
 .spectral-chart { display: block; width: 100%; height: 100%; }
 .spectral-chart-frame.is-empty::before {
   position: absolute;
@@ -190,6 +273,7 @@
   .atlas-insights:has(.atlas-analysis:not([hidden])) > .od-year-strip { height: auto; flex: 1 1 auto; }
 }
 @media (max-width: 999px) {
-  .spectral-calendar td button { height: 22px; }
-  #spectral-episodes ol { grid-template-columns: repeat(auto-fit,minmax(108px,1fr)); }
+  .atlas-workbench.spectral-calendar-open .app-shell { grid-template-areas: "timeline" "workspace"; }
+  .spectral-calendar-open .atlas-insights { max-height: min(52dvh, 440px); }
+  #spectral-episodes ol { grid-template-columns: repeat(auto-fit,minmax(145px,1fr)); }
 }

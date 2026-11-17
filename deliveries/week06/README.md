@@ -1,37 +1,38 @@
-# Semana 6 — Investigación de papers y análisis de datos
+# Semana 6 · Análisis, bocetos e investigación
 
 **DS5343 Data Visualization · UTEC · 2026-2**
+
 Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino
 
-## Actualización del 28 de octubre de 2026
+Revisión del 16 de noviembre de 2026, según el §4.3 de la [guía del profesor](../../Proyecto_Final_Guia.md#43-semana-6--análisis-de-datos-y-bocetosinspiración-16-de-septiembre-de-2026). La entrega usa el alcance actual del Atlas. **Años** compara OD estimado 2021–2025 sobre la red GTFS de referencia. **Eventos** explora cambios en entradas horarias del mismo período.
 
-El proyecto pasó de perfiles de entradas a demanda y conexiones del subway: entradas 2019–2024, OD estimado 2021–2024 y caminos asignados a una red GTFS de referencia 2026. Se actualiza aquí la investigación que solicita el profesor en §4.3: **al menos cuatro artículos relevantes, sus PDF y su relación con el diseño**. La selección actual contiene doce artículos organizados por función, no una lista de enlaces sin decisión.
-
-| Material | Contenido y alcance |
+| Requisito | Archivo |
 |---|---|
-| [referencias.md](referencias.md) | Seis fundamentos de visualización/tareas, tres antecedentes o métodos de transporte, tres alternativas; dos demos separadas. Método original, adaptación, decisión y límite |
-| [papers/README.md](papers/README.md) | Catálogo de los doce PDF y forma de obtener las ocho copias nuevas |
-| [papers/sources.json](papers/sources.json) | URL, fecha de descarga, tamaño, páginas y SHA-256 de los PDF consultados |
-| [code/acquire_review_papers.py](code/acquire_review_papers.py) | Adquisición reproducible desde fuentes de autores/instituciones; comprueba PDF y registra procedencia |
-| [Seis tareas vigentes](../week12/AnalyticalTasks.md) | Propósitos distintos, valor para analistas, métricas, salidas comprobables y estado de implementación |
-| [DataAnalysis.md](DataAnalysis.md) | Análisis revisado con resultados actuales, seis muestras procesadas, transformaciones y límites |
-| [README-entrega-original.md](README-entrega-original.md) | Estructura, notebooks, cifras y decisiones de la entrega anterior conservadas para trazabilidad |
-| [referencias-20261014.md](referencias-20261014.md) | Revisión bibliográfica anterior de cuatro artículos |
+| Entendimiento, transformaciones, preguntas y hallazgos | [DataAnalysis.md](DataAnalysis.md) · [PDF](DataAnalysis.pdf) |
+| Presentación | [PresentationWeek06.pptx](PresentationWeek06.pptx) |
+| Datos procesados detrás de los gráficos | [CSV vigentes con prefijo atlas_](data/processed/) |
+| Reproducción desde los agregados del Atlas | [code/build_atlas_evidence.py](code/build_atlas_evidence.py) |
+| Composición, jerarquía de señales y alternativas | [Bocetos anotados](sketches/README.md) |
+| Artículos y decisiones de diseño | [Revisión bibliográfica](referencias.md) · [PDF consultados](papers/README.md) |
 
-## Reproducir las nuevas copias de consulta
+La selección de esta entrega es **RAEB, KDEEB, ManyWaves, Dhont et al., y Fredriksson y Karlström**. Los antecedentes y las alternativas de la [revisión previa](history/before-20261116-current-atlas/referencias.md) conservan sus fuentes y contexto.
 
-Desde la raíz del repositorio, con Python 3 y `pdfinfo` (Poppler) disponibles:
+## Reproducir el paquete
+
+Desde la raíz, con Python 3 y los artefactos de [Semana 12](../week12/DataAcquisition.md) de 2021–2025:
+
+```bash
+python3 deliveries/week06/code/build_atlas_evidence.py
+python3 deliveries/week06/code/build_atlas_evidence.py --check
+```
+
+El script lee los perfiles, cargas, matrices anuales e índice de Eventos preparados para el Atlas. Verifica la procedencia de los agregados OD y del grafo de Eventos antes de exportar. El modo `--check` compara el resultado byte por byte con los CSV entregados. Los CSV están listos para abrir. Regenerar el catálogo espectral desde Parquet requiere seguir los pasos de Semana 12.
+
+Para obtener y verificar los cinco PDF seleccionados, instalar `pdfinfo` de Poppler y ejecutar:
 
 ```bash
 python3 deliveries/week06/code/acquire_review_papers.py
+python3 deliveries/week06/code/acquire_review_papers.py --offline
 ```
 
-Las cuatro copias de la selección anterior se conservan. Las ocho nuevas se descargan en `papers/`, se verifican con `pdfinfo` y se registran en el manifiesto. El script requiere conexión; las copias nuevas quedan fuera de Git por defecto para no asumir derechos de redistribución. Un clone debe ejecutar el script para tenerlas localmente. La accesibilidad pública del enlace no declara licencia abierta.
-
-## Qué cambió y qué se conserva
-
-Las seis preguntas anteriores se sustituyen por redistribución territorial, dependencia entre zonas, ventanas temporales, corredores de soporte, balance externo y exposición ante interrupciones. No se declara que todas estén implementadas; especialmente el escenario de interrupción requiere cálculo y validación nuevos.
-
-Se mantiene el panel integrado con mapa, dispersión y reloj. RAEB/KDEEB informan las curvas y el refinamiento; Dhont el reloj; Gleicher la comparación; Brehmer–Munzner las tareas; Shneiderman el recorrido. Las demos MBTA/Tube Heartbeat aportan referencias de interacción, sin copiar datos operativos ausentes.
-
-`PresentationWeek06.pptx`, el análisis y el boceto se regeneran con esta revisión. La [nota del 13 de noviembre sobre RAEB](referencias.md#p1-raeb--relaciones-con-contexto-de-la-red) explica la calibración del radio para el metro. Las versiones originales se conservan en `history/`; sus cifras no se trasladan al alcance nuevo. La aplicación, sus adquisiciones de datos y sus avances pertenecen a [Semana 12](../week12/README.md).
+La [entrega anterior](README-entrega-original.md) documenta los scripts y archivos exploratorios históricos. Los nuevos CSV se distinguen por `atlas_`.

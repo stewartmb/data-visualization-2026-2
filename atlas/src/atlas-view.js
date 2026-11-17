@@ -1,17 +1,17 @@
-import {atlasOrder} from './atlas-order.js?v=20261014-9';
-import {state,esc,fmt,signed,profile,metricValue,hellinger,deltaColor,shareColor,cellValue,showTooltip,hideTooltip,heading,stats,dayShort} from './model.js?v=20261027-4';
+import {atlasOrder} from './atlas-order.js?v=study-period1';
+import {BASE,state,esc,fmt,signed,profile,metricValue,hellinger,deltaColor,shareColor,cellValue,showTooltip,hideTooltip,heading,stats,dayShort} from './model.js?v=20261028-4';
 
 export function renderAtlas(host,app,items){
-  const focus=app.station(state.selected),order=atlasOrder(items,state,focus);
+  const focus=app.station(state.selected),order=atlasOrder(items,state,focus,BASE);
   state.sort=order.key;
   host.innerHTML=heading('01 / EXPLORAR PATRONES','Una ciudad. Muchos ritmos.','Cada fila es un complejo de estación; cada columna, una hora de la semana. Reordena el atlas para reconocer semejanzas y localizar los cambios.','T1 · T2 · T3')+`
-  <div class="toolbar"><div class="segmented" id="matrix-mode"><button data-mode="delta">Cambio</button><button data-mode="current">${state.year}</button><button data-mode="base">2020</button></div>
+  <div class="toolbar"><div class="segmented" id="matrix-mode"><button data-mode="delta">Cambio</button><button data-mode="current">${state.year}</button><button data-mode="base">${BASE}</button></div>
   <label>Ordenar<select id="matrix-sort">${order.options.map(([v,t])=>`<option value="${v}" ${v==='similar'&&!focus?'disabled':''}>${t}${v==='similar'&&!focus?' (selecciona una estación)':''}</option>`).join('')}</select></label>
   <label>Tiempo<select id="matrix-day"><option value="all">Semana completa</option>${dayShort.map((d,i)=>`<option value="${i}">${d}</option>`).join('')}</select></label>
   <div class="segmented spacer" id="matrix-zoom"><button data-detail="false">Todo el grupo</button><button data-detail="true">Leer estaciones</button></div></div>
   <div class="order-explanation" role="status"><b>Orden de arriba hacia abajo</b><span>${esc(order.description)}</span><small>El orden se recalcula al cambiar el año, el modo o el día. Las cifras junto a los nombres muestran el criterio; pasa el cursor para leerlo completo.</small></div>
   <div class="viz-card"><svg class="matrix-axis" aria-hidden="true"></svg><div class="matrix-scroll"><canvas tabindex="0" aria-label="Atlas horario. Usa el selector de complejos para acceder a cualquier fila con el teclado."></canvas><div class="matrix-spacer"></div></div>
-  <div class="chart-note"><div class="color-key">${state.mode==='delta'?'−0,65 pp':''}<span class="gradient ${state.mode==='delta'?'':'seq'}"></span>${state.mode==='delta'?'+0,65 pp':'1,5 %'}</div><span id="matrix-hover">${state.mode==='delta'?'Azul: menor peso · naranja: mayor peso respecto de 2020.':'Porcentaje de las entradas de una semana comparable.'}</span></div></div>
+  <div class="chart-note"><div class="color-key">${state.mode==='delta'?'−0,65 pp':''}<span class="gradient ${state.mode==='delta'?'':'seq'}"></span>${state.mode==='delta'?'+0,65 pp':'1,5 %'}</div><span id="matrix-hover">${state.mode==='delta'?'Azul: menor peso · naranja: mayor peso respecto de '+BASE+'.':'Porcentaje de las entradas de una semana comparable.'}</span></div></div>
   <div class="toolbar"><label>Ir a un complejo<select id="station-picker" aria-label="Seleccionar complejo"><option value="">Selecciona…</option>${items.map(s=>`<option value="${s.id}">${esc(s.name)} · ${esc(s.borough)}</option>`).join('')}</select></label><span style="font-size:10px;color:var(--muted)">Clic: detalle · Mayús + clic: fijar · Mayús + arrastrar filas: formar grupo</span></div>
   ${stats(items)}<div class="narrative"><b>Cómo comparar</b><span>La forma de cada estación se normaliza a 100 %. Un cambio de color indica distribución horaria, no un aumento o una caída del número de pasajeros.</span></div>`;
   host.querySelectorAll('[data-mode]').forEach(b=>{b.classList.toggle('active',state.mode===b.dataset.mode);b.onclick=()=>app.set({mode:b.dataset.mode});});
@@ -64,8 +64,8 @@ export function renderAtlas(host,app,items){
     const {r,c}=hit(e),s=rows[r];if(!s)return;
     hover=r;draw();host.querySelector('#matrix-hover').textContent=`${s.name} · ${s.borough} · orden: ${order.format(s)}`;
     if(c<0)showTooltip(`<b>${esc(s.name)}</b><br>Posición ${r+1} de ${rows.length}<br>Valor del orden: ${esc(order.format(s))}<br>${esc(order.description)}`,e);
-    if(c>=0&&c<columns.length){const i=columns[c],h=i%24,d=Math.floor(i/24),a=profile(s,2020).p[i]*100,b=profile(s).p[i]*100;
-      showTooltip(`<b>${esc(s.name)}</b><br>${dayShort[d]} ${h}:00–${h+1}:00<br><small>Peso en una semana comparable</small><br>2020: ${a.toFixed(3)} % · ${state.year}: ${b.toFixed(3)} %<br>Cambio: ${(b-a).toFixed(3)} pp`,e);}
+    if(c>=0&&c<columns.length){const i=columns[c],h=i%24,d=Math.floor(i/24),a=profile(s,BASE).p[i]*100,b=profile(s).p[i]*100;
+      showTooltip(`<b>${esc(s.name)}</b><br>${dayShort[d]} ${h}:00–${h+1}:00<br><small>Peso en una semana comparable</small><br>${BASE}: ${a.toFixed(3)} % · ${state.year}: ${b.toFixed(3)} %<br>Cambio: ${(b-a).toFixed(3)} pp`,e);}
   });
   canvas.addEventListener('pointerleave',()=>{hover=-1;hideTooltip();draw();});
   canvas.addEventListener('pointerdown',e=>{dragStart=hit(e).r;});

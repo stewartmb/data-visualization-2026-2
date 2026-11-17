@@ -18,17 +18,17 @@ node deliveries/week12/tests/contrast-model.test.mjs
 node deliveries/week12/tests/raeb-core.test.mjs
 node deliveries/week12/tests/scatter-domain.test.mjs
 node deliveries/week12/tests/validate-raeb-data.mjs
-python3 deliveries/week12/scripts/prepare_analytical_tasks.py
+python3 deliveries/week12/scripts/prepare_analytical_tasks.py --skip-week06-samples
 ```
 
-Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_od.py` y `acquire_network.py`. La preparación histórica y la del RAEB se documentan en `HistoricalContrast.md`, `ODData.md` y `RAEBImplementation.md`. Los originales grandes quedan fuera de Git; se incluyen los artefactos preparados para ejecutar la app y sus manifiestos.
+Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_od.py` y `acquire_network.py`. La preparación se documenta en `FullPeriodData.md`, `ODData.md` y `RAEBImplementation.md`. Los originales grandes quedan fuera de Git; se incluyen los artefactos preparados para ejecutar la app y sus manifiestos.
 
-El mapa abre en **Todo el año de 2025**. Se puede elegir otro año o comparar dos de **2021–2025**. **Eventos** usa las [entradas horarias de 2019–2024](deliveries/week12/SpectralEvents.md) para mostrar cuándo y dónde la afluencia se apartó de lo habitual.
+El mapa abre en **Todo el año de 2025**. Se puede elegir otro año o comparar dos de **2021–2025**. **Eventos** usa las [entradas horarias de 2021–2025](deliveries/week12/SpectralEvents.md) para mostrar cuándo y dónde la afluencia se apartó de lo habitual.
 
 ## Cinco preguntas de la investigación
 
-1. **Redistribución territorial.** ¿Qué zonas recuperaron demanda y cuáles perdieron peso entre 2019 y 2024?
-2. **Dependencia e intercambios.** ¿Ganaron peso los viajes locales y entre boroughs o aumentó la dependencia de Manhattan entre 2021 y 2024?
+1. **Redistribución territorial.** ¿Qué zonas ganaron viajes y cuáles perdieron peso entre 2021 y 2025?
+2. **Dependencia e intercambios.** ¿Ganaron peso los viajes locales y entre boroughs o aumentó la dependencia de Manhattan entre 2021 y 2025?
 3. **Ventanas de demanda.** ¿Dónde y cuándo se desplazaron las franjas de mayor demanda?
 4. **Corredores de soporte.** ¿Qué tramos de la red de referencia sostienen los principales intercambios?
 5. **Balance externo.** ¿Qué territorios generan o atraen más viajes externos y en qué franjas cambia el balance?
@@ -46,12 +46,12 @@ El mapa abre en **Todo el año de 2025**. Se puede elegir otro año o comparar d
 | 10 | [Prototipo y preguntas de revisión](deliveries/week10/README.md) |
 | 12 | [Borrador refinado, crítica, presentación y paper](deliveries/week12/README.md) |
 
-Las revisiones son del 28 de octubre y no se atribuyen retroactivamente a las entregas iniciales. Versiones anteriores en `deliveries/weekXX/history/`. Semana 8 no tiene entrega de proyecto. Los videos, póster y artículo final pertenecen a Semana 15; su estado está en el [plan de cierre](deliveries/week12/ImplementationPlan.md).
+Las semanas 4 y 6 se revisaron el 16 de noviembre de 2026 para reflejar el Atlas actual. Las versiones anteriores de las entregas están en `deliveries/weekXX/history/`. Semana 8 no tiene entrega de proyecto. Los videos, póster y artículo final pertenecen a Semana 15; su estado está en el [plan de cierre](deliveries/week12/ImplementationPlan.md).
 
 ## Investigación y límites
 
-[Revisión de 12 artículos](deliveries/week06/referencias.md): RAEB, KDEEB, reloj circular, comparación, tareas/mantra y métodos como TV. PDFs nuevos de consulta se obtienen con `python3 deliveries/week06/code/acquire_review_papers.py`; URL y SHA incluidos. Las copias sin licencia abierta comprobada no se republican automáticamente. Se conserva atribución de librerías, fuentes y asistencia de IA.
+La revisión conserva cinco referencias. RAEB y KDEEB fundamentan los haces, ManyWaves inspira el detector de Eventos, Dhont et al. aporta el reloj semanal y Fredriksson y Karlström respaldan la variación total. [Referencias de Semana 6](deliveries/week06/referencias.md). PDFs nuevos de consulta se obtienen con `python3 deliveries/week06/code/acquire_review_papers.py`; URL y SHA incluidos. Las copias sin licencia abierta comprobada no se republican automáticamente. Se conserva atribución de librerías, fuentes y asistencia de IA.
 
-El OD es una estimación por hora de inicio, no salidas observadas en esa hora ni trayectorias. Los caminos se asignan por distancia sobre una red de referencia actual: no reconstruyen operación histórica, esperas o elección real de ruta. La abstracción visual no añade infraestructura. No se dispone de capacidad ni motivos de viaje para afirmar congestión, turismo, residencia o causas. 2020 completo es un año pandémico; 2019 es la referencia anual anterior. Las comparaciones usan la misma fuente en ambos extremos y suman cantidades antes de normalizar.
+El OD es una estimación por hora de inicio, no salidas observadas en esa hora ni trayectorias. Los caminos se asignan por distancia sobre una red de referencia actual: no reconstruyen operación histórica, esperas o elección real de ruta. La abstracción visual no añade infraestructura. No se dispone de capacidad ni motivos de viaje para afirmar congestión, turismo, residencia o causas. Las comparaciones usan la misma fuente en ambos extremos y suman cantidades antes de normalizar.
 
 D3 es la herramienta principal de composición/interacción; WebGPU acelera bundling y raster. Un navegador sin WebGPU usa el respaldo. Para publicación debe usarse HTTPS; los originales grandes y credenciales no se suben a Git.

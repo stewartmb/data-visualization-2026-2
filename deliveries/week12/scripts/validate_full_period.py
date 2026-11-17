@@ -34,7 +34,8 @@ def main():
         assert all(v is None or v>=0 for v in station['entries'])
     con=duckdb.connect(config={'memory_limit':'4GB','threads':4,'preserve_insertion_order':False})
     directory=str(P/'data/raw/full_period/parquet').replace("'","''")
-    con.execute(f"CREATE VIEW d AS SELECT * FROM read_parquet('{directory}/*.parquet')")
+    file_list=', '.join(f"'{directory}/{month}.parquet'" for month in m['months'])
+    con.execute(f"CREATE VIEW d AS SELECT * FROM read_parquet([{file_list}])")
     columns={r[0] for r in con.execute('DESCRIBE d').fetchall()}
     assert set(m['source_fields'])<=columns and len(m['source_fields'])==12
     monthly=con.execute("""SELECT strftime(transit_timestamp,'%Y-%m') AS month,count(*),

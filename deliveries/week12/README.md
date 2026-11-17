@@ -7,10 +7,10 @@ Renzo Acervo Correa · Stewart Maquera Bobadilla · José Condori Palomino · Re
 | Aplicación D3 y recursos | [atlas/](atlas/), espejo de [la raíz](../../atlas/) |
 | Detección de cambios de afluencia | [Eventos](SpectralEvents.md) |
 | Datos candidatos, muestras y scripts | [data/](data/), [scripts/](scripts/), [DataSharing](DataSharing.md) |
-| Narrativa, diseño, hallazgos, límites y pendientes | [RefinedDraftReport.md](RefinedDraftReport.md) y [PDF](RefinedDraftReport.pdf) |
+| Informe del corte de octubre | [RefinedDraftReport.md](RefinedDraftReport.md) y [PDF](RefinedDraftReport.pdf) |
 | Presentación del 28 de octubre | [PresentationWeek12.pptx](PresentationWeek12.pptx) |
 | Respuesta a crítica | [PeerCritiqueResponse.pdf](PeerCritiqueResponse.pdf) y [fuente](PeerCritiqueResponse.md) |
-| Fuente del artículo y borrador | [paper.tex](paper/paper.tex), [paper.pdf](paper/paper.pdf) |
+| Artículo del corte de octubre | [paper.tex](paper/paper.tex), [paper.pdf](paper/paper.pdf) |
 | Página y README | [Página inicial](../../index.html), este documento y [README raíz](../../README.md) |
 | Cinco tareas y plan | [AnalyticalTasks](AnalyticalTasks.md), [ImplementationPlan](ImplementationPlan.md) |
 
@@ -26,17 +26,17 @@ node deliveries/week12/tests/contrast-model.test.mjs
 node deliveries/week12/tests/raeb-core.test.mjs
 node deliveries/week12/tests/scatter-domain.test.mjs
 node deliveries/week12/tests/validate-raeb-data.mjs
-python3 deliveries/week12/scripts/prepare_analytical_tasks.py
+python3 deliveries/week12/scripts/prepare_analytical_tasks.py --skip-week06-samples
 ```
 
-Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_od.py` y `acquire_network.py`. La preparación histórica y la del RAEB se documentan en `HistoricalContrast.md`, `ODData.md` y `RAEBImplementation.md`. Los originales grandes quedan fuera de Git; se incluyen los artefactos preparados para ejecutar la app y sus manifiestos.
+Las adquisiciones completas opcionales usan `acquire_full_period.py`, `acquire_od.py` y `acquire_network.py`. La preparación se documenta en `FullPeriodData.md`, `ODData.md` y `RAEBImplementation.md`. Los originales grandes quedan fuera de Git; se incluyen los artefactos preparados para ejecutar la app y sus manifiestos.
 
-La vista **Eventos** carga el [catálogo de episodios de las entradas horarias 2019–2024](data/entries_archive/spectral/). La vista **Años** usa OD 2021–2025. Capturas y validaciones de la versión actual acompañan la entrega. Las copias anteriores de reporte, crítica y presentación están en `history/`. La publicación usa `main` y la raíz como fuente de GitHub Pages.
+La vista **Eventos** carga el [catálogo de episodios de las entradas horarias 2021–2025](data/spectral/index.json). La vista **Años** usa OD 2021–2025. Capturas y validaciones de la versión actual acompañan la entrega. Las copias anteriores de reporte, crítica y presentación están en `history/`. La publicación usa `main` y la raíz como fuente de GitHub Pages.
 
 | Tarea | Evidencia preparada | Estado de interacción |
 |---|---|---|
-| T1 | CSV por borough/NTA, seis años | Contraste por complejo disponible; síntesis territorial por integrar al panel |
-| T2 | Matrices territoriales y participaciones, cuatro años | Selección de origen disponible; detalle territorial por integrar |
-| T3 | Ventanas de 3 h, 7 días y seis años | Reloj y selección horaria disponibles; detector automático por integrar |
+| T1 | CSV por borough/NTA, cinco años | Contraste por complejo disponible; síntesis territorial por integrar al panel |
+| T2 | Matrices territoriales y participaciones, cinco años | Selección de origen disponible; detalle territorial por integrar |
+| T3 | Ventanas de 3 h, 7 días y cinco años | Reloj y selección horaria disponibles; detector automático por integrar |
 | T4 | Cargas por enlace y franja | Carga exacta por tramo, agrupamiento RAEB y comparación A/B disponibles |
-| T5 | Balance externo por borough/cohorte, cuatro años | CSV preparado; codificación interactiva pendiente |
+| T5 | Balance externo por borough/cohorte, cinco años | CSV preparado; codificación interactiva pendiente |

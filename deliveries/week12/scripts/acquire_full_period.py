@@ -3,8 +3,8 @@
 
 Conserva los 12 campos originales y todos los modos. Sin muestras ni filtro
 de estaciones. Python + DuckDB. Cada mes se valida contra count y sum oficiales
-antes de marcarlo completo. Descargas comprimidas y reanudables fuera de Git. Por defecto cubre 2019–2024;
---year 2025 descarga el año siguiente y registra sus controles por separado.
+antes de marcarlo completo. Descargas comprimidas y reanudables fuera de Git. Por defecto cubre 2021–2025.
+--year permite descargar un solo año y registrar sus controles por separado.
 """
 import argparse
 import csv
@@ -24,11 +24,10 @@ import duckdb
 P=Path(__file__).resolve().parents[1]
 OUT=P/'data/full_period'
 RAW=P/'data/raw/full_period'
-INDEX=OUT/'acquisition.json'
+INDEX=OUT/'acquisition_atlas.json'
 FIELDS=['transit_timestamp','transit_mode','station_complex_id','station_complex','borough',
         'payment_method','fare_class_category','ridership','transfers','latitude','longitude','georeference']
-DATASETS={str(y):('t69i-h2me' if y==2019 else 'wujg-7c2s',y,y+1) for y in range(2019,2025)}
-DATASETS_2025={'2025':('5wq4-mkjj',2025,2026)}
+DATASETS={str(y):('5wq4-mkjj' if y==2025 else 'wujg-7c2s',y,y+1) for y in range(2021,2026)}
 
 def now():return datetime.now(timezone.utc).isoformat()
 def sha(path):
@@ -134,19 +133,24 @@ def download_month(month,expected,previous,refresh):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--workers',type=int,default=2)
-    parser.add_argument('--year',choices=DATASETS_2025,help='Descarga solo el año indicado')
+    parser.add_argument('--year',choices=DATASETS,help='Descarga solo el año indicado')
     parser.add_argument('--month',help='Descarga solo un mes YYYY-MM del período elegido')
     parser.add_argument('--refresh',action='store_true')
     args=parser.parse_args()
-    datasets=DATASETS_2025 if args.year else DATASETS
+    datasets={args.year:DATASETS[args.year]} if args.year else DATASETS
     index=OUT/f'acquisition_{args.year}.json' if args.year else INDEX
     period_start=min(datasets)
     period_end=int(max(datasets))+1
     OUT.mkdir(parents=True,exist_ok=True)
     RAW.mkdir(parents=True,exist_ok=True)
     expected,sources=expectations(datasets,args.refresh)
-    prior=json.loads(index.read_text()) if index.exists() else {}
-    completed=prior.get('months',{});errors={}
+    completed={}
+    previous_manifests = [OUT/'acquisition.json', INDEX, *(OUT/f'acquisition_{year}.json' for year in datasets)]
+    for previous in [*(path for path in previous_manifests if path != index), index]:
+        if previous.exists():
+            saved=json.loads(previous.read_text())['months']
+            completed.update({month:entry for month,entry in saved.items() if month in expected})
+    errors={}
     jobs=[args.month] if args.month else sorted(expected)
     if any(m not in expected for m in jobs):parser.error('El mes está fuera del período seleccionado')
     total=len(expected)

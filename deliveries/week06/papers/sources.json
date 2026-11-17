@@ -114,5 +114,16 @@
     "pages": 11,
     "sha256": "d71e0e3d130a6c43452f97f751c336f8f0affc5b52bc705be723be6b3bc9217c",
     "redistribution": "Author/institutional copy; no open redistribution licence asserted. Local consultation copy."
+  },
+  "valdrighi_2026_manywaves.pdf": {
+    "source_url": "https://files.visualdslab.com/files/papers/2026-ManyWaves-CGF.pdf",
+    "resolved_url": "https://files.visualdslab.com/files/papers/2026-ManyWaves-CGF.pdf",
+    "title": "ManyWaves: A Visual Analytics Approach for Exploring Multivariate Spatiotemporal Data Based on the Graph Wavelet Transform",
+    "doi": "10.1111/cgf.70653",
+    "retrieved_at_utc": "2026-11-17T00:29:44.644491+00:00",
+    "bytes": 9207185,
+    "pages": 15,
+    "sha256": "8b4c133845c691ac9ea7cc5da6440111138594333d631dca516dcbe1fc0b549c",
+    "redistribution": "Consultation copy. Check the licence of the specific version before redistribution."
   }
 }

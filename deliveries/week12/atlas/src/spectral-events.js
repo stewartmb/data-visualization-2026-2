@@ -12,11 +12,15 @@ const labels = {
 const parseHour = hour => new Date(hour + ':00:00Z');
 const parseMonth = month => new Date(month + '-01T00:00:00Z');
 const sameDay = (a,b) => a.toISOString().slice(0,10) === b.toISOString().slice(0,10);
-const eventTime = (start,end) => {
-  const a = parseHour(start), b = parseHour(end);
-  return sameDay(a,b)
-    ? labels.date.format(a) + ' · ' + labels.time.format(a) + '–' + labels.time.format(b)
-    : labels.date.format(a) + ' · ' + labels.time.format(a) + ' → ' + (a.getUTCFullYear()===b.getUTCFullYear()?labels.day:labels.date).format(b) + ' ' + labels.time.format(b);
+const eventTime = (start,end,{includeYear=true}={}) => {
+  const from = parseHour(start), to = parseHour(end);
+  const crossesYear = from.getUTCFullYear() !== to.getUTCFullYear();
+  const fromDate = (includeYear || crossesYear ? labels.date : labels.day).format(from);
+  const fromTime = labels.time.format(from);
+  const toTime = labels.time.format(to);
+  if(sameDay(from,to))return `${fromDate} · ${fromTime}–${toTime}`;
+  const toDate = (crossesYear ? labels.date : labels.day).format(to);
+  return `${fromDate} · ${fromTime} → ${toDate} ${toTime}`;
 };
 const number = value => value === null ? 'Sin registro' : labels.count.format(value);
 const signedCount = new Intl.NumberFormat('es-PE',{maximumFractionDigits:1,signDisplay:'exceptZero'}).format;
@@ -27,12 +31,18 @@ function hourChange(station,hour){
 }
 const deltaLabel = value => (value>0?'+':'') + number(value*100) + ' %';
 const shortName = station => station.name.replace(/\s+\(.*/,'');
-export function createSpectralEvents({flows,syncURL,dataURL}){
-  const file = name => new URL(name + '.json?v=events1',dataURL);
+export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
+  const file = name => new URL(name + '.json?v=2021-2025',dataURL);
   const buttons = document.querySelectorAll('[data-analysis]');
   const panel = document.querySelector('#spectral-timeline');
-  const calendar = panel.querySelector('#spectral-calendar');
-  const eventList = panel.querySelector('#spectral-episodes');
+  const navigation = document.querySelector('#spectral-navigation');
+  const calendar = navigation.querySelector('#spectral-calendar');
+  const episodes = panel.querySelector('#spectral-episodes');
+  const episodeHeading = episodes.querySelector('.spectral-episodes-heading');
+  const episodeMonth = episodes.querySelector('#spectral-episode-month');
+  const episodeOrder = episodes.querySelector('#spectral-episode-order');
+  const eventList = episodes.querySelector('ol');
+  const episodePrompt = episodes.querySelector('p');
   const detail = panel.querySelector('#spectral-detail');
   const subject = detail.querySelector('.spectral-chart-subject');
   const legend = detail.querySelector('.spectral-series-key');
@@ -53,6 +63,7 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
   let calendarOpen = initial.get('analysis')==='events';
   let restore = calendarOpen ? {month:initial.get('month'),id:initial.get('event'),complex:initial.get('complex')} : null;
   let catalog, catalogRequest, activeMonth, episode, record, selected, timeOrigin, scene, inspectedHour;
+  let pinnedHour;
   let serial = 0, pending = false, message = '', maximumChange = 1;
 
   function pointRadius(station){
@@ -75,18 +86,10 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
   function mount({stage,svg,layer,position,scale,cancelDrawing}){
     const key = document.querySelector('#spectral-key-template').content.firstElementChild.cloneNode(true);
     stage.querySelector('.map-viewport').append(key);
-    const controls = stage.querySelectorAll(stage.querySelector('.flow-controls')
-      ? '.flow-controls > *, .map-layer' : '.map-panel-controls');
-    scene = {controls,svg,key,
+    scene = {svg,key,
       points:layer.append('g').attr('class','spectral-nodes'),position,scale,cancelDrawing,
       role:svg.attr('role'),label:svg.attr('aria-label')};
-    updateMapControls();
     drawScene();
-  }
-
-  function updateMapControls(){
-    if(!scene)return;
-    for(const control of scene.controls)control.inert = calendarOpen;
   }
 
   function drawScene(){
@@ -97,7 +100,8 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
       ? selected ? shortName(stations.get(selected)) : `${episode.complexes} complejos del episodio`
       : '';
     period.textContent = visible ? `Episodio · ${eventTime(episode.start,episode.end)}` : '';
-    summaryHour.textContent = '';
+    period.title = period.textContent;
+    summaryHour.textContent = summaryHour.title = '';
     if(!scene){
       drawDetail();
       return;
@@ -105,7 +109,7 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
     scene.key.hidden = !visible;
     scene.points.attr('display',visible?null:'none');
     scene.svg.attr('role',visible?'group':scene.role)
-      .attr('aria-label',visible?'Complejos del episodio':scene.label);
+      .attr('aria-label',visible?'Complejos del episodio':calendarOpen?'Red de referencia del metro':scene.label);
     if(visible){
       scene.key.querySelector('.spectral-map-hour').textContent = '';
       drawPoints();
@@ -161,10 +165,10 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
     marks.on('click',(event,d)=>{
       if(!d.event)return;
       event.stopPropagation();
-      selectComplex(d.id,true);
+      selectComplex(d.id);
     })
       .on('keydown',(event,d)=>{
-        if(d.event&&['Enter',' '].includes(event.key)){event.preventDefault();selectComplex(d.id,true);}
+        if(d.event&&['Enter',' '].includes(event.key)){event.preventDefault();selectComplex(d.id);}
       })
       .on('pointerenter',tooltip).on('pointerleave',hideTooltip)
       .on('focus',function(_,d){const box=this.getBoundingClientRect();tooltip({clientX:box.right,clientY:box.top},d);})
@@ -175,31 +179,43 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
     if(!catalog)return;
     const maximum = d3.max(Object.values(catalog.months).flat(),event=>event.strength)||1;
     const intensity = d3.scaleSequentialSqrt(d3.interpolateRgb('#e6eef0','#176982')).domain([0,maximum]);
-    const years = catalog.meta.years;
-    calendar.innerHTML = `<table class="spectral-calendar"><thead><tr><td></td>${months.map(month=>
-      `<th scope="col" title="${month}">${month.slice(0,1)}</th>`).join('')}</tr></thead><tbody>${years.map(year=>
-      `<tr><th scope="row">${year}</th>${months.map((_,i)=>{
-        const key = year+'-'+String(i+1).padStart(2,'0');
+    const headings = months.map(month=>
+      `<th scope="col" title="${month}"><span class="month-initial">${month[0]}</span><span class="month-abbreviation">${month}</span></th>`
+    ).join('');
+    const rows = catalog.meta.years.map(year=>{
+      const cells = months.map((_,index)=>{
+        const key = year+'-'+String(index+1).padStart(2,'0');
         const events = catalog.months[key]??[];
         const label = labels.month.format(parseMonth(key));
-        const title = events.length?`${label} · ${events.length} episodios destacados`:`${label} · Sin episodios destacados`;
+        const title = events.length ? `${label} · ${events.length} episodios destacados` : `${label} · Sin episodios destacados`;
+        const appearance = events.length ? ` style="--cell:${intensity(events[0].strength)}"` : ' disabled';
         return `<td><button type="button" data-spectral-month="${key}" aria-label="${title}" title="${title}"
-          aria-pressed="${key===activeMonth}"${events.length?` style="--cell:${intensity(events[0].strength)}"`:' disabled'}></button></td>`;
-      }).join('')}</tr>`).join('')}</tbody></table>`;
+          aria-pressed="${key===activeMonth}"${appearance}></button></td>`;
+      }).join('');
+      return `<tr><th scope="row">${year}</th>${cells}</tr>`;
+    }).join('');
+    calendar.innerHTML = `<table class="spectral-calendar" aria-labelledby="spectral-navigation-heading">
+      <thead><tr><td></td>${headings}</tr></thead><tbody>${rows}</tbody>
+    </table>`;
   }
 
   function drawEpisodes(){
     if(!catalog)return;
-    const events = [...(catalog.months[activeMonth]??[])].sort((a,b)=>a.start.localeCompare(b.start));
-    eventList.innerHTML = activeMonth
-      ? `<h3>${labels.month.format(parseMonth(activeMonth))}</h3><ol>${events.map(event=>{
-        const a = parseHour(event.start);
-        return `<li><button type="button" data-spectral-event="${event.id}" aria-pressed="${episode?.id===event.id}">
-          <strong>${labels.day.format(a)} · ${labels.time.format(a)}</strong>
-          <span>${event.hours} h · ${event.complexes} complejos</span>
-        </button></li>`;
-      }).join('')}</ol>`
-      : '<p>Elige un mes para ver sus episodios.</p>';
+    episodeHeading.hidden = eventList.hidden = !activeMonth;
+    episodePrompt.hidden = !!activeMonth;
+    if(activeMonth)episodeMonth.textContent = labels.month.format(parseMonth(activeMonth));
+    const events = [...(catalog.months[activeMonth]??[])];
+    const byDate = (a,b) => a.start.localeCompare(b.start);
+    const order = episodeOrder.querySelector('input:checked').value;
+    events.sort(order==='strength'
+      ? (a,b) => b.strength-a.strength || byDate(a,b)
+      : byDate);
+    eventList.innerHTML = events.map(event=>
+      `<li><button type="button" data-spectral-event="${event.id}" aria-pressed="${episode?.id===event.id}">
+        <strong>${eventTime(event.start,event.end,{includeYear:false})}</strong>
+        <span>${event.hours} h · ${event.complexes} complejos</span>
+      </button></li>`
+    ).join('');
   }
 
   function drawDetail(){
@@ -223,7 +239,7 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
 
   function drawChart(chosen){
     const plot = d3.select(chart);
-    const W = plot.node().clientWidth || 200, H = 156;
+    const W = chart.clientWidth || 200, H = chart.clientHeight;
     const m = {left:W<240?34:43,right:14,top:15,bottom:25};
     const n = chosen.observed.length;
     const dates = Array.from({length:n},(_,i)=>new Date(timeOrigin + (record.start+i)*3600000));
@@ -257,6 +273,7 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
       if(compared)reading.textContent += ` · Cambio ${signedCount(observed-typical)}`;
       summaryHour.textContent = `${labels.day.format(dates[i])} · ${labels.time.format(dates[i])} · ${compared
         ? `${signedCount(observed-typical)} entradas frente a lo habitual` : 'Sin comparación'}`;
+      summaryHour.title = summaryHour.textContent;
       driver.hidden = true;
       if(selected||!compared)return;
       let largest;
@@ -279,18 +296,27 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
       };
       driver.hidden = false;
     }
-    const peak = dates.findIndex(date=>date.getTime()===parseHour(episode.peak).getTime());
-    inspect(inspectedHour??Math.max(0,peak));
-    plot.on('pointermove',event=>{
-      const [pointer] = d3.pointer(event,plot.node());
+    function hourAtPointer(event){
+      const [pointer] = d3.pointer(event,chart);
       const hour = Math.round((+x.invert(pointer)-dates[0])/3600000);
-      inspect(Math.max(0,Math.min(n-1,hour)));
+      return Math.max(0,Math.min(n-1,hour));
+    }
+
+    inspect(pinnedHour);
+    plot.on('pointermove',event=>{
+      if(event.pointerType!=='touch')inspect(hourAtPointer(event));
+    }).on('pointerleave pointercancel',()=>{
+      inspect(pinnedHour);
+    }).on('click',event=>{
+      pinnedHour = hourAtPointer(event);
+      inspect(pinnedHour);
     }).on('keydown',event=>{
-        if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
-        event.preventDefault();
-        const direction = event.key==='ArrowLeft' ? -1 : 1;
-        inspect(Math.max(0,Math.min(n-1,currentHour+direction)));
-      });
+      if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
+      event.preventDefault();
+      const direction = event.key==='ArrowLeft' ? -1 : 1;
+      pinnedHour = Math.max(0,Math.min(n-1,pinnedHour+direction));
+      inspect(pinnedHour);
+    });
   }
 
   function refreshSelection(){
@@ -298,18 +324,9 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
     syncURL();
   }
 
-  function strongestHour(station){
-    const hours = d3.range(...record.window)
-      .filter(i=>hourChange(station,i)!==null);
-    return d3.greatest(hours,i=>Math.abs(hourChange(station,i)));
-  }
-
-  function selectComplex(id,focusEpisode=false){
+  function selectComplex(id){
     const hadFocus = document.activeElement?.dataset.complex === id;
     selected = selected===id ? null : id;
-    if(selected&&focusEpisode){
-      inspectedHour = strongestHour(record.stations.find(station=>station.id===selected));
-    }
     refreshSelection();
     if(hadFocus)scene.points.select(`[data-complex="${id}"]`).node()?.focus({preventScroll:true});
   }
@@ -318,7 +335,7 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
     const ticket = ++serial;
     hideTooltip();
     episode = event;
-    inspectedHour = undefined;
+    inspectedHour = pinnedHour = undefined;
     selected = null;
     record = null;
     pending = true;
@@ -334,13 +351,12 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
       if(ticket!==serial)return;
       record = monthData?.[event.id];
       if(!record?.stations?.length)throw Error('Faltan los datos del episodio.');
+      // Use a shared hour for all stations. Increases and decreases should not cancel out.
+      inspectedHour = pinnedHour = d3.greatest(d3.range(...record.window),hour=>
+        d3.sum(record.stations,station=>Math.abs(hourChange(station,hour)??0)))??record.window[0];
       maximumChange = d3.max(record.stations,station=>
         d3.max(station.observed,(_,hour)=>Math.abs(hourChange(station,hour)??0)))||1;
-      const station = record.stations.find(station=>station.id===complex);
-      if(station){
-        selected = complex;
-        inspectedHour = strongestHour(station);
-      }
+      if(record.stations.some(station=>station.id===complex))selected = complex;
     }catch(error){
       if(ticket!==serial)return;
       message = 'No se pudo cargar el episodio. Pulsa su fecha para reintentar.';
@@ -351,15 +367,15 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
     refreshSelection();
   }
 
-  function clearEpisode(){
+  function clearEpisode(refresh = refreshSelection){
     serial++;
     hideTooltip();
     episode=record=selected=null;
-    inspectedHour=undefined;
+    inspectedHour = pinnedHour = undefined;
     pending=false;
     message='';
     drawEpisodes();
-    refreshSelection();
+    refresh();
   }
 
   calendar.addEventListener('click',event=>{
@@ -372,6 +388,7 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
       item.setAttribute('aria-pressed',String(item.dataset.spectralMonth===activeMonth));
     });
   });
+  episodeOrder.addEventListener('change',drawEpisodes);
   eventList.addEventListener('click',event=>{
     const button = event.target.closest('[data-spectral-event]');
     if(!button)return;
@@ -405,9 +422,8 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
   }
 
   function updatePanel(){
-    panel.hidden = !calendarOpen;
+    navigation.hidden = panel.hidden = !calendarOpen;
     document.body.classList.toggle('spectral-calendar-open',calendarOpen);
-    updateMapControls();
     for(const button of buttons)button.setAttribute('aria-pressed',String(button.dataset.analysis===(calendarOpen?'events':'years')));
   }
 
@@ -418,13 +434,12 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
     if(open){
       hideTooltip();
       scene?.cancelDrawing();
+      onModeChange();
       load();
-    }
-    else{
+    }else{
       restore = null;
-      clearEpisode();
+      clearEpisode(onModeChange);
     }
-    syncURL();
   }
 
   function closeEpisode(){
@@ -442,7 +457,7 @@ export function createSpectralEvents({flows,syncURL,dataURL}){
 
   return {
     mount, updateZoom, writeURL, closeEpisode,
-    get episodeActive(){return !!episode;},
+    get calendarActive(){return calendarOpen;},
     clearComplex(){if(selected)selectComplex(null);}
   };
 }

@@ -1,27 +1,28 @@
 # Eventos de afluencia en la red
 
-**Eventos** usa entradas horarias de 2019–2024 y se abre desde la pestaña del mismo nombre en el Atlas. Este documento describe su cálculo.
+**Eventos** usa entradas horarias de 2021–2025 y se abre desde la pestaña del mismo nombre en el Atlas. Este documento describe su cálculo.
 
-**Pregunta.** ¿Qué complejos conectados se apartaron de su patrón habitual al mismo tiempo y cuánto duró ese cambio? El prototipo calculó episodios con las entradas horarias de **2019–2024**, en la hora local de Nueva York.
+**Pregunta.** ¿Qué complejos conectados se apartaron de su patrón habitual al mismo tiempo y cuánto duró ese cambio? El detector usa los 60 meses de entradas en hora local de Nueva York.
 
-- El calendario resume la mayor señal detectada en cada mes. Al pulsar una celda, aparecen hasta seis episodios candidatos.
-- El mapa muestra los complejos detectados. Los círculos se actualizan al recorrer las horas de la serie. El área por encima del mínimo visible indica la diferencia absoluta en entradas, con escala fija durante el episodio y su contexto horario. El color indica la diferencia porcentual de esa hora y se satura a partir de ±100 %. Los complejos sin comparación horaria se muestran en gris. Al pasar por una marca se pueden consultar los conteos y el porcentaje.
-- En la última versión del prototipo, la serie se mostraba debajo de la lista de episodios, a la izquierda. El panel derecho quedaba atenuado al abrir el calendario. El gráfico se llenaba al elegir un episodio. La serie de tiempo compara las entradas por hora observadas con las habituales, antes, durante y después. Al recorrer las horas, se lee la diferencia neta y el complejo con la mayor diferencia absoluta de entradas en esa hora. Se puede inspeccionar su serie pulsando su nombre o su marca en el mapa.
+- El panel izquierdo muestra una matriz de años por meses. Cada columna alinea el mismo mes de 2021 a 2025. El color resume la mayor señal detectada en cada mes. Al pulsar un mes, el mismo panel muestra hasta seis episodios candidatos debajo de la matriz.
+- El mapa muestra los complejos detectados. Cada episodio abre en la hora con la mayor suma de diferencias absolutas entre las entradas observadas y habituales de sus complejos. La tarjeta indica las horas de inicio y fin del episodio. Los círculos se actualizan al recorrer las horas de la serie. El área por encima del mínimo visible indica la diferencia absoluta en entradas, con escala fija durante el episodio y su contexto horario. El color indica la diferencia porcentual de esa hora y se satura a partir de ±100 %. Los complejos sin comparación horaria se muestran en gris. Al pasar por una marca se pueden consultar los conteos y el porcentaje. Al seleccionar un complejo, la serie se centra en él y conserva la hora del mapa.
+- La serie aparece debajo de la lista de episodios, en el panel izquierdo. El gráfico se llena al elegir un episodio. La serie de tiempo compara las entradas por hora observadas con las habituales, antes, durante y después. Pasar el cursor por la serie muestra una vista previa. Al salir de la serie se vuelve a la hora inicial o a la última hora fijada con un clic o con las flechas del teclado. Al recorrer las horas, se lee la diferencia neta y el complejo con la mayor diferencia absoluta de entradas en esa hora. Se puede inspeccionar su serie pulsando su nombre o su marca en el mapa.
 
 ## Fuentes y reproducción
 
 | Insumo | Procedencia y escala |
 |---|---|
-| Entradas | [MTA 2017–2019](https://data.ny.gov/d/t69i-h2me), solo 2019, y [MTA 2020–2024](https://data.ny.gov/d/wujg-7c2s). Las entradas se suman por `station_complex_id` y `transit_timestamp`, filtrando `transit_mode = subway`. |
+| Entradas | [MTA, entradas de 2021–2024](https://data.ny.gov/d/wujg-7c2s) y [MTA, entradas de 2025](https://data.ny.gov/d/5wq4-mkjj). Las entradas se suman por `station_complex_id` y `transit_timestamp`, filtrando `transit_mode = subway`. |
 | Grafo espacial | [Red de referencia GTFS 2026](RAEBImplementation.md), archivo [network_current.json](atlas/data/network_current.json), con 424 complejos y 549 conexiones únicas al unir ambos sentidos y deduplicar tramos y transbordos declarados. Se usa la misma topología de referencia para todo el período. |
 | Método | [ManyWaves, Valdrighi, García-Zanabria et al., secciones 4 y 5](https://files.visualdslab.com/files/papers/2026-ManyWaves-CGF.pdf#page=3). Esta adaptación usa una variable de entradas y el calendario, mapa y serie del Atlas. |
 
-El [índice procesado](data/entries_archive/spectral/index.json) registra los SHA-256 de los 72 Parquet y del grafo, así como cobertura y parámetros. [FullPeriodData](FullPeriodData.md) describe adquisición y conversión de los originales. Con los insumos locales y las dependencias de [Semana 12](requirements-data.txt), desde la raíz:
+El [índice procesado](data/spectral/index.json) registra los SHA-256 de los 60 Parquet y del grafo, así como cobertura y parámetros. [FullPeriodData](FullPeriodData.md) describe adquisición y conversión de los originales. Con los insumos locales y las dependencias de [Semana 12](requirements-data.txt), desde la raíz:
 
 ```bash
 resultado=$(mktemp -d)
 python deliveries/week12/scripts/prepare_spectral_events.py --output "$resultado"
-cp "$resultado"/index.json "$resultado"/????-??.json deliveries/week12/data/entries_archive/spectral/
+mkdir -p deliveries/week12/data/spectral
+cp "$resultado"/index.json "$resultado"/????-??.json deliveries/week12/data/spectral/
 cp "$resultado"/comparison.json deliveries/week12/data/spectral_comparison.json
 node --test deliveries/week12/tests/spectral-data.test.mjs
 ```
@@ -36,14 +37,14 @@ node --test deliveries/week12/tests/spectral-data.test.mjs
 
 ## Comprobación exploratoria
 
-La ejecución encontró **391 episodios candidatos en 69 meses** de 72. Se comparó contra el residuo directo, manteniendo las reglas de agrupamiento, el número máximo de resultados y el percentil de corte para cada método. Los recuentos corresponden a los candidatos publicados que intersecan cada ventana.
+La ejecución encontró **338 episodios candidatos en 59 de 60 meses**. En 2025 se muestran 72 candidatos distribuidos en los doce meses. Marzo de 2021 tiene cobertura de entradas y carece de candidatos que cumplan los criterios. Se comparó contra el residuo directo, manteniendo las reglas de agrupamiento, el número máximo de resultados y el percentil de corte para cada método. Los recuentos corresponden a los candidatos publicados que intersecan cada ventana.
 
 | Caso documentado | Método espectral | Residuo directo |
 |---|---:|---:|
-| 29–30 sep. 2023, lluvias de Ophelia | 16 h, 44 complejos | 16 h, 148 complejos |
-| 1–2 sep. 2021, inundaciones asociadas a Ida | 6 h, 20 complejos | 6 h, 72 complejos |
+| 29–30 sep. 2023, lluvias de Ophelia | 16 h, 43 complejos | 16 h, 150 complejos |
+| 1–2 sep. 2021, inundaciones asociadas a Ida | 11 h, 24 complejos | 6 h, 74 complejos |
 | Ocho ventanas de contraste con el mismo día y horario | 0 episodios | 0 episodios |
 
 Estas ventanas permiten comparar la amplitud de los candidatos. Se requiere una referencia por complejo para medir cuál método delimita mejor la afectación real. [Resultado de la comparación](data/spectral_comparison.json) · [Informe municipal de Ophelia](https://comptroller.nyc.gov/reports/is-new-york-city-ready-for-rain/) · [Alerta oficial de Ida](https://www.weather.gov/media/okx/Ida/FFW40_NYC.pdf)
 
-Para abrir el caso de 2023, añade `?analysis=events&month=2023-09&event=2023-09-6` a la dirección del Atlas.
+Para abrir el caso de 2023, añade `?analysis=events&month=2023-09&event=2023-09-4` a la dirección del Atlas.

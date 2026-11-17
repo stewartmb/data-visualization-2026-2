@@ -887,26 +887,14 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
 .atlas-workbench {
   --atlas-timeline: calc((clamp(224px, 19vw, 300px) + clamp(300px, 25vw, 368px)) / 2);
   --atlas-controls: clamp(260px, 23vw, 368px);
+  --top: 72px;
 }
-.atlas-workbench .masthead { grid-template-columns: max-content minmax(0, 1fr) max-content; }
-.atlas-view-context {
-  grid-area: 1 / 3;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
-  max-width: clamp(245px, 30vw, 420px);
+.atlas-workbench .masthead {
+  grid-template-columns: max-content minmax(0, 1fr) var(--atlas-controls);
+  padding-inline-end: 0;
 }
-.atlas-view-context .atlas-home {
-  flex: none;
-  padding: 5px 8px;
-  border: 1px solid var(--line);
-  border-radius: 5px;
-  font-size: 11px;
-  font-weight: 650;
-  white-space: nowrap;
-}
-.atlas-home:hover { border-color: var(--teal); }
+.atlas-workbench .masthead .brand { grid-area: 1 / 1; }
+.atlas-workbench .context-bar { grid-area: 1 / 2; }
 
 .atlas-workbench .app-shell {
   display: grid;
@@ -1152,27 +1140,31 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
 }
 #atlas-evidence:empty { display: none; }
 .atlas-map-summary {
+  grid-area: 1 / 3;
   min-width: 0;
-  padding-block: 2px;
+  padding: 3px 10px;
+  text-align: right;
 }
-.atlas-map-summary .linked-heading { position: relative; }
-.atlas-map-summary .linked-heading:has(.close) { padding-inline-end: 22px; }
+.atlas-map-summary .linked-heading { position: relative; padding-inline-end: 0; }
+.atlas-map-summary .linked-heading:has(.close) { padding-inline-start: 24px; }
+.atlas-map-summary .contrast-context { justify-content: flex-end; }
 .atlas-map-summary h2 {
   margin: 0;
   color: var(--ink);
-  font: 650 14px/1.2 Atlas, system-ui, sans-serif;
+  font: 650 clamp(19px, 1.6vw, 23px)/1.15 Atlas, system-ui, sans-serif;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.atlas-map-summary .close { inset: 0 0 auto auto; font-size: 18px; }
+.atlas-map-summary .close { inset: 0 auto auto 0; font-size: 18px; }
 .map-scope-period {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: baseline;
   gap: 2px 6px;
   margin-top: 2px;
-  font-size: 11px;
+  font-size: 14px;
   line-height: 1.25;
   color: var(--muted);
 }
@@ -1181,7 +1173,7 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
   margin: 2px 0 0;
   overflow: hidden;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.25;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1206,16 +1198,16 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
   .atlas-workbench { --atlas-map-height: clamp(380px, 58dvh, 510px); }
   .atlas-workbench .masthead {
     height: auto;
-    grid-template-columns: minmax(0, 1fr) max-content;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: 36px;
+    padding-inline-end: 14px;
     position: sticky;
     top: 0;
     gap: 6px;
   }
-  .atlas-workbench .context-bar { grid-area: 2 / 1 / 3 / 3; }
-  .atlas-workbench .atlas-view-context { display: contents; }
-  .atlas-view-context .atlas-home { grid-area: 1 / 2; justify-self: end; }
-  .atlas-map-summary { grid-area: 3 / 1 / 4 / -1; justify-self: end; }
+  .atlas-workbench .context-bar { grid-area: 2 / 1; }
+  .atlas-map-summary { grid-area: 3 / 1; padding-inline: 0; }
+  .spectral-episode-active .atlas-map-summary { grid-row: 2; }
   .atlas-workbench .app-shell {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "workspace" "timeline";
@@ -1270,3 +1262,19 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
 }
 .comparison-key .map-circle-samples { margin-top: 3px; }
 #od-change-status:empty, #od-change-counts:empty { display: none; }
+
+.atlas-workbench { --station-highlight: #f7cc43; --station-highlight-edge: #553f0e; }
+.atlas-workbench .map-svg .map-dot:is(.is-station-preview,.is-station-selected):not(.station-highlight-outline),
+.atlas-workbench .map-svg .context-point.is-station-preview,
+.atlas-workbench [data-scatter-station]:is(.is-station-preview,[aria-pressed="true"]) {
+  fill: var(--station-highlight);
+  stroke: var(--station-highlight-edge);
+  stroke-width: 1.25px;
+  opacity: 1;
+}
+.atlas-workbench .map-svg .map-dot.station-highlight-outline:is(.is-station-selected,.is-station-preview) {
+  stroke: var(--station-highlight);
+  stroke-width: 4px;
+  paint-order: stroke fill;
+  opacity: 1;
+}

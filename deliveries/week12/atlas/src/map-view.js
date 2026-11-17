@@ -9,7 +9,7 @@ import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
 import {activeODCompareBase} from './contrast-model.mjs?v=od-only1';
 import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,OD_RAIL_MIN_WIDTH,OD_RAIL_MAX_WIDTH,railChange,railFlowWidth,zoomStrokeScale,flowStrength,flowCount,odDelta} from './od-encoding.mjs?v=rail-width65';
 import {originBranches,bundleAt,distanceToLines} from './od-routing.mjs?v=annual-overview1';
-import {updateClockTime} from './inspector.js?v=stable-sidebar1';
+import {updateClockTime} from './inspector.js?v=station-highlight1';
 let transform=d3.zoomIdentity, previousFrame, pendingFidelity=null, pendingGrouping;
 let legendPreference=null;
 let legendPosition={x:0,y:0};
@@ -869,7 +869,7 @@ export function renderMap(host,app,items){
   // Volumen: divergente alrededor de la mediana del sistema (todos crecieron frente a 2021; lo informativo es quién creció más o menos que el conjunto).
   let medianaVol=null;
   if(metric==='recovery'){const ord=values.slice().sort(d3.ascending);medianaVol=Math.round(d3.median(ord));const lo=Math.floor(d3.quantile(ord,0.05)),hi=Math.ceil(d3.quantile(ord,0.95));color=d3.scaleDiverging([lo,medianaVol,hi],t=>t<=.5?d3.interpolateRgb('#176c91','#f5f5ef')(2*t):d3.interpolateRgb('#f5f5ef','#b6532c')(2*t-1)).clamp(true);}
-  const contextPoints=g.selectAll('.context-point').data(app.data.stations.filter(s=>!ids.has(s.id)&&profile(s)&&passesMetricRanges(s))).join('circle').attr('class','context-point').attr('cx',s=>stationPosition(s)[0]).attr('cy',s=>stationPosition(s)[1]).attr('r',1.6).attr('fill','#b8c7c1').attr('opacity',.45);
+  const contextPoints=g.selectAll('.context-point').data(app.data.stations.filter(s=>!ids.has(s.id)&&profile(s)&&passesMetricRanges(s))).join('circle').attr('class','context-point').attr('data-context-station-id',s=>s.id).attr('cx',s=>stationPosition(s)[0]).attr('cy',s=>stationPosition(s)[1]).attr('r',1.6).attr('fill','#b8c7c1').attr('opacity',.45);
   const R=flujos?2.4:5.2;
   const destinationIndex=new Map(app.flows?.nodes.map((station,i)=>[station.id,i]));
   const isDestination=station=>!!focusOrigin&&station.id!==focusOrigin.id;
@@ -1003,6 +1003,8 @@ export function renderMap(host,app,items){
   }
   if(focusOrigin)contextPoints.remove();
   const points=g.selectAll('.map-dot').data(dotItems).join('circle').attr('class','map-dot'+(flujos?' quiet':'')).attr('data-station-id',s=>s.id).attr('vector-effect','non-scaling-stroke').attr('cx',s=>stationPosition(s)[0]).attr('cy',s=>stationPosition(s)[1]).attr('r',s=>rOf(s)).attr('fill',s=>flujos?(focusOrigin&&s.id!==focusOrigin.id?'#87969d':'#1d6f8dcc'):color(metricValue(s,state.mapMetric)))
+    .classed('is-station-selected',s=>s.id===state.selected)
+    .classed('station-highlight-outline',!!(cambio||between||!flujos))
     .classed('scatter-area-member',s=>state.cohortSource==='scatter'&&ids.has(s.id))
     .classed('map-zone-a',s=>zoneOf(s)==='a')
     .classed('map-zone-b',s=>zoneOf(s)==='b')
@@ -1016,6 +1018,7 @@ export function renderMap(host,app,items){
   const tooltip=document.querySelector('#tooltip');
   function showStationTooltip(event,station){
     if(event.pointerType==='touch'||event.buttons)return;
+    app.showStationPreview(station.id,event.currentTarget);
     hoveredComplex=station.id;
     updateComplexContext?.();
     const name=station.name.replace(/ \([^)]*\)/g,'');
@@ -1068,7 +1071,8 @@ export function renderMap(host,app,items){
   for(const stations of [points,contextPoints]){
     stations.on('pointerenter',showStationTooltip)
       .on('pointermove',(event,station)=>{if(tooltip.hidden)showStationTooltip(event,station);})
-      .on('pointerleave',()=>{
+      .on('pointerleave',function(){
+        app.showStationPreview(null,this);
         hideTooltip();
         hoveredComplex=null;
         updateComplexContext?.();
@@ -1101,8 +1105,8 @@ export function renderMap(host,app,items){
   }
   function clear(key){if(key==='change')app.set({tvMin:0,tvMax:100});else app.set({ranges:{...state.ranges,[key]:null}});}
   host.querySelectorAll('[data-clear-metric]').forEach(b=>b.onclick=()=>clear(b.dataset.clearMetric));
-  const active=app.data.stations.filter(s=>s.id===state.selected||(!focusOrigin&&state.pins.includes(s.id)));
-  const rings=g.selectAll('.selected-ring').data(active).join('circle').attr('class','selected-ring').attr('vector-effect','non-scaling-stroke').attr('cx',s=>stationPosition(s)[0]).attr('cy',s=>stationPosition(s)[1]).attr('r',8.5).attr('fill','none').attr('stroke',s=>s.id===state.selected?'#102937':'#c96035').attr('stroke-width',2).style('pointer-events','none');
+  const pinned=app.data.stations.filter(s=>!focusOrigin&&s.id!==state.selected&&state.pins.includes(s.id));
+  const rings=g.selectAll('.selected-ring').data(pinned).join('circle').attr('class','selected-ring').attr('vector-effect','non-scaling-stroke').attr('cx',s=>stationPosition(s)[0]).attr('cy',s=>stationPosition(s)[1]).attr('r',8.5).attr('fill','none').attr('stroke','#c96035').attr('stroke-width',2).style('pointer-events','none');
   if(flujos){
     const toggle=host.querySelector('#flow-nodes');
     const legend=host.querySelector('#flow-node-key');
@@ -1118,15 +1122,10 @@ export function renderMap(host,app,items){
     };
     if(toggle)setNodeVisibility();
   }
-  const reset=document.querySelector('#map-center');
-  const scopeFiltered=state.borough!=='all'||state.query||state.cohort||state.preset||state.selected||drawnZones||filters.length;
-  const hourSelected=flujos&&!!app.flows.annual&&!annual;
   const boroughLabels=g.selectAll('.borough-name');
   let boroughsHidden=null;
   const zoom=d3.zoom().scaleExtent(borough?[Math.min(1,districtCamera.k),mapZoomLimits[1]]:mapZoomLimits).translateExtent(panExtent).on('zoom',event=>{
     transform=event.transform;
-    const cameraMoved=transform.k!==1||Math.abs(transform.x)>.01||Math.abs(transform.y)>.01;
-    reset.hidden=!(scopeFiltered||hourSelected||cameraMoved);
     if(flujos)svgNode.closest('.map-stage').style.setProperty('--flow-width-scale',zoomStrokeScale(transform.k));
     g.attr('transform',transform);
     resizeScenarioStops?.();
@@ -1141,6 +1140,7 @@ export function renderMap(host,app,items){
       boroughLabels.attr('display',hideBoroughs?'none':null);
       boroughsHidden=hideBoroughs;
     }
+    if(hoveredComplex!==null)app.showStationPreview(null);
     hoveredComplex=null;
     updateComplexContext?.();
     hideTooltip();
@@ -1167,10 +1167,9 @@ export function renderMap(host,app,items){
     updateRadiusGuide?.();
   });
   svg.call(zoom).call(zoom.transform,transform);
-  reset.onclick=()=>{transform=d3.zoomIdentity;app.resetScope({annual:flujos});};
   svg.on('click.clear-selection',event=>{
     if(event.defaultPrevented)return;
-    if(app.spectralEvents?.episodeActive){
+    if(app.spectralEvents?.calendarActive){
       app.spectralEvents.clearComplex();
       return;
     }

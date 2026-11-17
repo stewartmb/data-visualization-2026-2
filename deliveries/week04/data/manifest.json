@@ -1,0 +1,2044 @@
+{
+  "period": [
+    "2021-01",
+    "2025-12"
+  ],
+  "sample_rows_per_month_per_demand_source": 24,
+  "output_rows": {
+    "sample.csv": 1440,
+    "od_sample.csv": 1440,
+    "network_sample.csv": 631,
+    "complexes.csv": 424
+  },
+  "output_sha256": {
+    "sample.csv": "0da4d193ae82e626c85a2150205377787d55d695597e9a21f0b399c240fb2d1e",
+    "od_sample.csv": "b57cb6580a32ba01a3bebbced9acccb17b7c7e05865c59760c3707cabee03ddc",
+    "network_sample.csv": "a83d3b1872282143e02e5f83bd3c10db8a7aa78b8c17c079885fb64deb9aabd0",
+    "complexes.csv": "91945228cd8a6a046da4892a61e4cc3d03a9d243f6199122c91d59991d576d8f"
+  },
+  "entries": {
+    "2021-01": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-02-01T00%3A00%3A00%27&%24limit=1788829",
+          "retrieved_at_utc": "2026-10-28T03:43:44.164249+00:00",
+          "sha256": "223369344b81a9f32290e834325347062967732029cc6b6161ccac696f6e42b9"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:43:44.164249+00:00",
+      "raw_sha256": "223369344b81a9f32290e834325347062967732029cc6b6161ccac696f6e42b9",
+      "parquet": "data/raw/full_period/parquet/2021-01.parquet",
+      "parquet_sha256": "5d024b42780dec56e1f369127f866e153da33d4f7666855ebd1898838bcf1f5e",
+      "source_rows": 1788828
+    },
+    "2021-02": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-03-01T00%3A00%3A00%27&%24limit=1598953",
+          "retrieved_at_utc": "2026-10-28T03:44:00.377885+00:00",
+          "sha256": "0f8d1f9ae47a18b43f9749ac21d7e159e75387314231eb5a9255b58dad98b5c9"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:44:00.377885+00:00",
+      "raw_sha256": "0f8d1f9ae47a18b43f9749ac21d7e159e75387314231eb5a9255b58dad98b5c9",
+      "parquet": "data/raw/full_period/parquet/2021-02.parquet",
+      "parquet_sha256": "312e0d78f70c5700442dea436d9c73659917b40b4f5567b57a8c155fa75dc94a",
+      "source_rows": 1598952
+    },
+    "2021-03": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-03-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-04-01T00%3A00%3A00%27&%24limit=1890386",
+          "retrieved_at_utc": "2026-10-28T03:44:15.843040+00:00",
+          "sha256": "0924b003306deae69a647d99f9abc218a66a74ba1ce693e3f988426df0a12691"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:44:15.843040+00:00",
+      "raw_sha256": "0924b003306deae69a647d99f9abc218a66a74ba1ce693e3f988426df0a12691",
+      "parquet": "data/raw/full_period/parquet/2021-03.parquet",
+      "parquet_sha256": "03ec28c0759c14bbd182774e0ec7b0a52fb0f95e40c2c6a9af99040f436930b1",
+      "source_rows": 1890385
+    },
+    "2021-04": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-04-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-05-01T00%3A00%3A00%27&%24limit=1882288",
+          "retrieved_at_utc": "2026-10-28T03:43:57.957631+00:00",
+          "sha256": "36e57661d21a2ade10284e4970cc0392b1f689fe2cd6709214e38efe38ba8637"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:43:57.957631+00:00",
+      "raw_sha256": "36e57661d21a2ade10284e4970cc0392b1f689fe2cd6709214e38efe38ba8637",
+      "parquet": "data/raw/full_period/parquet/2021-04.parquet",
+      "parquet_sha256": "910fe87020890c8871a896fea7967daa8a5377d5ea8979f7a3ab4c783f37c1a3",
+      "source_rows": 1882287
+    },
+    "2021-05": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-05-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-06-01T00%3A00%3A00%27&%24limit=1975836",
+          "retrieved_at_utc": "2026-10-28T03:45:15.159067+00:00",
+          "sha256": "5f73f8a3f57acdc0ccd731e66dd9bce0dac012e6eedaf5da88c2fc4e23cce2e9"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:45:15.159067+00:00",
+      "raw_sha256": "5f73f8a3f57acdc0ccd731e66dd9bce0dac012e6eedaf5da88c2fc4e23cce2e9",
+      "parquet": "data/raw/full_period/parquet/2021-05.parquet",
+      "parquet_sha256": "0aeb076c9ebf1b4fc3e284ff81252e78f59df9478f36ae3360f36a13cf137f42",
+      "source_rows": 1975835
+    },
+    "2021-06": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-06-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-07-01T00%3A00%3A00%27&%24limit=1995216",
+          "retrieved_at_utc": "2026-10-28T03:47:34.656933+00:00",
+          "sha256": "22e0f04f969239ed9cc372c08b0f2a96dd617caeece43ca66d9013569bfb8aed"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:47:34.656933+00:00",
+      "raw_sha256": "22e0f04f969239ed9cc372c08b0f2a96dd617caeece43ca66d9013569bfb8aed",
+      "parquet": "data/raw/full_period/parquet/2021-06.parquet",
+      "parquet_sha256": "d47cbaa466468f949f4adcf9320dfe59e167919ef160f31c9615a3e785fab916",
+      "source_rows": 1995215
+    },
+    "2021-07": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-07-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-08-01T00%3A00%3A00%27&%24limit=1991509",
+          "retrieved_at_utc": "2026-10-28T03:45:03.782727+00:00",
+          "sha256": "b60b403a5cec7602c4cfb00d2d928174c43404018aab2a904a82263c3690c66c"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:45:03.782727+00:00",
+      "raw_sha256": "b60b403a5cec7602c4cfb00d2d928174c43404018aab2a904a82263c3690c66c",
+      "parquet": "data/raw/full_period/parquet/2021-07.parquet",
+      "parquet_sha256": "e93677d4ac5598a7316abbabd9bd68db04ba38137275d40edc80a04df7654e62",
+      "source_rows": 1991508
+    },
+    "2021-08": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-08-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-09-01T00%3A00%3A00%27&%24limit=2020783",
+          "retrieved_at_utc": "2026-10-28T03:45:07.990203+00:00",
+          "sha256": "68193f5da9b81718f3cd3ced797f90bcf5b26dbf2ede356ff77175e933739e3d"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:45:07.990203+00:00",
+      "raw_sha256": "68193f5da9b81718f3cd3ced797f90bcf5b26dbf2ede356ff77175e933739e3d",
+      "parquet": "data/raw/full_period/parquet/2021-08.parquet",
+      "parquet_sha256": "cfae0202c44c7dd2b2031067bd345d7e2e22555717e108f03b059c4aa6bebc0d",
+      "source_rows": 2020782
+    },
+    "2021-09": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-09-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-10-01T00%3A00%3A00%27&%24limit=1969467",
+          "retrieved_at_utc": "2026-10-28T03:45:07.136098+00:00",
+          "sha256": "ea42bf265e7009259678a034bb36e4eddfacf7f4147254a477471ee52e3e6579"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:45:07.136098+00:00",
+      "raw_sha256": "ea42bf265e7009259678a034bb36e4eddfacf7f4147254a477471ee52e3e6579",
+      "parquet": "data/raw/full_period/parquet/2021-09.parquet",
+      "parquet_sha256": "523fe330a60fa522d781dbffd42f818ce46d77aac73364b33224c7da2dadc4ad",
+      "source_rows": 1969466
+    },
+    "2021-10": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-10-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-11-01T00%3A00%3A00%27&%24limit=2075211",
+          "retrieved_at_utc": "2026-10-28T03:49:17.101781+00:00",
+          "sha256": "5715587514184c38cc39f335fb31ec751e51b5f1cd39e2decf20bfc98fec501a"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:49:17.101781+00:00",
+      "raw_sha256": "5715587514184c38cc39f335fb31ec751e51b5f1cd39e2decf20bfc98fec501a",
+      "parquet": "data/raw/full_period/parquet/2021-10.parquet",
+      "parquet_sha256": "1e0878d39c728a939b6b973b7e6fa247c203cd1e96f39e4005dd20aa9af914a1",
+      "source_rows": 2075210
+    },
+    "2021-11": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-11-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272021-12-01T00%3A00%3A00%27&%24limit=2014571",
+          "retrieved_at_utc": "2026-10-28T03:47:06.334937+00:00",
+          "sha256": "7cb74ec77cb25d9c667cc895f12e30d7b93911a270f7f2383cdcc8f0f4f9e4f2"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:47:06.334937+00:00",
+      "raw_sha256": "7cb74ec77cb25d9c667cc895f12e30d7b93911a270f7f2383cdcc8f0f4f9e4f2",
+      "parquet": "data/raw/full_period/parquet/2021-11.parquet",
+      "parquet_sha256": "6b4bcb2fe3370a1be61dc833a7da94bf9ea8214ccc53d9736924ca36ef4ac22f",
+      "source_rows": 2014570
+    },
+    "2021-12": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272021-12-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-01-01T00%3A00%3A00%27&%24limit=2078943",
+          "retrieved_at_utc": "2026-10-28T03:46:47.139690+00:00",
+          "sha256": "3180b9ba98c1d03d4d62e5c780ac19b55a942f3ed11db7a5eecb20e5506a2bc6"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:46:47.139690+00:00",
+      "raw_sha256": "3180b9ba98c1d03d4d62e5c780ac19b55a942f3ed11db7a5eecb20e5506a2bc6",
+      "parquet": "data/raw/full_period/parquet/2021-12.parquet",
+      "parquet_sha256": "283184446e9301a9da9a9161eb4a2fb454d02c4b1fee154dc36431574660b030",
+      "source_rows": 2078942
+    },
+    "2022-01": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-02-01T00%3A00%3A00%27&%24limit=2048716",
+          "retrieved_at_utc": "2026-10-28T03:46:34.452264+00:00",
+          "sha256": "bdc98a65cd9a15d067b4ed3c7b9581d4198f007f53114acdc3ab26fb53a2f876"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:46:34.452264+00:00",
+      "raw_sha256": "bdc98a65cd9a15d067b4ed3c7b9581d4198f007f53114acdc3ab26fb53a2f876",
+      "parquet": "data/raw/full_period/parquet/2022-01.parquet",
+      "parquet_sha256": "8ecb56d4f4cae1d514abb407bb62b68f8af566341272c0e2cb0e53b7cfb29334",
+      "source_rows": 2048715
+    },
+    "2022-02": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-03-01T00%3A00%3A00%27&%24limit=1867552",
+          "retrieved_at_utc": "2026-10-28T03:46:24.483004+00:00",
+          "sha256": "d939d2ac77bbef7e65650b205c3ac64bfbca595d7817bae3200735680cfeb7ef"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:46:24.483004+00:00",
+      "raw_sha256": "d939d2ac77bbef7e65650b205c3ac64bfbca595d7817bae3200735680cfeb7ef",
+      "parquet": "data/raw/full_period/parquet/2022-02.parquet",
+      "parquet_sha256": "203a6690f1a2984af620c4ab5028481b564a755e59b604a880373bd8e962eeba",
+      "source_rows": 1867551
+    },
+    "2022-03": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-03-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-04-01T00%3A00%3A00%27&%24limit=2103814",
+          "retrieved_at_utc": "2026-10-28T03:47:46.436048+00:00",
+          "sha256": "df800c5ec7b54cfa125759239f6914cea03bc4a1d17a4283267c7921c6a0ba84"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:47:46.436048+00:00",
+      "raw_sha256": "df800c5ec7b54cfa125759239f6914cea03bc4a1d17a4283267c7921c6a0ba84",
+      "parquet": "data/raw/full_period/parquet/2022-03.parquet",
+      "parquet_sha256": "df8c6c42892163e465eb752b42b6365993bdb679337576b37f6594e460514b8d",
+      "source_rows": 2103813
+    },
+    "2022-04": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-04-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-05-01T00%3A00%3A00%27&%24limit=2031292",
+          "retrieved_at_utc": "2026-10-28T03:49:07.407444+00:00",
+          "sha256": "baf605f3281addaf58e2ee3658c5df66fffe263fb34b76c0800aa005c449f02f"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:49:07.407444+00:00",
+      "raw_sha256": "baf605f3281addaf58e2ee3658c5df66fffe263fb34b76c0800aa005c449f02f",
+      "parquet": "data/raw/full_period/parquet/2022-04.parquet",
+      "parquet_sha256": "1f20ec3d67cc8244585ee0e9ac189e26a8965218788876e2a02093e378a16a24",
+      "source_rows": 2031291
+    },
+    "2022-05": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-05-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-06-01T00%3A00%3A00%27&%24limit=2095060",
+          "retrieved_at_utc": "2026-10-28T03:52:35.157599+00:00",
+          "sha256": "c5260f19fab5c2d9b811ffa80a14f957b835be27fb4c7df8d786ede60259064d"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:52:35.157599+00:00",
+      "raw_sha256": "c5260f19fab5c2d9b811ffa80a14f957b835be27fb4c7df8d786ede60259064d",
+      "parquet": "data/raw/full_period/parquet/2022-05.parquet",
+      "parquet_sha256": "e2b4d5521be3014be18b85875ce15ff94a605ad0506091a85262876c0d15a147",
+      "source_rows": 2095059
+    },
+    "2022-06": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-06-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-07-01T00%3A00%3A00%27&%24limit=2049886",
+          "retrieved_at_utc": "2026-10-28T03:50:11.212693+00:00",
+          "sha256": "edab0765b2909af808792a7faab414c84297ed6dceb4296f31db7a32e83940ec"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:50:11.212693+00:00",
+      "raw_sha256": "edab0765b2909af808792a7faab414c84297ed6dceb4296f31db7a32e83940ec",
+      "parquet": "data/raw/full_period/parquet/2022-06.parquet",
+      "parquet_sha256": "527bf35f0a232ca1a2eac35c1e4ff90fb46bf5e93b113ac6c308f878a973e26d",
+      "source_rows": 2049885
+    },
+    "2022-07": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-07-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-08-01T00%3A00%3A00%27&%24limit=2052407",
+          "retrieved_at_utc": "2026-10-28T03:50:28.087061+00:00",
+          "sha256": "652536b1ce565edba51f43ee3cbf386543a46804c0e8949907eb614c38cc91fa"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:50:28.087061+00:00",
+      "raw_sha256": "652536b1ce565edba51f43ee3cbf386543a46804c0e8949907eb614c38cc91fa",
+      "parquet": "data/raw/full_period/parquet/2022-07.parquet",
+      "parquet_sha256": "2e023b99102fd1b5194246c1013cbf4a10c458880f07f1a4c7808f2fda4b9bb5",
+      "source_rows": 2052406
+    },
+    "2022-08": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-08-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-09-01T00%3A00%3A00%27&%24limit=2077066",
+          "retrieved_at_utc": "2026-10-28T03:49:20.582247+00:00",
+          "sha256": "6e2386fdb6f1f7ad41c7f7d54b79adc6107ce512b63c98a420a4e683608ba376"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:49:20.582247+00:00",
+      "raw_sha256": "6e2386fdb6f1f7ad41c7f7d54b79adc6107ce512b63c98a420a4e683608ba376",
+      "parquet": "data/raw/full_period/parquet/2022-08.parquet",
+      "parquet_sha256": "20318cba18e7a151450c63986a3bb5a22ad388d2b4834d3db9abe650c8a58817",
+      "source_rows": 2077065
+    },
+    "2022-09": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-09-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-10-01T00%3A00%3A00%27&%24limit=2021813",
+          "retrieved_at_utc": "2026-10-28T03:52:37.474787+00:00",
+          "sha256": "47cebec134c6261e27688f91bc877b7c8317f0398569e1ca1f371c7354dca6b6"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:52:37.474787+00:00",
+      "raw_sha256": "47cebec134c6261e27688f91bc877b7c8317f0398569e1ca1f371c7354dca6b6",
+      "parquet": "data/raw/full_period/parquet/2022-09.parquet",
+      "parquet_sha256": "94100bca23b246a467e00be89c37b79b13c44bc7b90b1e512863e847b6dd7b45",
+      "source_rows": 2021812
+    },
+    "2022-10": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-10-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-11-01T00%3A00%3A00%27&%24limit=2096882",
+          "retrieved_at_utc": "2026-10-28T03:50:32.848223+00:00",
+          "sha256": "6ac76fc30f033207125e9737dd77a8794a16134acfedb5d01675d1f9b7d2f974"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:50:32.848223+00:00",
+      "raw_sha256": "6ac76fc30f033207125e9737dd77a8794a16134acfedb5d01675d1f9b7d2f974",
+      "parquet": "data/raw/full_period/parquet/2022-10.parquet",
+      "parquet_sha256": "1e5b22408eea57c37c1e9ed296615a4b4949c89d34324cb9ac0f0c55602f2cdf",
+      "source_rows": 2096881
+    },
+    "2022-11": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-11-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272022-12-01T00%3A00%3A00%27&%24limit=2061676",
+          "retrieved_at_utc": "2026-10-28T03:52:30.180301+00:00",
+          "sha256": "bd61e05ed74fb80ab42e97607a79cccea021158bcca1e098beb9ae8d65a473b9"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:52:30.180301+00:00",
+      "raw_sha256": "bd61e05ed74fb80ab42e97607a79cccea021158bcca1e098beb9ae8d65a473b9",
+      "parquet": "data/raw/full_period/parquet/2022-11.parquet",
+      "parquet_sha256": "02586d35d53e0665a3bc9992b57312d67c8f4899cbb6db7924062a1c769c3c5e",
+      "source_rows": 2061675
+    },
+    "2022-12": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272022-12-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-01-01T00%3A00%3A00%27&%24limit=2129658",
+          "retrieved_at_utc": "2026-10-28T03:54:50.722386+00:00",
+          "sha256": "e7c2dee4c38de44b2b4ebda0b6383f3334b6c0a10a6e7604548d8ad6db2d1166"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:54:50.722386+00:00",
+      "raw_sha256": "e7c2dee4c38de44b2b4ebda0b6383f3334b6c0a10a6e7604548d8ad6db2d1166",
+      "parquet": "data/raw/full_period/parquet/2022-12.parquet",
+      "parquet_sha256": "597c9bcfbd2e79c12892bc6257d62ee03d42bf84d0ac394051b8a271538546ae",
+      "source_rows": 2129657
+    },
+    "2023-01": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-02-01T00%3A00%3A00%27&%24limit=2147545",
+          "retrieved_at_utc": "2026-10-28T03:52:14.751264+00:00",
+          "sha256": "b968195e8820e187dcc0a377d8c196f7ea6b952cad31f27aad788320e712c85e"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:52:14.751264+00:00",
+      "raw_sha256": "b968195e8820e187dcc0a377d8c196f7ea6b952cad31f27aad788320e712c85e",
+      "parquet": "data/raw/full_period/parquet/2023-01.parquet",
+      "parquet_sha256": "07a6178a59f860aaa4e6f153f2d15214e874262656f1fda1162c42deb2037960",
+      "source_rows": 2147544
+    },
+    "2023-02": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-03-01T00%3A00%3A00%27&%24limit=1942147",
+          "retrieved_at_utc": "2026-10-28T03:52:31.283882+00:00",
+          "sha256": "8dfa92b1339ebe3df1ee9ca0e02a615b7bcbddfc04c59b842b11f58c426ba987"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:52:31.283882+00:00",
+      "raw_sha256": "8dfa92b1339ebe3df1ee9ca0e02a615b7bcbddfc04c59b842b11f58c426ba987",
+      "parquet": "data/raw/full_period/parquet/2023-02.parquet",
+      "parquet_sha256": "eea87504502edd0f7f5d06da178926c77f2743abc27fad55d5b7758a71356fca",
+      "source_rows": 1942146
+    },
+    "2023-03": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-03-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-04-01T00%3A00%3A00%27&%24limit=2179184",
+          "retrieved_at_utc": "2026-10-28T03:53:08.483011+00:00",
+          "sha256": "51dae37d9e030208f18b5e6cb824514e39a52e11c33f9771f2112795b9b0db86"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:53:08.483011+00:00",
+      "raw_sha256": "51dae37d9e030208f18b5e6cb824514e39a52e11c33f9771f2112795b9b0db86",
+      "parquet": "data/raw/full_period/parquet/2023-03.parquet",
+      "parquet_sha256": "e976fa6a7176cb28cd5211bf6fb44ac415c286d2ff68af1f0e3e7ff412a44201",
+      "source_rows": 2179183
+    },
+    "2023-04": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-04-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-05-01T00%3A00%3A00%27&%24limit=2097889",
+          "retrieved_at_utc": "2026-10-28T03:53:23.782338+00:00",
+          "sha256": "12d53b1aafdee10fc9c68096fa38b60a37ee1480571c81742af8695393180206"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:53:23.782338+00:00",
+      "raw_sha256": "12d53b1aafdee10fc9c68096fa38b60a37ee1480571c81742af8695393180206",
+      "parquet": "data/raw/full_period/parquet/2023-04.parquet",
+      "parquet_sha256": "66e9eaf30dfbbc7bf4da87045190ff5621d39aa63a328a5d8a11b1e87322d2fb",
+      "source_rows": 2097888
+    },
+    "2023-05": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-05-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-06-01T00%3A00%3A00%27&%24limit=2192390",
+          "retrieved_at_utc": "2026-10-28T03:54:39.413777+00:00",
+          "sha256": "a047dc316caa56958bd9b225113adc893f10837c5d1477c410c01d1dbee8f515"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:54:39.413777+00:00",
+      "raw_sha256": "a047dc316caa56958bd9b225113adc893f10837c5d1477c410c01d1dbee8f515",
+      "parquet": "data/raw/full_period/parquet/2023-05.parquet",
+      "parquet_sha256": "e3ca1024dbe4ebbe7b50358cc2163cc5bf676a6f89845483e009d91badd1babe",
+      "source_rows": 2192389
+    },
+    "2023-06": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-06-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-07-01T00%3A00%3A00%27&%24limit=2122813",
+          "retrieved_at_utc": "2026-10-28T03:56:15.835195+00:00",
+          "sha256": "ea8f83a46c91b0d7b196d3fcf3e0aa6b1db2e8a33a6950c4d4d4384a80022712"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:56:15.835195+00:00",
+      "raw_sha256": "ea8f83a46c91b0d7b196d3fcf3e0aa6b1db2e8a33a6950c4d4d4384a80022712",
+      "parquet": "data/raw/full_period/parquet/2023-06.parquet",
+      "parquet_sha256": "e189d26c7111cb88ddab69336d838590043adb98037574a878b4f0fb4aa0fef8",
+      "source_rows": 2122812
+    },
+    "2023-07": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-07-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-08-01T00%3A00%3A00%27&%24limit=2125806",
+          "retrieved_at_utc": "2026-10-28T03:54:43.583235+00:00",
+          "sha256": "38241b7489852fe56bddfe5c00b7c5994d553257591f1485802f7ba986b68aff"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:54:43.583235+00:00",
+      "raw_sha256": "38241b7489852fe56bddfe5c00b7c5994d553257591f1485802f7ba986b68aff",
+      "parquet": "data/raw/full_period/parquet/2023-07.parquet",
+      "parquet_sha256": "59cb28afeac393b37c0b17675780b3b7d10a109e641fc7598166ba96fee1a9f3",
+      "source_rows": 2125805
+    },
+    "2023-08": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-08-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-09-01T00%3A00%3A00%27&%24limit=2162616",
+          "retrieved_at_utc": "2026-10-28T03:54:09.148066+00:00",
+          "sha256": "a96ec134c223d9910a97a34b1d9a198b9d74ac144968fef81198a79539e08e45"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:54:09.148066+00:00",
+      "raw_sha256": "a96ec134c223d9910a97a34b1d9a198b9d74ac144968fef81198a79539e08e45",
+      "parquet": "data/raw/full_period/parquet/2023-08.parquet",
+      "parquet_sha256": "dc3f087722826489cdd6787d8d2adae6fd8e17b226dd64d848e127db2a9d7b96",
+      "source_rows": 2162615
+    },
+    "2023-09": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-09-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-10-01T00%3A00%3A00%27&%24limit=2086947",
+          "retrieved_at_utc": "2026-10-28T04:00:59.594113+00:00",
+          "sha256": "602b1152c6c502f6c660a93af485783fc0b404abf579c3b0df8522a7c8f45cce"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:00:59.594113+00:00",
+      "raw_sha256": "602b1152c6c502f6c660a93af485783fc0b404abf579c3b0df8522a7c8f45cce",
+      "parquet": "data/raw/full_period/parquet/2023-09.parquet",
+      "parquet_sha256": "7526a3ac96a6ec8d302451466a9c26ffdee9453673c371bfef74db2d7c7d2b2c",
+      "source_rows": 2086946
+    },
+    "2023-10": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-10-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-11-01T00%3A00%3A00%27&%24limit=2204036",
+          "retrieved_at_utc": "2026-10-28T03:57:33.546108+00:00",
+          "sha256": "5d1aa6dc097b0dbada1ceb67c65b187b73ab8214a4eb038f3c798291495150c7"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:57:33.546108+00:00",
+      "raw_sha256": "5d1aa6dc097b0dbada1ceb67c65b187b73ab8214a4eb038f3c798291495150c7",
+      "parquet": "data/raw/full_period/parquet/2023-10.parquet",
+      "parquet_sha256": "785405c7c7425c94dbe375a872c79d309a6474e018ea41cbbf48ea38218d4d87",
+      "source_rows": 2204035
+    },
+    "2023-11": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-11-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272023-12-01T00%3A00%3A00%27&%24limit=2128674",
+          "retrieved_at_utc": "2026-10-28T03:56:45.577177+00:00",
+          "sha256": "1cb29d2c1aaf19b85d62baa0b1ac39007cab2fff81fe6107950d2181e95bac36"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:56:45.577177+00:00",
+      "raw_sha256": "1cb29d2c1aaf19b85d62baa0b1ac39007cab2fff81fe6107950d2181e95bac36",
+      "parquet": "data/raw/full_period/parquet/2023-11.parquet",
+      "parquet_sha256": "1bb76fb534673c1e016436e32a8b202fac61f83db27e96f85aa980c90f6b3e84",
+      "source_rows": 2128673
+    },
+    "2023-12": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272023-12-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-01-01T00%3A00%3A00%27&%24limit=2195378",
+          "retrieved_at_utc": "2026-10-28T03:55:45.834980+00:00",
+          "sha256": "f56adf21ac84967d5c045627d4ec25c55f6525cf3957c9bdcb0366a0f629229f"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:55:45.834980+00:00",
+      "raw_sha256": "f56adf21ac84967d5c045627d4ec25c55f6525cf3957c9bdcb0366a0f629229f",
+      "parquet": "data/raw/full_period/parquet/2023-12.parquet",
+      "parquet_sha256": "6ee3aefc28e8c35a11082785d56d3313864f0a0b71363a5b4c21c7e148a5cef6",
+      "source_rows": 2195377
+    },
+    "2024-01": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-02-01T00%3A00%3A00%27&%24limit=2186450",
+          "retrieved_at_utc": "2026-10-28T03:56:46.355773+00:00",
+          "sha256": "d61be31d194f0df8ffe54ccb1eae76964e5cef6bec625bff985d8055248b0c55"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:56:46.355773+00:00",
+      "raw_sha256": "d61be31d194f0df8ffe54ccb1eae76964e5cef6bec625bff985d8055248b0c55",
+      "parquet": "data/raw/full_period/parquet/2024-01.parquet",
+      "parquet_sha256": "365453672d5e6bf0eeff6c9282142394ebf2c9146758744b79431bd4eddb0031",
+      "source_rows": 2186449
+    },
+    "2024-02": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-03-01T00%3A00%3A00%27&%24limit=2050324",
+          "retrieved_at_utc": "2026-10-28T03:57:22.556968+00:00",
+          "sha256": "c1a122c8274786f0b9f3bae60c14d6093d6dd5a15a4da54ec34a02ee16380bd8"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:57:22.556968+00:00",
+      "raw_sha256": "c1a122c8274786f0b9f3bae60c14d6093d6dd5a15a4da54ec34a02ee16380bd8",
+      "parquet": "data/raw/full_period/parquet/2024-02.parquet",
+      "parquet_sha256": "c310ec1c0e7b5338f0e3f3c7753a2b137a6c385776f0df4c9bae5cb814984ec6",
+      "source_rows": 2050323
+    },
+    "2024-03": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-03-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-04-01T00%3A00%3A00%27&%24limit=2208921",
+          "retrieved_at_utc": "2026-10-28T03:57:18.264189+00:00",
+          "sha256": "4b9c763cd6160e1276122b97ff91d9f50c8748d5e3495a38500ea049418460e9"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:57:18.264189+00:00",
+      "raw_sha256": "4b9c763cd6160e1276122b97ff91d9f50c8748d5e3495a38500ea049418460e9",
+      "parquet": "data/raw/full_period/parquet/2024-03.parquet",
+      "parquet_sha256": "08f269dd50667efe238fb2583bc088f3698803e6be6fa747b91931af3f158949",
+      "source_rows": 2208920
+    },
+    "2024-04": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-04-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-05-01T00%3A00%3A00%27&%24limit=2160036",
+          "retrieved_at_utc": "2026-10-28T03:58:17.962027+00:00",
+          "sha256": "ed5849f925e27c9313815d4543c85a47be88ceb1ab74ee28278cdf2d89e38715"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:58:17.962027+00:00",
+      "raw_sha256": "ed5849f925e27c9313815d4543c85a47be88ceb1ab74ee28278cdf2d89e38715",
+      "parquet": "data/raw/full_period/parquet/2024-04.parquet",
+      "parquet_sha256": "c830229c4b111cc1c0960de93916bd7c5156e965784a4350e3a08887e89541a1",
+      "source_rows": 2160035
+    },
+    "2024-05": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-05-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-06-01T00%3A00%3A00%27&%24limit=2242316",
+          "retrieved_at_utc": "2026-10-28T04:05:58.772097+00:00",
+          "sha256": "3ed9f0802f45d9bcd546d362511d4d3433098151c3f995db420d20808d8847e8"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:05:58.772097+00:00",
+      "raw_sha256": "3ed9f0802f45d9bcd546d362511d4d3433098151c3f995db420d20808d8847e8",
+      "parquet": "data/raw/full_period/parquet/2024-05.parquet",
+      "parquet_sha256": "68348e3bcbb6151d3a226df439408a818b46afe7282769f21fecee5c2bfb06f1",
+      "source_rows": 2242315
+    },
+    "2024-06": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-06-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-07-01T00%3A00%3A00%27&%24limit=2156122",
+          "retrieved_at_utc": "2026-10-28T03:58:17.423178+00:00",
+          "sha256": "9aa091c3a3b91da5f27e613de0460894613abc591f5d938cce2e52bbe8483da0"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:58:17.423178+00:00",
+      "raw_sha256": "9aa091c3a3b91da5f27e613de0460894613abc591f5d938cce2e52bbe8483da0",
+      "parquet": "data/raw/full_period/parquet/2024-06.parquet",
+      "parquet_sha256": "7957177e6298ecc95372834c7ddbbcbdd70ab252fa7c10439f7f72f836123952",
+      "source_rows": 2156121
+    },
+    "2024-07": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-07-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-08-01T00%3A00%3A00%27&%24limit=2156908",
+          "retrieved_at_utc": "2026-10-28T04:01:30.192517+00:00",
+          "sha256": "87baccc40903dc1c6519253805160bfbd5ec44cf6d1115988fb7083250ae0623"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:01:30.192517+00:00",
+      "raw_sha256": "87baccc40903dc1c6519253805160bfbd5ec44cf6d1115988fb7083250ae0623",
+      "parquet": "data/raw/full_period/parquet/2024-07.parquet",
+      "parquet_sha256": "894c3c3de1e6ece6f5dbc29e3923511769c6e0046f43ee352327eead8f0c8c68",
+      "source_rows": 2156907
+    },
+    "2024-08": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-08-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-09-01T00%3A00%3A00%27&%24limit=2192682",
+          "retrieved_at_utc": "2026-10-28T04:00:35.765605+00:00",
+          "sha256": "89d7e3cc364ae6ef1a1a4d5b3a0a5170d63ab34aa29c3b0db1ed0be8133440ce"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:00:35.765605+00:00",
+      "raw_sha256": "89d7e3cc364ae6ef1a1a4d5b3a0a5170d63ab34aa29c3b0db1ed0be8133440ce",
+      "parquet": "data/raw/full_period/parquet/2024-08.parquet",
+      "parquet_sha256": "6494db5c3da60d4e1ed102e7e60e75cfba6fe10d02a7b3099dfeaf8dbd5624a2",
+      "source_rows": 2192681
+    },
+    "2024-09": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-09-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-10-01T00%3A00%3A00%27&%24limit=2342722",
+          "retrieved_at_utc": "2026-10-28T03:59:21.412415+00:00",
+          "sha256": "d487e7632c9510ca1d4e40ec49ffa5b56db690913d1cc84be39afa9e255d606e"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T03:59:21.412415+00:00",
+      "raw_sha256": "d487e7632c9510ca1d4e40ec49ffa5b56db690913d1cc84be39afa9e255d606e",
+      "parquet": "data/raw/full_period/parquet/2024-09.parquet",
+      "parquet_sha256": "62d88117bf4e9e46a67d5bbfb4f493c931a5b7c093479f1778d51c99c3efec52",
+      "source_rows": 2342721
+    },
+    "2024-10": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-10-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-11-01T00%3A00%3A00%27&%24limit=2485585",
+          "retrieved_at_utc": "2026-10-28T04:00:35.091692+00:00",
+          "sha256": "39e3ced38ab33c73c58546777c86f8a155ca8554a462453e1d211d754d77ea36"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:00:35.091692+00:00",
+      "raw_sha256": "39e3ced38ab33c73c58546777c86f8a155ca8554a462453e1d211d754d77ea36",
+      "parquet": "data/raw/full_period/parquet/2024-10.parquet",
+      "parquet_sha256": "b11235ff93c28d8d7d0b99983e3407868a6749b1a59bc39e1b2832fccb581920",
+      "source_rows": 2485584
+    },
+    "2024-11": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-11-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272024-12-01T00%3A00%3A00%27&%24limit=2384292",
+          "retrieved_at_utc": "2026-10-28T04:04:21.604194+00:00",
+          "sha256": "4f467b930f1bb88331cf1f75d4a33b889d3d32ab0b33b16619547348c3bd6e93"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:04:21.604194+00:00",
+      "raw_sha256": "4f467b930f1bb88331cf1f75d4a33b889d3d32ab0b33b16619547348c3bd6e93",
+      "parquet": "data/raw/full_period/parquet/2024-11.parquet",
+      "parquet_sha256": "6b1d3a60ff187e02cd18f1cbd549fca3ef30beab5cac6eb0ff418c6d5b35ef39",
+      "source_rows": 2384291
+    },
+    "2024-12": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/wujg-7c2s.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272024-12-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-01-01T00%3A00%3A00%27&%24limit=2446167",
+          "retrieved_at_utc": "2026-10-28T04:01:34.632160+00:00",
+          "sha256": "d30a249bb370b2dbe5eb4c9c637f528d02db209bf71550f3f66c2d375845e1a1"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:01:34.632160+00:00",
+      "raw_sha256": "d30a249bb370b2dbe5eb4c9c637f528d02db209bf71550f3f66c2d375845e1a1",
+      "parquet": "data/raw/full_period/parquet/2024-12.parquet",
+      "parquet_sha256": "9d4c5c9c486dfe3b3f3bd843a41136c75e71bc0aef8a4ef612cf6b99e97a1fb2",
+      "source_rows": 2446166
+    },
+    "2025-01": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-01-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-02-01T00%3A00%3A00%27&%24limit=2398983",
+          "retrieved_at_utc": "2026-11-16T13:53:57.341371+00:00",
+          "sha256": "4df3333b91ae8ff160e305896c864dffc003bae799b2036b3932e3a229ea46e0"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T13:53:57.341371+00:00",
+      "raw_sha256": "4df3333b91ae8ff160e305896c864dffc003bae799b2036b3932e3a229ea46e0",
+      "parquet": "data/raw/full_period/parquet/2025-01.parquet",
+      "parquet_sha256": "aa92f3c614d6c3d2c956def1cac94bc4f23693f228afa43eedebac8ac9fc8da7",
+      "source_rows": 2398982
+    },
+    "2025-02": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-02-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-03-01T00%3A00%3A00%27&%24limit=2273358",
+          "retrieved_at_utc": "2026-11-16T13:39:03.628387+00:00",
+          "sha256": "4e047b6ca19fa731a5bf54fc53dadc96cd21f2d54b95e0871529b54b4367dac2"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T13:39:03.628387+00:00",
+      "raw_sha256": "4e047b6ca19fa731a5bf54fc53dadc96cd21f2d54b95e0871529b54b4367dac2",
+      "parquet": "data/raw/full_period/parquet/2025-02.parquet",
+      "parquet_sha256": "4d91b9b9ecc45fe617ba2a9929042a4f08da4d80a8c85a4dff6ffcdc6fe26ac1",
+      "source_rows": 2273357
+    },
+    "2025-03": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-03-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-04-01T00%3A00%3A00%27&%24limit=2599250",
+          "retrieved_at_utc": "2026-11-16T13:56:19.696967+00:00",
+          "sha256": "e1763ca14d775d67579802252c00b9803a3681e604993da5871c9f39c6bb5766"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T13:56:19.696967+00:00",
+      "raw_sha256": "e1763ca14d775d67579802252c00b9803a3681e604993da5871c9f39c6bb5766",
+      "parquet": "data/raw/full_period/parquet/2025-03.parquet",
+      "parquet_sha256": "9acff2df4cf6506fb1c0016b8e9190a1a596213936a967a4f1a32f07236d6396",
+      "source_rows": 2599249
+    },
+    "2025-04": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-04-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-05-01T00%3A00%3A00%27&%24limit=2646410",
+          "retrieved_at_utc": "2026-11-16T14:03:23.372073+00:00",
+          "sha256": "421acd0f0adaaeedf2e3af8b0b4d50b0831a5c450ce66559ebeded6f8d73b701"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T14:03:23.372073+00:00",
+      "raw_sha256": "421acd0f0adaaeedf2e3af8b0b4d50b0831a5c450ce66559ebeded6f8d73b701",
+      "parquet": "data/raw/full_period/parquet/2025-04.parquet",
+      "parquet_sha256": "408cfdba9618ab340fbd8266c98d72d65e39191aded2bdab5289ad8d28b68d0f",
+      "source_rows": 2646409
+    },
+    "2025-05": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-05-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-06-01T00%3A00%3A00%27&%24limit=2776120",
+          "retrieved_at_utc": "2026-11-16T16:25:37.177678+00:00",
+          "sha256": "766da3f98e4e64571bf8e7eec0e3874c15e2398f4e8f2f512608dd7d261fd169"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T16:25:37.177678+00:00",
+      "raw_sha256": "766da3f98e4e64571bf8e7eec0e3874c15e2398f4e8f2f512608dd7d261fd169",
+      "parquet": "data/raw/full_period/parquet/2025-05.parquet",
+      "parquet_sha256": "0c1cf14d2319278a4857369a29fc8389dae10a929a4698b16a6faa004c87727b",
+      "source_rows": 2776119
+    },
+    "2025-06": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-06-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-07-01T00%3A00%3A00%27&%24limit=2673222",
+          "retrieved_at_utc": "2026-11-16T16:11:31.614391+00:00",
+          "sha256": "4d2190fae8c2da2f30ac81474b76fa4a2f65ee67e794b84bed9f472695f88e32"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T16:11:31.614391+00:00",
+      "raw_sha256": "4d2190fae8c2da2f30ac81474b76fa4a2f65ee67e794b84bed9f472695f88e32",
+      "parquet": "data/raw/full_period/parquet/2025-06.parquet",
+      "parquet_sha256": "9de5dcf96a3f95dbd55f6585c9b28d5c62ed62df84f12142da5865114562cdf1",
+      "source_rows": 2673221
+    },
+    "2025-07": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-07-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-08-01T00%3A00%3A00%27&%24limit=2711976",
+          "retrieved_at_utc": "2026-11-16T16:44:56.546253+00:00",
+          "sha256": "fba048d8a6eba69a4004f76e3a560dcd875866e829a90f9c9fcadd243101fad5"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T16:44:56.546253+00:00",
+      "raw_sha256": "fba048d8a6eba69a4004f76e3a560dcd875866e829a90f9c9fcadd243101fad5",
+      "parquet": "data/raw/full_period/parquet/2025-07.parquet",
+      "parquet_sha256": "b2c9c39ae50ade394f5cf4dfd7fa12cb9e679721c4c228d50659cd3f1cf025d3",
+      "source_rows": 2711975
+    },
+    "2025-08": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-08-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-09-01T00%3A00%3A00%27&%24limit=2681449",
+          "retrieved_at_utc": "2026-11-16T16:27:44.892982+00:00",
+          "sha256": "5217a7a7608a2d7f567212c1ed50b593b548f4e17c4f8c5beb7caf213cfb4d75"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T16:27:44.892982+00:00",
+      "raw_sha256": "5217a7a7608a2d7f567212c1ed50b593b548f4e17c4f8c5beb7caf213cfb4d75",
+      "parquet": "data/raw/full_period/parquet/2025-08.parquet",
+      "parquet_sha256": "ed364a76a7f163024d969c62aafea524ff43f50594620d90304767625613c370",
+      "source_rows": 2681448
+    },
+    "2025-09": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-09-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-10-01T00%3A00%3A00%27&%24limit=2581491",
+          "retrieved_at_utc": "2026-11-16T16:31:13.032583+00:00",
+          "sha256": "9ee0009f347c001d52f864e2e195b1c3c32f28e19ce730dce5047671cb49b436"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T16:31:13.032583+00:00",
+      "raw_sha256": "9ee0009f347c001d52f864e2e195b1c3c32f28e19ce730dce5047671cb49b436",
+      "parquet": "data/raw/full_period/parquet/2025-09.parquet",
+      "parquet_sha256": "0fe7da9336ecc4ea74541d67e46567cf7ae945c64b44ec0ccd118fb74cee1683",
+      "source_rows": 2581490
+    },
+    "2025-10": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-10-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-11-01T00%3A00%3A00%27&%24limit=2578817",
+          "retrieved_at_utc": "2026-11-16T16:33:40.924875+00:00",
+          "sha256": "933c673ea5f1d83ee674b78d870c16322d41a32c7454b84d6bbd485ea891c586"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T16:33:40.924875+00:00",
+      "raw_sha256": "933c673ea5f1d83ee674b78d870c16322d41a32c7454b84d6bbd485ea891c586",
+      "parquet": "data/raw/full_period/parquet/2025-10.parquet",
+      "parquet_sha256": "33b2feb6cab0b09869bb80705feff68c1f489b30e07fd2e73bb9ca8fcacd0c11",
+      "source_rows": 2578816
+    },
+    "2025-11": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-11-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272025-12-01T00%3A00%3A00%27&%24limit=2341101",
+          "retrieved_at_utc": "2026-11-16T16:38:25.356430+00:00",
+          "sha256": "2378e16aa190bf1d98e9f6986276f264802e54d3cf93e6e24f11f550285705de"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T16:38:25.356430+00:00",
+      "raw_sha256": "2378e16aa190bf1d98e9f6986276f264802e54d3cf93e6e24f11f550285705de",
+      "parquet": "data/raw/full_period/parquet/2025-11.parquet",
+      "parquet_sha256": "0bd9a5f70782d2d0ca1764fd51e2929a038e79f0e171af873d3d502f5282dd2e",
+      "source_rows": 2341100
+    },
+    "2025-12": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/5wq4-mkjj.csv?%24select=transit_timestamp%2Ctransit_mode%2Cstation_complex_id%2Cstation_complex%2Cborough%2Cpayment_method%2Cfare_class_category%2Cridership%2Ctransfers%2Clatitude%2Clongitude%2Cgeoreference&%24where=transit_timestamp+%3E%3D+%272025-12-01T00%3A00%3A00%27+AND+transit_timestamp+%3C+%272026-01-01T00%3A00%3A00%27&%24limit=2209616",
+          "retrieved_at_utc": "2026-11-16T16:39:44.816188+00:00",
+          "sha256": "86e35ef4816162a516c63310ec251fb3e3c6d36cec9e08c8513ae08255076021"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-16T16:39:44.816188+00:00",
+      "raw_sha256": "86e35ef4816162a516c63310ec251fb3e3c6d36cec9e08c8513ae08255076021",
+      "parquet": "data/raw/full_period/parquet/2025-12.parquet",
+      "parquet_sha256": "785ecc4b047d96591bb512cec851608b79c43360c5d90863e023b200e380a0d2",
+      "source_rows": 2209615
+    }
+  },
+  "od": {
+    "2021-01": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+1&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:33:40.141290+00:00",
+          "sha256": "297999d77a89cfca0cb5a02d494160b8b0eb25d02ff30031e25e4e6f39ff5e71"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:33:40.141290+00:00",
+      "raw_sha256": "297999d77a89cfca0cb5a02d494160b8b0eb25d02ff30031e25e4e6f39ff5e71",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-01.parquet",
+      "parquet_sha256": "8144bef74887bb2a6d35fbd7ebd48b335bc7b2239c74a7cc2b0dcf9afa1b47e5",
+      "source_rows": 6977158
+    },
+    "2021-02": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+2&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:38:35.747516+00:00",
+          "sha256": "b90714f402b4ccb7b88c21bddfe976ed84e9094b996fadb96ca2797079837013"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:38:35.747516+00:00",
+      "raw_sha256": "b90714f402b4ccb7b88c21bddfe976ed84e9094b996fadb96ca2797079837013",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-02.parquet",
+      "parquet_sha256": "fd493295a52d8bcee7629cae390205278dc58a7f91c365275b39f805590b4f7b",
+      "source_rows": 7004705
+    },
+    "2021-03": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+3&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:41:24.416302+00:00",
+          "sha256": "d2d75b98192b0a51c2f732f918e19c68ca79ecd2cd2acef7d831dcc7e6d97f3e"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:41:24.416302+00:00",
+      "raw_sha256": "d2d75b98192b0a51c2f732f918e19c68ca79ecd2cd2acef7d831dcc7e6d97f3e",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-03.parquet",
+      "parquet_sha256": "bdf4f5070710daac4e2af7648fcaae84e446061f3b7c87d0b66e716c12c93893",
+      "source_rows": 7827629
+    },
+    "2021-04": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+4&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:34:02.987149+00:00",
+          "sha256": "89f92850edc3b7e84f0569fea582fb82222901918fde1795be5a72c30480686d"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:34:02.987149+00:00",
+      "raw_sha256": "89f92850edc3b7e84f0569fea582fb82222901918fde1795be5a72c30480686d",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-04.parquet",
+      "parquet_sha256": "01d306f0bc6caada6624c090a0df62eef22dfb869775bf3d672d1cf0dce8730e",
+      "source_rows": 8090811
+    },
+    "2021-05": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+5&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:48:50.912046+00:00",
+          "sha256": "2f6557bef8c31b039330b373119050f103c3892e3613710f23b76fadc8c9041b"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:48:50.912046+00:00",
+      "raw_sha256": "2f6557bef8c31b039330b373119050f103c3892e3613710f23b76fadc8c9041b",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-05.parquet",
+      "parquet_sha256": "ad3211c32abeeda4ea8d4a5c7bd44d98c4f1abed452d4e139bab3bb2feeb2e30",
+      "source_rows": 8583342
+    },
+    "2021-06": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+6&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:55:00.876885+00:00",
+          "sha256": "4ba04394c8c5a747276cdd8ef77fe2995370a4458f261b210254f7826b6513dd"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:55:00.876885+00:00",
+      "raw_sha256": "4ba04394c8c5a747276cdd8ef77fe2995370a4458f261b210254f7826b6513dd",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-06.parquet",
+      "parquet_sha256": "c99a8fea4da2c11ba3d3a0ea8c0a8d8ee7bb519a16b6310176afa1283e770e4a",
+      "source_rows": 9070242
+    },
+    "2021-07": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+7&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:43:10.675788+00:00",
+          "sha256": "cfe69b9af29a1a67f1f817b51eb2af1c35183b8bdc097e5483d463528a69a1d7"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:43:10.675788+00:00",
+      "raw_sha256": "cfe69b9af29a1a67f1f817b51eb2af1c35183b8bdc097e5483d463528a69a1d7",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-07.parquet",
+      "parquet_sha256": "6c70be797e79747c0326214dd8b73ed48631299e550252cd1c6c13acd2de9113",
+      "source_rows": 8944803
+    },
+    "2021-08": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+8&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:45:48.544603+00:00",
+          "sha256": "faca880ba5214246bfde9e8766e3c817132979a2dfa599bdfa360cfbb2b06af8"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:45:48.544603+00:00",
+      "raw_sha256": "faca880ba5214246bfde9e8766e3c817132979a2dfa599bdfa360cfbb2b06af8",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-08.parquet",
+      "parquet_sha256": "4ee357d67400ae6d7d73f8ab74739eb619002565516019636852d52fd89f9198",
+      "source_rows": 8956193
+    },
+    "2021-09": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+9&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:50:47.118153+00:00",
+          "sha256": "dbff5763bca0961698a2bb8d0c1eb8ccd8c1ce42312fe272885904a67381fc46"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:50:47.118153+00:00",
+      "raw_sha256": "dbff5763bca0961698a2bb8d0c1eb8ccd8c1ce42312fe272885904a67381fc46",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-09.parquet",
+      "parquet_sha256": "307c0a340457c4da3ae92dd3256095ff414446c9e67d6b387ab6721246edf6bc",
+      "source_rows": 9153812
+    },
+    "2021-10": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+10&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:57:42.758429+00:00",
+          "sha256": "c9010bba46ecd5da64453431c78794e905eaba7a58c90f38d63dc0c12a9dce9f"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:57:42.758429+00:00",
+      "raw_sha256": "c9010bba46ecd5da64453431c78794e905eaba7a58c90f38d63dc0c12a9dce9f",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-10.parquet",
+      "parquet_sha256": "8b27274984322ef40ba33cb81254163636d08ce7f9acc95eafc4af14d57025a0",
+      "source_rows": 9448850
+    },
+    "2021-11": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+11&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T04:54:54.446207+00:00",
+          "sha256": "8fa6e9a1226c81c081111f4e3dc0f90324d79946bf3bdddce76cf21da5723ddd"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T04:54:54.446207+00:00",
+      "raw_sha256": "8fa6e9a1226c81c081111f4e3dc0f90324d79946bf3bdddce76cf21da5723ddd",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-11.parquet",
+      "parquet_sha256": "f657760121f8902bccc6151b3232bad64f9cd2afb3e9ffc14c02855838cad1a0",
+      "source_rows": 9265082
+    },
+    "2021-12": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/rapa-97zv.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2021+AND+month+%3D+12&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:07:15.088972+00:00",
+          "sha256": "4d8696a776792f2564a3287006dd6f8a90cd4999dde36479baccc41314576293"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:07:15.088972+00:00",
+      "raw_sha256": "4d8696a776792f2564a3287006dd6f8a90cd4999dde36479baccc41314576293",
+      "parquet": "data/raw/od_2021_2024/parquet/2021-12.parquet",
+      "parquet_sha256": "f8c2b1cc9e4f2e040100c7ec04f16d8ebc36c1ec5be19c4d5c244b30e3507dc1",
+      "source_rows": 9144355
+    },
+    "2022-01": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+1&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:10:22.640193+00:00",
+          "sha256": "4e0ed539c767461b6f45c84c1deffb659b6433e3310a2276ea23e3fcdec8fd5d"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:10:22.640193+00:00",
+      "raw_sha256": "4e0ed539c767461b6f45c84c1deffb659b6433e3310a2276ea23e3fcdec8fd5d",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-01.parquet",
+      "parquet_sha256": "7b810f656a672410dc8b68cb69e7877120cf068c18667917d099f8185b01762e",
+      "source_rows": 8400249
+    },
+    "2022-02": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+2&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:10:06.163880+00:00",
+          "sha256": "015672da6f6c08bb9b08e68217c8b046dbdf8c83ce53ef6435192ef20890902f"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:10:06.163880+00:00",
+      "raw_sha256": "015672da6f6c08bb9b08e68217c8b046dbdf8c83ce53ef6435192ef20890902f",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-02.parquet",
+      "parquet_sha256": "203fd12a13e730bc525c88cddff1404555b7456fec4bc01abc8a38efe62091f2",
+      "source_rows": 8663217
+    },
+    "2022-03": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+3&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:11:02.681184+00:00",
+          "sha256": "b1d75f1c7f71fe1805ae8660f5c7e8c3207b93a57682533c4e247b9450872406"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:11:02.681184+00:00",
+      "raw_sha256": "b1d75f1c7f71fe1805ae8660f5c7e8c3207b93a57682533c4e247b9450872406",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-03.parquet",
+      "parquet_sha256": "430c3303eea5378e0bd3c91cd3d360b99c4e337133f7f7ef8befb1ebb2ddc9e5",
+      "source_rows": 9265654
+    },
+    "2022-04": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+4&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:15:40.100833+00:00",
+          "sha256": "8b10e424b9eac256fe38156fdda7cbdcd6fc957325e14d450e850c35ac890f99"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:15:40.100833+00:00",
+      "raw_sha256": "8b10e424b9eac256fe38156fdda7cbdcd6fc957325e14d450e850c35ac890f99",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-04.parquet",
+      "parquet_sha256": "4dfd46b0568b3545f7bcc698071ada9ea6eb4c31ea3744950cc39c53bcf3bdc6",
+      "source_rows": 9294221
+    },
+    "2022-05": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+5&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:25:08.176033+00:00",
+          "sha256": "aae2b152b7ac8876d18654232b5ce66064cb15bb064f2c6293845003e5c4816f"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:25:08.176033+00:00",
+      "raw_sha256": "aae2b152b7ac8876d18654232b5ce66064cb15bb064f2c6293845003e5c4816f",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-05.parquet",
+      "parquet_sha256": "24139816198a3fbb0d143313a1624875cb602a4818add871e3d723a39fdd187b",
+      "source_rows": 9596936
+    },
+    "2022-06": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+6&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:39:16.143710+00:00",
+          "sha256": "df43bdf025e53f396a3b5bf89eb5be676365f143bd1b7c4a9214daeccc1f48a0"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:39:16.143710+00:00",
+      "raw_sha256": "df43bdf025e53f396a3b5bf89eb5be676365f143bd1b7c4a9214daeccc1f48a0",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-06.parquet",
+      "parquet_sha256": "e37b7f1cf6098359b4fd30fdbd72d84477154aed8ee638a1f3bdae3b985a0e4a",
+      "source_rows": 9742209
+    },
+    "2022-07": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+7&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:18:44.999512+00:00",
+          "sha256": "1e7382d33a8aa730384d7cb563378f4252748d3dd764ea739c8fa9c9475859a0"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:18:44.999512+00:00",
+      "raw_sha256": "1e7382d33a8aa730384d7cb563378f4252748d3dd764ea739c8fa9c9475859a0",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-07.parquet",
+      "parquet_sha256": "0cd996208747bce004aacd1ca01827a466403ed6e5784dcbe35296b08ca0ee4d",
+      "source_rows": 9340736
+    },
+    "2022-08": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+8&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:22:40.319750+00:00",
+          "sha256": "6e10419db92b683fd7fbd6ad81ffaa73db2863cb49219d9981300ea45209b4f0"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:22:40.319750+00:00",
+      "raw_sha256": "6e10419db92b683fd7fbd6ad81ffaa73db2863cb49219d9981300ea45209b4f0",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-08.parquet",
+      "parquet_sha256": "8e2cacbbacb73a82a7f8a60402d4f22fd1ee6a71ba7358fe6232fceefb7320b3",
+      "source_rows": 9325641
+    },
+    "2022-09": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+9&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:23:25.319253+00:00",
+          "sha256": "6d1e58072d0ac6070c31f98d9ee8d0a5de79c6651c8242884e49f21fc7b3a353"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:23:25.319253+00:00",
+      "raw_sha256": "6d1e58072d0ac6070c31f98d9ee8d0a5de79c6651c8242884e49f21fc7b3a353",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-09.parquet",
+      "parquet_sha256": "b23709e1d2606b5be17e6d63c82a6d88c42148882066b0f26b42a0ecf9397e72",
+      "source_rows": 9563515
+    },
+    "2022-10": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+10&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:27:36.378698+00:00",
+          "sha256": "8e6724f58df5b0a6a0562e12dc7bfdc32a347c78e6a20c608659b9e3c10e5a30"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:27:36.378698+00:00",
+      "raw_sha256": "8e6724f58df5b0a6a0562e12dc7bfdc32a347c78e6a20c608659b9e3c10e5a30",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-10.parquet",
+      "parquet_sha256": "afb3477940f43d40c29a19903572160af6167360fad97620944e343b1a4d6feb",
+      "source_rows": 9708987
+    },
+    "2022-11": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+11&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:30:51.504912+00:00",
+          "sha256": "53b5253cdf71fe51189bfa61ba1b14cc964c4509befe8f1448e534f23efb58d0"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:30:51.504912+00:00",
+      "raw_sha256": "53b5253cdf71fe51189bfa61ba1b14cc964c4509befe8f1448e534f23efb58d0",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-11.parquet",
+      "parquet_sha256": "851601fe6c360b42c38f78e8ab7e1c64e0ff0bc0b59811cf8df2a3d82e4879d9",
+      "source_rows": 9475256
+    },
+    "2022-12": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/nqnz-e9z9.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2022+AND+month+%3D+12&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:31:23.031775+00:00",
+          "sha256": "cdb834024aeef2a2002b85a097abea7e66aa6af8a6dc59c555e28839997191a9"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:31:23.031775+00:00",
+      "raw_sha256": "cdb834024aeef2a2002b85a097abea7e66aa6af8a6dc59c555e28839997191a9",
+      "parquet": "data/raw/od_2021_2024/parquet/2022-12.parquet",
+      "parquet_sha256": "c2ba0019769487e0075037ab110ba2183f8a8830935241dd4f2d5b5697d13805",
+      "source_rows": 9544443
+    },
+    "2023-01": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+1&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:32:45.928808+00:00",
+          "sha256": "124c98c0f7f67010d0b5e8c37af09033c1aaaad343d3a3b31f0c14cf208cdc09"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:32:45.928808+00:00",
+      "raw_sha256": "124c98c0f7f67010d0b5e8c37af09033c1aaaad343d3a3b31f0c14cf208cdc09",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-01.parquet",
+      "parquet_sha256": "f96d05e60e7ea6ddfe5bad2ce4e90a314e4513c8bdb4350d691ea7dd11ff1277",
+      "source_rows": 9375790
+    },
+    "2023-02": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+2&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:40:17.796584+00:00",
+          "sha256": "82ace8c90b25ab660d415bd3e21ba4eb70929b20eb719bd085cb5575cdad1634"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:40:17.796584+00:00",
+      "raw_sha256": "82ace8c90b25ab660d415bd3e21ba4eb70929b20eb719bd085cb5575cdad1634",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-02.parquet",
+      "parquet_sha256": "4e5f9cb4529400e336b9ddf5d2328f138f411ec623c9eb520a4171d3a90fbfd5",
+      "source_rows": 9212543
+    },
+    "2023-03": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+3&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:36:18.385146+00:00",
+          "sha256": "4f2f7cf770445c7821329dfefc4502846d6d999d4dc185e9f3593221f59fc54b"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:36:18.385146+00:00",
+      "raw_sha256": "4f2f7cf770445c7821329dfefc4502846d6d999d4dc185e9f3593221f59fc54b",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-03.parquet",
+      "parquet_sha256": "cc260991133e9bd54aa80345242f5cf2017f7109f504a2566f18f2e507dce263",
+      "source_rows": 9727533
+    },
+    "2023-04": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+4&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:44:24.262178+00:00",
+          "sha256": "1199583aea8a63911b7df52deacdb3cd42abf4779b542c6af7d0cbc0a8115114"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:44:24.262178+00:00",
+      "raw_sha256": "1199583aea8a63911b7df52deacdb3cd42abf4779b542c6af7d0cbc0a8115114",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-04.parquet",
+      "parquet_sha256": "667ff0a4f90a40aca2c5ae9adcd8930410a9cb53f3ed11b0dd5e723cebaa842b",
+      "source_rows": 9682802
+    },
+    "2023-05": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+5&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:51:40.925975+00:00",
+          "sha256": "3b2e14818da0f66d159bb837ec06109617123518cff050a0f46000727f5b73c2"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:51:40.925975+00:00",
+      "raw_sha256": "3b2e14818da0f66d159bb837ec06109617123518cff050a0f46000727f5b73c2",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-05.parquet",
+      "parquet_sha256": "33935e4a621e56f01cce7fd893f26c2477e1ab968cd3fdb012ee4c8f92742d86",
+      "source_rows": 10000943
+    },
+    "2023-06": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+6&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:50:34.596489+00:00",
+          "sha256": "b8984a7d1fd22efc0bbfcd57c2a386dd1dd62a8c5febe78e38b3c310f104db1b"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:50:34.596489+00:00",
+      "raw_sha256": "b8984a7d1fd22efc0bbfcd57c2a386dd1dd62a8c5febe78e38b3c310f104db1b",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-06.parquet",
+      "parquet_sha256": "b6b9493ac2fb5f297c8e2a13d449c4c8940635c7b19e900b6031d625b694aa0b",
+      "source_rows": 9941687
+    },
+    "2023-07": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+7&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:55:20.025878+00:00",
+          "sha256": "7c9bbdec53ae519ea77c4453c544c18e072c897b4724ec659660f2c801f20110"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:55:20.025878+00:00",
+      "raw_sha256": "7c9bbdec53ae519ea77c4453c544c18e072c897b4724ec659660f2c801f20110",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-07.parquet",
+      "parquet_sha256": "6609cc0ec478c6d1a9ef961b9df98fdd07137ccea6794d9bb852736f9a2e22ff",
+      "source_rows": 9577156
+    },
+    "2023-08": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+8&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:51:39.660693+00:00",
+          "sha256": "e385ba22f4678548fd478c39d3f9ccee7750c1a7e7aca49ba93e02a8ae9cdad2"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:51:39.660693+00:00",
+      "raw_sha256": "e385ba22f4678548fd478c39d3f9ccee7750c1a7e7aca49ba93e02a8ae9cdad2",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-08.parquet",
+      "parquet_sha256": "fb66f9f5d5ea16bb6f0a1a00aef3c98b76b779e1dbd841a6fc1db433a98badd0",
+      "source_rows": 9599503
+    },
+    "2023-09": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+9&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:55:19.219789+00:00",
+          "sha256": "1ad5f8080b1e1e43914fbac954a611f1c422b3deb7dd6ae391b2853d142b55f3"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:55:19.219789+00:00",
+      "raw_sha256": "1ad5f8080b1e1e43914fbac954a611f1c422b3deb7dd6ae391b2853d142b55f3",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-09.parquet",
+      "parquet_sha256": "66ae1c425ac37d2167240674c37bc919524b04d020f808577501857d4b0ee4b9",
+      "source_rows": 9686365
+    },
+    "2023-10": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+10&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:02:23.354627+00:00",
+          "sha256": "d4ee2865b8dddfd7c91ff4f15e26dc0b36cc564476d4b6402a8355a44016f009"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:02:23.354627+00:00",
+      "raw_sha256": "d4ee2865b8dddfd7c91ff4f15e26dc0b36cc564476d4b6402a8355a44016f009",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-10.parquet",
+      "parquet_sha256": "7b8d86415346326f72b6d386df54ebd0e120eb0e0d54f7bab964490be305ca97",
+      "source_rows": 9755714
+    },
+    "2023-11": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+11&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T05:55:20.235723+00:00",
+          "sha256": "60666e4c32083f5f62d7f7fc1b1f30d4900786c932dae5640cd8d6be1ee5300d"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T05:55:20.235723+00:00",
+      "raw_sha256": "60666e4c32083f5f62d7f7fc1b1f30d4900786c932dae5640cd8d6be1ee5300d",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-11.parquet",
+      "parquet_sha256": "92719f177e7ddb5d26b320b770d8cfd989a0734754763caabaf2e0afaf18c163",
+      "source_rows": 9527124
+    },
+    "2023-12": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/uhf3-t34z.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2023+AND+month+%3D+12&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:01:20.756838+00:00",
+          "sha256": "7b3a9c21ba10e6c8e124376d8f0a52cae02e08f4ef78b8234dd10d0ef5b14178"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:01:20.756838+00:00",
+      "raw_sha256": "7b3a9c21ba10e6c8e124376d8f0a52cae02e08f4ef78b8234dd10d0ef5b14178",
+      "parquet": "data/raw/od_2021_2024/parquet/2023-12.parquet",
+      "parquet_sha256": "dae85b9357933ae81a025d1cf65f4eaed8106bd9a1f144d1e1c91583b0666d98",
+      "source_rows": 9644736
+    },
+    "2024-01": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+1&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:19:58.731766+00:00",
+          "sha256": "17d30643f0ad8d847f6e5aa5455fde68322be49a106351d82b192cdd5d23de6a"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:19:58.731766+00:00",
+      "raw_sha256": "17d30643f0ad8d847f6e5aa5455fde68322be49a106351d82b192cdd5d23de6a",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-01.parquet",
+      "parquet_sha256": "16798f67315a3ee8d9be9f9fbfdf6cf770401193469fc7a454b6cded00ad3c68",
+      "source_rows": 9169125
+    },
+    "2024-02": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+2&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:14:36.772320+00:00",
+          "sha256": "bdb14070772778cb2260d596ba5813df32a9356bd4a3bcc32b3d7c1021b87d7e"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:14:36.772320+00:00",
+      "raw_sha256": "bdb14070772778cb2260d596ba5813df32a9356bd4a3bcc32b3d7c1021b87d7e",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-02.parquet",
+      "parquet_sha256": "77f2cba8099c6a512b43466e8b25daf92d07b94f864578756367dbd6861c766a",
+      "source_rows": 9233237
+    },
+    "2024-03": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+3&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:13:22.943143+00:00",
+          "sha256": "e6c6006a4a58ccf82cc221add9ac4e82e56b501c05549adc3acb2faac87bff25"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:13:22.943143+00:00",
+      "raw_sha256": "e6c6006a4a58ccf82cc221add9ac4e82e56b501c05549adc3acb2faac87bff25",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-03.parquet",
+      "parquet_sha256": "6114205ac454b39d694f2f5089dbd47dfb20aad549ceda5e0e717ef5ae428d48",
+      "source_rows": 9804968
+    },
+    "2024-04": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+4&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:32:36.838033+00:00",
+          "sha256": "2bab269c23729eba29506d9c4e36e5dd9315d141139b14f8b8317d47fc61f492"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:32:36.838033+00:00",
+      "raw_sha256": "2bab269c23729eba29506d9c4e36e5dd9315d141139b14f8b8317d47fc61f492",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-04.parquet",
+      "parquet_sha256": "46d6d584428b409c511994c558601711162cf0f49f2db8f6f19b059234ee139e",
+      "source_rows": 9661953
+    },
+    "2024-05": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+5&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:24:33.927708+00:00",
+          "sha256": "01234436c50307e780a0507ac4429ac0428522e7c00f72ce1522ce5c68e26df2"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:24:33.927708+00:00",
+      "raw_sha256": "01234436c50307e780a0507ac4429ac0428522e7c00f72ce1522ce5c68e26df2",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-05.parquet",
+      "parquet_sha256": "6a282b9f11a3c125d01da30225431e3795cb1dfc7bb5f6ef61184d50c9109da9",
+      "source_rows": 9920133
+    },
+    "2024-06": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+6&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:20:00.206595+00:00",
+          "sha256": "05921d243b8baa051389cfdc3dd8be8be3c68276197403ad7de1a3aed1ecd258"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:20:00.206595+00:00",
+      "raw_sha256": "05921d243b8baa051389cfdc3dd8be8be3c68276197403ad7de1a3aed1ecd258",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-06.parquet",
+      "parquet_sha256": "544f73f125e27b763ed77c7d6caf2ec471287ff9f6009c50b2e162cd51fcc228",
+      "source_rows": 9929613
+    },
+    "2024-07": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+7&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:32:36.979364+00:00",
+          "sha256": "cbc43f3543c11aa286d18dc3b91a5e4cd3054c7f5016e1a567d224c1182cc896"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:32:36.979364+00:00",
+      "raw_sha256": "cbc43f3543c11aa286d18dc3b91a5e4cd3054c7f5016e1a567d224c1182cc896",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-07.parquet",
+      "parquet_sha256": "af1f4aeda3f0bd5b3da9be5c00a443a85ac6f1f8fb0cb335238ec10e3d74524d",
+      "source_rows": 9174917
+    },
+    "2024-08": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+8&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:26:09.575228+00:00",
+          "sha256": "07f8afd093bd5fc2995b11380791431a5ad9e01c0f4599acc96e16b837d4f640"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:26:09.575228+00:00",
+      "raw_sha256": "07f8afd093bd5fc2995b11380791431a5ad9e01c0f4599acc96e16b837d4f640",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-08.parquet",
+      "parquet_sha256": "334d484c8674ef634b4a9f50cc76470699ce3dc0f92b589e7418d2f5bff40ce9",
+      "source_rows": 9400568
+    },
+    "2024-09": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+9&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:59:24.787120+00:00",
+          "sha256": "2d2310e1b38bb94e93f4e0c1809cd6353c02b3273233776e0646e673cbd066f2"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:59:24.787120+00:00",
+      "raw_sha256": "2d2310e1b38bb94e93f4e0c1809cd6353c02b3273233776e0646e673cbd066f2",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-09.parquet",
+      "parquet_sha256": "89b2bf64cc64228285689c4e4ae38ce4415264d1aa41852b4c31d6388efb08ea",
+      "source_rows": 9982258
+    },
+    "2024-10": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+10&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:37:39.184354+00:00",
+          "sha256": "8a6eca86552abe9a3c711741a76c0e6d14da740ded4b85fe7b04ceaebc1b5f1a"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:37:39.184354+00:00",
+      "raw_sha256": "8a6eca86552abe9a3c711741a76c0e6d14da740ded4b85fe7b04ceaebc1b5f1a",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-10.parquet",
+      "parquet_sha256": "6f639575f55f2910dbf7e5aff45127ea28a4c6c99a7dfe28e2b2fba040fa197f",
+      "source_rows": 10123524
+    },
+    "2024-11": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+11&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:48:18.219861+00:00",
+          "sha256": "ab5a3ab7cb1149545520688aa6cd99d2ffc2484b4975ce83993d93f677c67c11"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:48:18.219861+00:00",
+      "raw_sha256": "ab5a3ab7cb1149545520688aa6cd99d2ffc2484b4975ce83993d93f677c67c11",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-11.parquet",
+      "parquet_sha256": "89a0db99559b352733b65544f6dc9dc3ecf1bd3b5b03f0f18497d2cc0214662b",
+      "source_rows": 10007887
+    },
+    "2024-12": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/jsu2-fbtj.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2024+AND+month+%3D+12&%24limit=100000000",
+          "retrieved_at_utc": "2026-10-28T06:45:04.537642+00:00",
+          "sha256": "8794aebd8e8f58678146411814f7a6fc62246a216c2a5f3a6664f4636a63ae77"
+        }
+      ],
+      "retrieved_at_utc": "2026-10-28T06:45:04.537642+00:00",
+      "raw_sha256": "8794aebd8e8f58678146411814f7a6fc62246a216c2a5f3a6664f4636a63ae77",
+      "parquet": "data/raw/od_2021_2024/parquet/2024-12.parquet",
+      "parquet_sha256": "0346aa19025838e24fedbca5cfc74566260e2526b947a07f6c0fb04db6a723da",
+      "source_rows": 9870886
+    },
+    "2025-01": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+1&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T19:17:40.043694+00:00",
+          "sha256": "4f8d507d295aff26d12841f1423da1160e69ed16288faf0e0ec6d81e83ee83d2"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T19:17:40.043694+00:00",
+      "raw_sha256": "4f8d507d295aff26d12841f1423da1160e69ed16288faf0e0ec6d81e83ee83d2",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-01.parquet",
+      "parquet_sha256": "a50df379ab255d4f21ae8a8f71de1ed4b7ceb8547a661321afdcd1401bcffc6c",
+      "source_rows": 9665750
+    },
+    "2025-02": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+0+and+1&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:18:03.177029+00:00",
+          "sha256": "ef2e091026801bb0e7d7e08fd782f3bc4aac1e9104e2d16c8955909175908582"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+2+and+3&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:19:02.117133+00:00",
+          "sha256": "604f8b7027e15e86dda1fb99ee3664cee763d636d9bfaaaeec1f8dfb43f7c97f"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+4+and+5&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:20:29.399585+00:00",
+          "sha256": "a84123f21ffa40f86b2b20d0e9a75c12da193d29f541a8c1f8b943cadf92e13c"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+6+and+7&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:23:27.752167+00:00",
+          "sha256": "9bbbf1eb5fdcfaef52dc836a5bf6ec5e1e3229a04ed9112f359c4c3f3d80f564"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+8+and+9&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:24:28.227022+00:00",
+          "sha256": "f50302af577a02f6e4a15931f77593e9750b2140bb0ce42c50274195757b5fe0"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+10+and+11&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:25:54.240625+00:00",
+          "sha256": "b3e4bff72402f98fe243dd8726374a190794f11feebafd61f65f54a6d9a35103"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+12+and+13&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:27:02.141462+00:00",
+          "sha256": "ccb2283d9c7d99785d70c599a6cb50af15125e7ebe71642b4ddc6f3889c5f280"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+14+and+15&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:28:54.841680+00:00",
+          "sha256": "11cc2e466011b5874bf2a64b5d3503bcdd8741e917bf751be6392d6815387f30"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+16+and+17&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:30:37.536099+00:00",
+          "sha256": "a8fd6e45ca5c0e1760fb9f325e5bd2328d71a60723f70c322619104a20e857d3"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+18+and+19&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:32:57.497858+00:00",
+          "sha256": "e3be270e3f24d1a446f1ce24752972d677df9d84c446ad72ba32978d4ff5f325"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+20+and+21&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:34:09.844258+00:00",
+          "sha256": "b401db8c06672fc5a059e16956eb30eb659f06a11f0871e2b20943976f875ab6"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+2+AND+hour_of_day+between+22+and+23&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:36:02.252689+00:00",
+          "sha256": "bd0ff389eeb997cfd3e95b813032ac4b2e3019c34fcbbccba28e8891317775df"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T21:36:23.022422+00:00",
+      "raw_sha256": "a8212ae2332fefa264e397933f0a9ccd5c59a0d29d22f9d48544319dada6fecd",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-02.parquet",
+      "parquet_sha256": "3b07c894123a0db0177e89f3cf370b1b629d53d178e7525bd2fa08329e8cfb4f",
+      "source_rows": 9528359
+    },
+    "2025-03": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+3&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T20:36:06.418092+00:00",
+          "sha256": "8d66ba1cf9811601064a91b05f731624e4394b9b9488e998873f3af8241e635e"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T20:36:06.418092+00:00",
+      "raw_sha256": "8d66ba1cf9811601064a91b05f731624e4394b9b9488e998873f3af8241e635e",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-03.parquet",
+      "parquet_sha256": "6117e81d7fa96db54b0ab7bd2f296fe9c4bb8b518939021f250d53e6a4ced8b3",
+      "source_rows": 10086044
+    },
+    "2025-04": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+4&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T19:28:13.440942+00:00",
+          "sha256": "04c303b4087ad967ae4e999249d5208fb471c3df5c0889d834a960e2033fb584"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T19:28:13.440942+00:00",
+      "raw_sha256": "04c303b4087ad967ae4e999249d5208fb471c3df5c0889d834a960e2033fb584",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-04.parquet",
+      "parquet_sha256": "e159b671e9412e428b8058c49d918ec7209d5424555a74a04ad728c83f044628",
+      "source_rows": 10084297
+    },
+    "2025-05": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+5&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T19:35:16.260492+00:00",
+          "sha256": "875beb9bafb19d400dd99d8e627ea3222d79ea8671ebacfecb6aafb85aeb954d"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T19:35:16.260492+00:00",
+      "raw_sha256": "875beb9bafb19d400dd99d8e627ea3222d79ea8671ebacfecb6aafb85aeb954d",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-05.parquet",
+      "parquet_sha256": "1b97274dd18950726740f1a43164f03af94273e4bf58eb361d8ddb865c97b389",
+      "source_rows": 10448294
+    },
+    "2025-06": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+0+and+1&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:16:52.208989+00:00",
+          "sha256": "b4e34abeeb80be1e1a30829c937d7245fcc379b5da36d8dca4d811085329f622"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+2+and+3&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:17:51.024684+00:00",
+          "sha256": "51b9797b98df7b435b19086a058caa0b375b759e68e6c4f573056aad69c4aeee"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+4+and+5&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:18:56.266930+00:00",
+          "sha256": "0d4ac91e3abfefa246bd9ba0ac73e6f33c5480140f158b1a16a53648d17b0b68"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+6+and+7&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:20:35.775379+00:00",
+          "sha256": "c3236ec11b857434cf9b56df5d12a4d0cf9c7d8eb1a59642deedb4dcd1928544"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+8+and+9&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:21:39.767374+00:00",
+          "sha256": "f74f470b00e947888b4a647db3fd1596d59a912b1e3850a77ac0001743ca880b"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+10+and+11&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:22:34.879387+00:00",
+          "sha256": "7475b043d33d9896233fb3d73cbd295d0392bcd1953ac9b3eaae59f7790a04ee"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+12+and+13&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:27:35.504589+00:00",
+          "sha256": "d070a42df8f456cd96e026a14dc6fff83930c64b73a22cd6d4dd7c763481a84c"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+14+and+15&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:32:49.835764+00:00",
+          "sha256": "8d7c536430d3f35e3c182d9115ea0b042e3e206babcb8eefd7bd2c48c3351238"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+16+and+17&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:34:04.671055+00:00",
+          "sha256": "b2c9522c3bb7f6eb42650155dbc6d93b37b877e87cc5e53ca32813868f7a54fb"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+18+and+19&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:35:44.961294+00:00",
+          "sha256": "039af00316382360aef2823332ef9912e52d21f9553eff075a0e89e673e11cc3"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+20+and+21&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:38:43.604563+00:00",
+          "sha256": "cbfc2e1116058b4631fa7c1b3b03a4bf9691ab9ef5c7ad5ebba8c615ef677f2c"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+6+AND+hour_of_day+between+22+and+23&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:40:37.211925+00:00",
+          "sha256": "1c8a9b101b513d8c29b7031649de8b62decc02de967c59767fac87eb8e8419e6"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T21:41:00.096243+00:00",
+      "raw_sha256": "2df3a98f2345ec7017bf03c8703e82ef85bed5dad5ef6fcfb86c42f6dba274de",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-06.parquet",
+      "parquet_sha256": "d56cc2ada25a6cab86a06001609eec8417f3af83ce9d88645a63b7519edc8269",
+      "source_rows": 10405300
+    },
+    "2025-07": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+7&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T20:03:59.704440+00:00",
+          "sha256": "85d8ce074c123f0229cf15e8be7530f411323280c3b5a720485abf0b359c2fe9"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T20:03:59.704440+00:00",
+      "raw_sha256": "85d8ce074c123f0229cf15e8be7530f411323280c3b5a720485abf0b359c2fe9",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-07.parquet",
+      "parquet_sha256": "e6eed486d458e0e4a79a848ea1f271f7edf51ee6c4fa7faa80b5a130de8db3a5",
+      "source_rows": 9868373
+    },
+    "2025-08": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+8&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T20:13:20.496807+00:00",
+          "sha256": "8233c908ab9fb441e3c0d3a67dd8cb90f5dd079e2ec9aeafec1cdf4a15d70d26"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T20:13:20.496807+00:00",
+      "raw_sha256": "8233c908ab9fb441e3c0d3a67dd8cb90f5dd079e2ec9aeafec1cdf4a15d70d26",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-08.parquet",
+      "parquet_sha256": "be87af20e06bfac4247161b6daa6cc38789d70499dc336ffb43d6b416df8010a",
+      "source_rows": 10084286
+    },
+    "2025-09": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+0+and+1&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:16:43.330905+00:00",
+          "sha256": "98cca2c18c3bdd79f582be3bfc27cbb6cbd92aca605619641e3029f945d1af8c"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+2+and+3&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:17:16.101021+00:00",
+          "sha256": "888661be8617a6aff7e01b884db8040bcf7e45de6fcbad27c57c64f074d5406b"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+4+and+5&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:19:36.783348+00:00",
+          "sha256": "82f55dded279803f55734bdf635c0b9d162dcb417119c2c8ec309e02eba0a9fc"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+6+and+7&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:23:41.315364+00:00",
+          "sha256": "0bb70147f2cc42325c0824b33ce76c8b981c271d6f60f4b2bc8eff01fd4b8310"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+8+and+9&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:29:40.473420+00:00",
+          "sha256": "9d5b43b4f6881f65f470425e9320bc3c71d6f33279322a3eec81ef3147f78c8a"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+10+and+11&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:32:10.269191+00:00",
+          "sha256": "6e4a818540c53594419d36a39aee45e52842a91b060452f18a10748a2473ebb8"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+12+and+13&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:33:34.305397+00:00",
+          "sha256": "6766f132ea8a19196f7462cd11679d8cf238eaac1608c5ed9a0a49d4125c3a3c"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+14+and+15&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:46:01.689582+00:00",
+          "sha256": "e1742cb85775ad5c738c0a5d51801726373f1251ac349e5862e0c55a0a4b5e86"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+16+and+17&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:47:46.240620+00:00",
+          "sha256": "83945b5e8d6e3966142efbb2fba3d651fe842fee3ad473a1bc76b1447d01066a"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+18+and+19&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:50:04.866520+00:00",
+          "sha256": "7903163441bada6cf5811b487c0c0a368dcc4367bc93f8567b3fb2d58c2a8352"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+20+and+21&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:51:49.162990+00:00",
+          "sha256": "4f2a6e6ca0ecc02bb0bbe21ade5307c9b57e43537b278b409d5e80763e542f3e"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+9+AND+hour_of_day+between+22+and+23&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:52:40.240826+00:00",
+          "sha256": "403982a16de1e3a0072852f07f8a91990b3376e7b25bb488bd2542f500762b00"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T21:53:03.375457+00:00",
+      "raw_sha256": "195d0158455af381792c99a95fdc1b7cffe4e3636c9ce632e756e9edbcb8d542",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-09.parquet",
+      "parquet_sha256": "3b0f4790668fd021aaf3924a0115850acae9f9a28b9bbf193c65152da7d744cc",
+      "source_rows": 10332355
+    },
+    "2025-10": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+10&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:02:54.207801+00:00",
+          "sha256": "92fa997cb99fa1f2c576619bffdf4f33f90b616f3100e2926a532388b1b856b6"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T21:02:54.207801+00:00",
+      "raw_sha256": "92fa997cb99fa1f2c576619bffdf4f33f90b616f3100e2926a532388b1b856b6",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-10.parquet",
+      "parquet_sha256": "f8114f9672710e7b954ad646f5d3b4f952f1bee4cce9aba419e11175dacd5315",
+      "source_rows": 10319756
+    },
+    "2025-11": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+0+and+1&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:37:03.800580+00:00",
+          "sha256": "375d9261d5e4295eed0d8f1379b9abfafe14a4fc7dfc6ff15d12788f8d9d5c79"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+2+and+3&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:37:55.062508+00:00",
+          "sha256": "d1f07dcfa00784eb9094116c64acd8d3c7fd904a15bc9ea81a2a4c5e32f8282a"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+4+and+5&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:38:39.303790+00:00",
+          "sha256": "f957045ffb16d87c1634bd2157d5653d566068be4fc2d640e50df73860aecb7b"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+6+and+7&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:41:27.933091+00:00",
+          "sha256": "25d3893806a33c90185144ff3ba16a41078eab37f0e557a03c53a278119fdc07"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+8+and+9&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:45:08.484664+00:00",
+          "sha256": "89ab53b4cb893558825d65fd0f338bcebe86149ee1815f6c50e10fcaf4d23450"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+10+and+11&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:46:41.661605+00:00",
+          "sha256": "05a17b16a119857d5e89fbed1369bbf5ff13ad7c98c709945fea2d1de7bf3665"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+12+and+13&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:51:03.213794+00:00",
+          "sha256": "ee01f8e42de3c779d88efcc6bdd63df2ab38617fdfa6ea4bd629ef808a2e071d"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+14+and+15&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:59:17.105492+00:00",
+          "sha256": "13ddc82e65ea8344b01a9b3af4f625176dd493239f589253f0eb3d504648d31f"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+16+and+17&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T22:06:11.840553+00:00",
+          "sha256": "7ec5040c60fe617cce8c92b0d845abe3156d9a3b000f6e27525271d55a2d1ca6"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+18+and+19&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T22:09:04.386471+00:00",
+          "sha256": "e15ff6fef6c6249f26568bc50952bcf385507a1db1410c1ec261328da2676f68"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+20+and+21&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T22:15:45.835546+00:00",
+          "sha256": "7259d7da0cd743cd1d65e4b657b78f20c78447c18c0dda067f9032160d5bc061"
+        },
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+11+AND+hour_of_day+between+22+and+23&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T22:17:15.591215+00:00",
+          "sha256": "49a0f30bf68a1c8d30b248ea9c79f89103141158d2924fa3fe65af41fe01fa25"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T22:17:38.092357+00:00",
+      "raw_sha256": "f6d783e2cfb246241e6c170a3682abd7571efc3ac643e5dd282588de9a0f2cb7",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-11.parquet",
+      "parquet_sha256": "758659b6fd198f15b75f235e12081e1a6985d45f730ceb954bd745894888fd8a",
+      "source_rows": 10201776
+    },
+    "2025-12": {
+      "requests": [
+        {
+          "url": "https://data.ny.gov/resource/y2qv-fytt.csv?%24select=year%2Cmonth%2Cday_of_week%2Chour_of_day%2Ctimestamp%2Corigin_station_complex_id%2Corigin_station_complex_name%2Corigin_latitude%2Corigin_longitude%2Cdestination_station_complex_id%2Cdestination_station_complex_name%2Cdestination_latitude%2Cdestination_longitude%2Cestimated_average_ridership%2Corigin_point%2Cdestination_point&%24where=year+%3D+2025+AND+month+%3D+12&%24limit=100000000",
+          "retrieved_at_utc": "2026-11-13T21:13:56.592745+00:00",
+          "sha256": "94e56bc8614ab111548ac8d625dd79173b5c186d9e1591bec7bfaedee09046a2"
+        }
+      ],
+      "retrieved_at_utc": "2026-11-13T21:13:56.592745+00:00",
+      "raw_sha256": "94e56bc8614ab111548ac8d625dd79173b5c186d9e1591bec7bfaedee09046a2",
+      "parquet": "data/raw/od_2025_2026/parquet/2025-12.parquet",
+      "parquet_sha256": "de8ca04e026a2a8f483b8e42969ffd79b6a3bba67472146e47d5c9830a9cc0d2",
+      "source_rows": 10185384
+    }
+  },
+  "network": {
+    "gtfs": {
+      "url": "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip",
+      "resolved_url": "https://rrgtfsfeeds.s3.amazonaws.com/gtfs_subway.zip",
+      "retrieved_at_utc": "2026-10-28T01:28:56.773372+00:00",
+      "sha256": "2c9e69b82ac596a2fe660b56656509570cfba3c2e4c50be75eaf624eee1bc6f8",
+      "bytes": 5615228,
+      "file": "data/raw/enrichments/gtfs_subway.zip",
+      "etag": "\"bd592a3af7495b744609857b038370b5\"",
+      "last_modified": "Thu, 27 Aug 2026 13:39:18 GMT",
+      "meaning": "Official GTFS reference snapshot. Not a historical 2021-2024 network or observed passenger paths.",
+      "feed_info": [
+        {
+          "feed_publisher_name": "MTA New York City Transit",
+          "feed_publisher_url": "https://www.mta.info/",
+          "feed_lang": "EN",
+          "feed_start_date": "20260526",
+          "feed_end_date": "20261031",
+          "feed_version": "20260826-X-long-term-supplement-trip-ids",
+          "feed_contact_url": "https://groups.google.com/forum/#!forum/mtadeveloperresources"
+        }
+      ],
+      "graph_file": "atlas/data/network_current.json",
+      "graph_sha256": "4ad20971f5816624c7861082738adaabec644409e66d760a77e40570894d4ac0"
+    },
+    "complexes": 424,
+    "complexes_by_borough": {
+      "Bronx": 68,
+      "Brooklyn": 156,
+      "Manhattan": 121,
+      "Queens": 79
+    },
+    "routing": {
+      "parent_stops": 475,
+      "declared_walk_transfer": 75,
+      "rail": 556,
+      "flows_sha256": "c8813d6d68bcdd24ba19c247cdd6ee7284e1d9a83c73f3b2b7bb56459303c122",
+      "topology_sha256": "203616fffa94fb6a6cd4c21e9f73da2d022d832b91ce94e181f56f1cefb50f51"
+    },
+    "events": {
+      "unique_undirected_complex_edges": 549,
+      "graph_sha256": "4ad20971f5816624c7861082738adaabec644409e66d760a77e40570894d4ac0"
+    },
+    "reference_sources": {
+      "station_catalog.json": {
+        "file": "station_catalog.json",
+        "url": "https://data.ny.gov/resource/5f5g-n3cz.json?$limit=5000",
+        "retrieved_at_utc": "2026-10-14T04:57:11.601230+00:00",
+        "sha256": "a8bf65e5734003c60b9ee750a9acdaf0bf0343bbfb300ae064098e7df76ec40c"
+      },
+      "boroughs_raw.json": {
+        "file": "boroughs_raw.json",
+        "url": "https://data.cityofnewyork.us/resource/gthc-hcne.json?$limit=10",
+        "retrieved_at_utc": "2026-10-14T04:57:13.656363+00:00",
+        "sha256": "361ac589847bee86f45179afddef98304ca05f7b04650924873b58d09f8be39f"
+      }
+    },
+    "map_boundaries_sha256": "82956ae45dd73ddc8b15adf2e24cf352b89321b1598603126d5e9e4fffd2cdb7",
+    "od_rows_outside_routing_network": [
+      {
+        "period": "2023-02",
+        "origin": "167",
+        "destination": "502",
+        "rows": 1
+      },
+      {
+        "period": "2023-02",
+        "origin": "502",
+        "destination": "169",
+        "rows": 1
+      },
+      {
+        "period": "2023-02",
+        "origin": "502",
+        "destination": "228",
+        "rows": 1
+      },
+      {
+        "period": "2023-02",
+        "origin": "610",
+        "destination": "502",
+        "rows": 1
+      },
+      {
+        "period": "2023-03",
+        "origin": "399",
+        "destination": "502",
+        "rows": 1
+      },
+      {
+        "period": "2023-03",
+        "origin": "502",
+        "destination": "373",
+        "rows": 1
+      },
+      {
+        "period": "2025-10",
+        "origin": "502",
+        "destination": "601",
+        "rows": 1
+      },
+      {
+        "period": "2025-10",
+        "origin": "601",
+        "destination": "502",
+        "rows": 1
+      },
+      {
+        "period": "2025-11",
+        "origin": "501",
+        "destination": "414",
+        "rows": 1
+      },
+      {
+        "period": "2025-11",
+        "origin": "601",
+        "destination": "501",
+        "rows": 1
+      }
+    ]
+  }
+}
