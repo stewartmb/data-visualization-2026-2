@@ -22,7 +22,7 @@ WEEK = 7 * 24
 REFERENCE_WEEKS = 4
 MIN_PEERS = 4
 MONTH_LIMIT = 6
-TAIL_QUANTILE = 0.99
+PEAK_QUANTILE = 0.80
 
 
 def hour_string(hour):
@@ -204,10 +204,11 @@ def episode_record(episode_id, event, observations, typical, score, ids):
     stations = []
     for row, station in enumerate(members):
         active_hours = sorted(times_by_member[station])
-        count = float(observations[station, active_hours].sum())
-        baseline = float(typical[station, active_hours].sum())
+        paired_hours = [hour for hour in active_hours if np.isfinite(typical[station, hour])]
+        count = round(float(observations[station, paired_hours].sum()), 1) if paired_hours else None
+        baseline = round(float(typical[station, paired_hours].sum()), 1) if paired_hours else None
         stations.append({
-            "id": ids[station], "entries": round(count, 1), "expected": round(baseline, 1),
+            "id": ids[station], "entries": count, "expected": baseline,
             "score": round(float(score[station, active_hours].max()), 4),
             "observed": round_samples(observed[row]), "typical": round_samples(expected[row]),
         })
@@ -261,14 +262,22 @@ def write_json(path, value):
     path.write_text(json.dumps(value, separators=(",", ":"), ensure_ascii=False, allow_nan=False) + "\n")
 
 
+def peak_quantile(values, observed):
+    maxima = np.max(values, axis=1, where=observed, initial=-np.inf)
+    return float(np.quantile(maxima[np.isfinite(maxima)], PEAK_QUANTILE))
+
+
 def prepare(parquets, network_path, output):
     network = json.loads(network_path.read_text())
     indices, adjacency = spatial_graph(network)
     observations = load_entries(parquets, indices)
     typical = weekly_reference(observations)
-    valid = np.isfinite(observations) & np.isfinite(typical)
-    residual = 2 * (np.sqrt(observations + 0.375) - np.sqrt(typical + 0.375))
-    signal = np.where(valid, residual, 0)
+    observed = np.isfinite(observations)
+    comparable = observed & np.isfinite(typical)
+    # Stabilize the contrast before the transform so busy stations do not
+    # dominate solely because they record more entries.
+    contrast = 2 * (np.sqrt(observations + 0.375) - np.sqrt(typical + 0.375))
+    signal = np.where(comparable, contrast, 0)
     ranges, begin = [], 0
     for year in YEARS:
         end = begin + 24 * (365 + calendar.isleap(year))
@@ -276,35 +285,40 @@ def prepare(parquets, network_path, output):
         begin = end
     bands, scales, spectral_bound = coefficients(adjacency, signal, ranges)
     score = np.abs(bands[-1])
-    del bands
-    # A local change requires both spectral response and an observed difference.
-    eligible = valid & (np.abs(observations - typical) >= np.maximum(20, 0.15 * typical))
-    cutoff = float(np.quantile(score[valid], TAIL_QUANTILE))
-    chosen = monthly_selection(extract_episodes(score, eligible, adjacency, cutoff), score)
+    del bands, contrast, signal
+    q25, q75 = np.quantile(score[comparable], (0.25, 0.75))
+    score /= q75 - q25 or 1.0
+    np.log1p(score, out=score)
+    score /= score[comparable].max() or 1.0
+    cutoff = peak_quantile(score, comparable)
+    chosen = monthly_selection(extract_episodes(score, comparable, adjacency, cutoff), score)
     output.mkdir(parents=True, exist_ok=True)
     by_month = {}
     for month, events in chosen.items():
         by_month[month] = []
         month_details = {}
         for i, event in enumerate(events, start=1):
-            episode_id = f"{month}-{i}"
+            episode_id = f"{month}-d-{i}"
             summary, detail = episode_record(episode_id, event, observations, typical, score, list(indices))
             by_month[month].append(summary)
             month_details[episode_id] = detail
         write_json(output / f"{month}.json", month_details)
     source_files = sorted(path for year in YEARS for path in parquets.glob(f"{year}-??.parquet"))
     meta = {"years": YEARS, "complexes": len(indices), "hour_slots": HOURS, "origin": hour_string(0),
-            "observed_hours": int(np.isfinite(observations).sum()), "valid_hours": int(valid.sum()),
+            "observed_hours": int(observed.sum()), "valid_hours": int(comparable.sum()),
             "links": adjacency.nnz // 2, "graph_sha256": contents_hash(network_path),
-            "cutoff": cutoff, "quantile": TAIL_QUANTILE, "scales": scales.tolist(),
+            "cutoff": cutoff, "quantile": PEAK_QUANTILE, "scales": scales.tolist(),
+            "cutoff_scope": "maximum_comparable_score_per_complex",
+            "signal": "square_root_contrast_with_weekly_reference",
+            "normalization": "absolute_iqr_log1p_global_maximum",
             "spectral_bound": spectral_bound, "chebyshev_order": ORDER,
             "source_sha256": {path.name: contents_hash(path) for path in source_files},
             "sources": ["https://data.ny.gov/d/wujg-7c2s", "https://data.ny.gov/d/5wq4-mkjj"]}
     write_json(output / "index.json", {"meta": meta, "months": by_month})
     print(f"{sum(map(len, by_month.values()))} episodios en {len(by_month)} meses · umbral {cutoff:.3f}", flush=True)
-    baseline = np.abs(signal)
-    baseline_cutoff = float(np.quantile(baseline[valid], TAIL_QUANTILE))
-    baseline_events = monthly_selection(extract_episodes(baseline, eligible, adjacency, baseline_cutoff), baseline)
+    baseline = np.abs(observations - typical)
+    baseline_cutoff = peak_quantile(baseline, comparable)
+    baseline_events = monthly_selection(extract_episodes(baseline, comparable, adjacency, baseline_cutoff), baseline)
     comparison = compare_detectors(chosen, baseline_events, list(indices))
     write_json(output / "comparison.json", {
         "baseline_cutoff": baseline_cutoff, "spectral_cutoff": cutoff, "windows": comparison

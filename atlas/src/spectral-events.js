@@ -23,6 +23,7 @@ const eventTime = (start,end,{includeYear=true}={}) => {
   return `${fromDate} · ${fromTime} → ${toDate} ${toTime}`;
 };
 const number = value => value === null ? 'Sin registro' : labels.count.format(value);
+const spectralNumber = new Intl.NumberFormat('es-PE',{minimumFractionDigits:4,maximumFractionDigits:4}).format;
 const signedCount = new Intl.NumberFormat('es-PE',{maximumFractionDigits:1,signDisplay:'exceptZero'}).format;
 const changeColor = d3.scaleDiverging([-1,0,1],t=>t<.5?d3.interpolateRgb('#146b91','#f8f8f4')(2*t):d3.interpolateRgb('#f8f8f4','#ba542c')(2*t-1)).clamp(true);
 function hourChange(station,hour){
@@ -32,18 +33,20 @@ function hourChange(station,hour){
 const deltaLabel = value => (value>0?'+':'') + number(value*100) + ' %';
 const shortName = station => station.name.replace(/\s+\(.*/,'');
 export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
-  const file = name => new URL(name + '.json?v=2021-2025',dataURL);
+  const file = name => new URL(name + '.json?v=episode-deviation1',dataURL);
   const buttons = document.querySelectorAll('[data-analysis]');
   const panel = document.querySelector('#spectral-timeline');
   const navigation = document.querySelector('#spectral-navigation');
   const calendar = navigation.querySelector('#spectral-calendar');
+  const intensityKey = navigation.querySelector('.spectral-intensity-key');
   const episodes = panel.querySelector('#spectral-episodes');
   const episodeHeading = episodes.querySelector('.spectral-episodes-heading');
   const episodeMonth = episodes.querySelector('#spectral-episode-month');
   const episodeOrder = episodes.querySelector('#spectral-episode-order');
   const eventList = episodes.querySelector('ol');
   const episodePrompt = episodes.querySelector('p');
-  const detail = panel.querySelector('#spectral-detail');
+  const detailPanel = document.querySelector('#spectral-detail-panel');
+  const detail = detailPanel.querySelector('#spectral-detail');
   const subject = detail.querySelector('.spectral-chart-subject');
   const legend = detail.querySelector('.spectral-series-key');
   const frame = detail.querySelector('.spectral-chart-frame');
@@ -51,7 +54,10 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
   const status = frame.querySelector('.spectral-chart-status');
   const reading = detail.querySelector('.spectral-hour-reading');
   const driver = detail.querySelector('.spectral-hour-driver');
-  const scope = detail.querySelector('.spectral-detail-scope');
+  const complexes = detailPanel.querySelector('#spectral-complexes');
+  const complexHeading = complexes.querySelector('h3');
+  const complexToggle = complexes.querySelector('.spectral-complexes-toggle');
+  const complexSeries = d3.select(complexes.querySelector('#spectral-complex-series'));
   const header = document.querySelector('#spectral-header');
   const summarySubject = header.querySelector('#spectral-subject');
   const period = header.querySelector('#spectral-period');
@@ -63,15 +69,32 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
   let calendarOpen = initial.get('analysis')==='events';
   let restore = calendarOpen ? {month:initial.get('month'),id:initial.get('event'),complex:initial.get('complex')} : null;
   let catalog, catalogRequest, activeMonth, episode, record, selected, timeOrigin, scene, inspectedHour;
-  let pinnedHour;
+  let pinnedHour, showAllComplexes = false;
   let serial = 0, pending = false, message = '', maximumChange = 1;
 
-  function pointRadius(station){
-    if(!station.event)return 1.4;
-    const difference = Math.abs(hourChange(station.event,inspectedHour)??0);
+  function radiusForChange(difference){
     const minRadius = 2.5, maxRadius = 12;
     // Scale the area above the minimum used to keep every complex selectable.
     return Math.sqrt(minRadius**2 + (maxRadius**2-minRadius**2)*difference/maximumChange);
+  }
+
+  function pointRadius(station){
+    return station.event ? radiusForChange(Math.abs(hourChange(station.event,inspectedHour)??0)) : 1.4;
+  }
+
+  function drawSizeKey(){
+    const middle = d3.least(d3.ticks(0,maximumChange,4).filter(value=>value>0&&value<maximumChange),
+      value=>Math.abs(value-maximumChange/2))??maximumChange/2;
+    const samples = d3.select(scene.key.querySelector('.spectral-size-samples'))
+      .selectAll('li').data([0,middle,maximumChange]).join(enter=>{
+        const sample = enter.append('li');
+        sample.append('svg').attr('width',28).attr('height',28).attr('aria-hidden','true')
+          .append('circle').attr('cx',14).attr('cy',14);
+        sample.append('span');
+        return sample;
+      });
+    samples.select('circle').attr('r',radiusForChange);
+    samples.select('span').text(number);
   }
 
   function writeURL(params){
@@ -106,7 +129,8 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
       drawDetail();
       return;
     }
-    scene.key.hidden = !visible;
+    scene.key.hidden = !record||pending||!!message;
+    if(!scene.key.hidden)drawSizeKey();
     scene.points.attr('display',visible?null:'none');
     scene.svg.attr('role',visible?'group':scene.role)
       .attr('aria-label',visible?'Complejos del episodio':calendarOpen?'Red de referencia del metro':scene.label);
@@ -177,8 +201,11 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
 
   function drawCalendar(){
     if(!catalog)return;
-    const maximum = d3.max(Object.values(catalog.months).flat(),event=>event.strength)||1;
-    const intensity = d3.scaleSequentialSqrt(d3.interpolateRgb('#e6eef0','#176982')).domain([0,maximum]);
+    const peaks = Object.values(catalog.months)
+      .filter(events=>events.length)
+      .map(events=>d3.max(events,event=>event.strength));
+    const intensity = d3.scaleSequential(d3.interpolateRgb('#d2e5e8','#176982')).domain(d3.extent(peaks));
+    intensityKey.hidden = !peaks.length;
     const headings = months.map(month=>
       `<th scope="col" title="${month}"><span class="month-initial">${month[0]}</span><span class="month-abbreviation">${month}</span></th>`
     ).join('');
@@ -187,8 +214,10 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
         const key = year+'-'+String(index+1).padStart(2,'0');
         const events = catalog.months[key]??[];
         const label = labels.month.format(parseMonth(key));
-        const title = events.length ? `${label} · ${events.length} episodios destacados` : `${label} · Sin episodios destacados`;
-        const appearance = events.length ? ` style="--cell:${intensity(events[0].strength)}"` : ' disabled';
+        const peak = d3.max(events,event=>event.strength);
+        const title = peak===undefined ? `${label} · Sin episodios destacados`
+          : `${label} · Señal máxima ${spectralNumber(peak)} · ${events.length} episodios destacados`;
+        const appearance = peak===undefined ? ' disabled' : ` style="--cell:${intensity(peak)}"`;
         return `<td><button type="button" data-spectral-month="${key}" aria-label="${title}" title="${title}"
           aria-pressed="${key===activeMonth}"${appearance}></button></td>`;
       }).join('');
@@ -213,39 +242,120 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
     eventList.innerHTML = events.map(event=>
       `<li><button type="button" data-spectral-event="${event.id}" aria-pressed="${episode?.id===event.id}">
         <strong>${eventTime(event.start,event.end,{includeYear:false})}</strong>
-        <span>${event.hours} h · ${event.complexes} complejos</span>
+        <span class="spectral-episode-facts">
+          <span>${event.hours} h · ${event.complexes} complejos</span>
+          <span class="spectral-episode-strength">Señal ${spectralNumber(event.strength)}</span>
+        </span>
       </button></li>`
     ).join('');
   }
 
   function drawDetail(){
     const empty = !episode||!record||pending||!!message;
-    for(const element of [subject,legend,chart,reading,scope])element.toggleAttribute('hidden',empty);
+    for(const element of [subject,legend,chart,reading,complexes])element.toggleAttribute('hidden',empty);
     status.hidden = !empty;
     frame.classList.toggle('is-empty',empty);
     driver.hidden = true;
-    d3.select(chart).selectAll('*').remove();
     if(empty){
+      d3.select(chart).selectAll('*').remove();
+      complexSeries.selectAll('*').remove();
       status.textContent = message||(pending?'Cargando episodio…':'Selecciona un episodio para ver sus entradas.');
       return;
     }
-    const station = record.stations.find(item=>item.id===selected);
-    subject.textContent = station ? shortName(stations.get(station.id)) : 'Complejos del episodio';
-    scope.textContent = station
-      ? 'Pulsa el complejo de nuevo para ver el conjunto.'
-      : 'Selecciona un complejo en el mapa para ver sus entradas.';
-    drawChart(station??record);
+    subject.textContent = `Total del episodio · ${record.stations.length} complejos`;
+    drawCharts();
   }
 
-  function drawChart(chosen){
-    const plot = d3.select(chart);
-    const W = chart.clientWidth || 200, H = chart.clientHeight;
-    const m = {left:W<240?34:43,right:14,top:15,bottom:25};
-    const n = chosen.observed.length;
-    const dates = Array.from({length:n},(_,i)=>new Date(timeOrigin + (record.start+i)*3600000));
-    const values = [chosen.observed,chosen.typical];
+  function drawCharts(){
+    const dates = record.observed.map((_,i)=>new Date(timeOrigin + (record.start+i)*3600000));
+    const hours = d3.range(...record.window);
+    const ranked = record.stations.map(station=>({
+      station,
+      name: shortName(stations.get(station.id)),
+      change: d3.max(hours,hour=>Math.abs(hourChange(station,hour)??0))??0
+    })).sort((a,b)=>b.change-a.change || a.name.localeCompare(b.name,'es'));
+    const visible = showAllComplexes ? ranked : ranked.filter(({station},i)=>i<3||station.id===selected);
+    complexHeading.textContent = showAllComplexes ? 'Complejos del episodio' : 'Complejos con mayor cambio';
+    complexToggle.hidden = ranked.length<=3;
+    complexToggle.textContent = showAllComplexes ? 'Ver principales' : `Ver los ${ranked.length}`;
+    complexToggle.setAttribute('aria-pressed',String(showAllComplexes));
+    const cards = complexSeries.selectAll('.spectral-complex').data(visible,({station})=>station.id).join(enter=>{
+      const card = enter.append('article').attr('class','spectral-complex');
+      card.append('button').attr('type','button').attr('class','spectral-complex-name');
+      card.append('svg').attr('class','spectral-chart').attr('role','img').attr('tabindex',0);
+      card.append('p').attr('class','spectral-complex-reading');
+      return card;
+    }).classed('is-selected',({station})=>station.id===selected);
+    cards.select('button').text(({name})=>name)
+      .attr('aria-pressed',({station})=>String(station.id===selected))
+      .on('click',(_, {station})=>selectComplex(station.id));
+    cards.select('svg').attr('aria-label',({name})=>
+      `Entradas por hora de ${name}. Pulsa en la gráfica o usa las flechas para fijar una hora.`);
+    const stationMaximum = d3.max(ranked,({station})=>Math.max(d3.max(station.observed)??0,d3.max(station.typical)??0));
+    const updateAggregate = drawChart(chart,record,dates,null,inspect);
+    const updateComplexes = [];
+    cards.each(function({station}){
+      const plot = drawChart(this.querySelector('svg'),station,dates,stationMaximum,inspect);
+      const value = this.querySelector('p');
+      updateComplexes.push(hour=>{
+        plot(hour);
+        const observed = station.observed[hour], typical = station.typical[hour];
+        const difference = hourChange(station,hour);
+        value.textContent = `${number(observed)} obs. / ${number(typical)} hab.`;
+        if(difference!==null)value.textContent += ` · ${signedCount(difference)}`;
+      });
+    });
+
+    let currentHour;
+    function inspect(hour){
+      if(currentHour===hour)return;
+      currentHour = inspectedHour = hour;
+      const date = dates[hour];
+      const time = `${labels.day.format(date)} · ${labels.time.format(date)}`;
+      paintHour(date);
+      updateAggregate(hour);
+      updateComplexes.forEach(update=>update(hour));
+      const difference = hourChange(record,hour);
+      reading.textContent = `${time} · ${number(record.observed[hour])} obs. / ${number(record.typical[hour])} hab.`;
+      if(difference!==null)reading.textContent += ` · Cambio ${signedCount(difference)}`;
+      const selectedStation = record.stations.find(station=>station.id===selected);
+      const summaryChange = selectedStation ? hourChange(selectedStation,hour) : difference;
+      summaryHour.textContent = `${time} · ${summaryChange===null
+        ? 'Sin comparación' : `${signedCount(summaryChange)} entradas frente a lo habitual`}`;
+      summaryHour.title = summaryHour.textContent;
+      updateLargestChange(hour,difference);
+    }
+    inspect(pinnedHour);
+  }
+
+  function updateLargestChange(hour,difference){
+    driver.hidden = true;
+    if(selected||difference===null)return;
+    const largest = d3.greatest(record.stations,station=>Math.abs(hourChange(station,hour)??0));
+    const change = hourChange(largest,hour);
+    if(!change)return;
+    const name = shortName(stations.get(largest.id));
+    const typical = largest.typical[hour];
+    const percent = typical ? ' (' + deltaLabel(change/typical) + ')' : '';
+    driver.innerHTML = `<span>Mayor diferencia a esta hora</span>
+      <strong>${esc(name)}</strong>
+      <span class="${change<0?'spectral-decrease':'spectral-increase'}">${signedCount(change)} entradas${percent} ↗</span>`;
+    driver.onclick = () => {
+      selectComplex(largest.id);
+      chart.focus({preventScroll:true});
+    };
+    driver.hidden = false;
+  }
+
+  function drawChart(svg,series,dates,maximum,inspect){
+    const plot = d3.select(svg);
+    plot.selectAll('*').remove();
+    const W = svg.clientWidth || 200, H = svg.clientHeight;
+    const m = {left:43,right:14,top:15,bottom:25};
+    const n = dates.length;
+    const values = [series.observed,series.typical];
     const x = d3.scaleUtc().domain([dates[0],dates[n-1]]).range([m.left,W-m.right]);
-    const y = d3.scaleLinear().domain([0,d3.max(values.flat())||1]).nice(3).range([H-m.bottom,m.top]);
+    const y = d3.scaleLinear().domain([0,(maximum??d3.max(values.flat()))||1]).nice(3).range([H-m.bottom,m.top]);
     plot.attr('viewBox',`0 0 ${W} ${H}`);
     const [first,last] = record.window;
     plot.append('rect').attr('class','spectral-event-band')
@@ -260,49 +370,11 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
     plot.selectAll('.spectral-series').data(values).join('path')
       .attr('class',(_,i)=>i?'spectral-series is-typical':'spectral-series').attr('d',line);
     const marker = plot.append('line').attr('class','spectral-chart-marker').attr('y1',m.top).attr('y2',H-m.bottom);
-    let currentHour;
-    function inspect(i){
-      if(currentHour===i)return;
-      currentHour = inspectedHour = i;
-      paintHour(dates[i]);
-      const pos=x(dates[i]);
-      marker.attr('x1',pos).attr('x2',pos);
-      const observed = chosen.observed[i], typical = chosen.typical[i];
-      const compared = observed!==null&&typical!==null;
-      reading.textContent = `${labels.day.format(dates[i])} · ${labels.time.format(dates[i])} · ${number(observed)} obs. / ${number(typical)} hab.`;
-      if(compared)reading.textContent += ` · Cambio ${signedCount(observed-typical)}`;
-      summaryHour.textContent = `${labels.day.format(dates[i])} · ${labels.time.format(dates[i])} · ${compared
-        ? `${signedCount(observed-typical)} entradas frente a lo habitual` : 'Sin comparación'}`;
-      summaryHour.title = summaryHour.textContent;
-      driver.hidden = true;
-      if(selected||!compared)return;
-      let largest;
-      for(const station of record.stations){
-        const difference = hourChange(station,i);
-        if(difference===null||difference===0)continue;
-        if(!largest||Math.abs(difference)>Math.abs(largest.difference)){
-          largest = {id:station.id,difference,usual:station.typical[i]};
-        }
-      }
-      if(!largest)return;
-      const name = shortName(stations.get(largest.id));
-      const percent = largest.usual ? ' (' + deltaLabel(largest.difference/largest.usual) + ')' : '';
-      driver.innerHTML = `<span>Mayor diferencia a esta hora</span>
-        <strong>${esc(name)}</strong>
-        <span class="${largest.difference<0?'spectral-decrease':'spectral-increase'}">${signedCount(largest.difference)} entradas${percent} ↗</span>`;
-      driver.onclick = () => {
-        selectComplex(largest.id);
-        chart.focus({preventScroll:true});
-      };
-      driver.hidden = false;
-    }
     function hourAtPointer(event){
-      const [pointer] = d3.pointer(event,chart);
+      const [pointer] = d3.pointer(event,svg);
       const hour = Math.round((+x.invert(pointer)-dates[0])/3600000);
       return Math.max(0,Math.min(n-1,hour));
     }
-
-    inspect(pinnedHour);
     plot.on('pointermove',event=>{
       if(event.pointerType!=='touch')inspect(hourAtPointer(event));
     }).on('pointerleave pointercancel',()=>{
@@ -317,6 +389,10 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
       pinnedHour = Math.max(0,Math.min(n-1,pinnedHour+direction));
       inspect(pinnedHour);
     });
+    return hour=>{
+      const position = x(dates[hour]);
+      marker.attr('x1',position).attr('x2',position);
+    };
   }
 
   function refreshSelection(){
@@ -335,6 +411,7 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
     const ticket = ++serial;
     hideTooltip();
     episode = event;
+    showAllComplexes = false;
     inspectedHour = pinnedHour = undefined;
     selected = null;
     record = null;
@@ -388,6 +465,10 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
       item.setAttribute('aria-pressed',String(item.dataset.spectralMonth===activeMonth));
     });
   });
+  complexToggle.addEventListener('click',()=>{
+    showAllComplexes = !showAllComplexes;
+    drawCharts();
+  });
   episodeOrder.addEventListener('change',drawEpisodes);
   eventList.addEventListener('click',event=>{
     const button = event.target.closest('[data-spectral-event]');
@@ -422,7 +503,7 @@ export function createSpectralEvents({flows,syncURL,dataURL,onModeChange}){
   }
 
   function updatePanel(){
-    navigation.hidden = panel.hidden = !calendarOpen;
+    navigation.hidden = panel.hidden = detailPanel.hidden = !calendarOpen;
     document.body.classList.toggle('spectral-calendar-open',calendarOpen);
     for(const button of buttons)button.setAttribute('aria-pressed',String(button.dataset.analysis===(calendarOpen?'events':'years')));
   }

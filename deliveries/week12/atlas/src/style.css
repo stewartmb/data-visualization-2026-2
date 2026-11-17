@@ -527,7 +527,7 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
   color: var(--ink);
 }
 .od-compare { min-height: 24px; padding: 2px 7px; color: var(--teal); font-weight: 650; }
-.od-years button { min-width: 0; padding: 2px; font-variant-numeric: tabular-nums; }
+.od-years button { position: relative; min-width: 0; padding: 2px; font-variant-numeric: tabular-nums; }
 .od-years button[aria-pressed="true"] { background: var(--pale); border-color: var(--teal); }
 .od-years button[data-role="A"] { color: #176184; border-color: #176184; background: #eaf2f6; }
 .od-years button[data-role="B"] { color: #943f20; border-color: #943f20; background: #faf0eb; }
@@ -540,7 +540,18 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
   border-radius: 2px;
   background: #edf0f1;
 }
-.od-year-caption { display: block; padding: 3px 0 2px; line-height: 1.15; font-weight: 650; }
+.od-year-caption {
+  position: absolute;
+  inset: 7px auto auto 7px;
+  padding: 3px 5px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: #fff;
+  font-size: 12px;
+  line-height: 1.15;
+  font-weight: 700;
+  pointer-events: none;
+}
 .od-year-change {
   position: absolute;
   width: 1px;
@@ -1129,8 +1140,12 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
 }
 #scatter-plot.is-scatter-lasso-active { touch-action: none; }
 .scatter-lasso .map-lasso-trace { fill: #78518a; stroke: #78518a; }
-[data-scatter-station].scatter-area-member { fill: #78518a; }
-.map-viewport .map-svg .map-dot.scatter-area-member { stroke: #78518a; stroke-width: 1.6px; }
+[data-scatter-station].scatter-area-member {
+  fill: var(--station-highlight);
+  stroke: var(--station-highlight-edge);
+  stroke-width: 1.25px;
+}
+.map-viewport .map-svg .map-dot.scatter-area-member { stroke: var(--station-highlight); stroke-width: 2.5px; }
 
 .atlas-insights .inline-evidence > div {
   position: static;
@@ -1187,9 +1202,8 @@ main{margin-right:410px}@media(max-width:1100px){main{margin-right:0}.inspector{
   }
   .atlas-insights .od-years { grid-auto-rows: minmax(78px, 1fr); overflow-y: auto; }
   .atlas-insights .od-years button {
-    position: relative;
     display: grid;
-    grid-template-rows: minmax(0, 1fr) auto;
+    grid-template-rows: minmax(0, 1fr);
   }
   .atlas-insights .od-years canvas { height: 100%; min-height: 0; }
 }

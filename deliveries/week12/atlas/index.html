@@ -5,8 +5,8 @@
   <title>Fractal · Atlas de ritmos</title>
   <meta name="description" content="Explora los flujos origen–destino del metro de Nueva York entre 2021 y 2025.">
   <link rel="icon" href="data:,">
-  <link rel="stylesheet" href="src/style.css?v=station-highlight1">
-  <link rel="stylesheet" href="src/spectral-events.css?v=station-highlight1">
+  <link rel="stylesheet" href="src/style.css?v=calendar-legends1">
+  <link rel="stylesheet" href="src/spectral-events.css?v=monthly-contrast1">
 </head>
 <body class="atlas-workbench">
 <div id="loading" role="status"><span class="map-spinner" aria-hidden="true"></span> Preparando el atlas de ritmos…</div>
@@ -47,7 +47,7 @@
   <aside class="atlas-insights" aria-label="Años y eventos">
     <div id="atlas-analysis" class="atlas-analysis" role="group" aria-label="Explorar el tiempo" hidden>
       <button type="button" data-analysis="years" aria-pressed="true" aria-controls="od-year-panel">Años</button>
-      <button type="button" data-analysis="events" aria-pressed="false" aria-controls="spectral-navigation spectral-timeline">Eventos</button>
+      <button type="button" data-analysis="events" aria-pressed="false" aria-controls="spectral-navigation spectral-timeline spectral-detail-panel">Eventos</button>
     </div>
     <section id="od-year-panel" class="od-year-strip" aria-labelledby="od-year-heading" hidden>
       <div class="od-year-controls">
@@ -67,8 +67,22 @@
       <div id="od-years" class="od-years" role="group" aria-label="Elegir año"></div>
     </section>
     <section id="spectral-navigation" class="spectral-navigation" aria-labelledby="spectral-navigation-heading" hidden>
-      <h2 id="spectral-navigation-heading">Eventos por mes</h2>
-      <div class="spectral-intensity-key"><span>Menor señal</span><i aria-hidden="true"></i><span>Mayor señal</span></div>
+      <div class="spectral-navigation-heading">
+        <h2 id="spectral-navigation-heading">Eventos por mes</h2>
+        <details class="spectral-calendar-help">
+          <summary aria-label="Cómo leer Eventos por mes" title="Cómo leer Eventos por mes">?</summary>
+          <div class="spectral-calendar-help-panel">
+            <p>La <strong>señal espectral</strong> mide cuán inusual es el cambio de entradas respecto a lo habitual, teniendo en cuenta las conexiones de la red.</p>
+            <p>El color de cada mes muestra la señal del episodio más intenso. La barra abarca del menor al mayor de esos valores. La cifra de cada episodio es la mayor señal media del grupo en una hora.</p>
+            <p><span class="spectral-empty-month" aria-hidden="true"></span> Gris indica un mes sin episodios destacados.</p>
+          </div>
+        </details>
+      </div>
+      <div class="spectral-intensity-key" role="group" aria-label="Escala de señal espectral mensual" hidden>
+        <span>Menor señal espectral</span>
+        <i aria-hidden="true"></i>
+        <span>Mayor señal espectral</span>
+      </div>
       <div id="spectral-calendar"></div>
     </section>
     <section id="spectral-timeline" class="spectral-timeline" hidden aria-labelledby="spectral-timeline-heading">
@@ -90,29 +104,36 @@
         <ol aria-labelledby="spectral-episode-month" hidden></ol>
         <p hidden>Elige un mes para ver sus episodios.</p>
       </div>
-      <section class="spectral-detail" aria-labelledby="spectral-detail-heading">
-        <h2 id="spectral-detail-heading">Entradas por hora</h2>
-        <div id="spectral-detail">
-          <h3 class="spectral-chart-subject" hidden></h3>
-          <div class="spectral-series-key" hidden><span>Observadas</span><span>Habituales</span></div>
-          <div class="spectral-chart-frame is-empty">
-            <svg class="spectral-chart" role="img" tabindex="0" aria-label="Entradas por hora antes, durante y después. Pulsa en la gráfica o usa las flechas izquierda y derecha para fijar una hora en el mapa." hidden></svg>
-            <p class="spectral-chart-status" role="status">Selecciona un episodio para ver sus entradas.</p>
-          </div>
-          <output class="spectral-hour-reading" aria-live="polite" hidden></output>
-          <button type="button" class="spectral-hour-driver text-button" hidden></button>
-          <p class="spectral-detail-scope" hidden></p>
-        </div>
-        <details class="spectral-method">
-          <summary>Datos y método</summary>
-          <p>MTA · Entradas horarias de 2021–2025. Hora local de Nueva York. El valor habitual es la mediana del mismo día de la semana y hora de hasta ocho semanas cercanas.</p>
-          <p>Las wavelets sobre el grafo GTFS 2026 detectan cambios entre complejos conectados y entre horas. El calendario muestra la mayor señal de cada mes y hasta seis episodios. En el mapa, el área del círculo representa la diferencia de entradas y el color muestra el cambio porcentual.</p>
-          <p>La serie suma los complejos que tienen ambas cifras para cada hora. Un episodio es una señal para investigar su causa.</p>
-          <a href="https://files.visualdslab.com/files/papers/2026-ManyWaves-CGF.pdf#page=3">Método de ManyWaves ↗</a>
-        </details>
-      </section>
     </section>
     <section id="inspector" class="inspector" aria-label="Detalle de la selección"></section>
+  </aside>
+  <aside id="spectral-detail-panel" class="spectral-detail" aria-labelledby="spectral-detail-heading" hidden>
+    <h2 id="spectral-detail-heading">Entradas por hora</h2>
+    <div id="spectral-detail">
+      <h3 class="spectral-chart-subject" hidden></h3>
+      <div class="spectral-series-key" hidden><span>Observadas</span><span>Habituales</span></div>
+      <div class="spectral-chart-frame is-empty">
+        <svg class="spectral-chart" role="img" tabindex="0" aria-label="Entradas por hora antes, durante y después. Pulsa en la gráfica o usa las flechas izquierda y derecha para fijar una hora en el mapa." hidden></svg>
+        <p class="spectral-chart-status" role="status">Selecciona un episodio para ver sus entradas.</p>
+      </div>
+      <output class="spectral-hour-reading" aria-live="polite" hidden></output>
+      <button type="button" class="spectral-hour-driver text-button" hidden></button>
+    </div>
+    <section id="spectral-complexes" class="spectral-complexes" aria-labelledby="spectral-complexes-heading" hidden>
+      <div class="spectral-complexes-heading">
+        <h3 id="spectral-complexes-heading">Complejos con mayor cambio</h3>
+        <button type="button" class="text-button spectral-complexes-toggle" aria-pressed="false" aria-controls="spectral-complex-series"></button>
+      </div>
+      <p>Mayor diferencia absoluta por hora durante el episodio.</p>
+      <div id="spectral-complex-series"></div>
+    </section>
+    <details class="spectral-method">
+      <summary>Datos y método</summary>
+      <p>MTA · Entradas horarias de 2021–2025. Hora local de Nueva York. El valor habitual es la mediana del mismo día de la semana y hora de hasta ocho semanas cercanas.</p>
+      <p>El detector aplica wavelets a la desviación respecto a la hora habitual y agrupa cambios de alta frecuencia en el grafo GTFS 2026. El corte usa el percentil 80 de la máxima señal de cada complejo. El calendario muestra hasta seis episodios de mayor señal por mes. En el mapa, el área del círculo representa la diferencia de entradas y el color muestra el cambio porcentual.</p>
+      <p>La serie suma los complejos que tienen ambas cifras para cada hora. Un episodio es una señal para investigar su causa.</p>
+      <a href="https://files.visualdslab.com/files/papers/2026-ManyWaves-CGF.pdf#page=3">Método de ManyWaves ↗</a>
+    </details>
   </aside>
 </div>
 <template id="spectral-key-template">
@@ -121,10 +142,14 @@
     <span class="spectral-sign-title">Color · % respecto a lo habitual</span>
     <span class="spectral-colorbar" aria-hidden="true"></span>
     <span class="spectral-key-words"><span>Bajaron</span><span>Subieron</span></span>
-    <span>Área · diferencia de entradas</span>
+    <div class="spectral-size-key">
+      <strong>Tamaño del círculo</strong>
+      <span>Diferencia frente a lo habitual, en entradas</span>
+      <ul class="spectral-size-samples" aria-label="Escala de tamaños"></ul>
+    </div>
   </div>
 </template>
 <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
 <div id="toast" class="toast" role="status" hidden></div>
-<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=station-highlight1"></script>
+<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=monthly-contrast1"></script>
 </body></html>

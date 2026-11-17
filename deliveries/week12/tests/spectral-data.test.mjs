@@ -15,7 +15,17 @@ const sourceMonths = studyYears.flatMap(year => Array.from({length:12}, (_,i) =>
 assert.deepEqual(index.meta.years, studyYears);
 assert.equal(index.meta.origin, '2021-01-01T00');
 assert.deepEqual(Object.keys(index.meta.source_sha256).sort(), sourceMonths.map(month => month+'.parquet'));
-assert.ok(sourceMonths.filter(month => month.startsWith('2025-')).every(month => index.months[month]?.length));
+assert.equal(index.meta.quantile, 0.8);
+assert.equal(index.meta.signal, 'square_root_contrast_with_weekly_reference');
+for (const year of studyYears) {
+  const september = new Date(Date.UTC(year, 8, 1));
+  september.setUTCDate(1 + (8 - september.getUTCDay()) % 7);
+  const holidayStart = september.toISOString().slice(0, 13);
+  september.setUTCDate(september.getUTCDate() + 1);
+  const holidayEnd = september.toISOString().slice(0, 13);
+  assert.ok(index.months[`${year}-09`]?.some(event => event.start < holidayEnd && event.end > holidayStart),
+            `El catálogo debe incluir un episodio del Día del Trabajo de ${year}`);
+}
 assert.ok(index.meta.valid_hours <= index.meta.observed_hours);
 assert.ok(index.meta.observed_hours <= index.meta.hour_slots * ids.size);
 assert.equal(index.meta.scales.length, 4);
