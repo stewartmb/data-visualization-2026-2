@@ -2,13 +2,13 @@ import {bindMapLasso} from './map-lasso.js?v=shared-map1';
 import {bindFlowScale,bindCircleScale} from './flow-scale.js?v=grouped-circle-key1';
 import {odLoads,odStarts,odIncoming,odPeriodLabel} from './od-period.mjs';
 import {state,BASE,esc,fmt,signed,profile,metricValue,metricColor,showTooltip,hideTooltip,heading,stats,passesMetricRanges,cohortProfile} from './model.js?v=20261028-4';
-import {RaebOverlay} from './raeb-overlay.mjs?v=crisp-raeb2';
-import {setRaebStatus} from './raeb-cpu-overlay.mjs?v=crisp-raeb2';
+import {RaebOverlay} from './raeb-overlay.mjs?v=remove-scenarios1';
+import {setRaebStatus} from './raeb-cpu-overlay.mjs?v=remove-scenarios1';
 import {FLOW_COLOR_MAX,FLOW_COLOR_STOPS,RAEB_OVERVIEW_COLOR_STOPS,flowColor} from './raeb-gpu-shaders.mjs?v=crisp-raeb2';
 import {metersPerProjectedPixel} from './raeb-scale.mjs?v=rail-reading1';
 import {activeODCompareBase} from './contrast-model.mjs?v=od-only1';
 import {OD_CHANGE_LIMIT,OD_CHANGE_COLORS,OD_RAIL_MIN_WIDTH,OD_RAIL_MAX_WIDTH,railChange,railFlowWidth,zoomStrokeScale,flowStrength,flowCount,odDelta} from './od-encoding.mjs?v=rail-width65';
-import {originBranches,bundleAt,distanceToLines} from './od-routing.mjs?v=annual-overview1';
+import {originBranches} from './od-routing.mjs?v=remove-scenarios1';
 import {updateClockTime} from './inspector.js?v=station-highlight1';
 let transform=d3.zoomIdentity, previousFrame, pendingFidelity=null, pendingGrouping;
 let legendPreference=null;
@@ -181,8 +181,6 @@ export function renderMap(host,app,items){
               <button type="button" id="calculate-fidelity" aria-label="Calcular agrupamiento y fidelidad"
                 ${cambio?'title="La comparación usa la red de referencia con radio cero."':''} disabled>Calcular</button>
             </div>
-            <button id="inspect-bundle" type="button" class="text-button" aria-pressed="false" hidden>Explorar un haz</button>
-            <div id="bundle-evidence" class="bundle-evidence" aria-live="polite" hidden></div>
           </div>
           </div>
         </section>
@@ -347,7 +345,7 @@ export function renderMap(host,app,items){
     return `linear-gradient(90deg,${stops.map(({color})=>color).join(',')})`;
   };
   let nodeVolumeMax=1,nodeChangeMax=1;
-  let updateComplexContext=null,hoveredComplex=null,inspectCorridor=null,resizeScenarioStops=null;
+  let updateComplexContext=null,hoveredComplex=null;
   if(flujos){
     const F=app.flows,ni=new Map(F.nodes.map((n,i)=>[n.id,i]));
     stationStarts=(s,h=state.flowHour,year=state.year,day=state.flowDay)=>odStarts(F,year,day,h,ni.get(s.id));
@@ -415,139 +413,6 @@ export function renderMap(host,app,items){
           ${focusOrigin&&!cambio?`<div class="station-tooltip-context">${esc(flowCount(share,fmt))} % de las salidas del origen</div>`:''}
         </div>`,event);
       }).on('pointerleave',hideTooltip);
-    const inspectButton=host.querySelector('#inspect-bundle');
-    const bundleEvidence=host.querySelector('#bundle-evidence');
-    let inspecting=false, evidenceSerial=0, pendingConnection=null;
-    let connectionStops;
-    const scenarioChanges=g.append('g').attr('class','scenario-changes').attr('display','none');
-    const candidate=g.append('path').attr('class','bundle-candidate')
-      .attr('fill','none').attr('vector-effect','non-scaling-stroke').attr('display','none');
-    const scenarioLine=g.append('path').attr('class','bundle-candidate scenario-line')
-      .attr('fill','none').attr('vector-effect','non-scaling-stroke').attr('display','none');
-    const clearCandidate=()=>{
-      evidenceSerial++;
-      pendingConnection=null;
-      connectionStops?.attr('display','none');
-      candidate.attr('display','none');
-      scenarioLine.attr('display','none');
-      scenarioChanges.attr('display','none');
-      if(bundleEvidence)bundleEvidence.hidden=true;
-      if(inspectButton){inspecting=false;inspectButton.setAttribute('aria-pressed','false');}
-    };
-    if(inspectButton){
-      inspectButton.onclick=()=>{
-        if(inspecting){clearCandidate();return;}
-        inspecting=true;
-        inspectButton.setAttribute('aria-pressed','true');
-        bundleEvidence.hidden=false;
-        bundleEvidence.textContent='Haz clic sobre una curva fuera de la red.';
-      };
-      inspectButton.onkeydown=event=>{if(event.key==='Escape')clearCandidate();};
-    }
-    const routeNodes=F.meta.network?.route_nodes;
-    const physicalStops=Object.entries(routeNodes??{}).map(([id,stop])=>({id,...stop,point:projection(stop.coords)}));
-    connectionStops=g.append('g').attr('class','scenario-stops').attr('display','none');
-    connectionStops.selectAll('circle').data(physicalStops).join('circle')
-      .attr('cx',stop=>stop.point[0]).attr('cy',stop=>stop.point[1]).attr('r',2)
-      .attr('vector-effect','non-scaling-stroke');
-    resizeScenarioStops=()=>{if(pendingConnection)connectionStops.selectAll('circle').attr('r',2.1/transform.k);};
-    svg.on('keydown.scenario',event=>{
-      if(event.key==='Escape'&&inspecting){clearCandidate();inspectButton.focus();}
-    });
-    function pickConnectionEndpoint(x,y){
-      const [stop,gap]=physicalStops.reduce(([nearest,best],stop)=>{
-        const distance=Math.hypot(stop.point[0]-x,stop.point[1]-y);
-        return distance<best?[stop,distance]:[nearest,best];
-      },[null,Infinity]);
-      const setup=pendingConnection;
-      const instructions=bundleEvidence.querySelector('.scenario-result');
-      if(!stop||gap*transform.k>12){
-        instructions.textContent='Acércate y pulsa sobre una parada de la red gris.';
-        return;
-      }
-      if(!setup.from){
-        setup.from=stop;
-        instructions.textContent=`A · ${stationNames.get(stop.complex)} (${stop.id}). Elige la segunda parada.`;
-        return;
-      }
-      if(stop.id===setup.from.id||stop.complex===setup.from.complex){
-        instructions.textContent='Elige una parada de otro complejo.';
-        return;
-      }
-      const from=setup.from,to=stop,request=++evidenceSerial;
-      pendingConnection=null;
-      connectionStops.attr('display','none');
-      scenarioLine.attr('d',drawRail([from.point,to.point])).attr('display',null);
-      instructions.textContent='Reasignando los viajes con el enlace hipotético…';
-      const length=d3.geoDistance(from.coords,to.coords)*6371008.8;
-      app.routing.scenario(state.year,state.flowDay,state.flowHour,{connection:{from:from.id,to:to.id,length,origins:scope.origins,zones:scope.zones}}).then(result=>{
-        if(request!==evidenceSerial||!svgNode.isConnected)return;
-        let relief=-1;
-        for(const {index} of rail)if(result.changes[index]<0&&(relief<0||result.changes[index]<result.changes[relief]))relief=index;
-        const leg=F.links[relief];
-        const changed=rail.filter(({index})=>Math.abs(result.changes[index])>=.001)
-          .sort((a,b)=>Math.abs(result.changes[a.index])-Math.abs(result.changes[b.index]));
-        scenarioChanges.attr('display',changed.length?null:'none').selectAll('path').data(changed).join('path')
-          .attr('d',({link})=>drawRail(link.coords.map(projection)))
-          .attr('vector-effect','non-scaling-stroke')
-          .attr('stroke',({index})=>{
-            const delta=result.changes[index],strength=railChange(delta,changeLimit);
-            return delta<0?odLoss(strength):odGain(strength);
-          })
-          .style('--flow-variation',({index})=>`${2.5*railChange(result.changes[index],changeLimit)}px`);
-        instructions.innerHTML=`<strong>${esc(stationNames.get(from.complex))} ↔ ${esc(stationNames.get(to.complex))}</strong>
-          <span>${esc(flowCount(result.redirected,fmt))} viajes reasignados · ${result.pairs} pares OD</span>
-          ${result.redirected?`<span>Reducción media del costo modelado · ${fmt(result.meanSaving/1000)} km equivalentes</span>`:''}
-          ${leg?`<span>Mayor baja de carga · ${esc(stationNames.get(leg.a))} ↔ ${esc(stationNames.get(leg.b))} · ${signed(result.changes[relief])} viajes</span>`:''}
-          <small>Enlace bidireccional de ${fmt(length/1000)} km en línea recta. Demanda fija.</small>
-          ${changed.length?'<small>Azul · baja de carga. Terracota · aumento.</small>':''}`;
-      }).catch(()=>{if(request===evidenceSerial&&svgNode.isConnected)instructions.textContent='No se pudo simular el enlace.';});
-    }
-    inspectCorridor=event=>{
-      if(!inspecting)return false;
-      const [x,y]=transform.invert(d3.pointer(event,svgNode));
-      if(pendingConnection){pickConnectionEndpoint(x,y);return true;}
-      const request=++evidenceSerial;
-      const gap=distanceToLines(x,y,railGeometry);
-      scenarioLine.attr('display','none');
-      scenarioChanges.attr('display','none');
-      candidate.attr('display','none');
-      if(gap*transform.k<7){
-        bundleEvidence.textContent='Ese punto está sobre la red. Prueba sobre una curva que se aparte de las vías.';
-        return true;
-      }
-      bundleEvidence.textContent='Buscando viajes que pasan por este haz…';
-      Promise.all([app.raeb?.inspectLayout(),app.routing.network()]).then(([layout,network])=>{
-        if(request!==evidenceSerial||!svgNode.isConnected)return;
-        if(!layout){bundleEvidence.textContent='Espera a que termine el cálculo del agrupamiento.';return;}
-        const {contributors,representative}=bundleAt(layout,x,y,6/transform.k);
-        if(!representative){bundleEvidence.textContent='No encontré curvas aquí. Acerca el mapa o pulsa sobre un haz visible.';return;}
-        const points=Array.from({length:representative.length/2},(_,i)=>[representative[i*2],representative[i*2+1]]);
-        const pairs=contributors.sort((a,b)=>b.trips-a.trips);
-        const total=d3.sum(pairs,pair=>pair.trips);
-        const leg=pairs[0],a=F.nodes[leg.origin],b=F.nodes[leg.destination];
-        const path=network.paths[leg.origin*F.nodes.length+leg.destination];
-        const metres=d3.sum(path,arc=>F.links[arc>>1].len);
-        const direct=d3.geoDistance([a.lon,a.lat],[b.lon,b.lat])*6371008.8;
-        candidate.attr('d',drawRail(points)).attr('display',null);
-        bundleEvidence.innerHTML=`<b>Corredor para estudiar</b>
-          <span>${fmt(total)} viajes estimados · ${pairs.length} pares OD cerca del punto</span>
-          <span><b>Mayor aporte:</b> ${esc(stationNames.get(a.id))} → ${esc(stationNames.get(b.id))} · ${esc(flowCount(leg.trips,fmt))}</span>
-          <span>${fmt(metres/1000)} km en la red de referencia · ${fmt(direct/1000)} km en línea recta</span>
-          <small>La curva representa un haz visual. El ejemplo de distancia corresponde al par de mayor aporte.</small>
-          ${routeNodes?'<button class="text-button try-connection" type="button">Probar enlace hipotético</button><div class="scenario-result" aria-live="polite"></div>':''}`;
-        const test=bundleEvidence.querySelector('.try-connection');
-        if(test)test.onclick=()=>{
-          evidenceSerial++;
-          pendingConnection={from:null};
-          connectionStops.attr('display',null).selectAll('circle').attr('r',2.1/transform.k);
-          scenarioLine.attr('display','none');
-          scenarioChanges.attr('display','none');
-          bundleEvidence.querySelector('.scenario-result').textContent='Elige las dos paradas que conectaría el escenario.';
-        };
-      }).catch(()=>{if(request===evidenceSerial&&svgNode.isConnected)bundleEvidence.textContent='No se pudo leer el haz.';});
-      return true;
-    };
     const trackKey=host.querySelector('.map-track-key');
     function showTracks(show){
       onTracks=show;
@@ -555,7 +420,6 @@ export function renderMap(host,app,items){
       stage.classList.toggle('svg-exact-rails',show);
       railPaths.attr('display',show||cambio?null:'none');
       if(trackKey)trackKey.hidden=!(show||cambio);
-      if(inspectButton)inspectButton.hidden=show||!!focusOrigin;
       if(show)setRaebStatus('');
       host.querySelector('#flow-legend-foot').textContent=show
         ? 'Tramos de referencia GTFS. Pasa por la vía para ver la carga estimada.'
@@ -566,7 +430,6 @@ export function renderMap(host,app,items){
       const note=host.querySelector('#map-flow-unit');
       if(note)note.textContent=show?'Ramas · porcentaje de las salidas':'Haces · intensidad de las salidas';
       if(!cambio&&!focusOrigin&&!scopedGroup)host.querySelector('#flow-legend-title').textContent=show?'Flujo por tramo':'Flujo en los haces';
-      clearCandidate();
       updateComplexContext?.();
     }
     showTracks(onTracks);
@@ -752,7 +615,6 @@ export function renderMap(host,app,items){
           if(request===scopeRequest&&svgNode.isConnected)status.textContent='No se pudieron cargar las salidas del grupo.';
         });
       }
-      clearCandidate();
       if(!focusOrigin)paintFlowNodes();
       updateClockTime(state.flowDay,h);
       if(focusOrigin){
@@ -1011,7 +873,6 @@ export function renderMap(host,app,items){
     .classed('map-zone-context',s=>!!between&&!zoneOf(s))
     .on('click',(event,station)=>{
       event.stopPropagation();
-      if(inspectCorridor?.(event))return;
       if(event.shiftKey)app.pin(station.id);
       else app.toggleStation(station.id);
     });
@@ -1128,7 +989,6 @@ export function renderMap(host,app,items){
     transform=event.transform;
     if(flujos)svgNode.closest('.map-stage').style.setProperty('--flow-width-scale',zoomStrokeScale(transform.k));
     g.attr('transform',transform);
-    resizeScenarioStops?.();
     if(baseG!==g)baseG.attr('transform',transform);
     points.attr('r',s=>rOf(s)/transform.k);
     if(app._relane)app._relane(transform.k);
@@ -1173,7 +1033,6 @@ export function renderMap(host,app,items){
       app.spectralEvents.clearComplex();
       return;
     }
-    if(inspectCorridor?.(event))return;
     if(state.selected)app.set({selected:null});
   });
   const lassoStations=state.cohortSource==='scatter'?app.filtered(undefined,{ignoreCohort:true}):items;

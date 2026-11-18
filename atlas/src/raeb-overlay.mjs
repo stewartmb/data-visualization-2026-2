@@ -1,4 +1,4 @@
-import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=crisp-raeb2';
+import {RaebCPUOverlay} from './raeb-cpu-overlay.mjs?v=remove-scenarios1';
 import {odLoads} from './od-period.mjs';
 import {RaebRenderer} from './raeb-renderer.mjs?v=crisp-raeb2';
 import {RaebWebGPU} from './raeb-webgpu.mjs?v=crisp-raeb2';
@@ -55,18 +55,6 @@ export class RaebOverlay extends RaebCPUOverlay{
   const loads=this.origins==null?all:Float32Array.from({length:this.data.links.length*2},(_,i)=>i%2?0:this.selectedLinks?.[i>>1]??0);
   this.renderer.setRailLoads(loads,this.selectedLinks);
  }
- async inspectLayout(){
-  if(!this.gpu)return super.inspectLayout();
-  const context=this.layoutContext,request=this.requestId;
-  if(!context||this.solvedRequest!==request)return null;
-  const points=await this.renderer.readBuffer(1);
-  if(this.requestId!==request||this.layoutContext!==context||!this.gpu)return null;
-  for(let i=0;i<points.length;i+=2){
-   points[i]=(points[i]-1)*context.grid.gridToCss[0];
-   points[i+1]=(points[i+1]-1)*context.grid.gridToCss[1];
-  }
-  return {...context,points};
- }
  request(){
   if(this.failed)return;
   if(!this.gpu)return super.request();
@@ -86,7 +74,7 @@ export class RaebOverlay extends RaebCPUOverlay{
     await this.renderer.setScene({...m,free:new Float32Array(m.free),reference:new Float32Array(m.reference),metadata:new Float32Array(m.metadata),retention:new Float32Array(m.retention),railInfo:new Float32Array(m.railInfo),railVertices:new Float32Array(m.railVertices)});
     if(m.sourceId!==this.sourceId)return;
     this.kernel=m.kernel;this.onKernel?.(this.kernel);
-    this.layoutContext={metadata:new Float32Array(m.metadata),grid:m.grid,samples:m.samples};this.paintReference();this.request();
+    this.paintReference();this.request();
    }catch(error){this.fallback(error);}return;
   }
   if(!this.gpu)return super.message(m);
@@ -106,7 +94,6 @@ export class RaebOverlay extends RaebCPUOverlay{
     this.status('Procesando…');
     const stats=await this.renderer.solve(job.fidelity,job.strength,{cancelled});
     if(!stats||cancelled())continue;
-    this.solvedRequest=job.id;
     const r=this.renderer;r.canvas.dataset.totalLatencyMs=(performance.now()-this.parameterStarted).toFixed(1);r.canvas.dataset.layoutStats=JSON.stringify(stats);
     this.status(stats.converged?'Completado':'Completado (parcial)');
     const el=document.querySelector('#raeb-status');if(el)el.title=`GPU: ${stats.iterations} iteraciones · NMI ${stats.nmi.toFixed(3)} · ${Math.round(stats.ms)} ms · densidad óptica antes del estilo · ${stats.cacheHit?'caché':'cálculo'}`;

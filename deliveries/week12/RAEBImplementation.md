@@ -18,10 +18,8 @@ El mapa de Nueva York abre en **Todo el año**, con `raeb=paper`, fidelidad 5 y 
 
 Grosor y una escala secuencial petróleo muestran la demanda estimada. Al seleccionar un complejo, el grosor de las ramas muestra las salidas que comparten un tramo y el tamaño de cada destino muestra sus viajes. La vista general anual comparte una escala entre los cinco años, basada en la mayor carga diaria por tramo. Para una franja el límite es 17.000. El detalle usa una escala relativa al origen. Los círculos opcionales de afluencia muestran salidas más viajes que terminan allí, clasificados por la hora de entrada del viaje. La app conserva el remuestreo de 32 puntos por par ponderado, la cuadrícula de cálculo reducida, WebGPU con respaldo CPU y un tope operativo de 150 iteraciones. El paper utiliza sus propias trayectorias, resolución y muestreo.
 
-## Lectura de escenarios
+## Comparación entre años
 
-- **Explorar un haz** inspecciona las curvas calculadas cerca del punto señalado fuera de la red. Muestra la demanda OD que contribuye y la distancia asignada frente a la directa para el par con mayor aporte.
-- **Probar enlace hipotético** añade un arco bidireccional de longitud geodésica entre dos paradas existentes. Compara costo y cargas con demanda fija. El modelo no incorpora capacidad, horarios, costos de obra ni cambios de demanda.
 - Los minimapas muestran diferencias por tramo frente al año abierto en el mapa principal. En modo Comparar, la referencia pasa a ser el año elegido como A. La escala se comparte entre los minimapas y se ajusta a la franja y referencia activas. La comparación principal aplica una escala fija en la vista general. Los filtros territoriales y de búsqueda acotan los viajes por origen en el mapa principal, en RAEB y en los minimapas. Los tramos y destinos pueden quedar fuera del área de origen.
 
 Para reproducir la reasignación sin repetir la adquisición ni la agregación horaria, ejecutar desde la raíz:

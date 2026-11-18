@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {bundleAt,closureImpact,connectionImpact,originBranches,originLoads} from '../atlas/src/od-routing.mjs';
+import {originBranches,originLoads} from '../atlas/src/od-routing.mjs';
 
 import {zoneFlow} from '../atlas/src/od-zones.mjs';
 
@@ -26,20 +26,4 @@ assert.deepEqual([...branches.links],[17,10,0,4]);
 assert.deepEqual([...branches.destinations],[0,3,10,4]);
 assert.deepEqual([...originLoads(paths,matrix,[0,2],links.length)],[17,2,10,2,0,0,4,0]);
 assert.deepEqual([...originLoads(paths,matrix,[],links.length)],Array(8).fill(0));
-assert.deepEqual(closureImpact({...graph,closed:'B'}),{access:3,disconnected:11,detoured:12,equivalent:0,extraCost:48});
-const result=connectionImpact({...graph,from:'A',to:'C',length:1});
-assert.equal(result.redirected,12);
-assert.equal(result.meanSaving,3);
-assert.equal(result.pairs,2);
-assert.deepEqual([...result.changes],[-12,-12,0,0]);
-assert.equal(connectionImpact({...graph,from:'A',to:'C',length:4}).redirected,0);
-assert.equal(connectionImpact({...graph,from:'A',to:'C',length:1,origins:[0]}).redirected,10);
-assert.equal(connectionImpact({...graph,from:'A',to:'C',length:1,zones:[[0],[2]]}).redirected,12);
-assert.equal(connectionImpact({...graph,from:'A',to:'C',length:1,zones:[[0],[1]]}).redirected,0);
-const layout={samples:2,points:new Float32Array([0,0,10,0, 0,2,10,2, 0,20,10,20]),
-  metadata:new Float32Array([5,0,1,0, 2,0,2,0, 9,2,3,0])};
-const found=bundleAt(layout,5,1,2);
-assert.equal(found.contributors.length,2);
-assert.equal(found.contributors.reduce((sum,d)=>sum+d.trips,0),7);
-assert.equal(bundleAt(layout,5,30,2).representative,null);
-console.log('PASS: OD branches and destinations, closed complex, bidirectional hypothetical link, geometry picking.');
+console.log('PASS: OD branches, destinations, origin loads and bidirectional flows between zones.');

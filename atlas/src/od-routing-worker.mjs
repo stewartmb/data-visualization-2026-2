@@ -1,5 +1,5 @@
 import {zoneFlow} from './od-zones.mjs?v=zone-lasso1';
-import {closureImpact,connectionImpact,originLoads} from './od-routing.mjs?v=zone-lasso1';
+import {originLoads} from './od-routing.mjs?v=remove-scenarios1';
 
 let graph;
 onmessage=({data})=>{
@@ -15,8 +15,7 @@ onmessage=({data})=>{
       postMessage({id:data.id,impact},[impact.buffer]);
       return;
     }
-    const impact=(data.connection?connectionImpact:closureImpact)({...graph,...data,...data.connection});
-    postMessage({id:data.id,impact});
+    throw Error('Falta la selección de orígenes o de dos zonas.');
   }catch(error){
     postMessage({id:data.id,error:error.message});
   }

@@ -58,7 +58,7 @@ export class RaebCPUOverlay{
       this.renderer.colorMax=odStarts(this.data,year,day,hour,selectedIndex)||(day===null?this.data.annual.volume_limit:undefined);
     }
     if(selectedIndex!==this.renderer.selected){this.selectedLinks=null;this.worker.postMessage({type:'selection',sourceId:this.sourceId,selected:selectedIndex});}
-    if(key!==this.currentKey){this.selectedLinks=null;this.layoutContext=null;this.currentLayout=null;}
+    if(key!==this.currentKey){this.selectedLinks=null;}
     this.renderer.selected=selectedIndex;this.year=year;this.day=day;this.hour=hour;this.paintReference();this.renderer.schedule();
     if(key===this.currentKey){this.onKernel?.(this.kernel);return;}
     this.kernel=null;this.onKernel?.(null);this.parameterStarted=performance.now();this.currentKey=key;this.sourceId++;
@@ -75,15 +75,11 @@ export class RaebCPUOverlay{
     this.renderer.schedule();
   }
   parameters(fidelity,strength){
-    this.currentLayout=null;this.requestId++;this.parameterStarted=performance.now();this.renderer.awaitingSeed=!this.paper&&fidelity>0&&fidelity<1;this.fidelity=fidelity;this.strength=strength;this.paintReference();this.renderer.setParameters(fidelity,strength);
+    this.requestId++;this.parameterStarted=performance.now();this.renderer.awaitingSeed=!this.paper&&fidelity>0&&fidelity<1;this.fidelity=fidelity;this.strength=strength;this.paintReference();this.renderer.setParameters(fidelity,strength);
     const status=document.querySelector('#raeb-status');if(status)status.removeAttribute('title');
     this.status(this.onTracks?'':'Procesando…');
     clearTimeout(this.parameterTimer);
     this.parameterTimer=setTimeout(()=>this.request(),75);
-  }
-  async inspectLayout(){
-    if(!this.layoutContext||!this.currentLayout)return null;
-    return {...this.layoutContext,points:this.currentLayout};
   }
   paintReference(){
     this.renderer.exact=this.onTracks||(!this.paper&&this.fidelity===1);
@@ -125,7 +121,6 @@ export class RaebCPUOverlay{
     if(m.type==='selection'){this.receiveSelection(m);
     }else if(m.type==='scene'){
       this.kernel=m.kernel;this.onKernel?.(this.kernel);
-      this.layoutContext={metadata:new Float32Array(m.metadata),samples:m.samples,grid:m.grid};
       const css=buffer=>{const a=new Float32Array(buffer);if(m.grid)for(let i=0;i<a.length;i+=2){a[i]=(a[i]-1)*m.grid.gridToCss[0];a[i+1]=(a[i+1]-1)*m.grid.gridToCss[1];}return a;};this.reference=css(m.reference);this.free=css(m.free);
       if(this.paper)r.awaitingSeed=true;
       r.scene(this.free,this.reference,new Float32Array(m.metadata),m.count,m.samples,new Float32Array(m.retention));
@@ -139,7 +134,6 @@ export class RaebCPUOverlay{
       if(this.paper||this.fidelity!==1)r.layout(new Float32Array(m.points));
       if(m.type==='seed')this.status('Procesando…');
       if(m.type==='layout'){
-        this.currentLayout=new Float32Array(m.points);
         if(!this.paper&&m.fidelity===0&&m.strength===1){
           this.free=new Float32Array(m.points);r.anchors(this.free,this.reference);
         }

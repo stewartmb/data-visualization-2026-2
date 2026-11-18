@@ -143,6 +143,6 @@ Se mantiene el panel integrado: mapa central + dispersión volumen × forma + re
 
 Cada tarea debe producir una respuesta escrita con entidad/territorio, período, unidad, valores y una cautela pertinente. Comparar esos resultados con agregados reproducibles independientes; después evaluar con personas si la interacción permite encontrarlos. Ausencia de capacidad o tiempo de viaje no se soluciona cambiando el idiom.
 
-El Atlas actual permite leer cargas exactas por tramo (T4). También permite probar enlaces hipotéticos desde un haz RAEB. La síntesis territorial de T1, T2 y T5 permanece como evidencia y la validación con usuarios sigue pendiente. Los cálculos de las tareas vigentes están en `data/analytical_tasks/`. Semana 6 conserva las muestras originales. El método vigente del mapa se documenta en RAEB Implementation.
+El Atlas actual permite leer cargas exactas por tramo (T4). La síntesis territorial de T1, T2 y T5 permanece como evidencia y la validación con usuarios sigue pendiente. Los cálculos de las tareas vigentes están en `data/analytical_tasks/`. Semana 6 conserva las muestras originales. El método vigente del mapa se documenta en RAEB Implementation.
 
 Fuentes y alcance: [ODData](ODData.md), [Eventos](SpectralEvents.md), [RAEB Implementation](RAEBImplementation.md). Fundamento visual y alternativas: [revisión de Semana 6](../week06/referencias.md). La literatura respalda métodos y decisiones puntuales; no valida automáticamente estas cinco preguntas ni nuestra herramienta.

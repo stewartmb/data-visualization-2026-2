@@ -1,6 +1,6 @@
 import {state,esc,fmt,profile,measures,hellinger,hideTooltip,passesMetricRanges,BASE,setBase} from './model.js?v=20261028-4';
 import {renderAtlas} from './atlas-view.js?v=study-period1';
-import {renderMap} from './map-view.js?v=station-highlight1';
+import {renderMap} from './map-view.js?v=remove-scenarios1';
 import {createSpectralEvents} from './spectral-events.js?v=monthly-contrast1';
 import {createODYearMaps} from './od-year-maps.js?v=map-layout2';
 import {renderPaths} from './paths-view.js?v=od-only1';
@@ -10,7 +10,7 @@ import {renderProject} from './project-view.js?v=study-period1';
 
 import {activeContrastBase,activeODCompareBase,normalizeContrastBase,inspectorContrast,contrastMeasures,annualMeasures,isODMap} from './contrast-model.mjs?v=od-only1';
 import {dataset} from './datasets.mjs?v=study-period1';
-import {createRoutingData} from './od-routing.mjs?v=annual-overview1';
+import {createRoutingData} from './od-routing.mjs?v=remove-scenarios1';
 
 const views={atlas:renderAtlas,map:renderMap,paths:renderPaths,evidence:renderEvidence,project:renderProject};
 const labels={atlas:'Atlas semanal',map:'Geografía',paths:'Trayectorias',evidence:'Evidencia',project:'Proyecto'};
