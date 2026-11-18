@@ -111,7 +111,7 @@ for r in json.loads((SRC/'boroughs_raw.json').read_text()):
     features.append({'type':'Feature','properties':{'name':r['boroname']},'geometry':{'type':'MultiPolygon','coordinates':polys}})
 
 source_manifest=json.loads((SRC/'sources.json').read_text())
-app={'meta':{'title':'La forma del día · Atlas de ritmos','years':YEARS,'months':months,
+app={'meta':{'title':'Fractal · Atlas de movilidad','years':YEARS,'months':months,
     'days':['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'],
     'comparison':'Año completo (todos los meses) de 2021 a 2024; perfiles ajustados por número de lunes, martes, etc. del año; base 2021.',
     'retrieved':source_manifest['retrieved_at_utc'],'scope':'subway; complejos con perfiles positivos en ambos extremos',

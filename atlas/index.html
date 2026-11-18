@@ -2,16 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Fractal · Atlas de ritmos</title>
+  <title>Fractal · Atlas de movilidad</title>
   <meta name="description" content="Explora los flujos origen–destino del metro de Nueva York entre 2021 y 2025.">
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="src/style.css?v=remove-scenarios1">
   <link rel="stylesheet" href="src/spectral-events.css?v=monthly-contrast1">
 </head>
 <body class="atlas-workbench">
-<div id="loading" role="status"><span class="map-spinner" aria-hidden="true"></span> Preparando el atlas de ritmos…</div>
+<div id="loading" role="status"><span class="map-spinner" aria-hidden="true"></span> Preparando el atlas de movilidad…</div>
 <header class="masthead">
-  <a href="./" class="brand" aria-label="Fractal · Vista general" title="Volver a la vista general"><span class="brand-icon" aria-hidden="true">▥</span><span>Fractal<small>ATLAS DE RITMOS · NUEVA YORK</small></span></a>
+  <a href="./" class="brand" aria-label="Fractal · Vista general" title="Volver a la vista general"><span class="brand-icon" aria-hidden="true">▥</span><span>Fractal<small>ATLAS DE MOVILIDAD · NUEVA YORK</small></span></a>
   <div class="context-bar" role="group" aria-label="Filtros del mapa">
     <select id="borough" aria-label="Zona"><option value="all">Todos los boroughs</option><option>Manhattan</option><option>Brooklyn</option><option>Queens</option><option>Bronx</option></select>
     <div class="station-search">
@@ -151,5 +151,5 @@
 </template>
 <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
 <div id="toast" class="toast" role="status" hidden></div>
-<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=remove-scenarios1"></script>
+<script src="lib/d3.min.js"></script><script src="lib/d3-tile.min.js"></script><script type="module" src="src/app.js?v=atlas-movilidad1"></script>
 </body></html>

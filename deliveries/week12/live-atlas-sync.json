@@ -3,7 +3,7 @@
   "source": "deliveries/week12/atlas",
   "destination": "atlas",
   "sha256": {
-    "index.html": "95a2ea5de8cd2a218cd5cd7638f9b9d66fc64b9750fa31557e11079746e2759a",
+    "index.html": "8adc9ece8e89f3a38ecf63e3c4db3bc0168ceaeb92e8486c3a56777cacff1bb6",
     "README.md": "7c797421bef05ca9df117a1b1826ef092a66b6c0293f7225e0e4933347907561",
     "lib/LICENSE.d3": "3e6849627f74ff73c257a3ae1efb574015d94fc1035c05ec3c15805165efcbc4",
     "lib/d3.min.js": "f2094bbf6141b359722c4fe454eb6c4b0f0e42cc10cc7af921fc158fceb86539",
@@ -46,7 +46,7 @@
     "src/model.js": "ef3a9a55541f791231c3afa59d8a7a75f2439dbb1d7aacdd765afbd6a487951e",
     "src/monthly-od.css": "ae4ed002d835f32a2548fcff3fb77aa167078a56373ac8bfe6f0ffce7f35b1e2",
     "src/raeb-core.mjs": "e804227ad8837fb4f4be68830bf67e5ea41fb6a4a18f475247a313596f43523e",
-    "src/app.js": "f7b7e868a36e471eb2750a1c43ece68309164afcf3bc3fbf87871cc9b0b4089e",
+    "src/app.js": "113c77bea0852e2aca8030b213048ef700b597c543f811905135ccc027af27e7",
     "src/raeb-webgpu.mjs": "dc7fb9c05f15d6b5df53d89a3cc0be9cf20434aa8585291e91192e763f8000aa",
     "src/od-routing.mjs": "0bbad27d8a2c73d55266cf189e1ac0d347b0670a15c701e723af970ecbe3478c",
     "data/raeb/network.json.gz": "203616fffa94fb6a6cd4c21e9f73da2d022d832b91ce94e181f56f1cefb50f51",

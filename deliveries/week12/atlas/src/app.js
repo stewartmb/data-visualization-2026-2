@@ -365,7 +365,7 @@ Promise.all([loadData(nyc?'stations.json':'atlas.json'),loadData('boroughs.geojs
   if(!app.station(state.selected))state.selected=null;
   f.nodes.forEach((station,index)=>stationIndices.set(station.id,index));
   const brand=document.querySelector('.masthead .brand');
-  brand.querySelector('small').textContent=`ATLAS DE RITMOS · ${dataset.name.toUpperCase()}`;
+  brand.querySelector('small').textContent=`ATLAS DE MOVILIDAD · ${dataset.name.toUpperCase()}`;
   if(dataset.id==='bart'){
     brand.href='./?system=bart';
     document.title='Fractal · Área de la Bahía · BART';

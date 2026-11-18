@@ -1,4 +1,4 @@
-# Fractal · Atlas de ritmos del metro de Nueva York
+# Fractal · Atlas de movilidad del metro de Nueva York
 
 Proyecto final de DS5343 Data Visualization · UTEC · 2026-2 · Prof. Germain Garcia-Zanabria
 
