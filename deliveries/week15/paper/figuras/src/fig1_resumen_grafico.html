@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Resumen gráfico</title>
+<style>
+@page{size:181mm 61mm;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:181mm;height:61mm;background:#fff;font-family:"TeX Gyre Heros","Liberation Sans",Arial,sans-serif;color:#172d3b}
+.wrap{display:grid;grid-template-columns:38mm 5mm 47mm 5mm 55mm 5mm 26mm;width:181mm;height:61mm}
+.col{display:flex;flex-direction:column;gap:1.5mm;height:61mm}
+.h{font-size:6.6pt;font-weight:700;letter-spacing:.35pt;text-transform:uppercase;color:#a94a23;height:4.4mm;line-height:4.4mm;border-bottom:.5pt solid #172d3b;margin-bottom:.3mm;white-space:nowrap}
+.h b{display:inline-block;width:3.6mm;height:3.6mm;line-height:3.6mm;border-radius:50%;background:#172d3b;color:#fff;text-align:center;font-size:6.2pt;margin-right:1mm;letter-spacing:0}
+.box{flex:1;border:.6pt solid #8ea19e;border-radius:1.2mm;background:#eef3f1;padding:1.4mm 1.8mm;display:flex;flex-direction:column;justify-content:center;gap:.5mm}
+.box.t{background:#fff;border-color:#137b80;border-width:.8pt}
+.bt{font-size:7.2pt;font-weight:700;line-height:1.15}
+.bd{font-size:6.2pt;line-height:1.22;color:#2c4050}
+.arr{display:flex;flex-direction:column;gap:1.5mm;padding-top:6.2mm;height:61mm}
+.arr div{flex:1;display:flex;align-items:center;justify-content:center}
+.arr svg{width:4mm;height:3mm}
+.down{height:1.5mm;margin:-1.5mm 0;position:relative;z-index:2;display:flex;justify-content:center}
+.down svg{width:3mm;height:3.4mm;margin-top:-.95mm}
+.grid{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));gap:1.4mm;min-height:0}
+.th{display:flex;flex-direction:column;gap:.5mm;min-height:0;min-width:0}
+.th img{width:100%;flex:1;min-height:0;object-fit:cover;border:.5pt solid #8ea19e;border-radius:.8mm;display:block}
+.th img.c{object-fit:contain;background:#fff}
+.th span{font-size:6pt;font-weight:700;line-height:1.1;text-align:center;white-space:nowrap}
+.q{flex:1;border-radius:1.2mm;background:#172d3b;color:#fff;padding:1.2mm 1.6mm;display:flex;align-items:center;font-size:7.2pt;font-weight:700;line-height:1.15}
+.aud{font-size:5.9pt;line-height:1.2;color:#2c4050;height:8.2mm}
+</style></head><body>
+<div class="wrap">
+  <div class="col">
+    <div class="h"><b>1</b>Datos públicos (MTA)</div>
+    <div class="box"><div class="bt">Viajes origen–destino estimados</div><div class="bd">567,6 M de registros · 60 meses, 2021–2025</div></div>
+    <div class="box"><div class="bt">Red de referencia GTFS 2026</div><div class="bd">424 complejos · 556 enlaces ferroviarios</div></div>
+    <div class="box"><div class="bt">Entradas por hora</div><div class="bd">131,0 M de registros · 60 meses, 2021–2025</div></div>
+  </div>
+  <div class="arr"><div><svg viewBox="0 0 16 12"><path d="M1 6h12M9 2l4 4-4 4" fill="none" stroke="#172d3b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><svg viewBox="0 0 16 12"><path d="M1 6h12M9 2l4 4-4 4" fill="none" stroke="#172d3b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><svg viewBox="0 0 16 12"><path d="M1 6h12M9 2l4 4-4 4" fill="none" stroke="#172d3b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+  <div class="col">
+    <div class="h"><b>2</b>Transformaciones</div>
+    <div class="box t"><div class="bt">Semana tipo</div><div class="bd">Promedio ponderado por día de la semana y hora: 168 matrices por año</div></div>
+    <div class="down"><svg viewBox="0 0 12 14"><path d="M6 1v10M2 8l4 4 4-4" fill="none" stroke="#137b80" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <div class="box t"><div class="bt">Asignación a la red</div><div class="bd">Ruta más corta de cada par y suma de viajes por tramo, de estación a estación</div></div>
+    <div class="box t"><div class="bt">Detección de eventos</div><div class="bd">Contraste con lo habitual y wavelets sobre el grafo de la red: episodios</div></div>
+  </div>
+  <div class="arr"><div style="flex:3"><svg viewBox="0 0 16 12"><path d="M1 6h12M9 2l4 4-4 4" fill="none" stroke="#172d3b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+  <div class="col">
+    <div class="h"><b>3</b>Vistas enlazadas (D3.js)</div>
+    <div class="grid">
+      <div class="th"><img src="t_mapa.jpg"><span>Mapa de flujo por tramo</span></div>
+      <div class="th"><img src="t_cambio.jpg"><span>Cambio entre años</span></div>
+      <div class="th"><img src="t_haces.jpg"><span>Haces de flujo (WebGPU)</span></div>
+      <div class="th"><img class="c" src="t_reloj.jpg"><span>Reloj semanal</span></div>
+      <div class="th"><img src="t_disp.jpg"><span>Afluencia y hora pico</span></div>
+      <div class="th"><img src="t_eventos.jpg"><span>Episodios atípicos</span></div>
+    </div>
+  </div>
+  <div class="arr"><div style="flex:3"><svg viewBox="0 0 16 12"><path d="M1 6h12M9 2l4 4-4 4" fill="none" stroke="#172d3b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+  <div class="col">
+    <div class="h"><b>4</b>Preguntas</div>
+    <div class="q">¿Por dónde se mueve la gente?</div>
+    <div class="q">¿Cuándo?</div>
+    <div class="q">¿Qué cambió entre 2021 y 2025?</div>
+    <div class="aud">Para analistas de transporte e investigadores urbanos</div>
+  </div>
+</div>
+</body></html>
