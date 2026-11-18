@@ -15,7 +15,7 @@ Con la app se puede ver:
 - **Por dónde se mueve la gente.** El mapa muestra cuántos viajes pasan por cada tramo de vía, de estación a estación, y cuántos empiezan o terminan en cada complejo.
 - **Cuándo.** Un reloj semanal de 7 días por 24 horas resume el ritmo, y al elegir una celda el mapa cambia a ese día y hora.
 - **Qué cambió entre años.** Hay un minimapa por año y un modo para comparar cualquier par de años.
-- **Qué corredores sostienen los flujos.** Los flujos se pueden agrupar en haces (RAEB), inspeccionar un haz y probar un enlace hipotético entre dos paradas.
+- **Qué corredores sostienen los flujos.** Los flujos se pueden agrupar en haces (RAEB), ajustando el radio de agrupamiento y la fidelidad a la red.
 - **Cuándo pasó algo raro.** La pestaña Eventos marca las horas en que varios complejos conectados se apartaron de su afluencia habitual.
 
 Las preguntas que guían el proyecto son cinco:
@@ -210,7 +210,7 @@ La entrega final es de dos personas. El historial de commits muestra el detalle 
 - Atlas de ritmos de la Semana 10: filtros del mapa, comparación entre días y orden de la matriz.
 - Descarga reproducible del origen–destino y de la red GTFS, con sus manifiestos y validaciones.
 - Agrupamiento RAEB en WebGPU y su modo de respaldo.
-- Versión final de la app: flujo por tramo, comparación entre años, datos de 2025, exploración de haces, enlace hipotético y pestaña Eventos.
+- Versión final de la app: flujo por tramo, comparación entre años, datos de 2025, agrupamiento RAEB, selección entre dos zonas y pestaña Eventos.
 - Publicación en GitHub Pages y actualización de las entregas.
 
 Las decisiones de diseño, las presentaciones y los entregables finales los trabajamos entre los dos.
